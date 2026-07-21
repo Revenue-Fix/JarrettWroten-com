@@ -103,6 +103,21 @@
 
   footer{margin-top:clamp(2.5rem,6vw,4rem);border-top:1px solid var(--line);padding:1.6rem 0 3rem;
     font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--muted);line-height:1.9}
+  .footer-in{display:flex;align-items:center;gap:1.2rem}
+  .footer-txt .ic{font-family:var(--serif);font-size:1rem;letter-spacing:.01em;text-transform:none;margin-bottom:.35rem;
+    background:linear-gradient(90deg,#e5484d,#e5a13a,#e7d84b,#59c26a,#3fb6c9,#4f6fe5,#9a5fe0,#d052b8);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
+  .ie-mark{position:relative;display:inline-block;width:58px;height:58px;flex:none}
+  @property --mkang{syntax:'<angle>';initial-value:0deg;inherits:false}
+  .ie-mark .spec{position:absolute;inset:0;
+    background:conic-gradient(from var(--mkang),#e5484d,#e5a13a,#e7d84b,#59c26a,#3fb6c9,#4f6fe5,#9a5fe0,#d052b8,#e5484d);
+    filter:saturate(.95) brightness(1.06);
+    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain;
+    -webkit-mask-position:center;mask-position:center;
+    animation:mk-spin 16s linear infinite, mk-grad 16s linear infinite}
+  @keyframes mk-spin{to{transform:rotate(360deg)}}
+  @keyframes mk-grad{to{--mkang:-360deg}}
+  @media (prefers-reduced-motion:reduce){.ie-mark .spec{animation:none}}
 
   a{color:var(--warm)}
   :focus-visible{outline:2px solid var(--seal);outline-offset:3px;border-radius:2px}
@@ -202,11 +217,66 @@
 </div>
 
 <footer>
-  <div class="wrap">
-    Jarrett Wroten · <a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a><br>
-    Made by hand.
+  <div class="wrap footer-in">
+    <div class="ie-mark" id="ie-mark" role="img" aria-label="The Imagination Engine emblem"></div>
+    <div class="footer-txt">
+      <div class="ic">Founder of The Imagination Collective</div>
+      Jarrett Wroten · <a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a><br>
+      Made by hand.
+    </div>
   </div>
 </footer>
+
+<script>
+/* The Imagination Engine emblem — the aperture-gear mark. Gear (14 teeth) + ring +
+   aperture (7 blades), shown in the spectrum and slowly turning. */
+(function(){
+  var NS="http://www.w3.org/2000/svg", host=document.getElementById("ie-mark");
+  if(!host) return;
+  var size=58, C=size/2, TAU=6.28318530718, i;
+  var svg=document.createElementNS(NS,"svg");
+  svg.setAttribute("viewBox","0 0 "+size+" "+size);
+  svg.setAttribute("width",size); svg.setAttribute("height",size);
+  function pt(r,a){ return (C+r*Math.cos(a))+","+(C+r*Math.sin(a)); }
+  var teeth=14, rOut=C*0.97, rIn=C*0.82, ring=C*0.70, d="";
+  for(i=0;i<teeth;i++){
+    var a0=i/teeth*TAU, a1=(i+0.38)/teeth*TAU, a2=(i+0.5)/teeth*TAU, a3=(i+0.88)/teeth*TAU;
+    d+="M"+pt(rIn,a0)+" L"+pt(rOut,a0)+" A"+rOut+","+rOut+" 0 0 1 "+pt(rOut,a1)+
+       " L"+pt(rIn,a2)+" A"+rIn+","+rIn+" 0 0 1 "+pt(rIn,a3)+" Z ";
+  }
+  var tp=document.createElementNS(NS,"path"); tp.setAttribute("d",d); tp.setAttribute("fill","#fff"); svg.appendChild(tp);
+  var rc=document.createElementNS(NS,"circle");
+  rc.setAttribute("cx",C); rc.setAttribute("cy",C); rc.setAttribute("r",ring);
+  rc.setAttribute("fill","none"); rc.setAttribute("stroke","#fff"); rc.setAttribute("stroke-width",size*0.05);
+  svg.appendChild(rc);
+  var n=7, rB=C*0.60, rHub=C*0.16;
+  for(i=0;i<n;i++){
+    var a=i/n*TAU,
+        p1x=C+rB*Math.cos(a), p1y=C+rB*Math.sin(a),
+        p2x=C+rHub*Math.cos(a+2.4), p2y=C+rHub*Math.sin(a+2.4),
+        c1x=C+rB*0.95*Math.cos(a+0.85), c1y=C+rB*0.95*Math.sin(a+0.85),
+        c2x=C+rB*0.45*Math.cos(a+1.9), c2y=C+rB*0.45*Math.sin(a+1.9);
+    var bl=document.createElementNS(NS,"path");
+    bl.setAttribute("d","M"+p1x+","+p1y+" Q"+c1x+","+c1y+" "+p2x+","+p2y+" Q"+c2x+","+c2y+" "+p1x+","+p1y+" Z");
+    bl.setAttribute("fill","#fff"); svg.appendChild(bl);
+  }
+  var probe=document.createElement("div");
+  if("maskImage" in probe.style || "webkitMaskImage" in probe.style){
+    var url='url("data:image/svg+xml,'+encodeURIComponent(new XMLSerializer().serializeToString(svg))+'")';
+    var spec=document.createElement("div"); spec.className="spec";
+    spec.style.webkitMaskImage=url; spec.style.maskImage=url;
+    host.appendChild(spec);
+  } else {
+    var kids=svg.childNodes;
+    for(i=0;i<kids.length;i++){
+      var el=kids[i];
+      if(el.getAttribute("fill") && el.getAttribute("fill")!=="none") el.setAttribute("fill","#D96629");
+      if(el.getAttribute("stroke")) el.setAttribute("stroke","#D96629");
+    }
+    svg.style.display="block"; host.appendChild(svg);
+  }
+})();
+</script>
 
 </body>
 </html>
