@@ -82,6 +82,11 @@
 
   .prose{font-size:1.14rem;line-height:1.6;max-width:46ch;color:var(--ink)}
   .prose .muted{color:var(--muted)}
+  .bio{display:grid;grid-template-columns:auto 1fr;gap:clamp(1.4rem,4vw,2.4rem);align-items:start;margin-top:.2rem}
+  .bio-portrait img{display:block;width:clamp(150px,20vw,200px);height:clamp(150px,20vw,200px);object-fit:cover;border-radius:50%;
+    box-shadow:0 14px 34px rgba(0,0,0,.36);border:1px solid var(--line)}
+  .bio-text{min-width:0}
+  @media (max-width:640px){.bio{grid-template-columns:1fr;gap:1.2rem}.bio-portrait img{width:140px;height:140px}}
   .shot{margin:1.4rem 0 0}
   .shot img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--card-line);
     background:var(--card);box-shadow:0 14px 34px rgba(0,0,0,.3);min-height:3rem}
@@ -114,7 +119,7 @@
     <div class="hero-copy">
       <p class="eyebrow">For the person who runs it</p>
       <h1>I find where your business quietly loses customers. Then I build you the fix.</h1>
-      <p class="lede">I look at your business first, and the first fix I find is a gift you can keep, already built and ready for your website. If it helps you, then you know I am right here.</p>
+      <p class="lede">I look at your business first, and the first fix I find is a gift you can keep. It is already built and ready for your website.</p>
       <a class="cta" href="#contact">Show me where mine leaks →</a>
     </div>
     <div class="hero-portrait">
@@ -168,7 +173,7 @@
       <img src="proof-revenue.png" alt="Stripe gross volume of $40,114.81, up 104.51 percent from $19,615.40 the previous 30 days" loading="lazy">
       <figcaption>Their Stripe, business name hidden. May 15 to June 15.</figcaption>
     </figure>
-    <p class="prose muted" style="margin-top:1.6rem">And their note the morning payroll cleared, shared with their permission:</p>
+    <p class="prose muted" style="margin-top:1.6rem">And their note the morning payroll cleared:</p>
     <figure class="shot">
       <img src="proof-note.png" alt="Client message: with the money hitting our account tomorrow, we have officially made payroll; no more money coming out of savings, only going in" loading="lazy">
       <figcaption>Their words, sent the day it cleared.</figcaption>
@@ -178,8 +183,13 @@
 
   <section>
     <p class="kicker">Who's behind it</p>
-    <p class="prose">I am Jarrett, and I am a builder who makes things. Tell me where your business is losing people, and I will go and make the fix for you myself. It is a real and finished thing, ready for your site. I give the very first one away for free. And if someone else would serve you better, I will tell you so. I care more about whether it works for you than about whether you hire me.</p>
-    <p class="prose muted" style="margin-top:1rem">Underneath it all, I build engines that turn an idea into a finished thing. This one is built and pointed straight at your business.</p>
+    <div class="bio">
+      <div class="bio-portrait"><img src="jarrett.jpg" alt="Jarrett Wroten" width="200" height="200"></div>
+      <div class="bio-text">
+        <p class="prose">I am Jarrett, and I am a builder who makes things. Tell me where your business is losing people, and I will go and make the fix for you myself. It is a real and finished thing, ready for your site. I give the very first one away for free. And if someone else would serve you better, I will tell you so. I care more about whether it works for you than about whether you hire me.</p>
+        <p class="prose muted" style="margin-top:1rem">Underneath it all, I build engines that turn an idea into a finished thing. This one is built and pointed straight at your business.</p>
+      </div>
+    </div>
   </section>
 
   <section id="contact">
