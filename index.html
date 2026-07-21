@@ -1,0 +1,188 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Jarrett Wroten — I build the fix, not the pitch</title>
+<meta name="description" content="I find where your business quietly loses customers, then build you the fix. The first one is a gift.">
+<meta property="og:title" content="Jarrett Wroten — I build the fix, not the pitch">
+<meta property="og:description" content="I find where your business quietly loses customers, then build you the fix.">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://jarrettwroten.com">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A6674'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D96629'/%3E%3C/svg%3E">
+<style>
+  :root{
+    --paper:#0A6674; --paper-2:#0F7C8B; --paper-deep:#074C57;
+    --ink:#ECF6F6; --muted:#AED0D2; --faint:#7BA6AA; --line:rgba(255,255,255,.16);
+    --card:#F7FAFA; --card-ink:#123C43; --card-muted:#4E7377; --card-line:#E1EBEA;
+    --seal:#D96629; --seal-ink:#B5531E; --warm:#F2C4A2; --warm-line:rgba(242,196,162,.5);
+    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+  }
+  @media (prefers-color-scheme:dark){
+    :root{--paper:#06333B; --paper-2:#0A4A54; --paper-deep:#04262C;
+      --ink:#E6F2F2; --muted:#9BBEC1; --faint:#6C9094; --line:rgba(255,255,255,.12);}
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+  body{margin:0;color:var(--ink);font-family:var(--serif);line-height:1.6;-webkit-font-smoothing:antialiased;
+    background:var(--paper);
+    background-image:radial-gradient(120% 60% at 50% -10%, var(--paper-2) 0, var(--paper) 50%, var(--paper-deep) 100%);
+    min-height:100vh}
+  .wrap{max-width:52rem;margin:0 auto;padding:0 1.4rem}
+
+  nav{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 1.4rem;max-width:52rem;margin:0 auto}
+  .mark{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
+  nav a{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none}
+  nav a:hover{color:var(--warm)}
+
+  .hero{padding:clamp(2.5rem,7vw,5rem) 0 clamp(2rem,5vw,3.5rem)}
+  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--warm);margin:0}
+  h1{font-weight:600;font-size:clamp(2.1rem,5.6vw,3.3rem);line-height:1.08;letter-spacing:-.015em;
+    text-wrap:balance;margin:1rem 0 0;max-width:16ch;color:var(--ink)}
+  .lede{font-size:clamp(1.1rem,2.4vw,1.28rem);color:var(--muted);margin:1.4rem 0 0;max-width:38ch;line-height:1.55}
+  .cta{display:inline-block;margin-top:2rem;background:var(--seal);color:#FFF6F0;font-family:var(--sans);
+    font-weight:600;font-size:1rem;text-decoration:none;padding:.85rem 1.5rem;border-radius:5px;
+    transition:transform .12s ease,box-shadow .12s ease}
+  .cta:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(0,0,0,.32)}
+
+  .seal-rule{display:flex;align-items:center;gap:.8rem;margin:clamp(2rem,5vw,3.2rem) 0}
+  .seal-rule::before,.seal-rule::after{content:"";flex:1;height:1px;background:var(--line)}
+  .seal-rule i{width:.55rem;height:.55rem;background:var(--seal);transform:rotate(45deg);flex:none}
+
+  section{padding:clamp(1.5rem,4vw,2.5rem) 0}
+  .kicker{font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--warm);margin:0 0 1.6rem}
+  h2{font-weight:600;font-size:clamp(1.5rem,3.4vw,2rem);line-height:1.15;letter-spacing:-.01em;margin:0;text-wrap:balance;color:var(--ink)}
+
+  .steps{display:grid;grid-template-columns:repeat(3,1fr);gap:1.6rem;margin-top:.5rem}
+  @media (max-width:640px){.steps{grid-template-columns:1fr;gap:2rem}}
+  .step .n{font-family:var(--mono);font-size:.8rem;color:var(--warm);letter-spacing:.1em}
+  .step h3{font-weight:600;font-size:1.22rem;margin:.5rem 0 0;color:var(--ink)}
+  .step p{font-family:var(--sans);font-size:.98rem;color:var(--muted);line-height:1.55;margin:.5rem 0 0}
+
+  .gift{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.5rem}
+  @media (max-width:640px){.gift{grid-template-columns:1fr}}
+  .card{background:var(--card);color:var(--card-ink);border:1px solid var(--card-line);border-left:3px solid var(--seal);
+    border-radius:5px;padding:1.4rem 1.5rem}
+  .card .plabel{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--card-muted)}
+  .card h3{font-weight:600;font-size:1.22rem;margin:.4rem 0 0;color:var(--card-ink)}
+  .card p{font-family:var(--sans);font-size:.96rem;color:var(--card-muted);line-height:1.5;margin:.5rem 0 0}
+
+  .prose{font-size:1.14rem;line-height:1.6;max-width:46ch;color:var(--ink)}
+  .prose .muted{color:var(--muted)}
+  .shot{margin:1.4rem 0 0}
+  .shot img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--card-line);
+    background:var(--card);box-shadow:0 14px 34px rgba(0,0,0,.3);min-height:3rem}
+  .shot figcaption{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;color:var(--muted);margin-top:.65rem}
+
+  .invite{background:var(--card);color:var(--card-ink);border:1px solid var(--card-line);border-radius:8px;
+    padding:clamp(1.8rem,4vw,2.8rem);margin-top:1rem}
+  .invite h2{max-width:20ch;color:var(--card-ink)}
+  .invite p{font-size:1.12rem;color:var(--card-muted);line-height:1.55;margin:1rem 0 0;max-width:44ch}
+  .invite .addr{font-family:var(--mono);font-size:1rem;margin-top:1.5rem}
+  .invite .addr a{color:var(--seal-ink);text-decoration:none;border-bottom:1px solid var(--seal-ink)}
+  .invite .whisper{font-family:var(--sans);font-size:.9rem;color:var(--card-muted);margin-top:1.2rem}
+
+  footer{margin-top:clamp(2.5rem,6vw,4rem);border-top:1px solid var(--line);padding:1.6rem 0 3rem;
+    font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--muted);line-height:1.9}
+
+  a{color:var(--warm)}
+  :focus-visible{outline:2px solid var(--seal);outline-offset:3px;border-radius:2px}
+</style>
+</head>
+<body>
+
+<nav>
+  <span class="mark">Jarrett Wroten</span>
+  <a href="#contact">Get in touch</a>
+</nav>
+
+<div class="wrap">
+  <header class="hero">
+    <p class="eyebrow">For the person who runs it</p>
+    <h1>I find where your business quietly loses customers. Then I build you the fix.</h1>
+    <p class="lede">I look first, and the first fix is a gift. No meeting, no pitch. If it helps, you know where I am.</p>
+    <a class="cta" href="#contact">Show me where mine leaks →</a>
+  </header>
+
+  <div class="seal-rule"><i></i></div>
+
+  <section>
+    <p class="kicker">How it works</p>
+    <div class="steps">
+      <div class="step">
+        <span class="n">01</span>
+        <h3>I look</h3>
+        <p>I look at how people find you and choose to buy. I follow the real path a customer takes, step by step.</p>
+      </div>
+      <div class="step">
+        <span class="n">02</span>
+        <h3>I find the one leak</h3>
+        <p>Not a list of forty things. The one spot where most people slip away, before you ever hear from them.</p>
+      </div>
+      <div class="step">
+        <span class="n">03</span>
+        <h3>I build the fix</h3>
+        <p>Then I make it. A real, finished piece for your site. Not advice you have to go build yourself. The thing itself.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">What lands on your desk</p>
+    <div class="gift">
+      <div class="card">
+        <span class="plabel">First, the look</span>
+        <h3>A plain report</h3>
+        <p>An honest read of where your customers slip away, in words you'd actually say out loud. No consultant-speak, no forty-slide deck.</p>
+      </div>
+      <div class="card">
+        <span class="plabel">Then, the fix</span>
+        <h3>A finished asset</h3>
+        <p>The fix itself, made for your site and ready to use. Yours to keep and run with, whatever you decide about me.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <p class="kicker">Has it worked</p>
+    <p class="prose">Yes. I more than doubled a local Las Vegas service business's revenue in 30 days, from $19,615 to $40,114.</p>
+    <figure class="shot">
+      <img src="proof-revenue.png" alt="Stripe gross volume of $40,114.81, up 104.51 percent from $19,615.40 the previous 30 days" loading="lazy">
+      <figcaption>Their Stripe, business name hidden. May 15 to June 15.</figcaption>
+    </figure>
+    <p class="prose muted" style="margin-top:1.6rem">And their note the morning payroll cleared, shared with their permission:</p>
+    <figure class="shot">
+      <img src="proof-note.png" alt="Client message: with the money hitting our account tomorrow, we have officially made payroll; no more money coming out of savings, only going in" loading="lazy">
+      <figcaption>Their words, sent the day it cleared.</figcaption>
+    </figure>
+    <p class="prose muted" style="margin-top:1.6rem">One real business. Their numbers, their words. Yours would be your own.</p>
+  </section>
+
+  <section>
+    <p class="kicker">Who's behind it</p>
+    <p class="prose">I'm Jarrett. I'm a builder, not a salesman. Tell me where your business is losing people, and I'll go make the fix. The real, finished thing, not a plan you have to build yourself. I give the first one away free. And if someone else would serve you better, I'll say so. I care more about whether it works than whether you hire me.</p>
+    <p class="prose muted" style="margin-top:1rem">Under it all, I build engines that turn an idea into a finished thing. This is one of them, pointed straight at your business.</p>
+  </section>
+
+  <section id="contact">
+    <div class="invite">
+      <h2>Want me to look at yours?</h2>
+      <p>Tell me your business and where you feel the leak. I'll take a real look, and if something's worth fixing, I'll build it and send it over. Free, and yours to keep.</p>
+      <p class="addr"><a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a></p>
+      <p class="whisper">That's the whole offer. No catch, and no meeting you have to sit through.</p>
+    </div>
+  </section>
+</div>
+
+<footer>
+  <div class="wrap">
+    Jarrett Wroten · <a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a><br>
+    Made by hand. Nothing here asks for anything.
+  </div>
+</footer>
+
+</body>
+</html>
