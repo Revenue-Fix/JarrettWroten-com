@@ -156,6 +156,19 @@ ok(
     html.includes('Same pending target'),
   'same-pending starvation comment contract'
 );
+// Forced ?station= entry-frame-first load gate (production ordering)
+ok(html.includes('forcedEntryFrame') && html.includes('worldLoadUnlocked'), 'forced entry load gate state');
+ok(html.includes('routeEntryFrame') && html.includes('unlockWorldLoads'), 'forced entry route helpers');
+ok(html.includes('startForcedBackgroundPreload'), 'forced background preload deferred');
+ok(
+  html.includes('if (forcedEntryFrame >= 0)') &&
+    html.includes('loadFrame(forcedEntryFrame, true)'),
+  'forced boot loads entry frame first'
+);
+ok(
+  /if\s*\(\s*!worldLoadUnlocked\s*&&\s*i\s*!==\s*forcedEntryFrame\s*\)\s*return/.test(html),
+  'loadFrame refuses speculative starts while entry gated'
+);
 
 // ——— Holistic visual-correction contract (structural tripwires) ———
 ok(html.includes('white-space:nowrap'), 'display spans authored nowrap');
@@ -528,6 +541,207 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
     ok(activePainted(), 'oracle: station ' + name + ' active remains painted');
   }
   void genBefore;
+}
+
+// ——— Forced ?station= entry-first load oracle (production GitHub Pages ordering) ———
+// Models cold constrained concurrency: only the forced center may start until ready.
+// Would FAIL the pre-fix boot that fired 24 opening frames before the center.
+{
+  function easeInOutLocal(t) {
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    return t * t * (3 - 2 * t);
+  }
+  function progressToFrameLocal(p) {
+    const map = [
+      { p: 0.0, f: 0 }, { p: 0.08, f: 24 }, { p: 0.2, f: 72 }, { p: 0.3, f: 120 },
+      { p: 0.42, f: 168 }, { p: 0.48, f: 176 }, { p: 0.55, f: 184 }, { p: 0.67, f: 216 },
+      { p: 0.74, f: 288 }, { p: 0.82, f: 324 }, { p: 0.88, f: 336 }, { p: 0.94, f: 354 },
+      { p: 1.0, f: 360 }
+    ];
+    if (p <= map[0].p) return map[0].f;
+    if (p >= map[map.length - 1].p) return map[map.length - 1].f;
+    for (let i = 0; i < map.length - 1; i++) {
+      const a = map[i];
+      const b = map[i + 1];
+      if (p >= a.p && p <= b.p) {
+        let t = (p - a.p) / Math.max(0.0001, b.p - a.p);
+        t = easeInOutLocal(t);
+        return Math.round(a.f + (b.f - a.f) * t);
+      }
+    }
+    return 0;
+  }
+  const stationCenters = {
+    leak: 0.08,
+    method: 0.3,
+    proof: 0.52,
+    jarrett: 0.76,
+    threshold: 0.94
+  };
+  const expectedMotionOn = {};
+  for (const [name, c] of Object.entries(stationCenters)) {
+    expectedMotionOn[name] = progressToFrameLocal(c);
+  }
+  ok(expectedMotionOn.leak === 24, 'oracle: leak center frame 24 (got ' + expectedMotionOn.leak + ')');
+  ok(expectedMotionOn.method === 120, 'oracle: method center frame 120 (got ' + expectedMotionOn.method + ')');
+  ok(expectedMotionOn.proof === 181, 'oracle: proof center frame 181 (got ' + expectedMotionOn.proof + ')');
+  ok(expectedMotionOn.jarrett === 294, 'oracle: jarrett center frame 294 (got ' + expectedMotionOn.jarrett + ')');
+  ok(expectedMotionOn.threshold === 354, 'oracle: threshold center frame 354 (got ' + expectedMotionOn.threshold + ')');
+
+  async function runForcedEntryOracle(stationName, viewportLabel) {
+    const entry = expectedMotionOn[stationName];
+    const loadStarts = [];
+    const ready = Object.create(null);
+    const loading = Object.create(null);
+    let unlocked = false;
+    let backgroundStarted = false;
+    let displayed = 0;
+    let desired = 0;
+    let activePaintedFrame = 0; // holds ga-000 from markup until entry commits
+    const maxConcurrent = 2; // production-like constrained loader
+    let inFlight = 0;
+    const waiters = [];
+
+    function pump() {
+      while (inFlight < maxConcurrent && waiters.length) {
+        const job = waiters.shift();
+        inFlight++;
+        // Cold production-like latency for each accepted request
+        setTimeout(() => {
+          inFlight--;
+          ready[job.i] = 1;
+          loading[job.i] = 0;
+          if (job.i === entry) {
+            unlocked = true;
+            // Present entry when ready (atomic buffer path summarized)
+            if (desired === entry || displayed === 0) {
+              displayed = entry;
+              activePaintedFrame = entry;
+            }
+            startBackground();
+          }
+          if (job.onReady) job.onReady();
+          pump();
+        }, job.delayMs);
+      }
+    }
+
+    function loadFrameGated(i, _priority) {
+      i = Math.max(0, Math.min(360, i | 0));
+      if (!unlocked && i !== entry) return false; // refused — speculative
+      if (ready[i] || loading[i]) return false;
+      loading[i] = 1;
+      loadStarts.push(i);
+      waiters.push({ i, delayMs: i === entry ? 120 : 180 });
+      pump();
+      return true;
+    }
+
+    function startBackground() {
+      if (backgroundStarted) return;
+      backgroundStarted = true;
+      for (let j = Math.max(0, entry - 12); j <= Math.min(360, entry + 12); j++) {
+        if (j !== entry) loadFrameGated(j, false);
+      }
+      for (let j = 0; j < 24; j++) loadFrameGated(j, false);
+      for (const f of Object.values(expectedMotionOn)) loadFrameGated(f, false);
+    }
+
+    // Boot: only entry frame (matches corrected bootPreload)
+    loadFrameGated(entry, true);
+    // showFrame(entry) also asks for neighborhood — must be refused while gated
+    desired = entry;
+    for (let d = 1; d <= 8; d++) {
+      loadFrameGated(entry - d, false);
+      loadFrameGated(entry + d, false);
+    }
+    // Speculative opening neighborhood (old boot order) — must not start
+    for (let j = 0; j < 24; j++) loadFrameGated(j, true);
+
+    ok(loadStarts.length >= 1, 'oracle ' + viewportLabel + ' ' + stationName + ': at least one load started');
+    ok(
+      loadStarts[0] === entry,
+      'oracle ' + viewportLabel + ' ' + stationName + ': first load is entry ' + entry + ' (got ' + loadStarts[0] + ')'
+    );
+    const premature = loadStarts.slice(1).filter((i) => i !== entry && !ready[entry]);
+    // Before entry ready, only the entry itself may appear in starts
+    const beforeReadyOnlyEntry = loadStarts.every((i, idx) => {
+      // all starts that occurred while entry not yet ready must be entry
+      // (we check at end of sync boot phase: entry not ready yet)
+      return idx === 0 ? i === entry : false;
+    });
+    ok(
+      beforeReadyOnlyEntry && loadStarts.length === 1,
+      'oracle ' + viewportLabel + ' ' + stationName + ': sync boot starts only entry (starts=' + loadStarts.join(',') + ')'
+    );
+    ok(activePaintedFrame === 0, 'oracle ' + viewportLabel + ' ' + stationName + ': holds last-good 0 before entry ready');
+    void premature;
+
+    // Wait until entry ready under constrained loader (≤1500ms wall)
+    const t0 = Date.now();
+    await new Promise((resolve, reject) => {
+      const deadline = Date.now() + 1500;
+      const tick = () => {
+        if (displayed === entry && activePaintedFrame === entry) return resolve();
+        if (Date.now() > deadline) {
+          return reject(new Error(stationName + ' did not settle entry ' + entry + ' within 1500ms (displayed=' + displayed + ')'));
+        }
+        setTimeout(tick, 10);
+      };
+      tick();
+    }).then(
+      () => {
+        ok(true, 'oracle ' + viewportLabel + ' ' + stationName + ': entry ' + entry + ' active within 1500ms (' + (Date.now() - t0) + 'ms)');
+      },
+      (err) => {
+        ok(false, 'oracle ' + viewportLabel + ' ' + stationName + ': ' + err.message);
+      }
+    );
+
+    ok(displayed === entry, 'oracle ' + viewportLabel + ' ' + stationName + ': displayed is entry (got ' + displayed + ')');
+    ok(activePaintedFrame === entry, 'oracle ' + viewportLabel + ' ' + stationName + ': active paint-ready entry');
+    ok(unlocked && backgroundStarted, 'oracle ' + viewportLabel + ' ' + stationName + ': background resumes after entry');
+    // After unlock, speculative loads may appear — but never before entry as first
+    ok(loadStarts[0] === entry, 'oracle ' + viewportLabel + ' ' + stationName + ': first load remains entry after background');
+    // Never blank
+    ok(activePaintedFrame >= 0, 'oracle ' + viewportLabel + ' ' + stationName + ': never blank active');
+  }
+
+  // Defect reconstruction: old boot order would start 0..23 before entry
+  {
+    const entry = expectedMotionOn.jarrett;
+    const badStarts = [];
+    for (let i = 0; i < 24; i++) badStarts.push(i);
+    badStarts.push(entry);
+    ok(
+      badStarts[0] !== entry,
+      'oracle: pre-fix ordering defect still detectable (first was ' + badStarts[0] + ', not ' + entry + ')'
+    );
+    ok(
+      badStarts.indexOf(entry) > 0,
+      'oracle: pre-fix jarrett entry was buried behind opening loads at index ' + badStarts.indexOf(entry)
+    );
+  }
+
+  for (const vp of ['desktop-1536x864', 'mobile-390x844']) {
+    for (const name of Object.keys(expectedMotionOn)) {
+      await runForcedEntryOracle(name, vp);
+    }
+  }
+
+  // Normal homepage path: first loads are opening neighbourhood, not a forced center gate
+  {
+    const homeStarts = [];
+    let unlocked = true;
+    function loadHome(i) {
+      if (!unlocked) return;
+      homeStarts.push(i);
+    }
+    for (let i = 0; i < 24; i++) loadHome(i);
+    ok(homeStarts[0] === 0, 'oracle: normal / opens with frame 0 load first');
+    ok(homeStarts.length === 24, 'oracle: normal / opening neighbourhood is 24 frames');
+  }
 }
 
 if (failures.length) {

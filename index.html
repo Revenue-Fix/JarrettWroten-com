@@ -1759,6 +1759,11 @@
   var preloadCursor = 0;
   var idleHandle = 0;
   var framesReadyCount = 0;
+  /* Forced ?station= entry: only this frame may start until it is ready, so production
+     HTTP concurrency cannot bury the requested center behind opening/speculative work. */
+  var forcedEntryFrame = -1;
+  var worldLoadUnlocked = true;
+  var forcedBackgroundStarted = false;
 
   var LIGHTBOX_SRC = {
     stripe: {
@@ -1807,6 +1812,42 @@
     return 0;
   }
 
+  /* Exact first-paint frame for a direct ?station= route (motion-on uses station center). */
+  function routeEntryFrame(stationId) {
+    if (!stationId || !validStations[stationId]) return -1;
+    if (!motionOn) {
+      var still = SITE_TUNING.stillFrames[stationId];
+      return still != null ? still : -1;
+    }
+    var st = SITE_TUNING.stations[stationId];
+    if (!st) return -1;
+    return progressToFrame(st.center);
+  }
+
+  forcedEntryFrame = forcedStation ? routeEntryFrame(forcedStation) : -1;
+  worldLoadUnlocked = forcedEntryFrame < 0;
+
+  function startForcedBackgroundPreload() {
+    if (forcedBackgroundStarted || forcedEntryFrame < 0) return;
+    forcedBackgroundStarted = true;
+    var center = forcedEntryFrame;
+    var j;
+    for (j = Math.max(0, center - 12); j <= Math.min(SITE_TUNING.frameCount - 1, center + 12); j++) {
+      if (j !== center) loadFrame(j, false);
+    }
+    for (j = 0; j < 24; j++) loadFrame(j, false);
+    var keys = SITE_TUNING.stillFrames;
+    for (var k in keys) loadFrame(keys[k], false);
+    preloadCursor = 0;
+    scheduleIdlePreload();
+  }
+
+  function unlockWorldLoads() {
+    if (worldLoadUnlocked) return;
+    worldLoadUnlocked = true;
+    startForcedBackgroundPreload();
+  }
+
   function nearestReadyFrame(target) {
     if (readySet[target]) return target;
     var best = -1, bestD = 1e9;
@@ -1849,6 +1890,9 @@
     framesReadyCount++;
     /* Loader tracks opening neighbourhood only (frames 0–23), never full idle preload */
     setLoader(openingNeighborhoodReady());
+    if (forcedEntryFrame >= 0 && i === forcedEntryFrame) {
+      unlockWorldLoads();
+    }
     if (i === desiredFrame || displayedFrame < 0) {
       showFrame(desiredFrame);
     }
@@ -1871,6 +1915,9 @@
 
   function loadFrame(i, priority) {
     i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
+    /* Forced direct routes: refuse speculative starts until the entry center is ready.
+       priority is retained for call-site intent; the gate is the load-bearing control. */
+    if (!worldLoadUnlocked && i !== forcedEntryFrame) return;
     if (readySet[i] || loadingSet[i]) return;
     loadingSet[i] = 1;
     var img = new Image();
@@ -1888,9 +1935,13 @@
     if (img.complete) done();
     else {
       img.onload = done;
-      img.onerror = function () { loadingSet[i] = 0; };
+      img.onerror = function () {
+        loadingSet[i] = 0;
+        /* Failed entry center must not permanently freeze background loads. */
+        if (forcedEntryFrame >= 0 && i === forcedEntryFrame) unlockWorldLoads();
+      };
     }
-    frameMeta[i] = { img: img, url: url };
+    frameMeta[i] = { img: img, url: url, priority: !!priority };
   }
 
   function bufferSrc(el) {
@@ -2397,17 +2448,15 @@
     }, SITE_TUNING.intro.veilMs);
   }
 
-  /* Boot preload: opening neighborhood, then station targets, then idle rest */
+  /* Boot preload: forced ?station= center first (only), else opening neighborhood + stills. */
   function bootPreload() {
-    /* always open on frame 0 */
-    for (var i = 0; i < 24; i++) loadFrame(i, true);
-    if (forcedStation && SITE_TUNING.stillFrames[forcedStation] != null) {
-      var center = SITE_TUNING.stillFrames[forcedStation];
-      for (var j = Math.max(0, center - 12); j <= Math.min(SITE_TUNING.frameCount - 1, center + 12); j++) {
-        loadFrame(j, true);
-      }
+    if (forcedEntryFrame >= 0) {
+      /* Production path: the requested world frame is the first meaningful request. */
+      loadFrame(forcedEntryFrame, true);
+      return;
     }
-    /* still-route keys */
+    /* Normal homepage: open on frame 0 neighbourhood, then still keys, then idle rest */
+    for (var i = 0; i < 24; i++) loadFrame(i, true);
     var keys = SITE_TUNING.stillFrames;
     for (var k in keys) loadFrame(keys[k], true);
     preloadCursor = 24;
@@ -2498,7 +2547,12 @@
 
   bootPreload();
   applyMotionPreference(motionOn, false);
-  showFrame(0);
+  if (forcedEntryFrame >= 0) {
+    /* Desire and present the forced center immediately — never boot through frame 0 first. */
+    showFrame(forcedEntryFrame);
+  } else {
+    showFrame(0);
+  }
 
   if (forcedStation) {
     root.style.setProperty("--intro-veil", "0");
