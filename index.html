@@ -3,284 +3,2534 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jarrett Wroten — I build the fix, not the pitch</title>
-<meta name="description" content="I find where your business quietly loses customers, then build you the fix. The first one is a gift.">
-<meta property="og:title" content="Jarrett Wroten — I build the fix, not the pitch">
-<meta property="og:description" content="I find where your business quietly loses customers, then build you the fix.">
+<title>Jarrett Wroten — I find where your business quietly loses customers</title>
+<meta name="description" content="I find where your business quietly loses customers, then build you the fix. Your first fix is my gift.">
+<meta property="og:title" content="Jarrett Wroten — I find where your business quietly loses customers">
+<meta property="og:description" content="I trace the real path your customers take, find the one place they disappear, and build the finished repair.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jarrettwroten.com">
-<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%230A6674'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D96629'/%3E%3C/svg%3E">
-<style>
-  :root{
-    --paper:#0A6674; --paper-2:#0F7C8B; --paper-deep:#074C57;
-    --ink:#ECF6F6; --muted:#AED0D2; --faint:#7BA6AA; --line:rgba(255,255,255,.16);
-    --card:#F7FAFA; --card-ink:#123C43; --card-muted:#4E7377; --card-line:#E1EBEA;
-    --seal:#D96629; --seal-ink:#B5531E; --warm:#F2C4A2; --warm-line:rgba(242,196,162,.5);
-    --serif:"Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
-    --sans:system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    --mono:ui-monospace,"SF Mono",Menlo,Consolas,monospace;
-  }
-  @media (prefers-color-scheme:dark){
-    :root{--paper:#06333B; --paper-2:#0A4A54; --paper-deep:#04262C;
-      --ink:#E6F2F2; --muted:#9BBEC1; --faint:#6C9094; --line:rgba(255,255,255,.12);}
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  @media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
-  body{margin:0;color:var(--ink);font-family:var(--serif);line-height:1.6;-webkit-font-smoothing:antialiased;
-    background:var(--paper);
-    background-image:radial-gradient(120% 60% at 50% -10%, var(--paper-2) 0, var(--paper) 50%, var(--paper-deep) 100%);
-    min-height:100vh}
-  .wrap{max-width:52rem;margin:0 auto;padding:0 1.4rem}
-
-  nav{display:flex;align-items:center;justify-content:space-between;padding:1.5rem 1.4rem;max-width:52rem;margin:0 auto}
-  .mark{font-family:var(--mono);font-size:.74rem;letter-spacing:.2em;text-transform:uppercase;color:var(--ink)}
-  nav a{font-family:var(--mono);font-size:.7rem;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);text-decoration:none}
-  nav a:hover{color:var(--warm)}
-
-  .hero{padding:clamp(2.5rem,7vw,5rem) 0 clamp(2rem,5vw,3.5rem);
-    display:grid;grid-template-columns:1fr auto;gap:clamp(1.6rem,5vw,3.4rem);align-items:center}
-  .hero-copy{min-width:0}
-  .hero-portrait{align-self:start;margin-top:2.1rem}
-  .hero-portrait img{display:block;width:clamp(220px,28vw,300px);height:clamp(220px,28vw,300px);object-fit:cover;border-radius:50%;
-    box-shadow:0 18px 46px rgba(0,0,0,.42);border:1px solid var(--line)}
-  @media (max-width:720px){
-    .hero{grid-template-columns:1fr;gap:1.5rem}
-    .hero-portrait{order:-1;margin-top:0}
-    .hero-portrait img{width:170px;height:170px;transform:none}
-  }
-  .eyebrow{font-family:var(--mono);font-size:.68rem;letter-spacing:.24em;text-transform:uppercase;color:var(--warm);margin:0}
-  h1{font-weight:600;font-size:clamp(2.1rem,5.6vw,3.3rem);line-height:1.08;letter-spacing:-.015em;
-    text-wrap:balance;margin:1rem 0 0;max-width:16ch;color:var(--ink)}
-  .lede{font-size:clamp(1.1rem,2.4vw,1.28rem);color:var(--muted);margin:1.4rem 0 0;max-width:38ch;line-height:1.55}
-  .cta{display:inline-block;margin-top:2rem;background:var(--seal);color:#FFF6F0;font-family:var(--sans);
-    font-weight:600;font-size:1rem;text-decoration:none;padding:.85rem 1.5rem;border-radius:5px;
-    transition:transform .12s ease,box-shadow .12s ease}
-  .cta:hover{transform:translateY(-1px);box-shadow:0 12px 28px rgba(0,0,0,.32)}
-
-  .seal-rule{display:flex;align-items:center;gap:.8rem;margin:clamp(2rem,5vw,3.2rem) 0}
-  .seal-rule::before,.seal-rule::after{content:"";flex:1;height:1px;background:var(--line)}
-  .seal-rule i{width:.55rem;height:.55rem;background:var(--seal);transform:rotate(45deg);flex:none}
-
-  section{padding:clamp(1.5rem,4vw,2.5rem) 0}
-  .kicker{font-family:var(--mono);font-size:.66rem;letter-spacing:.22em;text-transform:uppercase;color:var(--warm);margin:0 0 1.6rem}
-  h2{font-weight:600;font-size:clamp(1.5rem,3.4vw,2rem);line-height:1.15;letter-spacing:-.01em;margin:0;text-wrap:balance;color:var(--ink)}
-
-  .steps{display:grid;grid-template-columns:repeat(4,1fr);gap:1.6rem;margin-top:.5rem}
-  @media (max-width:820px){.steps{grid-template-columns:repeat(2,1fr);gap:1.8rem}}
-  @media (max-width:460px){.steps{grid-template-columns:1fr;gap:2rem}}
-  .step .n{font-family:var(--mono);font-size:.8rem;color:var(--warm);letter-spacing:.1em}
-  .step h3{font-weight:600;font-size:1.22rem;margin:.5rem 0 0;color:var(--ink)}
-  .step p{font-family:var(--sans);font-size:.98rem;color:var(--muted);line-height:1.55;margin:.5rem 0 0}
-
-  .gift{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:.5rem}
-  @media (max-width:640px){.gift{grid-template-columns:1fr}}
-  .card{background:var(--card);color:var(--card-ink);border:1px solid var(--card-line);border-left:3px solid var(--seal);
-    border-radius:5px;padding:1.4rem 1.5rem}
-  .card .plabel{font-family:var(--mono);font-size:.62rem;letter-spacing:.16em;text-transform:uppercase;color:var(--card-muted)}
-  .card h3{font-weight:600;font-size:1.22rem;margin:.4rem 0 0;color:var(--card-ink)}
-  .card p{font-family:var(--sans);font-size:.96rem;color:var(--card-muted);line-height:1.5;margin:.5rem 0 0}
-
-  .prose{font-size:1.14rem;line-height:1.6;max-width:46ch;color:var(--ink)}
-  .prose .muted{color:var(--muted)}
-  .bio{display:grid;grid-template-columns:1fr auto;gap:clamp(1.4rem,4vw,2.4rem);align-items:start;margin-top:.2rem}
-  .bio-text{order:1;min-width:0}
-  .bio-portrait{order:2}
-  .bio-portrait img{display:block;width:clamp(220px,28vw,300px);height:clamp(220px,28vw,300px);object-fit:cover;border-radius:50%;
-    box-shadow:0 18px 46px rgba(0,0,0,.42);border:1px solid var(--line)}
-  @media (max-width:640px){.bio{grid-template-columns:1fr;gap:1.2rem}.bio-portrait{order:1}.bio-text{order:2}.bio-portrait img{width:170px;height:170px}}
-  .shot{margin:1.4rem 0 0}
-  .shot img{display:block;width:100%;height:auto;border-radius:8px;border:1px solid var(--card-line);
-    background:var(--card);box-shadow:0 14px 34px rgba(0,0,0,.3);min-height:3rem}
-  .shot figcaption{font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;color:var(--muted);margin-top:.65rem}
-
-  .invite{background:var(--card);color:var(--card-ink);border:1px solid var(--card-line);border-radius:8px;
-    padding:clamp(1.8rem,4vw,2.8rem);margin-top:1rem}
-  .invite h2{max-width:20ch;color:var(--card-ink)}
-  .invite p{font-size:1.12rem;color:var(--card-muted);line-height:1.55;margin:1rem 0 0;max-width:44ch}
-  .invite .addr{font-family:var(--mono);font-size:1rem;margin-top:1.5rem}
-  .invite .addr a{color:var(--seal-ink);text-decoration:none;border-bottom:1px solid var(--seal-ink)}
-  .invite .whisper{font-family:var(--sans);font-size:.9rem;color:var(--card-muted);margin-top:1.2rem}
-
-  footer{margin-top:clamp(2.5rem,6vw,4rem);border-top:1px solid var(--line);padding:1.6rem 0 3rem;
-    font-family:var(--mono);font-size:.66rem;letter-spacing:.06em;color:var(--muted);line-height:1.9}
-  .footer-in{display:flex;align-items:center;gap:1.2rem}
-  .footer-txt .ic{font-family:var(--serif);font-size:1rem;letter-spacing:.01em;text-transform:none;margin-bottom:.35rem;
-    background:linear-gradient(90deg,#e5484d,#e5a13a,#e7d84b,#59c26a,#3fb6c9,#4f6fe5,#9a5fe0,#d052b8);
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent}
-  .ie-mark{position:relative;display:inline-block;width:58px;height:58px;flex:none}
-  @property --mkang{syntax:'<angle>';initial-value:0deg;inherits:false}
-  .ie-mark .spec{position:absolute;inset:0;
-    background:conic-gradient(from var(--mkang),#e5484d,#e5a13a,#e7d84b,#59c26a,#3fb6c9,#4f6fe5,#9a5fe0,#d052b8,#e5484d);
-    filter:saturate(.95) brightness(1.06);
-    -webkit-mask-repeat:no-repeat;mask-repeat:no-repeat;-webkit-mask-size:contain;mask-size:contain;
-    -webkit-mask-position:center;mask-position:center;
-    animation:mk-spin 16s linear infinite, mk-grad 16s linear infinite}
-  @keyframes mk-spin{to{transform:rotate(360deg)}}
-  @keyframes mk-grad{to{--mkang:-360deg}}
-  @media (prefers-reduced-motion:reduce){.ie-mark .spec{animation:none}}
-
-  a{color:var(--warm)}
-  :focus-visible{outline:2px solid var(--seal);outline-offset:3px;border-radius:2px}
-</style>
-</head>
-<body>
-
-<nav>
-  <span class="mark">Jarrett Wroten</span>
-  <a href="#contact">Get in touch</a>
-</nav>
-
-<div class="wrap">
-  <header class="hero">
-    <div class="hero-copy">
-      <p class="eyebrow">For the person who runs it</p>
-      <h1>I find where your business quietly loses customers. Then I build you the fix.</h1>
-      <p class="lede">I look at your business first, and figure out if anything even needs fixing. If it does, I build you a complete fix for your biggest leak. It's a free gift, ready to run on your website.</p>
-      <a class="cta" href="#contact">Show me where mine leaks →</a>
-    </div>
-    <div class="hero-portrait">
-      <img src="jarrett.jpg" alt="Jarrett Wroten" width="300" height="300">
-    </div>
-  </header>
-
-  <div class="seal-rule"><i></i></div>
-
-  <section>
-    <p class="kicker">How it works</p>
-    <div class="steps">
-      <div class="step">
-        <span class="n">Step 1</span>
-        <h3>Find the leak</h3>
-        <p>I find the one spot where you are losing people.</p>
-      </div>
-      <div class="step">
-        <span class="n">Step 2</span>
-        <h3>Fix the leak</h3>
-        <p>I build the fix for it, start to finish.</p>
-      </div>
-      <div class="step">
-        <span class="n">Step 3</span>
-        <h3>Send it over</h3>
-        <p>You get the finished fix, as a gift.</p>
-      </div>
-      <div class="step">
-        <span class="n">Step 4</span>
-        <h3>Your move</h3>
-        <p>We go deeper, or you move on. Your call.</p>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <p class="kicker">What lands on your desk</p>
-    <div class="gift">
-      <div class="card">
-        <span class="plabel">First, the look</span>
-        <h3>A plain report</h3>
-        <p>An honest look at the exact place where your customers are slipping away from you.</p>
-      </div>
-      <div class="card">
-        <span class="plabel">Then, the fix</span>
-        <h3>A finished asset</h3>
-        <p>The fix itself, built for your website and ready to use. It's yours to keep and run with, whatever you decide.</p>
-      </div>
-    </div>
-  </section>
-
-  <section>
-    <p class="kicker">Has it worked</p>
-    <p class="prose">Yes. I more than doubled a local Las Vegas service business's revenue in 30 days, from $19,615 to $40,114.</p>
-    <figure class="shot">
-      <img src="proof-revenue.png" alt="Stripe gross volume of $40,114.81, up 104.51 percent from $19,615.40 the previous 30 days" loading="lazy">
-      <figcaption>May 15 to June 15.</figcaption>
-    </figure>
-    <p class="prose muted" style="margin-top:1.6rem">And their note the morning payroll cleared:</p>
-    <figure class="shot">
-      <img src="proof-note.png" alt="Client message: with the money hitting our account tomorrow, we have officially made payroll; no more money coming out of savings, only going in" loading="lazy">
-    </figure>
-    <p style="margin-top:1.6rem;font-family:var(--mono);font-size:.66rem;letter-spacing:.04em;color:var(--muted)">Real Business. Your own results may vary.</p>
-  </section>
-
-  <section>
-    <p class="kicker">Who's behind it</p>
-    <div class="bio">
-      <div class="bio-portrait"><img src="jarrett.jpg" alt="Jarrett Wroten" width="300" height="300"></div>
-      <div class="bio-text">
-        <p class="prose">I'm Jarrett, and I build engines that turn ideas into reality. Tell me where your business is losing people before they buy, and I'll build the fix for you myself. Even if you have no idea, I can help. The fix I build is a real, finished asset, ready to run on your site. Your first one is my gift to you. And if someone else would serve you better, I'll tell you so.</p>
-      </div>
-    </div>
-  </section>
-
-  <section id="contact">
-    <div class="invite">
-      <h2>Want me to look at yours?</h2>
-      <p>Tell me about your business, and where you feel the leak. I'll take a real look, and if I find something worth fixing, I'll build it and send it over to you. It's free, and it's yours to keep.</p>
-      <p class="addr"><a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a></p>
-    </div>
-  </section>
-</div>
-
-<footer>
-  <div class="wrap footer-in">
-    <div class="ie-mark" id="ie-mark" role="img" aria-label="The Imagination Engine emblem"></div>
-    <div class="footer-txt">
-      <div class="ic">Founder of The Imagination Collective</div>
-      Jarrett Wroten · <a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a>
-    </div>
-  </div>
-</footer>
-
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
+<link rel="preload" as="image" href="assets/golden-arrival/frames/ga-000.webp">
+<link rel="preload" as="image" href="assets/stripe-growth-focal.png">
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/bodoni-moda-latin-variable.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="assets/fonts/ibm-plex-mono-latin-500.woff2" crossorigin>
 <script>
-/* The Imagination Engine emblem — the aperture-gear mark. Gear (14 teeth) + ring +
-   aperture (7 blades), shown in the spectrum and slowly turning. */
-(function(){
-  var NS="http://www.w3.org/2000/svg", host=document.getElementById("ie-mark");
-  if(!host) return;
-  var size=58, C=size/2, TAU=6.28318530718, i;
-  var svg=document.createElementNS(NS,"svg");
-  svg.setAttribute("viewBox","0 0 "+size+" "+size);
-  svg.setAttribute("width",size); svg.setAttribute("height",size);
-  function pt(r,a){ return (C+r*Math.cos(a))+","+(C+r*Math.sin(a)); }
-  var teeth=14, rOut=C*0.97, rIn=C*0.82, ring=C*0.70, d="";
-  for(i=0;i<teeth;i++){
-    var a0=i/teeth*TAU, a1=(i+0.38)/teeth*TAU, a2=(i+0.5)/teeth*TAU, a3=(i+0.88)/teeth*TAU;
-    d+="M"+pt(rIn,a0)+" L"+pt(rOut,a0)+" A"+rOut+","+rOut+" 0 0 1 "+pt(rOut,a1)+
-       " L"+pt(rIn,a2)+" A"+rIn+","+rIn+" 0 0 1 "+pt(rIn,a3)+" Z ";
-  }
-  var tp=document.createElementNS(NS,"path"); tp.setAttribute("d",d); tp.setAttribute("fill","#fff"); svg.appendChild(tp);
-  var rc=document.createElementNS(NS,"circle");
-  rc.setAttribute("cx",C); rc.setAttribute("cy",C); rc.setAttribute("r",ring);
-  rc.setAttribute("fill","none"); rc.setAttribute("stroke","#fff"); rc.setAttribute("stroke-width",size*0.05);
-  svg.appendChild(rc);
-  var n=7, rB=C*0.60, rHub=C*0.16;
-  for(i=0;i<n;i++){
-    var a=i/n*TAU,
-        p1x=C+rB*Math.cos(a), p1y=C+rB*Math.sin(a),
-        p2x=C+rHub*Math.cos(a+2.4), p2y=C+rHub*Math.sin(a+2.4),
-        c1x=C+rB*0.95*Math.cos(a+0.85), c1y=C+rB*0.95*Math.sin(a+0.85),
-        c2x=C+rB*0.45*Math.cos(a+1.9), c2y=C+rB*0.45*Math.sin(a+1.9);
-    var bl=document.createElementNS(NS,"path");
-    bl.setAttribute("d","M"+p1x+","+p1y+" Q"+c1x+","+c1y+" "+p2x+","+p2y+" Q"+c2x+","+c2y+" "+p1x+","+p1y+" Z");
-    bl.setAttribute("fill","#fff"); svg.appendChild(bl);
-  }
-  var probe=document.createElement("div");
-  if("maskImage" in probe.style || "webkitMaskImage" in probe.style){
-    var url='url("data:image/svg+xml,'+encodeURIComponent(new XMLSerializer().serializeToString(svg))+'")';
-    var spec=document.createElement("div"); spec.className="spec";
-    spec.style.webkitMaskImage=url; spec.style.maskImage=url;
-    host.appendChild(spec);
-  } else {
-    var kids=svg.childNodes;
-    for(i=0;i<kids.length;i++){
-      var el=kids[i];
-      if(el.getAttribute("fill") && el.getAttribute("fill")!=="none") el.setAttribute("fill","#D96629");
-      if(el.getAttribute("stroke")) el.setAttribute("stroke","#D96629");
+(function () {
+  try {
+    var stored = localStorage.getItem("jw-motion");
+    var on = stored === "off" ? false : true;
+    document.documentElement.setAttribute("data-motion", on ? "on" : "off");
+    if (stored === "on" || stored === "off") {
+      document.documentElement.setAttribute("data-motion-user", stored);
     }
-    svg.style.display="block"; host.appendChild(svg);
+  } catch (e) {
+    document.documentElement.setAttribute("data-motion", "on");
   }
 })();
 </script>
+<style>
+  @font-face{
+    font-family:"Bodoni Moda";
+    src:url("assets/fonts/bodoni-moda-latin-variable.woff2") format("woff2");
+    font-weight:400 900;
+    font-style:normal;
+    font-display:swap;
+  }
+  @font-face{
+    font-family:"IBM Plex Mono";
+    src:url("assets/fonts/ibm-plex-mono-latin-400.woff2") format("woff2");
+    font-weight:400;
+    font-style:normal;
+    font-display:swap;
+  }
+  @font-face{
+    font-family:"IBM Plex Mono";
+    src:url("assets/fonts/ibm-plex-mono-latin-500.woff2") format("woff2");
+    font-weight:500;
+    font-style:normal;
+    font-display:swap;
+  }
 
+  :root{
+    --void:#040A0C;
+    --ink:#E8F4F4;
+    --ink-soft:rgba(232,244,244,.82);
+    --ink-mute:rgba(186,214,216,.68);
+    --cyan:#5EE7F0;
+    --amber:#D97A3A;
+    --display:"Bodoni Moda","Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
+    --ease-enter:cubic-bezier(.16,.84,.24,1);
+    --ease-overshoot:cubic-bezier(.34,1.32,.48,1);
+    --gutter:clamp(1.1rem,3.6vw,2.75rem);
+    --top-chrome:clamp(2.9rem,5.2vh,3.4rem);
+    --progress:0;
+    --station:0;
+    --world-opacity:0;
+    --signal-core:0;
+    --console-lit:0;
+    --hud-opacity:1;
+    --rail-marker:0%;
+    --intro-veil:1;
+    --proof-apparatus:0;
+    --loader:0;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  html{
+    background:var(--void);
+    color:var(--ink);
+    scroll-behavior:auto;
+  }
+  body{
+    min-height:100%;
+    font-family:var(--mono);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    background:var(--void);
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+  img{display:block;max-width:100%}
+  :focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:3px;
+  }
+
+  .micro{
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    line-height:1.35;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+  }
+  .text{
+    font-family:var(--display);
+    font-weight:500;
+    font-optical-sizing:auto;
+    font-variation-settings:"opsz" 11;
+    font-size:clamp(1rem,1.05rem + .2vw,1.18rem);
+    line-height:1.52;
+    letter-spacing:0;
+    color:var(--ink-soft);
+    max-width:46ch;
+  }
+  .text p{margin:0 0 .85em}
+  .text p:last-child{margin-bottom:0}
+
+  .display{
+    margin:0;
+    font-family:var(--display);
+    font-weight:400;
+    font-optical-sizing:auto;
+    font-variation-settings:"opsz" 96;
+    font-size:clamp(2.35rem,5.6vw,4.5rem);
+    line-height:.96;
+    letter-spacing:0;
+    color:var(--ink);
+  }
+  .display .line{
+    display:block;
+    overflow:hidden;
+  }
+  .display .line > span{
+    display:block;
+    white-space:nowrap;
+    transform:translate3d(0,105%,0);
+    opacity:0;
+    will-change:transform,opacity;
+  }
+  .station.is-active .display .line > span,
+  .station.is-held .display .line > span{
+    transform:translate3d(0,0,0);
+    opacity:1;
+    transition:
+      transform .9s var(--ease-enter),
+      opacity .7s var(--ease-enter);
+  }
+  .station.is-exiting .display .line > span{
+    transform:translate3d(0,-105%,0);
+    opacity:0;
+    transition:
+      transform .55s var(--ease-enter),
+      opacity .4s var(--ease-enter);
+  }
+  .station[data-station="leak"].is-exiting .display .line:nth-child(1) > span{transition-delay:150ms}
+  .station[data-station="leak"].is-exiting .display .line:nth-child(2) > span{transition-delay:120ms}
+  .station[data-station="leak"].is-exiting .display .line:nth-child(3) > span{transition-delay:90ms}
+  .station[data-station="leak"].is-exiting .display .line:nth-child(4) > span{transition-delay:60ms}
+  .station[data-station="leak"].is-exiting .display .line:nth-child(5) > span{transition-delay:30ms}
+  .station[data-station="leak"].is-exiting .display .line:nth-child(6) > span{transition-delay:0ms}
+
+  .station.is-active .display .line:nth-child(1) > span,
+  .station.is-held .display .line:nth-child(1) > span{transition-delay:0ms}
+  .station.is-active .display .line:nth-child(2) > span,
+  .station.is-held .display .line:nth-child(2) > span{transition-delay:30ms}
+  .station.is-active .display .line:nth-child(3) > span,
+  .station.is-held .display .line:nth-child(3) > span{transition-delay:60ms}
+  .station.is-active .display .line:nth-child(4) > span,
+  .station.is-held .display .line:nth-child(4) > span{transition-delay:90ms}
+  .station.is-active .display .line:nth-child(5) > span,
+  .station.is-held .display .line:nth-child(5) > span{transition-delay:120ms}
+  .station.is-active .display .line:nth-child(6) > span,
+  .station.is-held .display .line:nth-child(6) > span{transition-delay:150ms}
+
+  .journey{
+    position:relative;
+    height:600svh;
+    background:var(--void);
+  }
+  html[data-motion="off"] .journey{height:500svh}
+
+  .viewport{
+    position:sticky;
+    top:0;
+    height:100svh;
+    width:100%;
+    overflow:hidden;
+    isolation:isolate;
+    background:var(--void);
+  }
+
+  /* World layer — frame sequence only; no blend modes over the scrub path */
+  .world{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    opacity:var(--world-opacity);
+    pointer-events:none;
+    background:var(--void);
+    perspective:1400px;
+  }
+  /* Double-buffered corridor frames: only the active buffer is on top.
+     The inactive buffer may decode the next frame underneath; swap is atomic
+     via z-index only after decode — never mutate the live buffer's src. */
+  .world-frame{
+    position:absolute;
+    inset:0;
+    z-index:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center center;
+    background:transparent;
+  }
+  .world-frame.is-active{
+    z-index:1;
+  }
+  .world-vignette{
+    position:absolute;
+    inset:0;
+    z-index:2;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 78% 68% at 50% 48%, transparent 35%, rgba(4,10,12,.28) 72%, rgba(4,10,12,.72) 100%);
+  }
+  .console-spill{
+    position:absolute;
+    z-index:2;
+    left:50%;
+    top:34%;
+    width:min(71.4vw, 47.6rem);
+    height:min(48vh, 22rem);
+    transform:translate(-50%, 18%);
+    pointer-events:none;
+    opacity:calc(var(--proof-apparatus) * var(--console-lit));
+    background:radial-gradient(ellipse 120% 90% at 50% 100%, rgba(190,235,245,.30), rgba(94,231,240,.14) 45%, transparent 78%);
+    transition:opacity .42s var(--ease-enter);
+  }
+  .world-grain{
+    position:absolute;
+    inset:-20%;
+    z-index:3;
+    pointer-events:none;
+    opacity:.14;
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    background-size:180px 180px;
+    /* grain sits above frame but is not mix-blend over the img fast path of the scrub layer */
+    opacity:calc(.12 + var(--signal-core) * .06);
+  }
+
+  .console-mount{
+    position:absolute;
+    z-index:5;
+    pointer-events:none;
+    left:50%;
+    top:34%;
+    width:min(42vw, 28rem);
+    height:auto;
+    transform:translate(-50%,-50%) rotateY(-4deg) rotateX(1.5deg);
+    transform-style:preserve-3d;
+    opacity:var(--proof-apparatus);
+    visibility:hidden;
+    transition:opacity .42s var(--ease-enter), visibility 0s linear .42s;
+  }
+  .console-mount.is-present{
+    visibility:visible;
+    transition:opacity .42s var(--ease-enter), visibility 0s linear 0s;
+  }
+  .console-mount.is-live{pointer-events:auto}
+  .console-mount.is-gone{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+  .console-housing{
+    position:relative;
+    padding:20px;
+    background:linear-gradient(155deg,#1A2226,#070C0F 55%,#141C20);
+    box-shadow:
+      0 40px 90px -20px rgba(0,0,0,.75),
+      inset 0 -2px 6px rgba(0,0,0,.8),
+      inset 1px 1px 0 rgba(150,220,235,.35);
+  }
+  .console-housing::before,
+  .console-housing::after{
+    content:"";
+    position:absolute;
+    width:14px;
+    height:10px;
+    background:linear-gradient(180deg,#2A3438,#0A1014 70%,#151C20);
+    border:1px solid rgba(150,220,235,.22);
+    box-shadow:inset 0 1px 0 rgba(190,235,245,.2), 0 2px 4px rgba(0,0,0,.55);
+    pointer-events:none;
+  }
+  .console-housing::before{ top:6px; left:18px; }
+  .console-housing::after{ top:6px; right:18px; }
+  .console-screen{
+    position:relative;
+    display:block;
+    width:100%;
+    overflow:hidden;
+    cursor:zoom-in;
+    background:#05080a;
+    border:0;
+    box-shadow:
+      0 0 0 1px rgba(0,0,0,.65),
+      0 0 40px rgba(94,231,240,calc(var(--console-lit) * .18));
+    opacity:calc(0.78 + var(--console-lit) * 0.22);
+    filter:brightness(calc(0.78 + var(--console-lit) * 0.22));
+    transition:filter .28s var(--ease-enter), opacity .28s var(--ease-enter);
+  }
+  .console-mount.is-live .console-screen:hover,
+  .console-mount.is-live .console-screen:focus-visible{
+    filter:brightness(1);
+    opacity:1;
+  }
+  .console-screen img{
+    width:100%;
+    height:auto;
+    display:block;
+    pointer-events:none;
+  }
+  .console-screen::after{
+    content:"";
+    position:absolute;
+    inset:0;
+    background:linear-gradient(112deg, transparent 30%, rgba(200,240,250,.16) 44%, transparent 58%);
+    pointer-events:none;
+    opacity:calc(0.2 + var(--console-lit) * 0.55);
+  }
+
+  .note-mount{
+    position:absolute;
+    z-index:5;
+    pointer-events:none;
+    left:calc(50% + min(20vw, 12.5rem));
+    top:34%;
+    width:min(16vw, 10rem);
+    transform:translateY(-20%) rotate(-6deg);
+    opacity:var(--proof-apparatus);
+    visibility:hidden;
+    transition:opacity .42s var(--ease-enter), visibility 0s linear .42s;
+  }
+  .note-mount.is-present{
+    visibility:visible;
+    transition:opacity .42s var(--ease-enter), visibility 0s linear 0s;
+  }
+  .note-mount.is-live{pointer-events:auto}
+  .note-mount.is-gone{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+  .note-device{
+    display:block;
+    width:100%;
+    overflow:hidden;
+    cursor:zoom-in;
+    padding:6px 5px 12px;
+    border-radius:6px;
+    background:linear-gradient(165deg,#1A2226 0%,#070C0F 55%,#12181C 100%);
+    border:1px solid rgba(150,220,235,.18);
+    box-shadow:
+      0 14px 30px -8px rgba(0,0,0,.8),
+      inset 0 1px 0 rgba(190,235,245,.28);
+    opacity:calc(0.55 + var(--console-lit) * 0.45);
+  }
+  .note-device img{
+    width:100%;
+    height:auto;
+    pointer-events:none;
+    border-radius:2px;
+  }
+  .note-device-caption{
+    margin:.45rem 0 0;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.16em;
+    text-transform:uppercase;
+    color:var(--amber);
+    text-align:center;
+    white-space:nowrap;
+  }
+
+  .intro-veil{
+    position:absolute;
+    inset:0;
+    z-index:20;
+    background:var(--void);
+    opacity:var(--intro-veil);
+    pointer-events:none;
+    transition:opacity 1.1s var(--ease-enter);
+  }
+
+  /* First-scene-only loader — hairline under header, never a mid-composition rule */
+  .loader-bar{
+    position:absolute;
+    left:var(--gutter);
+    top:calc(var(--top-chrome) - 1px);
+    width:min(180px, 28vw);
+    z-index:32;
+    height:1px;
+    background:rgba(232,244,244,.08);
+    opacity:calc(var(--loader) * 1);
+    pointer-events:none;
+    transition:opacity .35s ease;
+  }
+  .loader-bar.is-done,
+  .loader-label.is-done{
+    opacity:0 !important;
+    visibility:hidden;
+  }
+  .loader-bar > span{
+    display:block;
+    height:100%;
+    width:calc(var(--loader) * 100%);
+    background:linear-gradient(90deg, var(--cyan), var(--amber));
+    box-shadow:0 0 8px rgba(94,231,240,.3);
+  }
+  .loader-label{
+    position:absolute;
+    left:var(--gutter);
+    top:calc(var(--top-chrome) + .35rem);
+    z-index:32;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+    opacity:calc(var(--loader) * .85);
+    pointer-events:none;
+    transition:opacity .35s ease;
+  }
+
+  .ui{
+    position:absolute;
+    inset:0;
+    z-index:10;
+    pointer-events:none;
+  }
+  .ui a,
+  .ui button,
+  .site-header,
+  .station-rail,
+  .station-copy,
+  .proof-values,
+  .method-annots,
+  .site-footer,
+  .distance-hud{
+    pointer-events:auto;
+  }
+
+  .site-header{
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:30;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    padding:clamp(.85rem,1.8vh,1.15rem) var(--gutter);
+    min-height:var(--top-chrome);
+  }
+  .wordmark{
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink);
+    white-space:nowrap;
+  }
+  .header-tools{
+    display:flex;
+    align-items:center;
+    gap:clamp(.6rem,1.5vw,1.1rem);
+  }
+  .motion-toggle{
+    min-height:44px;
+    min-width:44px;
+    padding:.35rem .2rem;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .motion-toggle:hover{color:var(--ink)}
+
+  .progress-bar{
+    display:none;
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:31;
+    height:3px;
+    background:rgba(232,244,244,.08);
+  }
+  .progress-bar > span{
+    display:block;
+    height:100%;
+    width:calc(var(--progress) * 100%);
+    background:linear-gradient(90deg, var(--cyan), var(--amber));
+    box-shadow:0 0 12px rgba(94,231,240,.35);
+  }
+
+  .station-rail{
+    position:absolute;
+    right:clamp(.7rem,1.6vw,1.2rem);
+    top:50%;
+    transform:translateY(-50%);
+    z-index:30;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:0;
+    width:2.6rem;
+    height:min(52vh, 22rem);
+  }
+  .station-rail-track{
+    position:absolute;
+    top:0; bottom:0; left:50%;
+    width:1px;
+    background:rgba(232,244,244,.18);
+    transform:translateX(-50%);
+  }
+  .station-rail-marker{
+    position:absolute;
+    left:50%;
+    top:var(--rail-marker);
+    width:7px; height:7px;
+    border-radius:50%;
+    background:var(--cyan);
+    box-shadow:0 0 10px rgba(94,231,240,.55);
+    transform:translate(-50%,-50%);
+  }
+  .station-rail-tick{
+    position:relative;
+    flex:1;
+    width:100%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    min-height:44px;
+    color:var(--ink-mute);
+    background:transparent;
+  }
+  .station-rail-tick::before{
+    content:"";
+    width:7px; height:7px;
+    border:1px solid rgba(232,244,244,.4);
+    border-radius:50%;
+  }
+  .station-rail-tick[aria-current="true"]{color:var(--ink)}
+  .station-rail-tick[aria-current="true"]::before{
+    background:var(--ink);
+    border-color:var(--ink);
+  }
+  .station-rail-tick span{
+    position:absolute;
+    right:calc(100% + .55rem);
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    white-space:nowrap;
+    opacity:0;
+    transform:translateX(4px);
+    transition:opacity .25s var(--ease-enter), transform .25s var(--ease-enter);
+    pointer-events:none;
+  }
+  .station-rail-tick:hover span,
+  .station-rail-tick:focus-visible span,
+  .station-rail-tick[aria-current="true"] span{
+    opacity:1;
+    transform:translateX(0);
+  }
+
+  .distance-hud{
+    position:absolute;
+    left:var(--gutter);
+    bottom:clamp(.85rem,2vh,1.35rem);
+    z-index:30;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+    opacity:var(--hud-opacity);
+    transition:opacity .4s var(--ease-enter);
+  }
+
+  .station{
+    position:absolute;
+    inset:0;
+    z-index:12;
+    display:flex;
+    pointer-events:none;
+    opacity:0;
+    visibility:hidden;
+  }
+  .station.is-active,
+  .station.is-held,
+  .station.is-exiting{
+    opacity:1;
+    visibility:visible;
+  }
+  .station.is-exiting{pointer-events:none}
+  .station-copy{
+    position:absolute;
+    max-width:min(34rem, 52vw);
+    padding:0;
+  }
+  .station-kicker{
+    margin:0 0 clamp(.65rem,1.2vh,.95rem);
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--cyan);
+    opacity:0;
+    transform:translateY(8px);
+  }
+  .station.is-active .station-kicker,
+  .station.is-held .station-kicker{
+    opacity:1;
+    transform:none;
+    transition:opacity .6s var(--ease-enter), transform .6s var(--ease-enter);
+    transition-delay:40ms;
+  }
+  .station.is-exiting .station-kicker{
+    opacity:0;
+    transition:opacity .3s var(--ease-enter);
+  }
+  .station-support{
+    margin:clamp(1rem,2vh,1.45rem) 0 0;
+    opacity:0;
+    transform:translateY(10px);
+  }
+  .station.is-active .station-support,
+  .station.is-held .station-support{
+    opacity:1;
+    transform:none;
+    transition:opacity .7s var(--ease-enter), transform .7s var(--ease-enter);
+    transition-delay:180ms;
+  }
+  .station.is-exiting .station-support{
+    opacity:0;
+    transition:opacity .3s var(--ease-enter);
+  }
+
+  .cta{
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    margin-top:clamp(1.1rem,2.2vh,1.6rem);
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink);
+    border-bottom:1px solid rgba(232,244,244,.35);
+    opacity:0;
+    transform:translateY(12px);
+  }
+  .station.is-active .cta,
+  .station.is-held .cta{
+    opacity:1;
+    transform:none;
+    transition:
+      opacity .7s var(--ease-overshoot),
+      transform .7s var(--ease-overshoot),
+      border-color .25s ease;
+    transition-delay:240ms;
+  }
+  .cta:hover, .cta:focus-visible{
+    border-color:var(--cyan);
+    color:var(--cyan);
+  }
+
+  /* Corridor scrims — washes dissolve to --void, never rectangular cards */
+  .station[data-station="leak"] .station-copy,
+  .station[data-station="method"] .station-copy,
+  .station[data-station="proof"] .station-copy{
+    isolation:isolate;
+  }
+  .station[data-station="leak"] .station-copy::before,
+  .station[data-station="method"] .station-copy::before,
+  .station[data-station="proof"] .station-copy::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    pointer-events:none;
+    inset:-14% -30% -12% -30%;
+    background:linear-gradient(100deg, rgba(4,10,12,.90) 0%, rgba(4,10,12,.66) 42%, rgba(4,10,12,.20) 72%, transparent 100%);
+  }
+  .station[data-station="proof"] .station-copy::before{
+    inset:-18% -20% -22% -20%;
+    background:radial-gradient(ellipse 70% 100% at 50% 40%, rgba(4,10,12,.86), transparent 78%);
+  }
+
+  /* LEAK — sole full-height type wall + in-scene CTA */
+  .station[data-station="leak"] .station-copy{
+    left:var(--gutter);
+    top:clamp(5.5rem,13.9vh,7.5rem);
+    max-width:min(46rem, 52vw);
+  }
+  .station[data-station="leak"] .display{
+    font-size:clamp(2.5rem,4.7vw,4.5rem);
+    line-height:.95;
+  }
+
+  /* METHOD — inverted: heading bottom-left; annotations climb toward vanishing point */
+  .station[data-station="method"] .station-copy{
+    left:var(--gutter);
+    top:auto;
+    bottom:clamp(6rem,16vh,9rem);
+    max-width:min(34rem, 50vw);
+  }
+  .station[data-station="method"] .display{
+    font-size:clamp(2.2rem,4.17vw,4rem);
+    line-height:.96;
+  }
+  .method-annots{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+  }
+  .method-annot{
+    position:absolute;
+    max-width:16rem;
+    opacity:0;
+    transform:translateY(10px);
+    transition:opacity .55s var(--ease-enter), transform .55s var(--ease-enter);
+    isolation:isolate;
+  }
+  .method-annot::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    pointer-events:none;
+    inset:-28% -22% -30% -18%;
+    background:radial-gradient(ellipse 80% 70% at 30% 40%, rgba(4,10,12,.78) 0%, rgba(4,10,12,.35) 55%, transparent 78%);
+  }
+  .method-annot.is-on{opacity:1; transform:none}
+  .method-annot-num{
+    display:block;
+    margin:0 0 .35rem;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--cyan);
+  }
+  .method-annot-text{
+    margin:0;
+    font-family:var(--display);
+    font-weight:500;
+    font-variation-settings:"opsz" 11;
+    font-size:clamp(1rem,1.05rem + .15vw,1.12rem);
+    line-height:1.45;
+    color:var(--ink-soft);
+    max-width:28ch;
+  }
+  .method-annot[data-step="1"]{ left:10%; top:44%; }
+  .method-annot[data-step="2"]{ left:30%; top:34%; }
+  .method-annot[data-step="3"]{ left:48%; top:25%; }
+
+  /* PROOF — only centred station: screen → number → note on corridor axis */
+  .station[data-station="proof"] .station-copy{
+    left:50%;
+    top:auto;
+    bottom:clamp(5.5rem,12vh,7.2rem);
+    transform:translateX(-50%);
+    max-width:min(52ch, 72vw);
+    text-align:center;
+    width:100%;
+  }
+  .proof-figure{
+    margin:0;
+    font-family:var(--display);
+    font-weight:400;
+    font-variation-settings:"opsz" 96;
+    font-size:clamp(2.8rem,6vw,5.75rem);
+    line-height:.94;
+    letter-spacing:0;
+    color:var(--ink);
+  }
+  .proof-figure .currency{color:var(--amber); margin-right:.04em}
+  .proof-values{
+    margin:clamp(.9rem,1.8vh,1.25rem) auto 0;
+    display:grid;
+    gap:.55rem;
+    max-width:46ch;
+    text-align:center;
+  }
+  .proof-row{
+    margin:0;
+    font-family:var(--display);
+    font-weight:500;
+    font-variation-settings:"opsz" 11;
+    font-size:clamp(1rem,1.02rem + .15vw,1.12rem);
+    line-height:1.45;
+    color:var(--ink-soft);
+    white-space:nowrap;
+  }
+  .proof-row strong{font-weight:500; color:var(--ink)}
+  .proof-row .delta{color:var(--amber)}
+  .proof-qualifier{
+    margin:clamp(.85rem,1.6vh,1.15rem) auto 0;
+    font-family:var(--display);
+    font-weight:500;
+    font-variation-settings:"opsz" 11;
+    font-size:clamp(1rem,1.02rem + .12vw,1.1rem);
+    line-height:1.5;
+    color:var(--ink-mute);
+    max-width:46ch;
+  }
+  .proof-open-hint{
+    margin:.75rem auto 0;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+  }
+
+  /* JARRETT — face carries; high-left claim + one restrained low-left support.
+     Column must fit longest nowrap display line (NOT A SALESMAN.) inside the
+     masked .line; 32rem/42vw clipped the terminal period at 1536. */
+  .station[data-station="jarrett"] .station-copy{
+    position:absolute;
+    isolation:isolate;
+    left:var(--gutter);
+    top:clamp(5.5rem,13vh,7rem);
+    max-width:min(38rem, 48vw);
+  }
+  .station[data-station="jarrett"] .station-copy::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    pointer-events:none;
+    inset:-18% -22% -14% -28%;
+    background:
+      radial-gradient(ellipse 72% 68% at 28% 42%, rgba(4,10,12,.78) 0%, rgba(4,10,12,.42) 48%, transparent 74%);
+  }
+  .station[data-station="jarrett"] .display{
+    font-size:clamp(2.2rem,4.17vw,4rem);
+    line-height:.96;
+  }
+  .station[data-station="jarrett"] .station-support{
+    margin-top:clamp(1.6rem,4vh,2.8rem);
+  }
+  html[data-motion="on"] .station[data-station="jarrett"] .support-extra{
+    display:none;
+  }
+
+  /* THRESHOLD — asymmetric close: high-left ask, low-left email/whisper, face free through middle */
+  .station[data-station="threshold"] .station-copy{
+    position:absolute;
+    isolation:isolate;
+    left:var(--gutter);
+    top:clamp(5.2rem,12vh,6.8rem);
+    bottom:clamp(5.5rem,12vh,7rem);
+    max-width:min(30rem, 40vw);
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    pointer-events:none;
+  }
+  .station[data-station="threshold"] .station-copy > *{
+    pointer-events:auto;
+  }
+  .station[data-station="threshold"] .threshold-top{
+    position:relative;
+    max-width:100%;
+  }
+  .station[data-station="threshold"] .threshold-top::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    pointer-events:none;
+    inset:-14% -10% -10% -24%;
+    background:
+      radial-gradient(ellipse 68% 72% at 18% 34%, rgba(4,10,12,.82) 0%, rgba(4,10,12,.38) 48%, transparent 74%);
+  }
+  .station[data-station="threshold"] .threshold-bottom{
+    position:relative;
+    max-width:100%;
+  }
+  .station[data-station="threshold"] .threshold-bottom::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    pointer-events:none;
+    inset:-20% -16% -24% -20%;
+    background:
+      radial-gradient(ellipse 78% 70% at 22% 60%, rgba(4,10,12,.8) 0%, rgba(4,10,12,.35) 52%, transparent 76%);
+  }
+  .station[data-station="threshold"] .display{
+    font-size:clamp(2.5rem,4.7vw,4.5rem);
+    line-height:.96;
+  }
+  .station[data-station="threshold"] .station-support{max-width:34ch}
+  .invite-email{
+    display:inline-block;
+    width:fit-content;
+    max-width:100%;
+    margin-top:0;
+    font-family:var(--display);
+    font-weight:400;
+    font-variation-settings:"opsz" 96;
+    font-size:clamp(1.35rem,2.1vw,2rem);
+    line-height:1.15;
+    letter-spacing:0;
+    color:var(--ink);
+    position:relative;
+    min-height:44px;
+    padding-bottom:.2em;
+    white-space:nowrap;
+    opacity:0;
+    transform:translateY(14px);
+  }
+  .invite-email::after{
+    content:"";
+    position:absolute;
+    left:0; right:0; bottom:0;
+    height:2px;
+    background:linear-gradient(90deg, var(--amber), rgba(217,122,58,.2));
+    transform:scaleX(0);
+    transform-origin:right center;
+    transition:transform .45s var(--ease-enter);
+  }
+  .station[data-station="threshold"].is-active .invite-email::after,
+  .station[data-station="threshold"].is-held .invite-email::after,
+  .invite-email:hover::after,
+  .invite-email:focus-visible::after{
+    transform:scaleX(1);
+    transform-origin:left center;
+  }
+  .station[data-station="threshold"].is-active .invite-email,
+  .station[data-station="threshold"].is-held .invite-email{
+    opacity:1;
+    transform:none;
+    transition:opacity .75s var(--ease-overshoot), transform .75s var(--ease-overshoot);
+    transition-delay:200ms;
+  }
+  .invite-whisper{
+    margin:clamp(.55rem,1.2vh,.85rem) 0 0;
+    font-family:var(--display);
+    font-weight:500;
+    font-variation-settings:"opsz" 11;
+    font-size:clamp(1rem,1.02rem + .1vw,1.08rem);
+    line-height:1.5;
+    color:var(--ink-mute);
+  }
+
+  .site-footer{
+    position:absolute;
+    right:var(--gutter);
+    left:auto;
+    bottom:clamp(.85rem,2vh,1.35rem);
+    z-index:30;
+    display:flex;
+    gap:.55rem;
+    align-items:center;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+    opacity:0;
+    transition:opacity .45s var(--ease-enter);
+    white-space:nowrap;
+  }
+  .site-footer p{margin:0}
+  .site-footer.is-on{opacity:1}
+
+  .scroll-cue{
+    position:absolute;
+    left:50%;
+    bottom:clamp(1.2rem,3vh,2rem);
+    transform:translateX(-50%);
+    z-index:30;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+    opacity:0;
+    transition:opacity .5s var(--ease-enter);
+  }
+  .scroll-cue.is-on{opacity:1}
+
+  html[data-motion="off"] .method-annot[data-step="1"]{ left:10%; top:44%; }
+  html[data-motion="off"] .method-annot[data-step="2"]{ left:30%; top:34%; }
+  html[data-motion="off"] .method-annot[data-step="3"]{ left:48%; top:25%; }
+  @media (max-width:720px){
+    html[data-motion="off"] .method-annot[data-step="1"]{ left:6%; top:20%; }
+    html[data-motion="off"] .method-annot[data-step="2"]{ left:10%; top:31%; }
+    html[data-motion="off"] .method-annot[data-step="3"]{ left:14%; top:42%; }
+  }
+
+  .lightbox{
+    position:fixed;
+    inset:0;
+    z-index:100;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:clamp(1rem,3vw,2rem);
+    background:rgba(4,10,12,.92);
+    opacity:0;
+    visibility:hidden;
+    transition:opacity .3s var(--ease-enter), visibility .3s;
+  }
+  .lightbox.is-open{opacity:1; visibility:visible}
+  .lightbox[hidden]{display:none !important}
+  .lightbox.is-open[hidden]{display:flex !important}
+  .lightbox-panel{
+    position:relative;
+    max-width:min(1100px, 96vw);
+    max-height:92vh;
+    outline:none;
+  }
+  .lightbox-panel img{
+    max-width:100%;
+    max-height:78vh;
+    width:auto;
+    height:auto;
+    margin:0 auto;
+    box-shadow:0 20px 60px rgba(0,0,0,.55);
+  }
+  .lightbox-close{
+    position:absolute;
+    top:-2.4rem;
+    right:0;
+    min-height:44px;
+    min-width:44px;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink);
+  }
+  .lightbox-caption{
+    margin:.85rem 0 0;
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+    text-align:center;
+  }
+
+  html[data-motion="off"] .display .line > span{
+    transform:none !important;
+    opacity:1 !important;
+    transition:none !important;
+  }
+  html[data-motion="off"] .station-kicker,
+  html[data-motion="off"] .station-support,
+  html[data-motion="off"] .cta,
+  html[data-motion="off"] .invite-email,
+  html[data-motion="off"] .note-device-caption,
+  html[data-motion="off"] .method-annot.is-on{
+    opacity:1 !important;
+    transform:none !important;
+    transition:none !important;
+  }
+  html[data-motion="off"] .scroll-cue{display:none}
+  html[data-motion="off"] .intro-veil{opacity:0 !important}
+  html[data-motion="off"] .world{opacity:1 !important}
+  html[data-motion="off"] .loader-bar,
+  html[data-motion="off"] .loader-label{display:none}
+
+  @media (max-width:720px){
+    .journey{height:620svh}
+    html[data-motion="off"] .journey{height:520svh}
+    .station-rail{display:none}
+    .progress-bar{display:block}
+    .site-header{padding-top:calc(.75rem + 3px)}
+    .display{
+      font-size:clamp(2.125rem,9.7vw,2.375rem);
+      line-height:.97;
+    }
+
+    /* Mobile corridor washes — top wash for Leak/Method; bottom wash for person stations */
+    .station[data-station="leak"] .station-copy::before,
+    .station[data-station="method"] .station-copy::before{
+      inset:auto -30% auto -30%;
+      top:0;
+      height:62%;
+      background:linear-gradient(180deg, rgba(4,10,12,.88) 0%, rgba(4,10,12,.70) 55%, transparent 100%);
+    }
+    .station[data-station="proof"] .station-copy::before{
+      inset:-10% -12% -16% -12%;
+      background:radial-gradient(ellipse 80% 90% at 50% 30%, rgba(4,10,12,.88), transparent 78%);
+    }
+
+    /* LEAK — type wall with support + CTA still reachable */
+    .station[data-station="leak"] .station-copy{
+      left:var(--gutter);
+      right:var(--gutter);
+      top:clamp(4.4rem,10vh,5.4rem);
+      max-width:none;
+    }
+    .station[data-station="leak"] .display{
+      font-size:clamp(2.125rem,9.7vw,2.375rem);
+      line-height:.96;
+    }
+
+    /* METHOD — bottom heading; annotations climb clear of headline */
+    .station[data-station="method"] .station-copy{
+      left:var(--gutter);
+      right:var(--gutter);
+      top:auto;
+      bottom:clamp(5.5rem,14vh,7rem);
+      max-width:none;
+    }
+    .station[data-station="method"] .display{
+      font-size:clamp(1.95rem,8.7vw,2.125rem);
+      line-height:.97;
+    }
+    .method-annot{ max-width:min(17rem,72vw); }
+    .method-annot[data-step="1"]{ left:6%; top:20%; }
+    .method-annot[data-step="2"]{ left:10%; top:31%; }
+    .method-annot[data-step="3"]{ left:14%; top:42%; }
+
+    /* PROOF — centred instrument stack; tap affordance visible */
+    .station[data-station="proof"] .station-copy{
+      left:50%;
+      right:auto;
+      top:auto;
+      bottom:clamp(4.8rem,11vh,6rem);
+      transform:translateX(-50%);
+      max-width:min(22rem, 90vw);
+      width:90vw;
+      text-align:center;
+    }
+    .proof-open-hint{display:block}
+    .proof-figure{font-size:clamp(2.4rem,12.8vw,3.125rem)}
+    .proof-values{max-width:100%; gap:.45rem}
+    .proof-row{white-space:normal}
+
+    /* JARRETT — face exclusion y110–515; bottom carrier only; one support sentence motion-on.
+       19rem/86vw clipped NOT A SALESMAN. terminal period at 390; fit longest masked line. */
+    .station[data-station="jarrett"] .station-copy{
+      left:var(--gutter);
+      right:auto;
+      top:auto;
+      bottom:clamp(6.2rem,14vh,7.4rem);
+      max-width:min(21rem, 90vw);
+      z-index:1;
+    }
+    .station[data-station="jarrett"] .display{
+      font-size:clamp(2rem,9.2vw,2.25rem);
+      line-height:.98;
+    }
+    .station[data-station="jarrett"] .station-support{
+      margin-top:1rem;
+    }
+    /* Content-box band retired: wash is station-level full-width (see ::after) */
+    .station[data-station="jarrett"] .station-copy::before{
+      content:none;
+    }
+
+    /* THRESHOLD — top group ends ≤y215; bottom group starts ≥y565; smile free */
+    .station[data-station="threshold"] .station-copy{
+      left:var(--gutter);
+      right:var(--gutter);
+      top:0;
+      bottom:0;
+      max-width:none;
+      display:block;
+      z-index:1;
+    }
+    .station[data-station="threshold"] .threshold-top{
+      position:absolute;
+      left:0;
+      right:0;
+      top:clamp(3.6rem,8vh,4.4rem);
+      max-width:min(20rem, 88vw);
+    }
+    .station[data-station="threshold"] .threshold-top::before{
+      inset:auto -30% auto -30%;
+      top:0;
+      height:120%;
+      background:linear-gradient(180deg, rgba(4,10,12,.88) 0%, rgba(4,10,12,.55) 55%, transparent 100%);
+    }
+    .station[data-station="threshold"] .threshold-bottom{
+      position:absolute;
+      left:0;
+      right:0;
+      top:auto;
+      bottom:clamp(6rem,13.5vh,7.2rem);
+      max-width:min(20rem, 88vw);
+    }
+    /* Content-box band retired: wash is station-level full-width (see ::after) */
+    .station[data-station="threshold"] .threshold-bottom::before{
+      content:none;
+    }
+    .station[data-station="threshold"] .display{
+      font-size:clamp(2.125rem,9.7vw,2.375rem);
+      line-height:.96;
+    }
+    .station[data-station="threshold"] .invite-email{
+      margin-top:0;
+      font-size:clamp(1.3rem,6.2vw,1.5rem);
+    }
+    html[data-motion="on"] .station[data-station="threshold"] .station-support{
+      display:none;
+    }
+
+    /*
+     * Person-station light control — full-width station wash, not a content-box card.
+     * Dark end reaches the viewport edge; transparent edge dissolves into the corridor.
+     */
+    .station[data-station="jarrett"]::after,
+    .station[data-station="threshold"]::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:48%;
+      z-index:0;
+      pointer-events:none;
+      background:linear-gradient(
+        to top,
+        rgba(4,10,12,.96) 0%,
+        rgba(4,10,12,.90) 16%,
+        rgba(4,10,12,.72) 34%,
+        rgba(4,10,12,.42) 52%,
+        rgba(4,10,12,.18) 68%,
+        rgba(4,10,12,.06) 82%,
+        transparent 100%
+      );
+    }
+
+    .console-spill{
+      top:30%;
+      width:min(92vw, 28rem);
+      height:min(40vh, 16rem);
+      transform:translate(-50%, 12%);
+    }
+    .console-mount{
+      left:50%;
+      top:30%;
+      width:min(78vw, 22rem);
+      transform:translate(-50%,-50%) rotateY(-3deg) rotateX(1deg);
+    }
+    .console-housing{padding:12px}
+    .console-housing::before,
+    .console-housing::after{
+      width:10px;
+      height:8px;
+      top:4px;
+    }
+    .console-housing::before{ left:12px; }
+    .console-housing::after{ right:12px; }
+    /*
+     * Note as secondary instrument — right-anchored so rotate cannot escape the viewport.
+     * Extra right inset absorbs the AABB expansion from the slight tilt.
+     */
+    .note-mount{
+      left:auto;
+      right:calc(var(--gutter) + 1rem);
+      top:30%;
+      width:min(28vw, 6.25rem);
+      transform:translateY(-8%) rotate(-5deg);
+      transform-origin:100% 20%;
+    }
+    .note-device-caption{
+      white-space:normal;
+      letter-spacing:.12em;
+      max-width:100%;
+      overflow-wrap:break-word;
+      hyphens:manual;
+    }
+    .world-frame{object-position:center 40%}
+    /* Separate vertical registers: HUD stays bottom-left; footer one line above, bottom-right */
+    .distance-hud{
+      bottom:clamp(.7rem,1.6vh,1.05rem);
+    }
+    .site-footer{
+      left:auto;
+      right:var(--gutter);
+      bottom:clamp(2.2rem,4.8vh,2.75rem);
+      flex-direction:row;
+      gap:.45rem;
+    }
+    .site-footer p{margin:0}
+    .loader-bar{width:min(140px, 36vw)}
+  }
+
+  @media (max-width:420px){
+    .wordmark{letter-spacing:.14em}
+    .motion-toggle{letter-spacing:.14em}
+  }
+
+  .no-js-route{
+    display:none;
+    position:relative;
+    min-height:100vh;
+    color:var(--ink);
+    background:var(--void);
+    overflow-x:hidden;
+  }
+  .no-js-wash{
+    position:fixed;
+    inset:0;
+    z-index:0;
+    pointer-events:none;
+    background:
+      linear-gradient(180deg, rgba(4,10,12,.55) 0%, rgba(4,10,12,.72) 55%, rgba(4,10,12,.88) 100%),
+      url("assets/golden-arrival/frames/ga-000.webp") center center / cover no-repeat;
+    opacity:.92;
+  }
+  .no-js-stack{
+    position:relative;
+    z-index:1;
+    max-width:42rem;
+    margin:0 auto;
+    padding:clamp(1.4rem,4vh,2.4rem) var(--gutter) clamp(2.5rem,6vh,4rem);
+  }
+  .no-js-stack .wordmark{margin:0 0 clamp(1.6rem,4vh,2.4rem)}
+  .no-js-stack .display{
+    font-size:clamp(2.2rem,5.4vw,3.6rem);
+    line-height:.98;
+    margin:0 0 1rem;
+  }
+  .no-js-stack .station-kicker{opacity:1; transform:none; margin-top:clamp(1.8rem,4vh,2.6rem)}
+  .no-js-stack .invite-email{opacity:1; transform:none; display:inline-block}
+  .no-js-stack footer{
+    margin-top:clamp(2rem,5vh,3rem);
+    font-family:var(--mono);
+    font-weight:500;
+    font-size:12px;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-mute);
+  }
+</style>
+</head>
+<body>
+  <noscript>
+    <style>
+      #journey, #lightbox{display:none !important}
+      .no-js-route{display:block !important}
+      body{overflow:auto !important; min-height:100%}
+    </style>
+  </noscript>
+
+  <main class="no-js-route" id="no-js-route" aria-label="Readable page without JavaScript">
+    <div class="no-js-wash" aria-hidden="true"></div>
+    <div class="no-js-stack">
+      <p class="wordmark">JARRETT WROTEN</p>
+      <p class="station-kicker">THE LEAK</p>
+      <h1 class="display">I find where your business quietly loses customers. Then I build you the fix.</h1>
+      <div class="text">
+        <p>I trace the real path your customers take, find the one place they disappear, and build the finished repair. Your first fix is my gift.</p>
+      </div>
+      <p class="station-kicker">PROOF, NOT PROMISES</p>
+      <p class="proof-figure"><span class="currency">$</span>40,114.81</p>
+      <div class="proof-values">
+        <p class="proof-row"><strong>Gross volume</strong> $40,114.81 · <span class="delta">up 104.51%</span> from $19,615.40</p>
+        <p class="proof-row"><strong>Net volume</strong> $37,914.00 · <span class="delta">up 108.02%</span> from $18,225.83</p>
+      </div>
+      <p class="proof-qualifier">One Las Vegas service business. Their Stripe. Their words. Your results would be your own.</p>
+      <p class="station-kicker">WHO'S BEHIND IT</p>
+      <h2 class="display">I'm a builder, not a salesman.</h2>
+      <div class="text">
+        <p>Tell me where your business is losing people, and I'll build the fix myself. Your first one is my gift.</p>
+      </div>
+      <p class="station-kicker">THE FIRST FIX IS MY GIFT</p>
+      <h2 class="display">Want me to look at yours?</h2>
+      <div class="text">
+        <p>Tell me your business and where you feel the leak. I'll take a real look, and if something is worth fixing, I'll build it and send it over. Free, and yours to keep.</p>
+      </div>
+      <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a>
+      <p class="invite-whisper">No catch. No meeting you have to sit through.</p>
+      <footer><p>Jarrett Wroten · Las Vegas</p></footer>
+    </div>
+  </main>
+
+  <div class="journey" id="journey">
+    <div class="viewport" id="viewport" aria-label="The Golden Arrival — continuous corridor">
+      <div class="world" id="world" aria-hidden="true">
+        <img class="world-frame is-active" id="world-frame-a" alt="" width="1280" height="720" decoding="async" src="assets/golden-arrival/frames/ga-000.webp">
+        <img class="world-frame" id="world-frame-b" alt="" width="1280" height="720" decoding="async">
+        <div class="console-spill" id="console-spill" aria-hidden="true"></div>
+        <div class="console-mount" id="console-mount">
+          <div class="console-housing">
+            <button type="button" class="console-screen" id="console-screen" data-lightbox="stripe" aria-haspopup="dialog" aria-label="Open full Stripe overview. Gross volume $40,114.81.">
+              <img src="assets/stripe-growth-focal.png" alt="Stripe growth comparison for one Las Vegas service business: gross volume $40,114.81, up 104.51% from $19,615.40; net volume $37,914.00, up 108.02% from $18,225.83." width="503" height="244" decoding="async">
+            </button>
+          </div>
+        </div>
+        <div class="note-mount" id="note-mount">
+          <button type="button" class="note-device" id="note-device" data-lightbox="note" aria-haspopup="dialog" aria-label="Open client note about making payroll">
+            <img src="image0000002.jpg" alt="Client note: they officially made payroll and no more money is coming out of savings." width="1200" height="623" decoding="async">
+          </button>
+          <p class="note-device-caption">AND THE MORNING PAYROLL CLEARED:</p>
+        </div>
+        <div class="world-vignette"></div>
+        <div class="world-grain"></div>
+      </div>
+
+      <div class="intro-veil" id="intro-veil" aria-hidden="true"></div>
+      <div class="loader-label" id="loader-label" aria-hidden="true">OPENING THE CORRIDOR</div>
+      <div class="loader-bar" id="loader-bar" aria-hidden="true"><span></span></div>
+
+      <div class="ui">
+        <div class="progress-bar" aria-hidden="true"><span id="progress-fill"></span></div>
+        <header class="site-header">
+          <div class="wordmark">JARRETT WROTEN</div>
+          <div class="header-tools">
+            <button type="button" class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">MOTION ON</button>
+            <script>
+            (function () {
+              var on = document.documentElement.getAttribute("data-motion") === "on";
+              var b = document.getElementById("motion-toggle");
+              if (!b) return;
+              b.setAttribute("aria-pressed", on ? "true" : "false");
+              b.textContent = on ? "MOTION ON" : "MOTION OFF";
+              b.setAttribute("aria-label", on ? "Motion is on. Activate to turn motion off." : "Motion is off. Activate to enable full motion.");
+            })();
+            </script>
+          </div>
+        </header>
+
+        <nav class="station-rail" id="station-rail" aria-label="Corridor stations">
+          <div class="station-rail-track" aria-hidden="true"></div>
+          <div class="station-rail-marker" id="rail-marker" aria-hidden="true"></div>
+          <button type="button" class="station-rail-tick" data-go="leak" aria-current="true"><span>Leak</span></button>
+          <button type="button" class="station-rail-tick" data-go="method"><span>Method</span></button>
+          <button type="button" class="station-rail-tick" data-go="proof"><span>Proof</span></button>
+          <button type="button" class="station-rail-tick" data-go="jarrett"><span>Jarrett</span></button>
+          <button type="button" class="station-rail-tick" data-go="threshold"><span>Threshold</span></button>
+        </nav>
+
+        <section class="station" data-station="leak" id="station-leak" aria-labelledby="leak-heading">
+          <div class="station-copy">
+            <p class="station-kicker">THE LEAK</p>
+            <h1 class="display" id="leak-heading">
+              <span class="line"><span>I FIND WHERE</span></span>
+              <span class="line"><span>YOUR BUSINESS</span></span>
+              <span class="line"><span>QUIETLY LOSES</span></span>
+              <span class="line"><span>CUSTOMERS.</span></span>
+              <span class="line"><span>THEN I BUILD</span></span>
+              <span class="line"><span>YOU THE FIX.</span></span>
+            </h1>
+            <div class="station-support text">
+              <p>I trace the real path your customers take, find the one place they disappear, and build the finished repair. Your first fix is my gift.</p>
+            </div>
+            <a class="cta" href="#station-threshold" data-go="threshold">SHOW ME WHERE MINE LEAKS ↗</a>
+          </div>
+        </section>
+
+        <section class="station" data-station="method" id="station-method" aria-labelledby="method-heading">
+          <div class="station-copy">
+            <p class="station-kicker">FOLLOW THE REAL PATH</p>
+            <h2 class="display" id="method-heading">
+              <span class="line"><span>LOOK. FIND</span></span>
+              <span class="line"><span>THE LEAK.</span></span>
+              <span class="line"><span>BUILD THE FIX.</span></span>
+            </h2>
+          </div>
+          <div class="method-annots" aria-label="Method steps">
+            <div class="method-annot" data-step="1" id="annot-1">
+              <span class="method-annot-num">01 — LOOK</span>
+              <p class="method-annot-text">I follow the real path a customer takes, step by step.</p>
+            </div>
+            <div class="method-annot" data-step="2" id="annot-2">
+              <span class="method-annot-num">02 — FIND THE ONE LEAK</span>
+              <p class="method-annot-text">Not forty things. The one place most people disappear.</p>
+            </div>
+            <div class="method-annot" data-step="3" id="annot-3">
+              <span class="method-annot-num">03 — BUILD THE FIX</span>
+              <p class="method-annot-text">Then I make the finished repair, ready for your site.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="station" data-station="proof" id="station-proof" aria-labelledby="proof-heading">
+          <div class="station-copy">
+            <p class="station-kicker">PROOF, NOT PROMISES</p>
+            <h2 class="proof-figure" id="proof-heading">
+              <span class="currency">$</span><span id="proof-gross">40,114.81</span>
+            </h2>
+            <div class="proof-values">
+              <p class="proof-row"><strong>Gross volume</strong> <span id="proof-gross-full">$40,114.81</span> · <span class="delta">up 104.51%</span> from <span id="proof-gross-from">$19,615.40</span></p>
+              <p class="proof-row"><strong>Net volume</strong> <span id="proof-net">$37,914.00</span> · <span class="delta">up 108.02%</span> from <span id="proof-net-from">$18,225.83</span></p>
+            </div>
+            <p class="proof-qualifier">One Las Vegas service business. Their Stripe. Their words. Your results would be your own.</p>
+            <p class="proof-open-hint">Tap the console to open the full Stripe overview</p>
+          </div>
+        </section>
+
+        <section class="station" data-station="jarrett" id="station-jarrett" aria-labelledby="jarrett-heading">
+          <div class="station-copy">
+            <p class="station-kicker">WHO'S BEHIND IT</p>
+            <h2 class="display" id="jarrett-heading">
+              <span class="line"><span>I'M A BUILDER,</span></span>
+              <span class="line"><span>NOT A SALESMAN.</span></span>
+            </h2>
+            <div class="station-support text">
+              <p class="support-primary">Tell me where your business is losing people, and I'll build the fix myself.</p>
+              <p class="support-extra">The real, finished thing — not a plan you have to build.</p>
+              <p class="support-extra">Your first one is my gift. If someone else would serve you better, I'll say so.</p>
+              <p class="support-extra">I care more about whether it works than whether you hire me.</p>
+            </div>
+          </div>
+        </section>
+
+        <section class="station" data-station="threshold" id="station-threshold" aria-labelledby="threshold-heading">
+          <div class="station-copy">
+            <div class="threshold-top">
+              <p class="station-kicker">THE FIRST FIX IS MY GIFT</p>
+              <h2 class="display" id="threshold-heading">
+                <span class="line"><span>WANT ME</span></span>
+                <span class="line"><span>TO LOOK</span></span>
+                <span class="line"><span>AT YOURS?</span></span>
+              </h2>
+            </div>
+            <div class="threshold-bottom">
+              <div class="station-support text">
+                <p>Tell me your business and where you feel the leak. I'll take a real look, and if something is worth fixing, I'll build it and send it over. Free, and yours to keep.</p>
+              </div>
+              <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a>
+              <p class="invite-whisper">No catch. No meeting you have to sit through.</p>
+            </div>
+          </div>
+        </section>
+
+        <p class="scroll-cue" id="scroll-cue">SCROLL TO FOLLOW THE SIGNAL</p>
+        <div class="distance-hud" id="distance-hud" aria-live="polite">STATION 01 · LEAK</div>
+        <footer class="site-footer" id="site-footer">
+          <p>Jarrett Wroten · Las Vegas</p>
+        </footer>
+      </div>
+    </div>
+  </div>
+
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-caption" hidden>
+    <div class="lightbox-panel" tabindex="-1" id="lightbox-panel">
+      <button type="button" class="lightbox-close" id="lightbox-close">Close</button>
+      <img id="lightbox-img" src="" alt="">
+      <p class="lightbox-caption" id="lightbox-caption"></p>
+    </div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  /**
+   * SITE_TUNING — inspectable motion + station map for THE GOLDEN ARRIVAL.
+   * frameMap: nonlinear progress→frame (0..360). Faster through empty travel,
+   * holds for Proof and Jarrett, ends exactly on the approved smile.
+   */
+  var SITE_TUNING = {
+    motionStorageKey: "jw-motion",
+    mobileBreakpoint: 720,
+    runwayVh: 600,
+    stillRunwayVh: 500,
+    frameCount: 361,
+    framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
+    preloadBatch: 20,
+    idleTimeoutMs: 1200,
+    settle: {
+      tauDesktopSec: 0.12,
+      tauMobileSec: 0.08,
+      epsilon: 0.0006
+    },
+    intro: {
+      veilMs: 900,
+      readyDelayMs: 40,
+      worldInMs: 1100
+    },
+    stations: {
+      leak:      { id: "leak",      label: "LEAK",      center: 0.08, enter: 0.00, hold: 0.04, exit: 0.18 },
+      method:    { id: "method",    label: "METHOD",    center: 0.30, enter: 0.18, hold: 0.24, exit: 0.40 },
+      proof:     { id: "proof",     label: "PROOF",     center: 0.52, enter: 0.40, hold: 0.46, exit: 0.65 },
+      jarrett:   { id: "jarrett",   label: "JARRETT",   center: 0.76, enter: 0.65, hold: 0.70, exit: 0.86 },
+      threshold: { id: "threshold", label: "THRESHOLD", center: 0.94, enter: 0.86, hold: 0.90, exit: 1.01 }
+    },
+    methodSteps: [
+      { at: 0.20, until: 0.27 },
+      { at: 0.27, until: 0.34 },
+      { at: 0.34, until: 0.40 }
+    ],
+    /* Nonlinear frame map — progress 0..1 → frame index 0..360 */
+    frameMap: [
+      { p: 0.00, f: 0 },
+      { p: 0.08, f: 24 },
+      { p: 0.20, f: 72 },
+      { p: 0.30, f: 120 },
+      { p: 0.42, f: 168 },
+      /* Proof: decelerate / hold mid-corridor while console carries */
+      { p: 0.48, f: 176 },
+      { p: 0.55, f: 184 },
+      { p: 0.67, f: 216 },
+      /* Jarrett: approach, then hold as copy retreats */
+      { p: 0.74, f: 288 },
+      { p: 0.82, f: 324 },
+      { p: 0.88, f: 336 },
+      /* Threshold: settle on final smile */
+      { p: 0.94, f: 354 },
+      { p: 1.00, f: 360 }
+    ],
+    stillFrames: {
+      leak: 0,
+      method: 108,
+      proof: 180,
+      jarrett: 312,
+      threshold: 360
+    },
+    consoleLit: { start: 0.44, full: 0.52 },
+    proofApparatus: {
+      approachStart: 0.40,
+      fullyPresent: 0.48,
+      fadeStart: 0.58,
+      fullyGone: 0.66,
+      interactiveMin: 0.92
+    },
+    proof: {
+      gross: "40,114.81",
+      grossFrom: "19,615.40",
+      net: "37,914.00",
+      netFrom: "18,225.83",
+      grossDelta: "104.51%",
+      netDelta: "108.02%"
+    },
+    /* Inspectable holistic-correction layout contract */
+    layout: {
+      displayScale: {
+        desktop1536: { leak: 72, method: 64, jarrett: 64, threshold: 72, proofFigure: 92 },
+        mobile390: { leak: 38, method: 34, jarrett: 36, threshold: 38, proofFigure: 50 }
+      },
+      railCenters: [0.08, 0.30, 0.52, 0.76, 0.94],
+      railTickPercents: [10, 30, 50, 70, 90],
+      loaderOpeningFrames: 24,
+      faceExclusionMobile: {
+        jarrett: { yMin: 110, yMax: 515 },
+        threshold: { yMin: 215, yMax: 560 }
+      },
+      methodAnnotDesktop: [
+        { left: "10%", top: "44%" },
+        { left: "30%", top: "34%" },
+        { left: "48%", top: "25%" }
+      ],
+      methodAnnotMobile: [
+        { left: "6%", top: "20%" },
+        { left: "10%", top: "31%" },
+        { left: "14%", top: "42%" }
+      ],
+      stationCarriers: {
+        leak: "top-left-type-wall-cta",
+        method: "bottom-left-heading-annotations-up-right",
+        proof: "centered-instrument-axial",
+        jarrett: "high-left-claim-low-left-support",
+        threshold: "high-left-ask-low-left-email"
+      }
+    }
+  };
+
+  var root = document.documentElement;
+  var body = document.body;
+  var journey = document.getElementById("journey");
+  var viewport = document.getElementById("viewport");
+  var world = document.getElementById("world");
+  var worldFrameA = document.getElementById("world-frame-a");
+  var worldFrameB = document.getElementById("world-frame-b");
+  /* Atomic presentation: two stacked buffers; only the inactive buffer receives src. */
+  var frameBuffers = [worldFrameA, worldFrameB];
+  var activeBufferIndex = 0;
+  var presentGeneration = 0;
+  /* In-flight present for one show/url/buffer. Same pending target reuses it
+     instead of bumping generation (which starved decode/commit on direct routes). */
+  var pendingPresent = null;
+  var consoleMount = document.getElementById("console-mount");
+  var noteMount = document.getElementById("note-mount");
+  var motionToggle = document.getElementById("motion-toggle");
+  var distanceHud = document.getElementById("distance-hud");
+  var siteFooter = document.getElementById("site-footer");
+  var scrollCue = document.getElementById("scroll-cue");
+  var railTicks = document.querySelectorAll(".station-rail-tick");
+  var stations = document.querySelectorAll(".station");
+  var methodAnnots = document.querySelectorAll(".method-annot");
+  var lightbox = document.getElementById("lightbox");
+  var lightboxImg = document.getElementById("lightbox-img");
+  var lightboxCaption = document.getElementById("lightbox-caption");
+  var lightboxClose = document.getElementById("lightbox-close");
+  var lightboxPanel = document.getElementById("lightbox-panel");
+  var loaderBar = document.getElementById("loader-bar");
+  var loaderLabel = document.getElementById("loader-label");
+
+  var mobileMq = window.matchMedia("(max-width:" + SITE_TUNING.mobileBreakpoint + "px)");
+  var motionOn = root.getAttribute("data-motion") === "on";
+  var params = new URLSearchParams(window.location.search);
+  var stationParam = (params.get("station") || "").toLowerCase();
+  var validStations = { leak: 1, method: 1, proof: 1, jarrett: 1, threshold: 1 };
+  if (stationParam && !validStations[stationParam]) stationParam = "";
+  if (params.get("view") === "contact") stationParam = stationParam || "threshold";
+  if (params.get("view") === "jarrett") stationParam = stationParam || "jarrett";
+  if (params.get("view") === "proof") stationParam = stationParam || "proof";
+  if (params.get("view") === "method") stationParam = stationParam || "method";
+  if (params.get("state") === "leak") stationParam = stationParam || "leak";
+  if (params.get("state") === "recovered") stationParam = stationParam || "method";
+
+  /* ?motion=off only if no stored user choice conflicts */
+  var motionParam = (params.get("motion") || "").toLowerCase();
+  var storedMotion = null;
+  try { storedMotion = localStorage.getItem(SITE_TUNING.motionStorageKey); } catch (e) {}
+  if (motionParam === "off" && storedMotion !== "on") {
+    motionOn = false;
+    root.setAttribute("data-motion", "off");
+  } else if (motionParam === "on" && storedMotion !== "off") {
+    motionOn = true;
+    root.setAttribute("data-motion", "on");
+  }
+
+  var progressTarget = 0;
+  var progressCurrent = 0;
+  var renderRaf = 0;
+  var lastFrameTs = 0;
+  var activeStationId = "leak";
+  var lastFocus = null;
+  var introDone = false;
+  var forcedStation = stationParam;
+  var displayedFrame = -1;
+  var desiredFrame = 0;
+
+  /* Frame cache: index → {img, ready, url} ; do not retain 361 decoded bitmaps forever */
+  var frameMeta = new Array(SITE_TUNING.frameCount);
+  var readySet = Object.create(null);
+  var loadingSet = Object.create(null);
+  var preloadCursor = 0;
+  var idleHandle = 0;
+  var framesReadyCount = 0;
+
+  var LIGHTBOX_SRC = {
+    stripe: {
+      src: "image000001.jpg",
+      alt: "Stripe dashboard overview for one Las Vegas service business: gross volume $40,114.81, up 104.51% from $19,615.40, May 15 2026 through June 15 2026.",
+      caption: "Full Stripe overview · May 15 – June 15 2026 · $40,114.81 gross volume"
+    },
+    note: {
+      src: "image0000002.jpg",
+      alt: "Client note: they officially made payroll and no more money is coming out of savings.",
+      caption: "Their words · payroll cleared"
+    }
+  };
+
+  var STATION_ORDER = ["leak", "method", "proof", "jarrett", "threshold"];
+
+  function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
+  function lerp(a, b, t) { return a + (b - a) * t; }
+  function easeInOut(t) {
+    if (t <= 0) return 0;
+    if (t >= 1) return 1;
+    return t * t * (3 - 2 * t);
+  }
+  function isMobile() { return mobileMq.matches; }
+
+  function frameUrl(i) {
+    i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
+    var s = String(i);
+    while (s.length < 3) s = "0" + s;
+    return "assets/golden-arrival/frames/ga-" + s + ".webp";
+  }
+
+  function progressToFrame(p) {
+    p = clamp(p, 0, 1);
+    var map = SITE_TUNING.frameMap;
+    if (p <= map[0].p) return map[0].f;
+    if (p >= map[map.length - 1].p) return map[map.length - 1].f;
+    for (var i = 0; i < map.length - 1; i++) {
+      var a = map[i], b = map[i + 1];
+      if (p >= a.p && p <= b.p) {
+        var t = (p - a.p) / Math.max(0.0001, b.p - a.p);
+        t = easeInOut(t);
+        return Math.round(lerp(a.f, b.f, t));
+      }
+    }
+    return 0;
+  }
+
+  function nearestReadyFrame(target) {
+    if (readySet[target]) return target;
+    var best = -1, bestD = 1e9;
+    for (var k in readySet) {
+      if (!readySet[k]) continue;
+      var idx = k | 0;
+      var d = Math.abs(idx - target);
+      if (d < bestD) { bestD = d; best = idx; }
+    }
+    return best >= 0 ? best : 0;
+  }
+
+  function dismissLoader() {
+    root.style.setProperty("--loader", "0");
+    if (loaderBar) loaderBar.classList.add("is-done");
+    if (loaderLabel) loaderLabel.classList.add("is-done");
+  }
+
+  function setLoader(frac) {
+    if (introDone || !motionOn) {
+      dismissLoader();
+      return;
+    }
+    frac = clamp(frac, 0, 1);
+    root.style.setProperty("--loader", frac.toFixed(4));
+  }
+
+  function openingNeighborhoodReady() {
+    var openN = SITE_TUNING.layout.loaderOpeningFrames;
+    var n = 0;
+    for (var i = 0; i < openN; i++) {
+      if (readySet[i]) n++;
+    }
+    return n / openN;
+  }
+
+  function markReady(i) {
+    if (readySet[i]) return;
+    readySet[i] = 1;
+    framesReadyCount++;
+    /* Loader tracks opening neighbourhood only (frames 0–23), never full idle preload */
+    setLoader(openingNeighborhoodReady());
+    if (i === desiredFrame || displayedFrame < 0) {
+      showFrame(desiredFrame);
+    }
+  }
+
+  function progressToRailMarker(p) {
+    var centers = SITE_TUNING.layout.railCenters;
+    var ticks = SITE_TUNING.layout.railTickPercents;
+    p = clamp(p, 0, 1);
+    if (p <= centers[0]) return ticks[0];
+    if (p >= centers[centers.length - 1]) return ticks[ticks.length - 1];
+    for (var i = 0; i < centers.length - 1; i++) {
+      if (p >= centers[i] && p <= centers[i + 1]) {
+        var t = (p - centers[i]) / Math.max(0.0001, centers[i + 1] - centers[i]);
+        return lerp(ticks[i], ticks[i + 1], t);
+      }
+    }
+    return ticks[0];
+  }
+
+  function loadFrame(i, priority) {
+    i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
+    if (readySet[i] || loadingSet[i]) return;
+    loadingSet[i] = 1;
+    var img = new Image();
+    img.decoding = "async";
+    var url = frameUrl(i);
+    img.src = url;
+    var done = function () {
+      loadingSet[i] = 0;
+      if (img.decode) {
+        img.decode().then(function () { markReady(i); }).catch(function () { markReady(i); });
+      } else {
+        markReady(i);
+      }
+    };
+    if (img.complete) done();
+    else {
+      img.onload = done;
+      img.onerror = function () { loadingSet[i] = 0; };
+    }
+    frameMeta[i] = { img: img, url: url };
+  }
+
+  function bufferSrc(el) {
+    return el ? el.getAttribute("src") || "" : "";
+  }
+
+  function bufferPaintReady(el) {
+    return !!(el && bufferSrc(el) && el.complete && el.naturalWidth > 0);
+  }
+
+  function clearPendingPresent(generation) {
+    if (!pendingPresent) return;
+    if (generation == null || pendingPresent.generation === generation) {
+      pendingPresent = null;
+    }
+  }
+
+  function commitBuffer(nextIndex, show, generation) {
+    if (generation !== presentGeneration) return;
+    if (nearestReadyFrame(desiredFrame) !== show) return;
+    var next = frameBuffers[nextIndex];
+    var prev = frameBuffers[activeBufferIndex];
+    if (!next || !bufferPaintReady(next)) return;
+    if (nextIndex !== activeBufferIndex) {
+      next.classList.add("is-active");
+      if (prev) prev.classList.remove("is-active");
+      activeBufferIndex = nextIndex;
+    } else if (!next.classList.contains("is-active")) {
+      next.classList.add("is-active");
+    }
+    displayedFrame = show;
+    clearPendingPresent(generation);
+  }
+
+  function presentOnBuffer(nextIndex, show, url, generation) {
+    var next = frameBuffers[nextIndex];
+    if (!next) return;
+
+    var finish = function () {
+      if (generation !== presentGeneration) return;
+      if (nearestReadyFrame(desiredFrame) !== show) return;
+      if (!bufferPaintReady(next) || bufferSrc(next) !== url) return;
+      /* complete + naturalWidth is paint-ready. Commit immediately so rAF/markReady
+         re-entries for the same frame cannot starve an open decode() promise.
+         Optional decode() only prewarms; it must not gate the atomic swap. */
+      commitBuffer(nextIndex, show, generation);
+      if (next.decode) {
+        next.decode().then(function () {}, function () {});
+      }
+    };
+
+    if (bufferSrc(next) === url && bufferPaintReady(next)) {
+      finish();
+      return;
+    }
+
+    next.onload = function () {
+      if (generation !== presentGeneration) return;
+      finish();
+    };
+    next.onerror = function () {
+      /* Hold the last good active frame; never clear the world. */
+      if (generation !== presentGeneration) return;
+    };
+
+    if (bufferSrc(next) !== url) {
+      next.src = url;
+      /* Cached frames may be complete synchronously without a later onload. */
+      if (bufferPaintReady(next)) finish();
+    } else if (next.complete) {
+      finish();
+    }
+  }
+
+  function showFrame(target) {
+    desiredFrame = clamp(target | 0, 0, SITE_TUNING.frameCount - 1);
+    loadFrame(desiredFrame, true);
+    /* neighborhood */
+    for (var d = 1; d <= 8; d++) {
+      if (desiredFrame - d >= 0) loadFrame(desiredFrame - d, false);
+      if (desiredFrame + d < SITE_TUNING.frameCount) loadFrame(desiredFrame + d, false);
+    }
+    var show = nearestReadyFrame(desiredFrame);
+    if (show === displayedFrame) {
+      clearPendingPresent();
+      return;
+    }
+    if (!frameBuffers[0] || !frameBuffers[1]) return;
+    var url = frameUrl(show);
+
+    /* Already painted on the active buffer — bookkeeping only, no src mutation. */
+    var active = frameBuffers[activeBufferIndex];
+    if (active && bufferSrc(active) === url && bufferPaintReady(active)) {
+      if (!active.classList.contains("is-active")) active.classList.add("is-active");
+      displayedFrame = show;
+      clearPendingPresent();
+      return;
+    }
+
+    var nextIndex = active && bufferPaintReady(active) ? (1 - activeBufferIndex) : activeBufferIndex;
+
+    /* Same pending target: reuse in-flight present. Do not bump generation or
+       reassign onload/src — that cancelled live-buffer commits on ?station= routes. */
+    if (
+      pendingPresent &&
+      pendingPresent.show === show &&
+      pendingPresent.nextIndex === nextIndex &&
+      pendingPresent.url === url
+    ) {
+      var pendingBuf = frameBuffers[nextIndex];
+      if (pendingBuf && bufferPaintReady(pendingBuf) && bufferSrc(pendingBuf) === url) {
+        commitBuffer(nextIndex, show, pendingPresent.generation);
+      }
+      return;
+    }
+
+    var generation = ++presentGeneration;
+    pendingPresent = { show: show, nextIndex: nextIndex, url: url, generation: generation };
+    /* If nothing is painted yet (boot), allow writing the first frame onto buffer A. */
+    presentOnBuffer(nextIndex, show, url, generation);
+  }
+
+  function preloadBatch() {
+    var batch = SITE_TUNING.preloadBatch;
+    var n = 0;
+    while (n < batch && preloadCursor < SITE_TUNING.frameCount) {
+      if (!readySet[preloadCursor] && !loadingSet[preloadCursor]) {
+        loadFrame(preloadCursor, false);
+        n++;
+      }
+      preloadCursor++;
+    }
+    if (preloadCursor < SITE_TUNING.frameCount) {
+      scheduleIdlePreload();
+    }
+    /* Idle preload never drives the loader; opening neighbourhood owns it */
+  }
+
+  function scheduleIdlePreload() {
+    if (idleHandle) return;
+    var run = function () {
+      idleHandle = 0;
+      preloadBatch();
+    };
+    if (window.requestIdleCallback) {
+      idleHandle = window.requestIdleCallback(run, { timeout: SITE_TUNING.idleTimeoutMs });
+    } else {
+      idleHandle = window.setTimeout(run, 48);
+    }
+  }
+
+  function writeStoredMotion(value) {
+    try { localStorage.setItem(SITE_TUNING.motionStorageKey, value); }
+    catch (e) {}
+  }
+
+  function applyMotionPreference(on, persist) {
+    motionOn = !!on;
+    root.setAttribute("data-motion", motionOn ? "on" : "off");
+    if (persist) {
+      writeStoredMotion(motionOn ? "on" : "off");
+      root.setAttribute("data-motion-user", motionOn ? "on" : "off");
+    }
+    if (motionToggle) {
+      motionToggle.setAttribute("aria-pressed", motionOn ? "true" : "false");
+      motionToggle.textContent = motionOn ? "MOTION ON" : "MOTION OFF";
+      motionToggle.setAttribute(
+        "aria-label",
+        motionOn
+          ? "Motion is on. Activate to turn motion off."
+          : "Motion is off. Activate to enable full motion."
+      );
+    }
+    sampleScroll();
+    paint(progressCurrent, true);
+  }
+
+  function stationStateAt(p) {
+    var result = {};
+    for (var i = 0; i < STATION_ORDER.length; i++) {
+      var s = SITE_TUNING.stations[STATION_ORDER[i]];
+      var state = "idle";
+      if (p >= s.enter && p < s.hold) state = "entering";
+      else if (p >= s.hold && p < s.exit) state = "active";
+      else if (p >= s.exit && p < s.exit + 0.04) state = "exiting";
+      if (STATION_ORDER[i] === "threshold" && p >= s.enter) {
+        state = p >= s.hold ? "active" : "entering";
+      }
+      result[STATION_ORDER[i]] = state;
+    }
+    return result;
+  }
+
+  function dominantStation(p) {
+    if (!motionOn) {
+      var band = 1 / STATION_ORDER.length;
+      var idx = clamp(Math.floor(p / band + 0.0001), 0, STATION_ORDER.length - 1);
+      if (p >= 0.999) idx = STATION_ORDER.length - 1;
+      return STATION_ORDER[idx];
+    }
+    var best = "leak", bestDist = 1;
+    for (var i = 0; i < STATION_ORDER.length; i++) {
+      var id = STATION_ORDER[i];
+      var s = SITE_TUNING.stations[id];
+      if (p >= s.enter && p < s.exit) return id;
+      var d = Math.abs(p - s.center);
+      if (d < bestDist) { bestDist = d; best = id; }
+    }
+    if (p >= SITE_TUNING.stations.threshold.enter) return "threshold";
+    return best;
+  }
+
+  function applyProofApparatus(p, dom) {
+    var life = SITE_TUNING.proofApparatus;
+    var opacity = 0;
+    var interactive = false;
+    if (!motionOn) {
+      opacity = (dom === "proof") ? 1 : 0;
+      interactive = opacity >= 1;
+    } else {
+      if (p < life.approachStart) opacity = 0;
+      else if (p < life.fullyPresent) opacity = easeInOut((p - life.approachStart) / Math.max(0.0001, life.fullyPresent - life.approachStart));
+      else if (p < life.fadeStart) opacity = 1;
+      else if (p < life.fullyGone) opacity = 1 - easeInOut((p - life.fadeStart) / Math.max(0.0001, life.fullyGone - life.fadeStart));
+      else opacity = 0;
+      interactive = opacity >= life.interactiveMin && p >= life.fullyPresent && p < life.fadeStart;
+    }
+    root.style.setProperty("--proof-apparatus", opacity.toFixed(4));
+    var gone = opacity <= 0.001;
+    var present = opacity > 0.001;
+    setMountLifecycle(consoleMount, "console-screen", present, interactive, gone);
+    setMountLifecycle(noteMount, "note-device", present, interactive, gone);
+  }
+
+  function setMountLifecycle(mount, buttonId, present, interactive, gone) {
+    if (!mount) return;
+    var btn = document.getElementById(buttonId);
+    mount.classList.toggle("is-present", !!present && !gone);
+    mount.classList.toggle("is-live", !!interactive && !gone);
+    mount.classList.toggle("is-gone", !!gone);
+    mount.setAttribute("aria-hidden", gone || !present ? "true" : "false");
+    if (btn) {
+      if (interactive && !gone) {
+        btn.removeAttribute("tabindex");
+        btn.removeAttribute("aria-hidden");
+        btn.style.pointerEvents = "";
+      } else {
+        btn.setAttribute("tabindex", "-1");
+        btn.setAttribute("aria-hidden", "true");
+        btn.style.pointerEvents = "none";
+      }
+    }
+  }
+
+  function paintStations(p) {
+    var dom = dominantStation(p);
+    activeStationId = dom;
+    var states = stationStateAt(p);
+
+    for (var i = 0; i < stations.length; i++) {
+      var el = stations[i];
+      var id = el.getAttribute("data-station");
+      el.classList.remove("is-active", "is-held", "is-exiting");
+      if (!motionOn) {
+        if (id === dom) el.classList.add("is-held");
+        continue;
+      }
+      var st = states[id];
+      if (id === dom) {
+        if (st === "exiting") el.classList.add("is-exiting");
+        else el.classList.add("is-active");
+      } else if (st === "exiting") {
+        el.classList.add("is-exiting");
+      }
+    }
+
+    var activeMethodStep = -1;
+    if (motionOn && dom === "method") {
+      for (var ms = 0; ms < SITE_TUNING.methodSteps.length; ms++) {
+        var range = SITE_TUNING.methodSteps[ms];
+        if (p >= range.at && p < range.until) activeMethodStep = ms;
+      }
+    }
+    for (var m = 0; m < methodAnnots.length; m++) {
+      var annot = methodAnnots[m];
+      var on = !motionOn ? (dom === "method") : (m === activeMethodStep);
+      if (on) annot.classList.add("is-on");
+      else annot.classList.remove("is-on");
+    }
+
+    for (var r = 0; r < railTicks.length; r++) {
+      var tick = railTicks[r];
+      tick.setAttribute("aria-current", tick.getAttribute("data-go") === dom ? "true" : "false");
+    }
+    root.style.setProperty("--rail-marker", progressToRailMarker(p).toFixed(2) + "%");
+
+    var idx = STATION_ORDER.indexOf(dom) + 1;
+    var label = SITE_TUNING.stations[dom].label;
+    if (distanceHud) {
+      if (dom === "threshold" && p > 0.97) {
+        distanceHud.textContent = "END OF CORRIDOR";
+        root.style.setProperty("--hud-opacity", "0.35");
+      } else {
+        distanceHud.textContent = "STATION 0" + idx + " · " + label;
+        root.style.setProperty("--hud-opacity", "1");
+      }
+    }
+    if (siteFooter) {
+      if (dom === "threshold") siteFooter.classList.add("is-on");
+      else siteFooter.classList.remove("is-on");
+    }
+    if (scrollCue) {
+      if (dom === "leak" && p < 0.06 && motionOn) scrollCue.classList.add("is-on");
+      else scrollCue.classList.remove("is-on");
+    }
+
+    var lit = 0;
+    if (!motionOn) lit = (dom === "proof") ? 1 : 0;
+    else {
+      var cs = SITE_TUNING.consoleLit.start;
+      var cf = SITE_TUNING.consoleLit.full;
+      lit = clamp((p - cs) / Math.max(0.0001, cf - cs), 0, 1);
+      var life = SITE_TUNING.proofApparatus;
+      if (p >= life.fadeStart) {
+        lit *= clamp(1 - (p - life.fadeStart) / Math.max(0.0001, life.fullyGone - life.fadeStart), 0, 1);
+      }
+    }
+    root.style.setProperty("--console-lit", lit.toFixed(4));
+    applyProofApparatus(p, dom);
+
+    var sig = motionOn ? clamp(0.25 + p * 0.7, 0.25, 0.95) : 0.55;
+    root.style.setProperty("--signal-core", sig.toFixed(4));
+  }
+
+  function paint(p) {
+    p = clamp(p, 0, 1);
+    root.style.setProperty("--progress", p.toFixed(5));
+
+    var frame;
+    if (!motionOn) {
+      var id = dominantStation(p);
+      frame = SITE_TUNING.stillFrames[id] || 0;
+      activeStationId = id;
+    } else {
+      frame = progressToFrame(p);
+    }
+    showFrame(frame);
+    paintStations(p);
+  }
+
+  function computeProgress() {
+    if (!journey || !viewport) return 0;
+    var rect = journey.getBoundingClientRect();
+    var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
+    var scrolled = clamp(-rect.top, 0, total);
+    return scrolled / total;
+  }
+
+  function sampleScroll() {
+    progressTarget = computeProgress();
+    if (!motionOn) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      return;
+    }
+    startRenderLoop();
+  }
+
+  function startRenderLoop() {
+    if (renderRaf) return;
+    lastFrameTs = 0;
+    renderRaf = window.requestAnimationFrame(renderTick);
+  }
+
+  function renderTick(ts) {
+    renderRaf = 0;
+    var dt = lastFrameTs ? Math.min(0.048, (ts - lastFrameTs) / 1000) : 0.016;
+    lastFrameTs = ts;
+    if (!motionOn) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      return;
+    }
+    var tau = isMobile() ? SITE_TUNING.settle.tauMobileSec : SITE_TUNING.settle.tauDesktopSec;
+    var alpha = 1 - Math.exp(-dt / Math.max(0.001, tau));
+    progressCurrent += (progressTarget - progressCurrent) * alpha;
+    paint(progressCurrent);
+    if (Math.abs(progressTarget - progressCurrent) > SITE_TUNING.settle.epsilon) {
+      renderRaf = window.requestAnimationFrame(renderTick);
+    } else {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      lastFrameTs = 0;
+    }
+  }
+
+  function scrollToStation(id, behavior) {
+    if (!validStations[id] || !journey || !viewport) return;
+    var s = SITE_TUNING.stations[id];
+    var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
+    var top;
+    if (!motionOn) {
+      var idx = STATION_ORDER.indexOf(id);
+      top = (idx / STATION_ORDER.length) * total + 1;
+    } else {
+      top = s.center * total;
+    }
+    window.scrollTo({ top: top, left: 0, behavior: behavior || "auto" });
+    sampleScroll();
+  }
+
+  function lightboxFocusables() {
+    if (!lightbox || !lightbox.classList.contains("is-open")) return [];
+    var candidates = lightbox.querySelectorAll(
+      'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]'
+    );
+    var list = [];
+    for (var i = 0; i < candidates.length; i++) {
+      var el = candidates[i];
+      if (el.getAttribute("aria-hidden") === "true") continue;
+      if (el.getAttribute("tabindex") === "-1") continue;
+      var style = window.getComputedStyle(el);
+      if (style.display === "none" || style.visibility === "hidden") continue;
+      list.push(el);
+    }
+    return list;
+  }
+
+  function trapLightboxFocus(e) {
+    if (!lightbox || !lightbox.classList.contains("is-open")) return;
+    if (e.key !== "Tab") return;
+    var nodes = lightboxFocusables();
+    if (!nodes.length) {
+      e.preventDefault();
+      if (lightboxClose) lightboxClose.focus();
+      return;
+    }
+    var first = nodes[0], last = nodes[nodes.length - 1];
+    var active = document.activeElement;
+    if (nodes.length === 1) { e.preventDefault(); first.focus(); return; }
+    if (e.shiftKey) {
+      if (active === first || !lightbox.contains(active)) { e.preventDefault(); last.focus(); }
+    } else if (active === last || !lightbox.contains(active)) {
+      e.preventDefault(); first.focus();
+    }
+  }
+
+  function openLightbox(key) {
+    var data = LIGHTBOX_SRC[key];
+    if (!data || !lightbox) return;
+    lastFocus = document.activeElement;
+    lightboxImg.src = data.src;
+    lightboxImg.alt = data.alt;
+    lightboxCaption.textContent = data.caption;
+    lightbox.hidden = false;
+    lightbox.classList.add("is-open");
+    window.setTimeout(function () {
+      if (lightboxClose) lightboxClose.focus();
+      else if (lightboxPanel) lightboxPanel.focus();
+    }, 10);
+  }
+
+  function closeLightbox() {
+    if (!lightbox) return;
+    lightbox.classList.remove("is-open");
+    lightbox.hidden = true;
+    lightboxImg.removeAttribute("src");
+    var opener = lastFocus;
+    lastFocus = null;
+    if (opener && typeof opener.focus === "function") {
+      if (document.contains(opener) && opener.getAttribute("tabindex") !== "-1") opener.focus();
+      else {
+        var consoleBtn = document.getElementById("console-screen");
+        if (consoleBtn && consoleBtn.getAttribute("tabindex") !== "-1") consoleBtn.focus();
+      }
+    }
+  }
+
+  function runIntro() {
+    root.style.setProperty("--intro-veil", "1");
+    root.style.setProperty("--world-opacity", "0");
+    window.setTimeout(function () { body.classList.add("is-ready"); }, SITE_TUNING.intro.readyDelayMs);
+
+    if (!motionOn) {
+      root.style.setProperty("--intro-veil", "0");
+      root.style.setProperty("--world-opacity", "1");
+      introDone = true;
+      dismissLoader();
+      paint(progressCurrent);
+      return;
+    }
+
+    window.setTimeout(function () {
+      root.style.setProperty("--world-opacity", "1");
+      root.style.setProperty("--signal-core", "0.45");
+    }, 60);
+    window.setTimeout(function () {
+      root.style.setProperty("--intro-veil", "0");
+    }, 120);
+    window.setTimeout(function () {
+      introDone = true;
+      dismissLoader();
+      sampleScroll();
+    }, SITE_TUNING.intro.veilMs);
+  }
+
+  /* Boot preload: opening neighborhood, then station targets, then idle rest */
+  function bootPreload() {
+    /* always open on frame 0 */
+    for (var i = 0; i < 24; i++) loadFrame(i, true);
+    if (forcedStation && SITE_TUNING.stillFrames[forcedStation] != null) {
+      var center = SITE_TUNING.stillFrames[forcedStation];
+      for (var j = Math.max(0, center - 12); j <= Math.min(SITE_TUNING.frameCount - 1, center + 12); j++) {
+        loadFrame(j, true);
+      }
+    }
+    /* still-route keys */
+    var keys = SITE_TUNING.stillFrames;
+    for (var k in keys) loadFrame(keys[k], true);
+    preloadCursor = 24;
+    scheduleIdlePreload();
+  }
+
+  window.addEventListener("scroll", function () {
+    progressTarget = computeProgress();
+    if (!motionOn) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+    } else {
+      startRenderLoop();
+    }
+  }, { passive: true });
+
+  window.addEventListener("resize", function () { sampleScroll(); });
+
+  if (typeof mobileMq.addEventListener === "function") {
+    mobileMq.addEventListener("change", function () { sampleScroll(); });
+  } else if (typeof mobileMq.addListener === "function") {
+    mobileMq.addListener(function () { sampleScroll(); });
+  }
+
+  if (motionToggle) {
+    motionToggle.addEventListener("click", function () {
+      applyMotionPreference(!motionOn, true);
+    });
+  }
+
+  function bindGo(el) {
+    el.addEventListener("click", function (e) {
+      var id = el.getAttribute("data-go");
+      if (!id || !validStations[id]) return;
+      e.preventDefault();
+      scrollToStation(id, motionOn ? "smooth" : "auto");
+    });
+  }
+  for (var g = 0; g < railTicks.length; g++) bindGo(railTicks[g]);
+  var goLinks = document.querySelectorAll("[data-go]");
+  for (var gl = 0; gl < goLinks.length; gl++) {
+    if (!goLinks[gl].classList.contains("station-rail-tick")) bindGo(goLinks[gl]);
+  }
+
+  var planeButtons = document.querySelectorAll("[data-lightbox]");
+  for (var pi = 0; pi < planeButtons.length; pi++) {
+    (function (btn) {
+      btn.addEventListener("click", function () {
+        if (btn.getAttribute("tabindex") === "-1") return;
+        var mount = btn.closest(".console-mount, .note-mount");
+        if (mount && !mount.classList.contains("is-live")) return;
+        openLightbox(btn.getAttribute("data-lightbox"));
+      });
+    })(planeButtons[pi]);
+  }
+
+  if (lightboxClose) lightboxClose.addEventListener("click", closeLightbox);
+  if (lightbox) {
+    lightbox.addEventListener("click", function (e) {
+      if (e.target === lightbox) closeLightbox();
+    });
+  }
+  document.addEventListener("keydown", function (e) {
+    if (!lightbox || !lightbox.classList.contains("is-open")) return;
+    if (e.key === "Escape") { closeLightbox(); return; }
+    trapLightboxFocus(e);
+  });
+
+  /* keyboard station nav when not in lightbox */
+  document.addEventListener("keydown", function (e) {
+    if (lightbox && lightbox.classList.contains("is-open")) return;
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "PageDown" && e.key !== "PageUp") return;
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable)) return;
+    var idx = STATION_ORDER.indexOf(activeStationId);
+    if (e.key === "ArrowDown" || e.key === "PageDown") {
+      if (idx < STATION_ORDER.length - 1) {
+        e.preventDefault();
+        scrollToStation(STATION_ORDER[idx + 1], motionOn ? "smooth" : "auto");
+      }
+    } else if (idx > 0) {
+      e.preventDefault();
+      scrollToStation(STATION_ORDER[idx - 1], motionOn ? "smooth" : "auto");
+    }
+  });
+
+  var noJsRoute = document.getElementById("no-js-route");
+  if (noJsRoute && noJsRoute.parentNode) noJsRoute.parentNode.removeChild(noJsRoute);
+
+  bootPreload();
+  applyMotionPreference(motionOn, false);
+  showFrame(0);
+
+  if (forcedStation) {
+    root.style.setProperty("--intro-veil", "0");
+    root.style.setProperty("--world-opacity", "1");
+    introDone = true;
+    dismissLoader();
+    window.requestAnimationFrame(function () {
+      scrollToStation(forcedStation, "auto");
+      progressCurrent = progressTarget = computeProgress();
+      paint(progressCurrent);
+    });
+  } else {
+    progressCurrent = progressTarget = 0;
+    paint(0);
+    runIntro();
+  }
+
+  window.SITE_TUNING = SITE_TUNING;
+  window.__CORRIDOR = {
+    get progress() { return progressCurrent; },
+    get target() { return progressTarget; },
+    get station() { return activeStationId; },
+    get motion() { return motionOn; },
+    get frame() { return displayedFrame; },
+    get desiredFrame() { return desiredFrame; },
+    get framesReady() { return framesReadyCount; },
+    get introDone() { return introDone; },
+    go: scrollToStation,
+    progressToFrame: progressToFrame,
+    progressToRailMarker: progressToRailMarker
+  };
+})();
+</script>
 </body>
 </html>

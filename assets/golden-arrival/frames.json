@@ -1,0 +1,41 @@
+{
+  "count": 361,
+  "pattern": "ga-%03d.webp",
+  "first": "ga-000.webp",
+  "last": "ga-360.webp",
+  "width": 1280,
+  "height": 720,
+  "fps": 24,
+  "duration_seconds": 15.0416666667,
+  "source_mp4": "assets/golden-arrival/golden-arrival-approved.mp4",
+  "source_sha256": "07FAB0B57C8F39A833B54E36BA6C48AAE1051B7F263842986868B9EC5146BD4C",
+  "representative_indices": [
+    0,
+    90,
+    180,
+    270,
+    360
+  ],
+  "representative_sha256": {
+    "0": "41385880274353481ADB1EA89B1E7A7C9CF85EFCA7BB345F82C0432111E1BEC5",
+    "180": "EC356833A7B7B40ABB78AA3C051901636D958F980C482545AA9F9028C64DE737",
+    "360": "552FBA13D339F46BF909735F3B629C5574545FD7626021E7F371D650149BF224"
+  },
+  "aggregate_bytes": 28257098,
+  "unique_frame_files": 361,
+  "encoding": {
+    "tool": "ffmpeg",
+    "codec": "libwebp",
+    "preset": "picture",
+    "quality": 82,
+    "compression_level": 6,
+    "derivation": "source-derived-without-regeneration-or-retouching"
+  },
+  "extraction": {
+    "method": "ffmpeg-libwebp-exact-frames-from-approved-mp4",
+    "frame_count": 361,
+    "fps": 24,
+    "duration_seconds": 15.0416666667,
+    "source_mp4_sha256": "07FAB0B57C8F39A833B54E36BA6C48AAE1051B7F263842986868B9EC5146BD4C"
+  }
+}
