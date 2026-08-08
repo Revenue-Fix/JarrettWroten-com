@@ -1764,6 +1764,12 @@
   var forcedEntryFrame = -1;
   var worldLoadUnlocked = true;
   var forcedBackgroundStarted = false;
+  /* Bounded forced-entry retry: transient CDN failures re-request the exact entry
+     before background unlock. Not a tight loop — fixed attempt budget + delay. */
+  var FORCED_ENTRY_MAX_ATTEMPTS = 3;
+  var FORCED_ENTRY_RETRY_MS = 120;
+  var forcedEntryAttempts = 0;
+  var forcedEntryRetryTimer = 0;
 
   var LIGHTBOX_SRC = {
     stripe: {
@@ -1845,7 +1851,42 @@
   function unlockWorldLoads() {
     if (worldLoadUnlocked) return;
     worldLoadUnlocked = true;
+    if (forcedEntryRetryTimer) {
+      window.clearTimeout(forcedEntryRetryTimer);
+      forcedEntryRetryTimer = 0;
+    }
+    /* After success or policy exhaust: allow one normal-priority recovery load of the
+       entry, then resume neighborhood/opening/idle. Never tight-loop here. */
+    if (forcedEntryFrame >= 0 && !readySet[forcedEntryFrame] && !loadingSet[forcedEntryFrame]) {
+      loadFrame(forcedEntryFrame, true);
+    }
     startForcedBackgroundPreload();
+  }
+
+  function scheduleForcedEntryRetry() {
+    if (forcedEntryFrame < 0 || worldLoadUnlocked) return;
+    if (readySet[forcedEntryFrame]) {
+      unlockWorldLoads();
+      return;
+    }
+    if (forcedEntryAttempts >= FORCED_ENTRY_MAX_ATTEMPTS) {
+      unlockWorldLoads();
+      return;
+    }
+    if (loadingSet[forcedEntryFrame] || forcedEntryRetryTimer) return;
+    forcedEntryRetryTimer = window.setTimeout(function () {
+      forcedEntryRetryTimer = 0;
+      if (worldLoadUnlocked || readySet[forcedEntryFrame]) return;
+      if (forcedEntryAttempts >= FORCED_ENTRY_MAX_ATTEMPTS) {
+        unlockWorldLoads();
+        return;
+      }
+      /* Dedicated priority path: same exact entry only; gate still closed. */
+      loadFrame(forcedEntryFrame, true);
+      if (desiredFrame === forcedEntryFrame || forcedStation) {
+        showFrame(forcedEntryFrame);
+      }
+    }, FORCED_ENTRY_RETRY_MS);
   }
 
   function nearestReadyFrame(target) {
@@ -1915,11 +1956,14 @@
 
   function loadFrame(i, priority) {
     i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
-    /* Forced direct routes: refuse speculative starts until the entry center is ready.
-       priority is retained for call-site intent; the gate is the load-bearing control. */
+    /* Forced direct routes: refuse speculative starts until the entry center is ready
+       or the bounded forced-entry retry policy is exhausted. */
     if (!worldLoadUnlocked && i !== forcedEntryFrame) return;
     if (readySet[i] || loadingSet[i]) return;
     loadingSet[i] = 1;
+    if (forcedEntryFrame >= 0 && i === forcedEntryFrame && !worldLoadUnlocked) {
+      forcedEntryAttempts++;
+    }
     var img = new Image();
     img.decoding = "async";
     var url = frameUrl(i);
@@ -1937,8 +1981,15 @@
       img.onload = done;
       img.onerror = function () {
         loadingSet[i] = 0;
-        /* Failed entry center must not permanently freeze background loads. */
-        if (forcedEntryFrame >= 0 && i === forcedEntryFrame) unlockWorldLoads();
+        if (forcedEntryFrame >= 0 && i === forcedEntryFrame && !worldLoadUnlocked) {
+          /* Transient CDN miss: retry the exact entry on the priority path before
+             releasing background/speculative work. */
+          if (forcedEntryAttempts < FORCED_ENTRY_MAX_ATTEMPTS) {
+            scheduleForcedEntryRetry();
+          } else {
+            unlockWorldLoads();
+          }
+        }
       };
     }
     frameMeta[i] = { img: img, url: url, priority: !!priority };

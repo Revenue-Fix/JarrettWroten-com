@@ -169,6 +169,18 @@ ok(
   /if\s*\(\s*!worldLoadUnlocked\s*&&\s*i\s*!==\s*forcedEntryFrame\s*\)\s*return/.test(html),
   'loadFrame refuses speculative starts while entry gated'
 );
+ok(html.includes('FORCED_ENTRY_MAX_ATTEMPTS') && html.includes('scheduleForcedEntryRetry'), 'bounded forced-entry retry policy');
+ok(html.includes('FORCED_ENTRY_RETRY_MS'), 'forced-entry retry delay constant');
+ok(
+  html.includes('forcedEntryAttempts') &&
+    /forcedEntryAttempts\s*<\s*FORCED_ENTRY_MAX_ATTEMPTS/.test(html) &&
+    html.includes('scheduleForcedEntryRetry()'),
+  'forced-entry error path retries before unlock'
+);
+ok(
+  /FORCED_ENTRY_MAX_ATTEMPTS\s*=\s*3/.test(html) && /FORCED_ENTRY_RETRY_MS\s*=\s*120/.test(html),
+  'forced-entry policy is explicit 3 attempts / 120ms delay'
+);
 
 // ——— Holistic visual-correction contract (structural tripwires) ———
 ok(html.includes('white-space:nowrap'), 'display spans authored nowrap');
@@ -741,6 +753,180 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
     for (let i = 0; i < 24; i++) loadHome(i);
     ok(homeStarts[0] === 0, 'oracle: normal / opens with frame 0 load first');
     ok(homeStarts.length === 24, 'oracle: normal / opening neighbourhood is 24 frames');
+  }
+
+  // Transient first-request failure then success: retry exact entry before background.
+  {
+    const entry = expectedMotionOn.threshold; // 354 — the live consumer replay case
+    const MAX_ATTEMPTS = 3;
+    const RETRY_MS = 120;
+    const loadStarts = [];
+    const inflight = Object.create(null);
+    let attempts = 0;
+    let unlocked = false;
+    let backgroundStarted = false;
+    let displayed = 0;
+    let activePainted = 0; // last-good ga-000
+    let failNext = true; // first request fails
+    let concurrentEntry = 0;
+    let maxConcurrentEntry = 0;
+    let retryTimer = null;
+
+    function startBackground() {
+      if (backgroundStarted) return;
+      backgroundStarted = true;
+      for (let j = 0; j < 24; j++) loadGated(j);
+    }
+    function unlock() {
+      if (unlocked) return;
+      unlocked = true;
+      if (retryTimer) {
+        clearTimeout(retryTimer);
+        retryTimer = null;
+      }
+      startBackground();
+    }
+    function loadGated(i) {
+      if (!unlocked && i !== entry) return false;
+      if (inflight[i]) return false;
+      inflight[i] = 1;
+      if (i === entry && !unlocked) {
+        attempts++;
+        concurrentEntry++;
+        maxConcurrentEntry = Math.max(maxConcurrentEntry, concurrentEntry);
+      }
+      loadStarts.push(i);
+      const delay = i === entry ? 40 : 80;
+      setTimeout(() => {
+        if (i === entry && failNext) {
+          failNext = false;
+          inflight[i] = 0;
+          concurrentEntry = Math.max(0, concurrentEntry - 1);
+          // onerror: schedule retry, do NOT unlock
+          if (attempts < MAX_ATTEMPTS && !unlocked) {
+            if (!retryTimer) {
+              retryTimer = setTimeout(() => {
+                retryTimer = null;
+                loadGated(entry);
+              }, RETRY_MS);
+            }
+          } else if (!unlocked) {
+            unlock();
+          }
+          return;
+        }
+        inflight[i] = 0;
+        if (i === entry) concurrentEntry = Math.max(0, concurrentEntry - 1);
+        if (i === entry) {
+          displayed = entry;
+          activePainted = entry;
+          unlock();
+        }
+      }, delay);
+      return true;
+    }
+
+    // Boot + speculative pressure
+    loadGated(entry);
+    for (let d = 1; d <= 8; d++) {
+      loadGated(entry - d);
+      loadGated(entry + d);
+    }
+    for (let j = 0; j < 24; j++) loadGated(j);
+
+    ok(loadStarts[0] === entry, 'oracle retry: first load is entry ' + entry);
+    ok(loadStarts.filter((x) => x === entry).length === 1, 'oracle retry: sole entry request during sync boot');
+    ok(activePainted === 0 && displayed === 0, 'oracle retry: holds last-good 0 after scheduling first fail path');
+
+    await new Promise((r) => setTimeout(r, 40 + RETRY_MS + 40 + 30));
+
+    const entryStarts = loadStarts.filter((x) => x === entry);
+    ok(entryStarts.length === 2, 'oracle retry: exactly two entry attempts after first fail (got ' + entryStarts.length + ')');
+    ok(loadStarts[0] === entry && loadStarts[1] === entry, 'oracle retry: second start is entry before any background (starts=' + loadStarts.slice(0, 4).join(',') + ')');
+    ok(maxConcurrentEntry <= 1, 'oracle retry: no duplicate simultaneous entry request (max=' + maxConcurrentEntry + ')');
+    ok(displayed === entry && activePainted === entry, 'oracle retry: presents entry after successful retry (got ' + displayed + ')');
+    ok(unlocked && backgroundStarted, 'oracle retry: background unlocks only after entry success');
+    ok(activePainted !== -1 && activePainted !== null, 'oracle retry: never blank during retry');
+    // Background frames may appear only after the successful entry start index
+    const firstBg = loadStarts.findIndex((x, idx) => idx > 0 && x !== entry);
+    const secondEntryIdx = loadStarts.indexOf(entry, 1);
+    ok(
+      firstBg === -1 || firstBg > secondEntryIdx,
+      'oracle retry: no background frame starts before successful entry retry (firstBg=' + firstBg + ', secondEntry=' + secondEntryIdx + ')'
+    );
+  }
+
+  // Persistent failure: exhaust policy, unlock, do not freeze forever.
+  {
+    const entry = expectedMotionOn.jarrett;
+    const MAX_ATTEMPTS = 3;
+    const RETRY_MS = 120;
+    const loadStarts = [];
+    const inflight = Object.create(null);
+    let attempts = 0;
+    let unlocked = false;
+    let backgroundStarted = false;
+    let activePainted = 0;
+    let retryTimer = null;
+    let postUnlockEntryLoads = 0;
+
+    function unlock() {
+      if (unlocked) return;
+      unlocked = true;
+      if (retryTimer) {
+        clearTimeout(retryTimer);
+        retryTimer = null;
+      }
+      backgroundStarted = true;
+      // recovery chance after exhaust
+      loadGated(entry);
+      for (let j = 0; j < 8; j++) loadGated(j);
+    }
+    function loadGated(i) {
+      if (!unlocked && i !== entry) return false;
+      if (inflight[i]) return false;
+      inflight[i] = 1;
+      if (i === entry && !unlocked) attempts++;
+      if (i === entry && unlocked) postUnlockEntryLoads++;
+      loadStarts.push(i);
+      setTimeout(() => {
+        inflight[i] = 0;
+        // Always fail entry while gated
+        if (i === entry && !unlocked) {
+          if (attempts < MAX_ATTEMPTS) {
+            if (!retryTimer) {
+              retryTimer = setTimeout(() => {
+                retryTimer = null;
+                loadGated(entry);
+              }, RETRY_MS);
+            }
+          } else {
+            unlock();
+          }
+          return;
+        }
+        // After unlock, entry still fails — but no tight loop (no reschedule)
+      }, 30);
+      return true;
+    }
+
+    loadGated(entry);
+    await new Promise((r) => setTimeout(r, RETRY_MS * 3 + 200));
+    const entryAttempts = loadStarts.filter((x) => x === entry).length;
+    ok(attempts === MAX_ATTEMPTS, 'oracle exhaust: attempts reach max ' + MAX_ATTEMPTS + ' (got ' + attempts + ')');
+    ok(entryAttempts === MAX_ATTEMPTS || entryAttempts === MAX_ATTEMPTS + 1, 'oracle exhaust: entry starts bounded (got ' + entryAttempts + ')');
+    ok(unlocked && backgroundStarted, 'oracle exhaust: unlocks background after policy exhaust');
+    ok(activePainted === 0, 'oracle exhaust: keeps last-good frame 0 painted');
+    ok(loadStarts.some((x) => x !== entry), 'oracle exhaust: background frames start after exhaust');
+    // No unbounded tight loop: wait a bit more and ensure entry count doesn't explode
+    const countAtUnlock = loadStarts.filter((x) => x === entry).length;
+    await new Promise((r) => setTimeout(r, 200));
+    const countLater = loadStarts.filter((x) => x === entry).length;
+    ok(
+      countLater - countAtUnlock <= 1,
+      'oracle exhaust: no unbounded entry retry loop (delta=' + (countLater - countAtUnlock) + ')'
+    );
+    void postUnlockEntryLoads;
   }
 }
 
