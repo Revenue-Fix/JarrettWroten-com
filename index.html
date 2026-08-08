@@ -1770,6 +1770,11 @@
   var FORCED_ENTRY_RETRY_MS = 120;
   var forcedEntryAttempts = 0;
   var forcedEntryRetryTimer = 0;
+  /* Cold-HTTP load scheduler: desired/priority work starts before speculative still/idle. */
+  var MAX_INFLIGHT_LOADS = 6;
+  var inflightLoads = 0;
+  var loadQueue = [];
+  var loadQueuedSet = Object.create(null);
 
   var LIGHTBOX_SRC = {
     stripe: {
@@ -1889,16 +1894,50 @@
     }, FORCED_ENTRY_RETRY_MS);
   }
 
-  function nearestReadyFrame(target) {
+  /* Monotonic presentable selection: never reverse against scroll direction and never
+     overshoot desired merely because a far still arrived first. Hold last-good instead. */
+  function selectPresentableFrame(target) {
+    target = clamp(target | 0, 0, SITE_TUNING.frameCount - 1);
     if (readySet[target]) return target;
-    var best = -1, bestD = 1e9;
-    for (var k in readySet) {
-      if (!readySet[k]) continue;
-      var idx = k | 0;
-      var d = Math.abs(idx - target);
-      if (d < bestD) { bestD = d; best = idx; }
+    if (displayedFrame < 0) {
+      /* Boot: exact target only when ready (handled above). Never scan for a nearest
+         still/neighbor — that overshot desired when frame 1 or a far still finished
+         first. Hold the authored last-good boot surface (frame 0 / ga-000 in DOM). */
+      return 0;
     }
-    return best >= 0 ? best : 0;
+    var from = displayedFrame;
+    var best;
+    var k;
+    var idx;
+    if (target >= from) {
+      /* Forward/hold: only frames in [from, target], prefer closest to target. */
+      best = -1;
+      for (k in readySet) {
+        if (!readySet[k]) continue;
+        idx = k | 0;
+        if (idx >= from && idx <= target && idx > best) best = idx;
+      }
+      return best >= 0 ? best : from;
+    }
+    /* Backward: only frames in [target, from], prefer closest to target. */
+    best = 1e9;
+    for (k in readySet) {
+      if (!readySet[k]) continue;
+      idx = k | 0;
+      if (idx <= from && idx >= target && idx < best) best = idx;
+    }
+    return best < 1e9 ? best : from;
+  }
+
+  function frameInPresentRange(i, target, from) {
+    if (from < 0) return true;
+    if (target >= from) return i >= from && i <= target;
+    return i <= from && i >= target;
+  }
+
+  /* Back-compat name used by older oracles/comments — monotonic selector. */
+  function nearestReadyFrame(target) {
+    return selectPresentableFrame(target);
   }
 
   function dismissLoader() {
@@ -1934,7 +1973,12 @@
     if (forcedEntryFrame >= 0 && i === forcedEntryFrame) {
       unlockWorldLoads();
     }
-    if (i === desiredFrame || displayedFrame < 0) {
+    /* Advance presentation when the exact target or an in-range frame becomes ready. */
+    if (
+      i === desiredFrame ||
+      displayedFrame < 0 ||
+      frameInPresentRange(i, desiredFrame, displayedFrame)
+    ) {
       showFrame(desiredFrame);
     }
   }
@@ -1954,45 +1998,115 @@
     return ticks[0];
   }
 
-  function loadFrame(i, priority) {
-    i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
-    /* Forced direct routes: refuse speculative starts until the entry center is ready
-       or the bounded forced-entry retry policy is exhausted. */
-    if (!worldLoadUnlocked && i !== forcedEntryFrame) return;
-    if (readySet[i] || loadingSet[i]) return;
+  function enqueueLoad(i, priority) {
+    if (loadQueuedSet[i]) {
+      if (priority) {
+        var q;
+        for (q = 0; q < loadQueue.length; q++) {
+          if (loadQueue[q].i === i) {
+            loadQueue[q].priority = true;
+            break;
+          }
+        }
+      }
+      return;
+    }
+    loadQueuedSet[i] = 1;
+    if (priority) loadQueue.unshift({ i: i, priority: true });
+    else loadQueue.push({ i: i, priority: false });
+  }
+
+  function pumpLoadQueue() {
+    while (inflightLoads < MAX_INFLIGHT_LOADS && loadQueue.length) {
+      /* Prefer a priority entry if any are queued (desired outranks speculative). */
+      var pick = 0;
+      var qi;
+      for (qi = 0; qi < loadQueue.length; qi++) {
+        if (loadQueue[qi].priority) { pick = qi; break; }
+      }
+      var job = loadQueue.splice(pick, 1)[0];
+      delete loadQueuedSet[job.i];
+      if (readySet[job.i] || loadingSet[job.i]) continue;
+      beginFrameLoad(job.i, job.priority);
+    }
+  }
+
+  function beginFrameLoad(i, priority) {
     loadingSet[i] = 1;
+    inflightLoads++;
     if (forcedEntryFrame >= 0 && i === forcedEntryFrame && !worldLoadUnlocked) {
       forcedEntryAttempts++;
     }
     var img = new Image();
     img.decoding = "async";
     var url = frameUrl(i);
-    img.src = url;
-    var done = function () {
+    var settled = false;
+    var finishLoad = function (ok) {
+      if (settled) return;
+      settled = true;
       loadingSet[i] = 0;
-      if (img.decode) {
-        img.decode().then(function () { markReady(i); }).catch(function () { markReady(i); });
-      } else {
-        markReady(i);
+      inflightLoads = Math.max(0, inflightLoads - 1);
+      if (ok) {
+        /* Only paint-ready images enter readySet. */
+        if (img.complete && img.naturalWidth > 0) {
+          if (img.decode) {
+            img.decode().then(function () {
+              if (img.naturalWidth > 0) markReady(i);
+              pumpLoadQueue();
+            }).catch(function () {
+              if (img.complete && img.naturalWidth > 0) markReady(i);
+              pumpLoadQueue();
+            });
+            return;
+          }
+          markReady(i);
+        }
+      } else if (forcedEntryFrame >= 0 && i === forcedEntryFrame && !worldLoadUnlocked) {
+        /* Transient CDN miss: retry the exact entry on the priority path before
+           releasing background/speculative work. */
+        if (forcedEntryAttempts < FORCED_ENTRY_MAX_ATTEMPTS) {
+          scheduleForcedEntryRetry();
+        } else {
+          unlockWorldLoads();
+        }
       }
+      pumpLoadQueue();
     };
-    if (img.complete) done();
-    else {
-      img.onload = done;
-      img.onerror = function () {
-        loadingSet[i] = 0;
-        if (forcedEntryFrame >= 0 && i === forcedEntryFrame && !worldLoadUnlocked) {
-          /* Transient CDN miss: retry the exact entry on the priority path before
-             releasing background/speculative work. */
-          if (forcedEntryAttempts < FORCED_ENTRY_MAX_ATTEMPTS) {
-            scheduleForcedEntryRetry();
-          } else {
-            unlockWorldLoads();
+    /* Handlers before src so cached success/failure cannot escape. */
+    img.onload = function () { finishLoad(true); };
+    img.onerror = function () { finishLoad(false); };
+    frameMeta[i] = { img: img, url: url, priority: !!priority };
+    img.src = url;
+    if (img.complete) {
+      if (img.naturalWidth > 0) finishLoad(true);
+      else finishLoad(false);
+    }
+  }
+
+  function loadFrame(i, priority) {
+    i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
+    /* Forced direct routes: refuse speculative starts until the entry center is ready
+       or the bounded forced-entry retry policy is exhausted. */
+    if (!worldLoadUnlocked && i !== forcedEntryFrame) return;
+    if (readySet[i] || loadingSet[i]) return;
+    priority = !!priority;
+    /* Priority (desired/entry) starts immediately when a slot exists; speculative queues. */
+    if (priority && inflightLoads < MAX_INFLIGHT_LOADS) {
+      if (loadQueuedSet[i]) {
+        var q;
+        for (q = 0; q < loadQueue.length; q++) {
+          if (loadQueue[q].i === i) {
+            loadQueue.splice(q, 1);
+            delete loadQueuedSet[i];
+            break;
           }
         }
-      };
+      }
+      beginFrameLoad(i, true);
+      return;
     }
-    frameMeta[i] = { img: img, url: url, priority: !!priority };
+    enqueueLoad(i, priority);
+    pumpLoadQueue();
   }
 
   function bufferSrc(el) {
@@ -2012,7 +2126,8 @@
 
   function commitBuffer(nextIndex, show, generation) {
     if (generation !== presentGeneration) return;
-    if (nearestReadyFrame(desiredFrame) !== show) return;
+    /* Reject stale commits that would reverse or overshoot against current selection. */
+    if (selectPresentableFrame(desiredFrame) !== show) return;
     var next = frameBuffers[nextIndex];
     var prev = frameBuffers[activeBufferIndex];
     if (!next || !bufferPaintReady(next)) return;
@@ -2033,7 +2148,7 @@
 
     var finish = function () {
       if (generation !== presentGeneration) return;
-      if (nearestReadyFrame(desiredFrame) !== show) return;
+      if (selectPresentableFrame(desiredFrame) !== show) return;
       if (!bufferPaintReady(next) || bufferSrc(next) !== url) return;
       /* complete + naturalWidth is paint-ready. Commit immediately so rAF/markReady
          re-entries for the same frame cannot starve an open decode() promise.
@@ -2069,13 +2184,14 @@
 
   function showFrame(target) {
     desiredFrame = clamp(target | 0, 0, SITE_TUNING.frameCount - 1);
+    /* Desired frame outranks neighborhood/still/idle speculative work. */
     loadFrame(desiredFrame, true);
-    /* neighborhood */
+    /* Closer neighbors first; speculative priority false so they queue behind desired. */
     for (var d = 1; d <= 8; d++) {
       if (desiredFrame - d >= 0) loadFrame(desiredFrame - d, false);
       if (desiredFrame + d < SITE_TUNING.frameCount) loadFrame(desiredFrame + d, false);
     }
-    var show = nearestReadyFrame(desiredFrame);
+    var show = selectPresentableFrame(desiredFrame);
     if (show === displayedFrame) {
       clearPendingPresent();
       return;

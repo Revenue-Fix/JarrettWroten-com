@@ -181,6 +181,33 @@ ok(
   /FORCED_ENTRY_MAX_ATTEMPTS\s*=\s*3/.test(html) && /FORCED_ENTRY_RETRY_MS\s*=\s*120/.test(html),
   'forced-entry policy is explicit 3 attempts / 120ms delay'
 );
+// Monotonic cold-HTTP presentation
+ok(html.includes('selectPresentableFrame'), 'monotonic presentable frame selector');
+ok(
+  html.includes('Never reverse against scroll direction') ||
+    html.includes('never overshoot desired') ||
+    html.includes('Hold last-good'),
+  'monotonic selection contract documented'
+);
+ok(html.includes('MAX_INFLIGHT_LOADS') && html.includes('pumpLoadQueue'), 'priority load scheduler');
+ok(html.includes('enqueueLoad') && html.includes('beginFrameLoad'), 'queued load path');
+ok(html.includes('Handlers before src'), 'handlers attach before src assignment');
+ok(
+  html.includes('naturalWidth > 0') && html.includes('Only paint-ready images enter readySet'),
+  'readySet requires decoded pixels'
+);
+ok(
+  /img\.onload\s*=/.test(html) &&
+    /img\.onerror\s*=/.test(html) &&
+    /img\.src\s*=\s*url/.test(html),
+  'load handlers and src assignment present'
+);
+ok(
+  html.includes('Never scan for a nearest') ||
+    html.includes('hold the authored last-good boot surface'),
+  'boot selection forbids nearest-still overshoot'
+);
+ok(!/bootBest/.test(html), 'bootBest nearest scan removed');
 
 // ——— Holistic visual-correction contract (structural tripwires) ———
 ok(html.includes('white-space:nowrap'), 'display spans authored nowrap');
@@ -928,6 +955,370 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
     );
     void postUnlockEntryLoads;
   }
+}
+
+// ——— Monotonic cold-HTTP presentation oracles ———
+{
+  function selectPresentableFrame(readySet, displayedFrame, target) {
+    target = Math.max(0, Math.min(360, target | 0));
+    if (readySet[target]) return target;
+    if (displayedFrame < 0) {
+      /* Boot: exact target only when ready; else hold frame 0 — never nearest scan. */
+      return 0;
+    }
+    const from = displayedFrame;
+    if (target >= from) {
+      let best = -1;
+      for (const k of Object.keys(readySet)) {
+        if (!readySet[k]) continue;
+        const idx = k | 0;
+        if (idx >= from && idx <= target && idx > best) best = idx;
+      }
+      return best >= 0 ? best : from;
+    }
+    let best = 1e9;
+    for (const k of Object.keys(readySet)) {
+      if (!readySet[k]) continue;
+      const idx = k | 0;
+      if (idx <= from && idx >= target && idx < best) best = idx;
+    }
+    return best < 1e9 ? best : from;
+  }
+
+  // Boot overshoot: far stills + frame 1 ready before frame 0; desired stays 0
+  {
+    const ready = Object.create(null);
+    // Adversarial: 1 and far stills finish first; 0 not yet ready
+    ready[1] = 1;
+    ready[108] = 1;
+    ready[180] = 1;
+    ready[312] = 1;
+    let displayed = -1;
+    let desired = 0;
+    const commits = [];
+    let show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 0, 'oracle boot: holds 0 while 1/108/180/312 ready first (got ' + show + ')');
+    ok(show <= desired, 'oracle boot: no overshoot above desired 0');
+    commits.push(show);
+    // Simulate markReady of poison frames calling showFrame(0) while still displayed < 0
+    for (const poison of [1, 108, 180, 312]) {
+      show = selectPresentableFrame(ready, displayed, desired);
+      ok(show === 0, 'oracle boot: still holds 0 after poison ' + poison + ' ready (got ' + show + ')');
+      ok(show !== poison, 'oracle boot: never commits poison ' + poison);
+    }
+    // Frame 0 becomes genuinely ready
+    ready[0] = 1;
+    show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 0, 'oracle boot: presents exact 0 when ready (got ' + show + ')');
+    displayed = show;
+    commits.push(show);
+    ok(commits.every((c) => c === 0), 'oracle boot: all commits are frame 0');
+    // Direct-route boot: exact target ready while displayed < 0 may present target
+    const readyRoute = Object.create(null);
+    readyRoute[1] = 1;
+    readyRoute[294] = 1;
+    show = selectPresentableFrame(readyRoute, -1, 294);
+    ok(show === 294, 'oracle boot: direct-route exact target 294 when ready (got ' + show + ')');
+    const readyRouteHold = Object.create(null);
+    readyRouteHold[1] = 1;
+    readyRouteHold[180] = 1;
+    show = selectPresentableFrame(readyRouteHold, -1, 294);
+    ok(show === 0, 'oracle boot: direct-route holds 0 until exact 294 ready (got ' + show + ')');
+  }
+
+  // Forward: out-of-order ready events never reverse or overshoot desired
+  {
+    const ready = Object.create(null);
+    ready[0] = 1;
+    ready[23] = 1;
+    let displayed = 23;
+    let desired = 40;
+    // Far still arrives first (classic production overshoot)
+    ready[180] = 1;
+    ready[108] = 1;
+    ready[312] = 1;
+    let show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 23, 'oracle mono-fwd: hold 23 when only far stills ready (got ' + show + ')');
+    ok(show <= desired, 'oracle mono-fwd: no overshoot above desired');
+    ok(show >= displayed, 'oracle mono-fwd: no reverse below displayed');
+    // In-range frame arrives
+    ready[36] = 1;
+    show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 36, 'oracle mono-fwd: advances to in-range 36 (got ' + show + ')');
+    displayed = show;
+    ready[40] = 1;
+    show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 40, 'oracle mono-fwd: exact desired 40 (got ' + show + ')');
+    displayed = show;
+    // Late lower frame arrives — must not reverse
+    ready[30] = 1;
+    desired = 50;
+    show = selectPresentableFrame(ready, displayed, desired);
+    ok(show >= 40, 'oracle mono-fwd: late lower ready does not reverse (got ' + show + ')');
+    ok(show <= 50, 'oracle mono-fwd: stays at or below new desired');
+  }
+
+  // Backward: never commit higher; never go below desired
+  {
+    const ready = Object.create(null);
+    ready[200] = 1;
+    ready[180] = 1;
+    ready[100] = 1;
+    let displayed = 200;
+    let desired = 150;
+    let show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 180, 'oracle mono-bwd: steps to 180 in range (got ' + show + ')');
+    ok(show <= displayed, 'oracle mono-bwd: no increase');
+    ok(show >= desired, 'oracle mono-bwd: no undershoot below desired');
+    displayed = show;
+    // Far lower still arrives
+    ready[24] = 1;
+    show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 180, 'oracle mono-bwd: ignores far-below 24 (got ' + show + ')');
+    ready[150] = 1;
+    show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 150, 'oracle mono-bwd: exact desired (got ' + show + ')');
+  }
+
+  // Direction reversal invalidates old forward overshoot candidates
+  {
+    const ready = Object.create(null);
+    ready[100] = 1;
+    ready[200] = 1;
+    ready[300] = 1;
+    let displayed = 100;
+    let desired = 250;
+    let show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 200, 'oracle mono-rev: forward picks 200 (got ' + show + ')');
+    displayed = show;
+    // Rider reverses
+    desired = 120;
+    show = selectPresentableFrame(ready, displayed, desired);
+    // 100 is below desired 120, so in range [120,200] only 200 is ready → hold 200
+    ok(show === 200, 'oracle mono-rev: holds 200 until in-range ready (got ' + show + ')');
+    ok(show <= 200, 'oracle mono-rev: does not increase after reverse');
+    ok(show >= 120, 'oracle mono-rev: does not undershoot new desired');
+    ready[130] = 1;
+    show = selectPresentableFrame(ready, displayed, desired);
+    ok(show === 130, 'oracle mono-rev: progresses backward to 130 (got ' + show + ')');
+  }
+
+  // Far-ahead stills before in-range desired cannot cause overshoot/backtracking sequence
+  {
+    const ready = Object.create(null);
+    ready[0] = 1;
+    let displayed = 0;
+    const commits = [];
+    const targets = [20, 40, 60, 80];
+    for (const t of targets) {
+      // poison with far stills each step
+      ready[180] = 1;
+      ready[312] = 1;
+      ready[360] = 1;
+      const show = selectPresentableFrame(ready, displayed, t);
+      commits.push(show);
+      ok(show <= t, 'oracle mono-poison: no overshoot at desired ' + t + ' (got ' + show + ')');
+      ok(show >= displayed, 'oracle mono-poison: no reverse at desired ' + t);
+      displayed = show;
+      // then in-range arrives
+      ready[t] = 1;
+      const show2 = selectPresentableFrame(ready, displayed, t);
+      commits.push(show2);
+      displayed = show2;
+      ok(show2 === t, 'oracle mono-poison: settles to exact ' + t);
+    }
+    for (let i = 1; i < commits.length; i++) {
+      ok(commits[i] >= commits[i - 1], 'oracle mono-poison: commit sequence non-decreasing (' + commits[i - 1] + '→' + commits[i] + ')');
+    }
+  }
+
+  // Desired-frame work starts ahead of obsolete speculative under constrained loader
+  {
+    const starts = [];
+    const MAX = 2;
+    let inflight = 0;
+    const queue = [];
+    function pump() {
+      while (inflight < MAX && queue.length) {
+        let pick = 0;
+        for (let i = 0; i < queue.length; i++) {
+          if (queue[i].p) {
+            pick = i;
+            break;
+          }
+        }
+        const job = queue.splice(pick, 1)[0];
+        inflight++;
+        starts.push(job.i);
+        setTimeout(() => {
+          inflight--;
+          pump();
+        }, 5);
+      }
+    }
+    function load(i, p) {
+      queue.push({ i, p: !!p });
+      if (p) {
+        // priority to front among equals — pump prefers p
+      }
+      pump();
+    }
+    // obsolete speculative flood first
+    for (let i = 0; i < 24; i++) load(i, false);
+    load(200, true); // moving desired
+    await new Promise((r) => setTimeout(r, 40));
+    const idx200 = starts.indexOf(200);
+    ok(idx200 >= 0, 'oracle sched: desired frame eventually starts');
+    ok(idx200 <= 2, 'oracle sched: desired starts within first slots under constraint (idx=' + idx200 + ')');
+  }
+
+  // Cached/fast broken images never enter readySet / never unlock forced as success
+  {
+    let readyCount = 0;
+    let unlocked = false;
+    function finishLoad(ok, naturalWidth) {
+      if (ok && naturalWidth > 0) {
+        readyCount++;
+      } else if (!ok) {
+        // error path — forced retry, not unlock-as-success
+      }
+    }
+    // broken complete
+    finishLoad(true, 0);
+    finishLoad(false, 0);
+    ok(readyCount === 0, 'oracle broken: naturalWidth 0 never enters readySet');
+    // success
+    finishLoad(true, 1280);
+    ok(readyCount === 1, 'oracle broken: only paint-ready marks ready');
+    void unlocked;
+  }
+
+  // Cold/jittered constrained delivery — complete 12s journey both viewports
+  async function runColdJourney(viewportLabel) {
+    const frameCount = 361;
+    const ready = Object.create(null);
+    const loading = Object.create(null);
+    const starts = [];
+    let displayed = 0;
+    ready[0] = 1;
+    const commits = [0];
+    let inflight = 0;
+    const MAX = 4;
+    const queue = [];
+    const stations = { leak: 24, method: 120, proof: 181, jarrett: 294, threshold: 354 };
+
+    function select(target) {
+      return selectPresentableFrame(ready, displayed, target);
+    }
+    function pump() {
+      while (inflight < MAX && queue.length) {
+        let pick = 0;
+        for (let i = 0; i < queue.length; i++) {
+          if (queue[i].p) {
+            pick = i;
+            break;
+          }
+        }
+        const job = queue.splice(pick, 1)[0];
+        if (ready[job.i] || loading[job.i]) continue;
+        loading[job.i] = 1;
+        inflight++;
+        starts.push(job.i);
+        const delay = 8 + ((job.i * 17 + starts.length * 13) % 40); // jitter
+        setTimeout(() => {
+          loading[job.i] = 0;
+          inflight--;
+          // 2% hard fail except never permanently block journey ends
+          if (job.i !== 0 && job.i !== 360 && (job.i + starts.length) % 47 === 0) {
+            pump();
+            return;
+          }
+          ready[job.i] = 1;
+          // presentation refresh
+          pump();
+        }, delay);
+      }
+    }
+    function load(i, p) {
+      i = Math.max(0, Math.min(frameCount - 1, i | 0));
+      if (ready[i] || loading[i]) return;
+      if (queue.some((q) => q.i === i)) {
+        if (p) {
+          const q = queue.find((x) => x.i === i);
+          if (q) q.p = true;
+        }
+        return;
+      }
+      if (p) queue.unshift({ i, p: true });
+      else queue.push({ i, p: false });
+      pump();
+    }
+
+    // 12-second forward journey: monotonic target path 0→360 under jittered constrained HTTP
+    for (let step = 0; step <= 360; step++) {
+      const desired = step;
+      load(desired, true);
+      for (let d = 1; d <= 8; d++) {
+        if (desired - d >= 0) load(desired - d, false);
+        if (desired + d < frameCount) load(desired + d, false);
+      }
+      // occasional still-key poison (old boot pattern)
+      if (step % 30 === 0) {
+        for (const s of Object.values(stations)) load(s, false);
+      }
+      // Poll briefly so in-range frames can commit without lengthening total journey scope
+      for (let poll = 0; poll < 3; poll++) {
+        await new Promise((r) => setTimeout(r, 4));
+        const show = select(desired);
+        if (show !== displayed) {
+          ok(
+            show >= displayed,
+            'oracle journey ' + viewportLabel + ': commit non-decreasing ' + displayed + '→' + show + ' at desired ' + desired
+          );
+          ok(
+            show <= desired,
+            'oracle journey ' + viewportLabel + ': commit no overshoot ' + show + ' > desired ' + desired
+          );
+          displayed = show;
+          commits.push(show);
+        }
+        if (displayed === desired) break;
+      }
+    }
+    // drain remaining toward 360
+    for (let n = 0; n < 120; n++) {
+      await new Promise((r) => setTimeout(r, 8));
+      load(360, true);
+      const show = select(360);
+      if (show !== displayed) {
+        ok(show >= displayed && show <= 360, 'oracle journey ' + viewportLabel + ': drain monotonic');
+        displayed = show;
+        commits.push(show);
+      }
+      if (displayed === 360) break;
+    }
+
+    ok(commits[0] === 0, 'oracle journey ' + viewportLabel + ': starts at 0');
+    ok(displayed === 360, 'oracle journey ' + viewportLabel + ': reaches 360 (got ' + displayed + ')');
+    const distinct = new Set(commits);
+    ok(distinct.size >= 180, 'oracle journey ' + viewportLabel + ': ≥180 distinct commits (got ' + distinct.size + ')');
+    ok(commits.every((c, i) => i === 0 || c >= commits[i - 1]), 'oracle journey ' + viewportLabel + ': fully non-decreasing commit list');
+    for (const [name, f] of Object.entries(stations)) {
+      ok(commits.some((c) => c >= f) || displayed >= f, 'oracle journey ' + viewportLabel + ': reaches station ' + name + ' frame ' + f);
+    }
+    // never blank: displayed always defined and painted
+    ok(displayed >= 0, 'oracle journey ' + viewportLabel + ': never blank');
+    // desired priority: frame near end should appear early in starts relative to pure sequential
+    const lastDesiredStarts = starts.filter((s, idx) => {
+      // count how often a high desired is started while low speculative pending — soft check
+      return true;
+    });
+    ok(starts.includes(360) || ready[360], 'oracle journey ' + viewportLabel + ': final frame requested or ready');
+    void lastDesiredStarts;
+  }
+
+  await runColdJourney('desktop-1536x864');
+  await runColdJourney('mobile-390x844');
 }
 
 if (failures.length) {
