@@ -125,6 +125,11 @@ ok(
   '--text includes robust sans-serif fallback stack'
 );
 const readingSelectors = ['.text', '.method-annot-text', '.proof-row', '.proof-qualifier', '.invite-whisper'];
+// Conversion-typography tripwire (canonical path: this test): future JarrettWroten.com
+// design edits execute node smoke-test.mjs to prevent a return to thin prose,
+// forced giant-display optical sizing, or display-serif action text. The full
+// smoke run is the behavioral check. Retire only when these selectors disappear
+// and their replacement has an equal rendered readability check.
 for (const sel of readingSelectors) {
   const re = new RegExp(sel.replace('.', '\\.') + '\\s*\\{[^}]*font-family\\s*:\\s*var\\(--text\\)');
   ok(re.test(html), sel + ' uses var(--text)');
@@ -132,16 +137,26 @@ for (const sel of readingSelectors) {
   const block = blockMatch ? blockMatch[1] : '';
   ok(block.includes('letter-spacing:0') || /letter-spacing\s*:\s*0/.test(block), sel + ' native letter-spacing:0');
   ok(!/opsz/.test(block), sel + ' has no Bodoni opsz');
-  ok(/font-weight\s*:\s*400/.test(block), sel + ' prose weight 400');
+  ok(/font-weight\s*:\s*450/.test(block), sel + ' prose weight 450');
 }
-ok(/\.proof-row strong\{[^}]*font-weight\s*:\s*500/.test(html), '.proof-row strong keeps weight 500 emphasis');
-const displaySelectors = ['.display', '.proof-figure', '.invite-email'];
+ok(/\.proof-row strong\{[^}]*font-weight\s*:\s*600/.test(html), '.proof-row strong keeps weight 600 emphasis');
+const displaySelectors = ['.display', '.proof-figure'];
 for (const sel of displaySelectors) {
   const re = new RegExp(sel.replace('.', '\\.') + '\\s*\\{[^}]*font-family\\s*:\\s*var\\(--display\\)');
   ok(re.test(html), sel + ' stays on var(--display) Bodoni');
   const blockMatch = html.match(new RegExp(sel.replace('.', '\\.') + '\\s*\\{([^}]*)\\}'));
   const block = blockMatch ? blockMatch[1] : '';
-  ok(/opsz/.test(block), sel + ' retains Bodoni opsz');
+  ok(/font-optical-sizing\s*:\s*auto/.test(block), sel + ' uses automatic optical sizing');
+  ok(!/opsz\s*["']?\s*96/.test(block), sel + ' does not force giant-display optical sizing');
+}
+ok(/\.invite-email\{[^}]*font-family\s*:\s*var\(--text\)/.test(html), '.invite-email uses readable sans register');
+ok(/\.invite-email\{[^}]*font-weight\s*:\s*600/.test(html), '.invite-email has action weight 600');
+ok(!/\.invite-email\{[^}]*opsz/.test(html), '.invite-email has no display optical-size override');
+for (const sel of ['.cta', '.proof-open-hint']) {
+  const blockMatch = html.match(new RegExp(sel.replace('.', '\\.') + '\\s*\\{([^}]*)\\}'));
+  const block = blockMatch ? blockMatch[1] : '';
+  ok(/font-family\s*:\s*var\(--text\)/.test(block), sel + ' uses readable sans register');
+  ok(/font-weight\s*:\s*600/.test(block), sel + ' has action weight 600');
 }
 ok(
   !/fonts\.gstatic\.com|fonts\.googleapis\.com|typekit\.net|use\.typekit/i.test(html),

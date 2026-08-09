@@ -62,8 +62,8 @@
   :root{
     --void:#040A0C;
     --ink:#E8F4F4;
-    --ink-soft:rgba(232,244,244,.82);
-    --ink-mute:rgba(186,214,216,.68);
+    --ink-soft:rgba(232,244,244,.92);
+    --ink-mute:rgba(208,228,230,.82);
     --cyan:#5EE7F0;
     --amber:#D97A3A;
     --display:"Bodoni Moda","Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
@@ -118,7 +118,7 @@
   }
   .text{
     font-family:var(--text);
-    font-weight:400;
+    font-weight:450;
     font-size:clamp(1rem,1.05rem + .2vw,1.18rem);
     line-height:1.52;
     letter-spacing:0;
@@ -133,7 +133,7 @@
     font-family:var(--display);
     font-weight:400;
     font-optical-sizing:auto;
-    font-variation-settings:"opsz" 96;
+    font-variation-settings:normal;
     font-size:clamp(2.35rem,5.6vw,4.5rem);
     line-height:.96;
     letter-spacing:0;
@@ -633,8 +633,9 @@
     margin:0 0 clamp(.65rem,1.2vh,.95rem);
     font-family:var(--mono);
     font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
+    font-size:13px;
+    line-height:1.3;
+    letter-spacing:.14em;
     text-transform:uppercase;
     color:var(--cyan);
     opacity:0;
@@ -673,10 +674,10 @@
     align-items:center;
     min-height:44px;
     margin-top:clamp(1.1rem,2.2vh,1.6rem);
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.08em;
     text-transform:uppercase;
     color:var(--ink);
     border-bottom:1px solid rgba(232,244,244,.35);
@@ -768,15 +769,16 @@
     margin:0 0 .35rem;
     font-family:var(--mono);
     font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
+    font-size:13px;
+    line-height:1.3;
+    letter-spacing:.14em;
     text-transform:uppercase;
     color:var(--cyan);
   }
   .method-annot-text{
     margin:0;
     font-family:var(--text);
-    font-weight:400;
+    font-weight:450;
     font-size:clamp(1rem,1.05rem + .15vw,1.12rem);
     line-height:1.45;
     letter-spacing:0;
@@ -801,7 +803,8 @@
     margin:0;
     font-family:var(--display);
     font-weight:400;
-    font-variation-settings:"opsz" 96;
+    font-optical-sizing:auto;
+    font-variation-settings:normal;
     font-size:clamp(2.8rem,6vw,5.75rem);
     line-height:.94;
     letter-spacing:0;
@@ -818,19 +821,19 @@
   .proof-row{
     margin:0;
     font-family:var(--text);
-    font-weight:400;
+    font-weight:450;
     font-size:clamp(1rem,1.02rem + .15vw,1.12rem);
     line-height:1.45;
     letter-spacing:0;
     color:var(--ink-soft);
     white-space:nowrap;
   }
-  .proof-row strong{font-weight:500; color:var(--ink)}
+  .proof-row strong{font-weight:600; color:var(--ink)}
   .proof-row .delta{color:var(--amber)}
   .proof-qualifier{
     margin:clamp(.85rem,1.6vh,1.15rem) auto 0;
     font-family:var(--text);
-    font-weight:400;
+    font-weight:450;
     font-size:clamp(1rem,1.02rem + .12vw,1.1rem);
     line-height:1.5;
     letter-spacing:0;
@@ -839,10 +842,10 @@
   }
   .proof-open-hint{
     margin:.75rem auto 0;
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:.08em;
     text-transform:uppercase;
     color:var(--ink-mute);
   }
@@ -925,12 +928,11 @@
     width:fit-content;
     max-width:100%;
     margin-top:0;
-    font-family:var(--display);
-    font-weight:400;
-    font-variation-settings:"opsz" 96;
-    font-size:clamp(1.35rem,2.1vw,2rem);
-    line-height:1.15;
-    letter-spacing:0;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:clamp(1.35rem,1.9vw,1.875rem);
+    line-height:1.2;
+    letter-spacing:-.01em;
     color:var(--ink);
     position:relative;
     min-height:44px;
@@ -966,7 +968,7 @@
   .invite-whisper{
     margin:clamp(.55rem,1.2vh,.85rem) 0 0;
     font-family:var(--text);
-    font-weight:400;
+    font-weight:450;
     font-size:clamp(1rem,1.02rem + .1vw,1.08rem);
     line-height:1.5;
     letter-spacing:0;
@@ -1108,7 +1110,12 @@
     }
 
     /* Mobile corridor washes — top wash for Leak/Method; bottom wash for person stations */
-    .station[data-station="leak"] .station-copy::before,
+    .station[data-station="leak"] .station-copy::before{
+      inset:auto -30% auto -30%;
+      top:0;
+      height:125%;
+      background:linear-gradient(180deg, rgba(4,10,12,.94) 0%, rgba(4,10,12,.82) 58%, rgba(4,10,12,.52) 82%, transparent 100%);
+    }
     .station[data-station="method"] .station-copy::before{
       inset:auto -30% auto -30%;
       top:0;
@@ -1238,13 +1245,13 @@
     }
     html[data-motion="on"] .station[data-station="threshold"] .station-support .text,
     html[data-motion="on"] .station[data-station="threshold"] .station-support.text{
-      font-size:clamp(.95rem, 2.6vw, 1.05rem);
-      line-height:1.35;
+      font-size:clamp(1.0625rem, 4.35vw, 1.125rem);
+      line-height:1.42;
     }
     html[data-motion="on"] .station[data-station="threshold"] .invite-whisper{
       margin-top:.45rem;
-      font-size:clamp(.95rem, 2.5vw, 1.02rem);
-      line-height:1.35;
+      font-size:clamp(1rem, 4.1vw, 1.0625rem);
+      line-height:1.42;
     }
 
     /*
