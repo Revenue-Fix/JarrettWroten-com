@@ -88,7 +88,8 @@ for (const rel of [
   mustExist(rel);
 }
 
-// Corridor reading type system — IBM Plex Sans self-host + two-register split
+// Corridor reading type system — Rana's Georgia reader + self-hosted fallback,
+// with IBM Plex Sans retained for actions and Bodoni retained for display
 // Canonical path: smoke-test.mjs corridor reading type-system block
 // Future consumer: maintainer changing JarrettWroten.com typography or font assets
 // Activation: execute — node smoke-test.mjs
@@ -104,6 +105,22 @@ if (fs.existsSync(plexSansPath)) {
     plexHash === 'E2291E842CF5AF167122A22881A740C7F2DDA7716F1E8CD76680264F4A859470',
     'ibm-plex-sans-latin-variable.woff2 SHA-256'
   );
+}
+const ranaReaderHashes = {
+  'rana-reader-fallback-roman.woff2': 'A26535C8AC9C80CBE85E2025A0A47B1043FEFE0C26013D41F692343C99A21EB3',
+  'rana-reader-fallback-italic.woff2': '475E323F083E10A8675CD2D522101FA123E676667E1F49225C1368913D4C0CCC',
+  'rana-reader-fallback-bold.woff2': '27EC57A6A30A81BC95AB5E418E2298F724C8C22C5CEC7F9982F0BF7D9F564F2A',
+  'rana-reader-fallback-bolditalic.woff2': '7C075DE80FF3ADA820541001F12E6B55FE14D67E3A7FBCC278C1A0F75E0385E0',
+};
+for (const [name, expectedHash] of Object.entries(ranaReaderHashes)) {
+  const rel = 'assets/fonts/' + name;
+  const assetPath = path.join(ROOT, rel);
+  mustExist(rel);
+  if (fs.existsSync(assetPath)) {
+    const actualHash = crypto.createHash('sha256').update(fs.readFileSync(assetPath)).digest('hex').toUpperCase();
+    ok(actualHash === expectedHash, name + ' SHA-256');
+  }
+  ok(html.includes(rel), name + ' wired in markup');
 }
 ok(
   html.includes('assets/fonts/ibm-plex-sans-latin-variable.woff2'),
@@ -124,6 +141,15 @@ ok(
   /--text\s*:\s*"IBM Plex Sans"[^;]*sans-serif/.test(html),
   '--text includes robust sans-serif fallback stack'
 );
+ok(
+  /--reading\s*:\s*Georgia\s*,\s*"Rana Reader Fallback"[^;]*serif/.test(html),
+  '--reading matches Rana Guide Georgia-first stack'
+);
+ok(
+  /font-family\s*:\s*"Rana Reader Fallback"[\s\S]*?rana-reader-fallback-roman\.woff2/.test(html) &&
+    /rana-reader-fallback-bold\.woff2/.test(html),
+  'Rana Reader Fallback local roman and bold faces'
+);
 const readingSelectors = ['.text', '.method-annot-text', '.proof-row', '.proof-qualifier', '.invite-whisper'];
 // Conversion-typography tripwire (canonical path: this test): future JarrettWroten.com
 // design edits execute node smoke-test.mjs to prevent a return to thin prose,
@@ -131,15 +157,16 @@ const readingSelectors = ['.text', '.method-annot-text', '.proof-row', '.proof-q
 // smoke run is the behavioral check. Retire only when these selectors disappear
 // and their replacement has an equal rendered readability check.
 for (const sel of readingSelectors) {
-  const re = new RegExp(sel.replace('.', '\\.') + '\\s*\\{[^}]*font-family\\s*:\\s*var\\(--text\\)');
-  ok(re.test(html), sel + ' uses var(--text)');
+  const re = new RegExp(sel.replace('.', '\\.') + '\\s*\\{[^}]*font-family\\s*:\\s*var\\(--reading\\)');
+  ok(re.test(html), sel + ' uses Rana Guide reading register');
   const blockMatch = html.match(new RegExp(sel.replace('.', '\\.') + '\\s*\\{([^}]*)\\}'));
   const block = blockMatch ? blockMatch[1] : '';
   ok(block.includes('letter-spacing:0') || /letter-spacing\s*:\s*0/.test(block), sel + ' native letter-spacing:0');
   ok(!/opsz/.test(block), sel + ' has no Bodoni opsz');
-  ok(/font-weight\s*:\s*450/.test(block), sel + ' prose weight 450');
+  ok(/font-weight\s*:\s*400/.test(block), sel + ' Rana prose weight 400');
+  ok(/font-synthesis\s*:\s*none/.test(block), sel + ' disables synthetic serif styles');
 }
-ok(/\.proof-row strong\{[^}]*font-weight\s*:\s*600/.test(html), '.proof-row strong keeps weight 600 emphasis');
+ok(/\.proof-row strong\{[^}]*font-weight\s*:\s*700/.test(html), '.proof-row strong uses Rana reader bold');
 const displaySelectors = ['.display', '.proof-figure'];
 for (const sel of displaySelectors) {
   const re = new RegExp(sel.replace('.', '\\.') + '\\s*\\{[^}]*font-family\\s*:\\s*var\\(--display\\)');
@@ -163,6 +190,7 @@ ok(
   'no external font CDN URLs in runtime HTML'
 );
 ok(fs.existsSync(path.join(ROOT, 'assets/fonts/OFL-IBM-Plex-Sans.txt')), 'OFL-IBM-Plex-Sans.txt license present');
+ok(fs.existsSync(path.join(ROOT, 'assets/fonts/OFL-Rana-Reader-Fallback.txt')), 'Rana Reader Fallback OFL present');
 
 // frames.json — corrected continuous-source contract (reject 15-hold recurrence)
 const fj = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/golden-arrival/frames.json'), 'utf8'));
