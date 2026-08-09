@@ -311,6 +311,80 @@ ok(
     (html.match(/01 \/ LOOK/g) || []).length >= 2,
   'no-js route carries method steps'
 );
+
+// Method annotation cumulative arc — focused behavioral oracle.
+// Future consumer: paintStations while a visitor scrolls Method (and reverse).
+// Catches exact-only reveal (one annot at a time) and requires cumulative comparison
+// driven by the single authoritative SITE_TUNING.methodSteps thresholds.
+{
+  const stepsMatch = html.match(/methodSteps:\s*(\[[\s\S]*?\])\s*,/);
+  let methodSteps = [];
+  if (stepsMatch) {
+    try {
+      methodSteps = new Function('return ' + stepsMatch[1])();
+    } catch (e) {
+      ok(false, 'methodSteps parse for arc oracle: ' + e.message);
+    }
+  }
+  ok(Array.isArray(methodSteps) && methodSteps.length === 3, 'methodSteps has three authoritative thresholds');
+  ok(
+    methodSteps.every((s) => s && typeof s.at === 'number'),
+    'methodSteps entries expose .at thresholds'
+  );
+
+  const paintMatch = html.match(/function paintStations\(p\)\s*\{[\s\S]*?\n  \}/);
+  const paintSrc = paintMatch ? paintMatch[0] : '';
+  ok(!!paintSrc, 'paintStations present for method arc oracle');
+  ok(
+    !/\bm\s*===\s*activeMethodStep\b/.test(paintSrc),
+    'method annot reveal is not exact-only (m === activeMethodStep)'
+  );
+  ok(
+    /p\s*>=\s*range\.at/.test(paintSrc) || /\bm\s*<=\s*activeMethodStep\b/.test(paintSrc),
+    'method annot reveal uses cumulative comparison'
+  );
+
+  function methodAnnotMask(p, motionOn, dom) {
+    const mask = methodSteps.map(() => false);
+    if (dom !== 'method') return mask;
+    if (!motionOn) return methodSteps.map(() => true);
+    for (let m = 0; m < methodSteps.length; m++) {
+      const range = methodSteps[m];
+      mask[m] = !!(range && p >= range.at);
+    }
+    return mask;
+  }
+  function maskKey(mask) {
+    return mask.map((v) => (v ? '1' : '0')).join('');
+  }
+
+  if (methodSteps.length === 3) {
+    const at0 = methodSteps[0].at;
+    const at1 = methodSteps[1].at;
+    const at2 = methodSteps[2].at;
+    const mid1 = (at0 + at1) / 2;
+    const mid2 = (at1 + at2) / 2;
+    const mid3 = (at2 + (methodSteps[2].until != null ? methodSteps[2].until : at2 + 0.05)) / 2;
+
+    ok(maskKey(methodAnnotMask(at0 - 0.001, true, 'method')) === '000', 'method arc: none before first threshold');
+    ok(maskKey(methodAnnotMask(mid1, true, 'method')) === '100', 'method arc: first threshold shows 01 only');
+    ok(maskKey(methodAnnotMask(mid2, true, 'method')) === '110', 'method arc: second keeps 01 and adds 02');
+    ok(maskKey(methodAnnotMask(mid3, true, 'method')) === '111', 'method arc: third keeps first two and adds 03');
+
+    // Exact-only at mid-second would light only index 1 → '010'. Cumulative must differ.
+    const cumMid2 = maskKey(methodAnnotMask(mid2, true, 'method'));
+    ok(cumMid2 === '110' && cumMid2 !== '010', 'method arc: cumulative mid-step-2 differs from exact-only');
+
+    // Reverse unwind: 3 → 2 → 1 → none
+    ok(maskKey(methodAnnotMask(at2 - 0.001, true, 'method')) === '110', 'method arc: reverse drops 03 first');
+    ok(maskKey(methodAnnotMask(at1 - 0.001, true, 'method')) === '100', 'method arc: reverse then drops 02');
+    ok(maskKey(methodAnnotMask(at0 - 0.001, true, 'method')) === '000', 'method arc: reverse clears all before first');
+
+    ok(maskKey(methodAnnotMask(0.3, false, 'method')) === '111', 'method arc: motion-off method shows all three');
+    ok(maskKey(methodAnnotMask(0.3, true, 'proof')) === '000', 'method arc: annotations off outside method');
+    ok(maskKey(methodAnnotMask(0.1, true, 'leak')) === '000', 'method arc: annotations off in leak');
+  }
+}
 // Width-aware: longest Jarrett display line must fit inside masked .line (scrollWidth)
 ok(
   html.includes('max-width:min(38rem, 48vw)') ||

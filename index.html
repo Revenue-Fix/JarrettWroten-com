@@ -2405,16 +2405,19 @@
       }
     }
 
-    var activeMethodStep = -1;
-    if (motionOn && dom === "method") {
-      for (var ms = 0; ms < SITE_TUNING.methodSteps.length; ms++) {
-        var range = SITE_TUNING.methodSteps[ms];
-        if (p >= range.at && p < range.until) activeMethodStep = ms;
-      }
-    }
+    /* Method annotations accumulate as an arc (and unwind in reverse).
+       Thresholds come only from SITE_TUNING.methodSteps[*].at. */
     for (var m = 0; m < methodAnnots.length; m++) {
       var annot = methodAnnots[m];
-      var on = !motionOn ? (dom === "method") : (m === activeMethodStep);
+      var on = false;
+      if (dom === "method") {
+        if (!motionOn) {
+          on = true;
+        } else {
+          var range = SITE_TUNING.methodSteps[m];
+          on = !!(range && p >= range.at);
+        }
+      }
       if (on) annot.classList.add("is-on");
       else annot.classList.remove("is-on");
     }
