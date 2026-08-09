@@ -14,7 +14,6 @@
 <link rel="preload" as="image" href="assets/stripe-growth-focal.png">
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/bodoni-moda-latin-variable.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/ibm-plex-sans-latin-variable.woff2" crossorigin>
-<link rel="preload" as="font" type="font/woff2" href="assets/fonts/ibm-plex-mono-latin-500.woff2" crossorigin>
 <script>
 (function () {
   try {
@@ -41,20 +40,6 @@
     font-family:"IBM Plex Sans";
     src:url("assets/fonts/ibm-plex-sans-latin-variable.woff2") format("woff2");
     font-weight:100 700;
-    font-style:normal;
-    font-display:swap;
-  }
-  @font-face{
-    font-family:"IBM Plex Mono";
-    src:url("assets/fonts/ibm-plex-mono-latin-400.woff2") format("woff2");
-    font-weight:400;
-    font-style:normal;
-    font-display:swap;
-  }
-  @font-face{
-    font-family:"IBM Plex Mono";
-    src:url("assets/fonts/ibm-plex-mono-latin-500.woff2") format("woff2");
-    font-weight:500;
     font-style:normal;
     font-display:swap;
   }
@@ -97,7 +82,6 @@
     --display:"Bodoni Moda","Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
     --reading:Georgia,"Rana Reader Fallback","Times New Roman",Times,serif;
     --text:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    --mono:"IBM Plex Mono",ui-monospace,"SF Mono",Menlo,Consolas,monospace;
     --ease-enter:cubic-bezier(.16,.84,.24,1);
     --ease-overshoot:cubic-bezier(.34,1.32,.48,1);
     --gutter:clamp(1.1rem,3.6vw,2.75rem);
@@ -123,9 +107,10 @@
   }
   body{
     min-height:100%;
-    font-family:var(--mono);
+    font-family:var(--text);
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
     background:var(--void);
     overflow-x:hidden;
   }
@@ -137,14 +122,6 @@
     outline-offset:3px;
   }
 
-  .micro{
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    line-height:1.35;
-    letter-spacing:.18em;
-    text-transform:uppercase;
-  }
   .text{
     font-family:var(--reading);
     font-weight:400;
@@ -416,11 +393,13 @@
   }
   .note-device-caption{
     margin:.45rem 0 0;
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.16em;
-    text-transform:uppercase;
+    font-family:var(--reading);
+    font-weight:400;
+    font-style:italic;
+    font-synthesis:none;
+    font-size:clamp(.9rem,.86rem + .15vw,1rem);
+    line-height:1.35;
+    letter-spacing:0;
     color:var(--amber);
     text-align:center;
     white-space:nowrap;
@@ -466,11 +445,10 @@
     left:var(--gutter);
     top:calc(var(--top-chrome) + .35rem);
     z-index:32;
-    font-family:var(--mono);
+    font-family:var(--text);
     font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-size:13px;
+    letter-spacing:.01em;
     color:var(--ink-mute);
     opacity:calc(var(--loader) * .85);
     pointer-events:none;
@@ -507,11 +485,10 @@
     min-height:var(--top-chrome);
   }
   .wordmark{
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.015em;
     color:var(--ink);
     white-space:nowrap;
   }
@@ -524,11 +501,10 @@
     min-height:44px;
     min-width:44px;
     padding:.35rem .2rem;
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
     color:var(--ink-soft);
     white-space:nowrap;
   }
@@ -605,11 +581,10 @@
   .station-rail-tick span{
     position:absolute;
     right:calc(100% + .55rem);
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:13px;
+    letter-spacing:.01em;
     white-space:nowrap;
     opacity:0;
     transform:translateX(4px);
@@ -628,11 +603,11 @@
     left:var(--gutter);
     bottom:clamp(.85rem,2vh,1.35rem);
     z-index:30;
-    font-family:var(--mono);
+    font-family:var(--text);
     font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-size:13px;
+    letter-spacing:.01em;
+    font-variant-numeric:tabular-nums;
     color:var(--ink-mute);
     opacity:var(--hud-opacity);
     transition:opacity .4s var(--ease-enter);
@@ -661,12 +636,13 @@
   }
   .station-kicker{
     margin:0 0 clamp(.65rem,1.2vh,.95rem);
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:13px;
-    line-height:1.3;
-    letter-spacing:.14em;
-    text-transform:uppercase;
+    font-family:var(--reading);
+    font-weight:400;
+    font-style:italic;
+    font-synthesis:none;
+    font-size:clamp(1rem,.96rem + .22vw,1.18rem);
+    line-height:1.35;
+    letter-spacing:0;
     color:var(--cyan);
     opacity:0;
     transform:translateY(8px);
@@ -706,9 +682,8 @@
     margin-top:clamp(1.1rem,2.2vh,1.6rem);
     font-family:var(--text);
     font-weight:600;
-    font-size:14px;
-    letter-spacing:.08em;
-    text-transform:uppercase;
+    font-size:15px;
+    letter-spacing:.01em;
     color:var(--ink);
     border-bottom:1px solid rgba(232,244,244,.35);
     opacity:0;
@@ -797,12 +772,11 @@
   .method-annot-num{
     display:block;
     margin:0 0 .35rem;
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:13px;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
     line-height:1.3;
-    letter-spacing:.14em;
-    text-transform:uppercase;
+    letter-spacing:.01em;
     color:var(--cyan);
   }
   .method-annot-text{
@@ -877,9 +851,8 @@
     margin:.75rem auto 0;
     font-family:var(--text);
     font-weight:600;
-    font-size:13px;
-    letter-spacing:.08em;
-    text-transform:uppercase;
+    font-size:14px;
+    letter-spacing:.01em;
     color:var(--ink-mute);
   }
 
@@ -1018,11 +991,10 @@
     display:flex;
     gap:.55rem;
     align-items:center;
-    font-family:var(--mono);
+    font-family:var(--text);
     font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-size:13px;
+    letter-spacing:.01em;
     color:var(--ink-mute);
     opacity:0;
     transition:opacity .45s var(--ease-enter);
@@ -1037,11 +1009,12 @@
     bottom:clamp(1.2rem,3vh,2rem);
     transform:translateX(-50%);
     z-index:30;
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-family:var(--reading);
+    font-weight:400;
+    font-style:italic;
+    font-synthesis:none;
+    font-size:clamp(.95rem,.9rem + .2vw,1.08rem);
+    letter-spacing:0;
     color:var(--ink-mute);
     opacity:0;
     transition:opacity .5s var(--ease-enter);
@@ -1093,20 +1066,21 @@
     right:0;
     min-height:44px;
     min-width:44px;
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
     color:var(--ink);
   }
   .lightbox-caption{
     margin:.85rem 0 0;
-    font-family:var(--mono);
-    font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-family:var(--reading);
+    font-weight:400;
+    font-style:italic;
+    font-synthesis:none;
+    font-size:clamp(.95rem,.9rem + .2vw,1.08rem);
+    line-height:1.4;
+    letter-spacing:0;
     color:var(--ink-mute);
     text-align:center;
   }
@@ -1349,7 +1323,6 @@
     }
     .note-device-caption{
       white-space:normal;
-      letter-spacing:.12em;
       max-width:100%;
       overflow-wrap:break-word;
       hyphens:manual;
@@ -1368,11 +1341,6 @@
     }
     .site-footer p{margin:0}
     .loader-bar{width:min(140px, 36vw)}
-  }
-
-  @media (max-width:420px){
-    .wordmark{letter-spacing:.14em}
-    .motion-toggle{letter-spacing:.14em}
   }
 
   .no-js-route{
@@ -1410,11 +1378,10 @@
   .no-js-stack .invite-email{opacity:1; transform:none; display:inline-block}
   .no-js-stack footer{
     margin-top:clamp(2rem,5vh,3rem);
-    font-family:var(--mono);
+    font-family:var(--text);
     font-weight:500;
-    font-size:12px;
-    letter-spacing:.18em;
-    text-transform:uppercase;
+    font-size:13px;
+    letter-spacing:.01em;
     color:var(--ink-mute);
   }
 </style>
@@ -1431,32 +1398,32 @@
   <main class="no-js-route" id="no-js-route" aria-label="Readable page without JavaScript">
     <div class="no-js-wash" aria-hidden="true"></div>
     <div class="no-js-stack">
-      <p class="wordmark">JARRETT WROTEN</p>
-      <p class="station-kicker">THE LEAK</p>
+      <p class="wordmark">Jarrett Wroten</p>
+      <p class="station-kicker">The leak</p>
       <h1 class="display">I find where your business quietly loses customers. Then I build you the fix.</h1>
       <div class="text">
         <p>I follow the path from first click to sale, find the step where people drop out, and build the finished fix. Your first fix is free.</p>
       </div>
-      <p class="station-kicker">FOLLOW THE REAL PATH</p>
+      <p class="station-kicker">Follow the real path</p>
       <h2 class="display">Look. Find the leak. Build the fix.</h2>
       <div class="text">
-        <p><strong>01 / LOOK</strong> I walk through your site like a real customer.</p>
-        <p><strong>02 / FIND THE BREAK</strong> I find the first key step where the path breaks.</p>
-        <p><strong>03 / BUILD THE FIX</strong> I build the page, form, or follow-up that fixes it.</p>
+        <p><strong>01 — Look</strong> I walk through your site like a real customer.</p>
+        <p><strong>02 — Find the break</strong> I find the first key step where the path breaks.</p>
+        <p><strong>03 — Build the fix</strong> I build the page, form, or follow-up that fixes it.</p>
       </div>
-      <p class="station-kicker">ONE REAL RESULT</p>
+      <p class="station-kicker">One real result</p>
       <p class="proof-figure"><span class="currency">$</span>40,114.81</p>
       <div class="proof-values">
         <p class="proof-row"><strong>Gross volume</strong> $40,114.81 · <span class="delta">up 104.51%</span> from $19,615.40</p>
         <p class="proof-row"><strong>Net volume</strong> $37,914.00 · <span class="delta">up 108.02%</span> from $18,225.83</p>
       </div>
       <p class="proof-qualifier">This was one Las Vegas service business, from May 15 to June 15, 2026. Your result will depend on your business.</p>
-      <p class="station-kicker">BUILT BY JARRETT</p>
+      <p class="station-kicker">Built by Jarrett</p>
       <h2 class="display">I build the fix myself.</h2>
       <div class="text">
         <p>You work with me from the first look through the finished fix.</p>
       </div>
-      <p class="station-kicker">YOUR FIRST FIX IS FREE</p>
+      <p class="station-kicker">Your first fix is free</p>
       <h2 class="display">Send me your site.</h2>
       <div class="text">
         <p>Send me your site and tell me what you want more of. I’ll build the first fix, and you keep it. If it helps, we can keep working together.</p>
@@ -1484,48 +1451,48 @@
           <button type="button" class="note-device" id="note-device" data-lightbox="note" aria-haspopup="dialog" aria-label="Open client note about payroll being covered">
             <img src="image0000002.jpg" alt="Client note: they officially made payroll and no more money is coming out of savings." width="1200" height="623" decoding="async">
           </button>
-          <p class="note-device-caption">THE NEXT MORNING, THEY SAID PAYROLL WAS COVERED.</p>
+          <p class="note-device-caption">The next morning, they said payroll was covered.</p>
         </div>
         <div class="world-vignette"></div>
         <div class="world-grain"></div>
       </div>
 
       <div class="intro-veil" id="intro-veil" aria-hidden="true"></div>
-      <div class="loader-label" id="loader-label" aria-hidden="true">OPENING THE CORRIDOR</div>
+      <div class="loader-label" id="loader-label" aria-hidden="true">Opening the story</div>
       <div class="loader-bar" id="loader-bar" aria-hidden="true"><span></span></div>
 
       <div class="ui">
         <div class="progress-bar" aria-hidden="true"><span id="progress-fill"></span></div>
         <header class="site-header">
-          <div class="wordmark">JARRETT WROTEN</div>
+          <div class="wordmark">Jarrett Wroten</div>
           <div class="header-tools">
-            <button type="button" class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">MOTION ON</button>
+            <button type="button" class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">Motion on</button>
             <script>
             (function () {
               var on = document.documentElement.getAttribute("data-motion") === "on";
               var b = document.getElementById("motion-toggle");
               if (!b) return;
               b.setAttribute("aria-pressed", on ? "true" : "false");
-              b.textContent = on ? "MOTION ON" : "MOTION OFF";
+              b.textContent = on ? "Motion on" : "Motion off";
               b.setAttribute("aria-label", on ? "Motion is on. Activate to turn motion off." : "Motion is off. Activate to enable full motion.");
             })();
             </script>
           </div>
         </header>
 
-        <nav class="station-rail" id="station-rail" aria-label="Corridor stations">
+        <nav class="station-rail" id="station-rail" aria-label="Journey sections">
           <div class="station-rail-track" aria-hidden="true"></div>
           <div class="station-rail-marker" id="rail-marker" aria-hidden="true"></div>
-          <button type="button" class="station-rail-tick" data-go="leak" aria-current="true"><span>Leak</span></button>
-          <button type="button" class="station-rail-tick" data-go="method"><span>Method</span></button>
-          <button type="button" class="station-rail-tick" data-go="proof"><span>Proof</span></button>
-          <button type="button" class="station-rail-tick" data-go="jarrett"><span>Jarrett</span></button>
-          <button type="button" class="station-rail-tick" data-go="threshold"><span>Threshold</span></button>
+          <button type="button" class="station-rail-tick" data-go="leak" aria-current="true"><span>The leak</span></button>
+          <button type="button" class="station-rail-tick" data-go="method"><span>How I work</span></button>
+          <button type="button" class="station-rail-tick" data-go="proof"><span>Real result</span></button>
+          <button type="button" class="station-rail-tick" data-go="jarrett"><span>About me</span></button>
+          <button type="button" class="station-rail-tick" data-go="threshold"><span>Work with me</span></button>
         </nav>
 
         <section class="station" data-station="leak" id="station-leak" aria-labelledby="leak-heading">
           <div class="station-copy">
-            <p class="station-kicker">THE LEAK</p>
+            <p class="station-kicker">The leak</p>
             <h1 class="display" id="leak-heading">
               <span class="line"><span>I FIND WHERE</span></span>
               <span class="line"><span>YOUR BUSINESS</span></span>
@@ -1537,13 +1504,13 @@
             <div class="station-support text">
               <p>I follow the path from first click to sale, find the step where people drop out, and build the finished fix. Your first fix is free.</p>
             </div>
-            <a class="cta" href="#station-threshold" data-go="threshold">SHOW ME WHERE MINE LEAKS ↗</a>
+            <a class="cta" href="#station-threshold" data-go="threshold">Show me where mine leaks ↗</a>
           </div>
         </section>
 
         <section class="station" data-station="method" id="station-method" aria-labelledby="method-heading">
           <div class="station-copy">
-            <p class="station-kicker">FOLLOW THE REAL PATH</p>
+            <p class="station-kicker">Follow the real path</p>
             <h2 class="display" id="method-heading">
               <span class="line"><span>LOOK. FIND</span></span>
               <span class="line"><span>THE LEAK.</span></span>
@@ -1552,15 +1519,15 @@
           </div>
           <div class="method-annots" aria-label="Method steps">
             <div class="method-annot" data-step="1" id="annot-1">
-              <span class="method-annot-num">01 / LOOK</span>
+              <span class="method-annot-num">01 — Look</span>
               <p class="method-annot-text">I walk through your site like a real customer.</p>
             </div>
             <div class="method-annot" data-step="2" id="annot-2">
-              <span class="method-annot-num">02 / FIND THE BREAK</span>
+              <span class="method-annot-num">02 — Find the break</span>
               <p class="method-annot-text">I find the first key step where the path breaks.</p>
             </div>
             <div class="method-annot" data-step="3" id="annot-3">
-              <span class="method-annot-num">03 / BUILD THE FIX</span>
+              <span class="method-annot-num">03 — Build the fix</span>
               <p class="method-annot-text">I build the page, form, or follow-up that fixes it.</p>
             </div>
           </div>
@@ -1568,7 +1535,7 @@
 
         <section class="station" data-station="proof" id="station-proof" aria-labelledby="proof-heading">
           <div class="station-copy">
-            <p class="station-kicker">ONE REAL RESULT</p>
+            <p class="station-kicker">One real result</p>
             <h2 class="proof-figure" id="proof-heading">
               <span class="currency">$</span><span id="proof-gross">40,114.81</span>
             </h2>
@@ -1577,13 +1544,13 @@
               <p class="proof-row"><strong>Net volume</strong> <span id="proof-net">$37,914.00</span> · <span class="delta">up 108.02%</span> from <span id="proof-net-from">$18,225.83</span></p>
             </div>
             <p class="proof-qualifier">This was one Las Vegas service business, from May 15 to June 15, 2026. Your result will depend on your business.</p>
-            <p class="proof-open-hint">OPEN THE FULL STRIPE VIEW</p>
+            <p class="proof-open-hint">Open the full Stripe view</p>
           </div>
         </section>
 
         <section class="station" data-station="jarrett" id="station-jarrett" aria-labelledby="jarrett-heading">
           <div class="station-copy">
-            <p class="station-kicker">BUILT BY JARRETT</p>
+            <p class="station-kicker">Built by Jarrett</p>
             <h2 class="display" id="jarrett-heading">
               <span class="line"><span>I BUILD</span></span>
               <span class="line"><span>THE FIX</span></span>
@@ -1598,7 +1565,7 @@
         <section class="station" data-station="threshold" id="station-threshold" aria-labelledby="threshold-heading">
           <div class="station-copy">
             <div class="threshold-top">
-              <p class="station-kicker">YOUR FIRST FIX IS FREE</p>
+              <p class="station-kicker">Your first fix is free</p>
               <h2 class="display" id="threshold-heading">
                 <span class="line"><span>SEND ME</span></span>
                 <span class="line"><span>YOUR SITE.</span></span>
@@ -1614,8 +1581,8 @@
           </div>
         </section>
 
-        <p class="scroll-cue" id="scroll-cue">SCROLL TO FOLLOW THE SIGNAL</p>
-        <div class="distance-hud" id="distance-hud" aria-live="polite">STATION 01 · LEAK</div>
+        <p class="scroll-cue" id="scroll-cue">Scroll to follow the path</p>
+        <div class="distance-hud" id="distance-hud" aria-live="polite">1 of 5 — The leak</div>
         <footer class="site-footer" id="site-footer">
           <p>Jarrett Wroten · Las Vegas</p>
         </footer>
@@ -1660,11 +1627,11 @@
       worldInMs: 1100
     },
     stations: {
-      leak:      { id: "leak",      label: "LEAK",      center: 0.08, enter: 0.00, hold: 0.04, exit: 0.18 },
-      method:    { id: "method",    label: "METHOD",    center: 0.30, enter: 0.18, hold: 0.24, exit: 0.40 },
-      proof:     { id: "proof",     label: "PROOF",     center: 0.52, enter: 0.40, hold: 0.46, exit: 0.65 },
-      jarrett:   { id: "jarrett",   label: "JARRETT",   center: 0.76, enter: 0.65, hold: 0.70, exit: 0.86 },
-      threshold: { id: "threshold", label: "THRESHOLD", center: 0.94, enter: 0.86, hold: 0.90, exit: 1.01 }
+      leak:      { id: "leak",      label: "The leak",     center: 0.08, enter: 0.00, hold: 0.04, exit: 0.18 },
+      method:    { id: "method",    label: "How I work",   center: 0.30, enter: 0.18, hold: 0.24, exit: 0.40 },
+      proof:     { id: "proof",     label: "Real result",  center: 0.52, enter: 0.40, hold: 0.46, exit: 0.65 },
+      jarrett:   { id: "jarrett",   label: "About me",     center: 0.76, enter: 0.65, hold: 0.70, exit: 0.86 },
+      threshold: { id: "threshold", label: "Work with me", center: 0.94, enter: 0.86, hold: 0.90, exit: 1.01 }
     },
     methodSteps: [
       { at: 0.20, until: 0.27 },
@@ -2335,7 +2302,7 @@
     }
     if (motionToggle) {
       motionToggle.setAttribute("aria-pressed", motionOn ? "true" : "false");
-      motionToggle.textContent = motionOn ? "MOTION ON" : "MOTION OFF";
+      motionToggle.textContent = motionOn ? "Motion on" : "Motion off";
       motionToggle.setAttribute(
         "aria-label",
         motionOn
@@ -2473,10 +2440,10 @@
     var label = SITE_TUNING.stations[dom].label;
     if (distanceHud) {
       if (dom === "threshold" && p > 0.97) {
-        distanceHud.textContent = "END OF CORRIDOR";
+        distanceHud.textContent = "Journey complete";
         root.style.setProperty("--hud-opacity", "0.35");
       } else {
-        distanceHud.textContent = "STATION 0" + idx + " · " + label;
+        distanceHud.textContent = idx + " of 5 — " + label;
         root.style.setProperty("--hud-opacity", "1");
       }
     }

@@ -47,7 +47,7 @@ for (const s of ['leak', 'method', 'proof', 'jarrett', 'threshold']) {
 }
 
 ok(html.includes('jw-motion'), 'motion preference key');
-ok(html.includes('MOTION ON') || html.includes('motion-toggle'), 'motion control');
+ok(html.includes('Motion on') || html.includes('motion-toggle'), 'motion control');
 ok(html.includes('data-motion'), 'motion attribute boot');
 ok(html.includes('motion=off') || html.includes("get(\"motion\")") || html.includes("params.get(\"motion\")"), 'motion query support');
 
@@ -80,7 +80,6 @@ for (const rel of [
   'image0000002.jpg',
   'assets/fonts/bodoni-moda-latin-variable.woff2',
   'assets/fonts/ibm-plex-sans-latin-variable.woff2',
-  'assets/fonts/ibm-plex-mono-latin-500.woff2',
   'assets/fonts/OFL-IBM-Plex-Sans.txt',
   'assets/golden-arrival/golden-arrival-approved.mp4',
   'assets/golden-arrival/frames.json',
@@ -185,6 +184,50 @@ for (const sel of ['.cta', '.proof-open-hint']) {
   ok(/font-family\s*:\s*var\(--text\)/.test(block), sel + ' uses readable sans register');
   ok(/font-weight\s*:\s*600/.test(block), sel + ' has action weight 600');
 }
+
+// Human microtype tripwire
+// Canonical path: smoke-test.mjs human microtype block
+// Future consumer: every visible label, control, caption, HUD, footer, and fallback on this site
+// Activation: execute — node smoke-test.mjs
+// Behavioral check: the current public page has no IBM Plex Mono/default-mono register, no
+//   uppercase transformation, and assigns editorial versus utility microcopy by reading role
+// Retirement: retire only when an intentional replacement type system carries an equivalent
+//   live-pixel and source-level check against faux-technical microtype
+ok(!/IBM Plex Mono|ibm-plex-mono|--mono\s*:|var\(--mono\)/i.test(html), 'no ambient mono register or IBM Plex Mono wiring');
+ok(!/text-transform\s*:\s*uppercase/i.test(html), 'no CSS uppercase transform recreates faux-technical labels');
+for (const rel of [
+  'assets/fonts/ibm-plex-mono-latin-400.woff2',
+  'assets/fonts/ibm-plex-mono-latin-500.woff2',
+  'assets/fonts/OFL-IBM-Plex-Mono.txt',
+]) {
+  ok(!fs.existsSync(path.join(ROOT, rel)), 'retired unused faux-technical asset ' + rel);
+}
+function styleBlock(selector) {
+  const escaped = selector.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  const matches = [...html.matchAll(new RegExp(escaped + '\\s*\\{([^}]*)\\}', 'g'))];
+  return matches.map((match) => match[1]).join('\n');
+}
+for (const sel of ['.station-kicker', '.note-device-caption', '.scroll-cue', '.lightbox-caption']) {
+  const block = styleBlock(sel);
+  ok(/font-family\s*:\s*var\(--reading\)/.test(block), sel + ' uses human editorial register');
+  ok(/font-style\s*:\s*italic/.test(block), sel + ' uses editorial italic cadence');
+  ok(/letter-spacing\s*:\s*0/.test(block), sel + ' keeps natural tracking');
+}
+for (const sel of ['.wordmark', '.motion-toggle', '.loader-label', '.station-rail-tick span', '.distance-hud', '.method-annot-num', '.proof-open-hint', '.site-footer', '.lightbox-close']) {
+  const block = styleBlock(sel);
+  ok(/font-family\s*:\s*var\(--text\)/.test(block), sel + ' uses readable utility sans');
+  ok(!/text-transform\s*:\s*uppercase/.test(block), sel + ' is not forced into all caps');
+}
+for (const phrase of [
+  'Follow the real path',
+  '01 — Look',
+  '02 — Find the break',
+  '03 — Build the fix',
+  '1 of 5 — The leak',
+  'Work with me',
+]) {
+  ok(html.includes(phrase), 'human-facing microcopy present: ' + phrase);
+}
 ok(
   !/fonts\.gstatic\.com|fonts\.googleapis\.com|typekit\.net|use\.typekit/i.test(html),
   'no external font CDN URLs in runtime HTML'
@@ -217,7 +260,7 @@ ok(!/src=["']https?:\/\//i.test(html), 'no remote script src');
 ok(!/href=["']https?:\/\/cdn\./i.test(html), 'no cdn href');
 
 // proof figures selectable in markup
-for (const v of ['40,114.81', '104.51%', '37,914.00', '108.02%', 'THE NEXT MORNING, THEY SAID PAYROLL WAS COVERED.']) {
+for (const v of ['40,114.81', '104.51%', '37,914.00', '108.02%', 'The next morning, they said payroll was covered.']) {
   ok(html.includes(v), 'proof text ' + v);
 }
 
@@ -340,18 +383,18 @@ ok(!html.includes('support-extra'), 'obsolete jarrett support-extra removed');
 ok(html.includes('support-primary'), 'jarrett primary support marked');
 ok(html.includes('I BUILD') && html.includes('THE FIX') && html.includes('MYSELF.'), 'jarrett claim lines present');
 ok(html.includes('You work with me from the first look through the finished fix.'), 'jarrett support contract present');
-ok(html.includes('ONE REAL RESULT'), 'proof kicker contract');
-ok(html.includes('YOUR FIRST FIX IS FREE'), 'threshold free-fix kicker');
+ok(html.includes('One real result'), 'proof kicker contract');
+ok(html.includes('Your first fix is free'), 'threshold free-fix kicker');
 ok(html.includes('SEND ME') && html.includes('YOUR SITE.'), 'threshold claim lines present');
 ok(html.includes('If I find nothing worth fixing'), 'threshold no-leak truth line');
 ok(html.includes('subject=Take%20a%20look%20at%20my%20site'), 'mailto subject prefilled');
 ok(html.includes('body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A'), 'mailto body prompts prefilled');
-ok(html.includes('01 / LOOK') && html.includes('02 / FIND THE BREAK') && html.includes('03 / BUILD THE FIX'), 'method step labels present');
+ok(html.includes('01 — Look') && html.includes('02 — Find the break') && html.includes('03 — Build the fix'), 'method step labels present');
 ok(html.includes('I walk through your site like a real customer.'), 'method step 1 copy');
 ok(
   html.includes('no-js-route') &&
-    html.includes('FOLLOW THE REAL PATH') &&
-    (html.match(/01 \/ LOOK/g) || []).length >= 2,
+    html.includes('Follow the real path') &&
+    (html.match(/01 — Look/g) || []).length >= 2,
   'no-js route carries method steps'
 );
 
