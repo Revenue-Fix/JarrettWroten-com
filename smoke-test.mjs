@@ -223,7 +223,7 @@ for (const phrase of [
   '01 — Look',
   '02 — Find the break',
   '03 — Build the fix',
-  '1 of 5 — The leak',
+  '1 of 5 — The Leak',
   'Work with me',
 ]) {
   ok(html.includes(phrase), 'human-facing microcopy present: ' + phrase);
