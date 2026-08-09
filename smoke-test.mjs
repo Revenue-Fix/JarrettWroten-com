@@ -79,12 +79,75 @@ for (const rel of [
   'image000001.jpg',
   'image0000002.jpg',
   'assets/fonts/bodoni-moda-latin-variable.woff2',
+  'assets/fonts/ibm-plex-sans-latin-variable.woff2',
   'assets/fonts/ibm-plex-mono-latin-500.woff2',
+  'assets/fonts/OFL-IBM-Plex-Sans.txt',
   'assets/golden-arrival/golden-arrival-approved.mp4',
   'assets/golden-arrival/frames.json',
 ]) {
   mustExist(rel);
 }
+
+// Corridor reading type system — IBM Plex Sans self-host + two-register split
+// Canonical path: smoke-test.mjs corridor reading type-system block
+// Future consumer: maintainer changing JarrettWroten.com typography or font assets
+// Activation: execute — node smoke-test.mjs
+// Behavioral check: fails if self-hosted asset/hash/register split/native spacing/
+//   display ownership/no-CDN boundary regresses; full command has passed against candidate
+// Retirement: retire only when the corridor type system is intentionally replaced and an
+//   equivalent consumer-facing font/register regression check supersedes this block
+const crypto = await import('crypto');
+const plexSansPath = path.join(ROOT, 'assets/fonts/ibm-plex-sans-latin-variable.woff2');
+if (fs.existsSync(plexSansPath)) {
+  const plexHash = crypto.createHash('sha256').update(fs.readFileSync(plexSansPath)).digest('hex').toUpperCase();
+  ok(
+    plexHash === 'E2291E842CF5AF167122A22881A740C7F2DDA7716F1E8CD76680264F4A859470',
+    'ibm-plex-sans-latin-variable.woff2 SHA-256'
+  );
+}
+ok(
+  html.includes('assets/fonts/ibm-plex-sans-latin-variable.woff2'),
+  'self-hosted IBM Plex Sans path in markup'
+);
+ok(
+  /font-family\s*:\s*"IBM Plex Sans"/.test(html) &&
+    /src\s*:\s*url\("assets\/fonts\/ibm-plex-sans-latin-variable\.woff2"\)\s*format\("woff2"\)/.test(html),
+  'IBM Plex Sans @font-face family + local src'
+);
+ok(
+  /font-family\s*:\s*"IBM Plex Sans"[\s\S]*?font-weight\s*:\s*100\s+700/.test(html) ||
+    /@font-face\{[^}]*font-family:"IBM Plex Sans"[^}]*font-weight:100 700[^}]*\}/.test(html.replace(/\s+/g, '')),
+  'IBM Plex Sans variable weight range 100 700'
+);
+ok(/--text\s*:\s*"IBM Plex Sans"/.test(html), '--text CSS variable names IBM Plex Sans');
+ok(
+  /--text\s*:\s*"IBM Plex Sans"[^;]*sans-serif/.test(html),
+  '--text includes robust sans-serif fallback stack'
+);
+const readingSelectors = ['.text', '.method-annot-text', '.proof-row', '.proof-qualifier', '.invite-whisper'];
+for (const sel of readingSelectors) {
+  const re = new RegExp(sel.replace('.', '\\.') + '\\s*\\{[^}]*font-family\\s*:\\s*var\\(--text\\)');
+  ok(re.test(html), sel + ' uses var(--text)');
+  const blockMatch = html.match(new RegExp(sel.replace('.', '\\.') + '\\s*\\{([^}]*)\\}'));
+  const block = blockMatch ? blockMatch[1] : '';
+  ok(block.includes('letter-spacing:0') || /letter-spacing\s*:\s*0/.test(block), sel + ' native letter-spacing:0');
+  ok(!/opsz/.test(block), sel + ' has no Bodoni opsz');
+  ok(/font-weight\s*:\s*400/.test(block), sel + ' prose weight 400');
+}
+ok(/\.proof-row strong\{[^}]*font-weight\s*:\s*500/.test(html), '.proof-row strong keeps weight 500 emphasis');
+const displaySelectors = ['.display', '.proof-figure', '.invite-email'];
+for (const sel of displaySelectors) {
+  const re = new RegExp(sel.replace('.', '\\.') + '\\s*\\{[^}]*font-family\\s*:\\s*var\\(--display\\)');
+  ok(re.test(html), sel + ' stays on var(--display) Bodoni');
+  const blockMatch = html.match(new RegExp(sel.replace('.', '\\.') + '\\s*\\{([^}]*)\\}'));
+  const block = blockMatch ? blockMatch[1] : '';
+  ok(/opsz/.test(block), sel + ' retains Bodoni opsz');
+}
+ok(
+  !/fonts\.gstatic\.com|fonts\.googleapis\.com|typekit\.net|use\.typekit/i.test(html),
+  'no external font CDN URLs in runtime HTML'
+);
+ok(fs.existsSync(path.join(ROOT, 'assets/fonts/OFL-IBM-Plex-Sans.txt')), 'OFL-IBM-Plex-Sans.txt license present');
 
 // frames.json — corrected continuous-source contract (reject 15-hold recurrence)
 const fj = JSON.parse(fs.readFileSync(path.join(ROOT, 'assets/golden-arrival/frames.json'), 'utf8'));
