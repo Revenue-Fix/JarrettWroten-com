@@ -117,6 +117,10 @@ for (const v of ['40,114.81', '104.51%', '37,914.00', '108.02%', 'THE NEXT MORNI
 
 // SITE_TUNING exported
 ok(html.includes('window.SITE_TUNING'), 'SITE_TUNING inspectable');
+ok(
+  /tauDesktopSec:\s*0\.41/.test(html) && /tauMobileSec:\s*0\.41/.test(html),
+  'settle tau desktop and mobile are exactly 0.41'
+);
 ok(html.includes('frameMap'), 'nonlinear frameMap');
 ok(html.includes('requestIdleCallback') || html.includes('preloadBatch'), 'idle batch preload');
 ok(html.includes('.decode(') || html.includes('img.decode'), 'img.decode gate');
