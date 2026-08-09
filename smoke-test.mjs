@@ -111,7 +111,7 @@ ok(!/src=["']https?:\/\//i.test(html), 'no remote script src');
 ok(!/href=["']https?:\/\/cdn\./i.test(html), 'no cdn href');
 
 // proof figures selectable in markup
-for (const v of ['40,114.81', '104.51%', '37,914.00', '108.02%', 'AND THE MORNING PAYROLL CLEARED']) {
+for (const v of ['40,114.81', '104.51%', '37,914.00', '108.02%', 'THE NEXT MORNING, THEY SAID PAYROLL WAS COVERED.']) {
   ok(html.includes(v), 'proof text ' + v);
 }
 
@@ -226,8 +226,24 @@ ok(html.includes('loaderOpeningFrames'), 'loader opening-neighbourhood contract'
 ok(html.includes('progressToRailMarker'), 'rail marker station-center mapping');
 ok(html.includes('railCenters'), 'rail centers inspectable');
 ok(html.includes('faceExclusionMobile'), 'face exclusion geometry inspectable');
-ok(html.includes('support-extra'), 'jarrett extra copy preserved in document');
+ok(!html.includes('support-extra'), 'obsolete jarrett support-extra removed');
 ok(html.includes('support-primary'), 'jarrett primary support marked');
+ok(html.includes('I BUILD') && html.includes('THE FIX') && html.includes('MYSELF.'), 'jarrett claim lines present');
+ok(html.includes('You work with me from the first look through the finished fix.'), 'jarrett support contract present');
+ok(html.includes('ONE REAL RESULT'), 'proof kicker contract');
+ok(html.includes('YOUR FIRST FIX IS FREE'), 'threshold free-fix kicker');
+ok(html.includes('SEND ME') && html.includes('YOUR SITE.'), 'threshold claim lines present');
+ok(html.includes('If I find nothing worth fixing'), 'threshold no-leak truth line');
+ok(html.includes('subject=Take%20a%20look%20at%20my%20site'), 'mailto subject prefilled');
+ok(html.includes('body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A'), 'mailto body prompts prefilled');
+ok(html.includes('01 / LOOK') && html.includes('02 / FIND THE BREAK') && html.includes('03 / BUILD THE FIX'), 'method step labels present');
+ok(html.includes('I walk through your site like a real customer.'), 'method step 1 copy');
+ok(
+  html.includes('no-js-route') &&
+    html.includes('FOLLOW THE REAL PATH') &&
+    (html.match(/01 \/ LOOK/g) || []).length >= 2,
+  'no-js route carries method steps'
+);
 // Width-aware: longest Jarrett display line must fit inside masked .line (scrollWidth)
 ok(
   html.includes('max-width:min(38rem, 48vw)') ||

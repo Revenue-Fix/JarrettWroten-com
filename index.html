@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Jarrett Wroten — I find where your business quietly loses customers</title>
-<meta name="description" content="I find where your business quietly loses customers, then build you the fix. Your first fix is my gift.">
-<meta property="og:title" content="Jarrett Wroten — I find where your business quietly loses customers">
-<meta property="og:description" content="I trace the real path your customers take, find the one place they disappear, and build the finished repair.">
+<title>Jarrett Wroten | I find the leak and build the fix</title>
+<meta name="description" content="I follow the path from first click to sale, find the step where people drop out, and build the fix. Send me your site. Your first fix is free.">
+<meta property="og:title" content="Jarrett Wroten | I find the leak and build the fix">
+<meta property="og:description" content="I follow the path from first click to sale, find the step where people drop out, and build the fix. Send me your site. Your first fix is free.">
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://jarrettwroten.com">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
@@ -866,10 +866,6 @@
   .station[data-station="jarrett"] .station-support{
     margin-top:clamp(1.6rem,4vh,2.8rem);
   }
-  html[data-motion="on"] .station[data-station="jarrett"] .support-extra{
-    display:none;
-  }
-
   /* THRESHOLD — asymmetric close: high-left ask, low-left email/whisper, face free through middle */
   .station[data-station="threshold"] .station-copy{
     position:absolute;
@@ -1227,8 +1223,21 @@
       margin-top:0;
       font-size:clamp(1.3rem,6.2vw,1.5rem);
     }
+    /* Short support stays readable on mobile motion-on; face/smile free above bottom carrier */
     html[data-motion="on"] .station[data-station="threshold"] .station-support{
-      display:none;
+      display:block;
+      margin:0 0 .55rem;
+      max-width:min(19.5rem, 88vw);
+    }
+    html[data-motion="on"] .station[data-station="threshold"] .station-support .text,
+    html[data-motion="on"] .station[data-station="threshold"] .station-support.text{
+      font-size:clamp(.95rem, 2.6vw, 1.05rem);
+      line-height:1.35;
+    }
+    html[data-motion="on"] .station[data-station="threshold"] .invite-whisper{
+      margin-top:.45rem;
+      font-size:clamp(.95rem, 2.5vw, 1.02rem);
+      line-height:1.35;
     }
 
     /*
@@ -1378,49 +1387,56 @@
       <p class="station-kicker">THE LEAK</p>
       <h1 class="display">I find where your business quietly loses customers. Then I build you the fix.</h1>
       <div class="text">
-        <p>I trace the real path your customers take, find the one place they disappear, and build the finished repair. Your first fix is my gift.</p>
+        <p>I follow the path from first click to sale, find the step where people drop out, and build the finished fix. Your first fix is free.</p>
       </div>
-      <p class="station-kicker">PROOF, NOT PROMISES</p>
+      <p class="station-kicker">FOLLOW THE REAL PATH</p>
+      <h2 class="display">Look. Find the leak. Build the fix.</h2>
+      <div class="text">
+        <p><strong>01 / LOOK</strong> I walk through your site like a real customer.</p>
+        <p><strong>02 / FIND THE BREAK</strong> I find the first key step where the path breaks.</p>
+        <p><strong>03 / BUILD THE FIX</strong> I build the page, form, or follow-up that fixes it.</p>
+      </div>
+      <p class="station-kicker">ONE REAL RESULT</p>
       <p class="proof-figure"><span class="currency">$</span>40,114.81</p>
       <div class="proof-values">
         <p class="proof-row"><strong>Gross volume</strong> $40,114.81 · <span class="delta">up 104.51%</span> from $19,615.40</p>
         <p class="proof-row"><strong>Net volume</strong> $37,914.00 · <span class="delta">up 108.02%</span> from $18,225.83</p>
       </div>
-      <p class="proof-qualifier">One Las Vegas service business. Their Stripe. Their words. Your results would be your own.</p>
-      <p class="station-kicker">WHO'S BEHIND IT</p>
-      <h2 class="display">I'm a builder, not a salesman.</h2>
+      <p class="proof-qualifier">This was one Las Vegas service business, from May 15 to June 15, 2026. Your result will depend on your business.</p>
+      <p class="station-kicker">BUILT BY JARRETT</p>
+      <h2 class="display">I build the fix myself.</h2>
       <div class="text">
-        <p>Tell me where your business is losing people, and I'll build the fix myself. Your first one is my gift.</p>
+        <p>You work with me from the first look through the finished fix.</p>
       </div>
-      <p class="station-kicker">THE FIRST FIX IS MY GIFT</p>
-      <h2 class="display">Want me to look at yours?</h2>
+      <p class="station-kicker">YOUR FIRST FIX IS FREE</p>
+      <h2 class="display">Send me your site.</h2>
       <div class="text">
-        <p>Tell me your business and where you feel the leak. I'll take a real look, and if something is worth fixing, I'll build it and send it over. Free, and yours to keep.</p>
+        <p>Send me your site and tell me what you want more of. I’ll build the first fix, and you keep it. If it helps, we can keep working together.</p>
       </div>
-      <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a>
-      <p class="invite-whisper">No catch. No meeting you have to sit through.</p>
+      <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
+      <p class="invite-whisper">If I find nothing worth fixing, I’ll tell you.</p>
       <footer><p>Jarrett Wroten · Las Vegas</p></footer>
     </div>
   </main>
 
   <div class="journey" id="journey">
-    <div class="viewport" id="viewport" aria-label="The Golden Arrival — continuous corridor">
+    <div class="viewport" id="viewport" aria-label="The Golden Arrival, continuous corridor">
       <div class="world" id="world" aria-hidden="true">
         <img class="world-frame is-active" id="world-frame-a" alt="" width="1280" height="720" decoding="async" src="assets/golden-arrival/frames/ga-000.webp">
         <img class="world-frame" id="world-frame-b" alt="" width="1280" height="720" decoding="async">
         <div class="console-spill" id="console-spill" aria-hidden="true"></div>
         <div class="console-mount" id="console-mount">
           <div class="console-housing">
-            <button type="button" class="console-screen" id="console-screen" data-lightbox="stripe" aria-haspopup="dialog" aria-label="Open full Stripe overview. Gross volume $40,114.81.">
-              <img src="assets/stripe-growth-focal.png" alt="Stripe growth comparison for one Las Vegas service business: gross volume $40,114.81, up 104.51% from $19,615.40; net volume $37,914.00, up 108.02% from $18,225.83." width="503" height="244" decoding="async">
+            <button type="button" class="console-screen" id="console-screen" data-lightbox="stripe" aria-haspopup="dialog" aria-label="Open the full Stripe view. Gross volume $40,114.81.">
+              <img src="assets/stripe-growth-focal.png" alt="Stripe growth comparison for one Las Vegas service business: gross volume $40,114.81, up 104.51% from $19,615.40; net volume $37,914.00, up 108.02% from $18,225.83. May 15 to June 15, 2026." width="503" height="244" decoding="async">
             </button>
           </div>
         </div>
         <div class="note-mount" id="note-mount">
-          <button type="button" class="note-device" id="note-device" data-lightbox="note" aria-haspopup="dialog" aria-label="Open client note about making payroll">
+          <button type="button" class="note-device" id="note-device" data-lightbox="note" aria-haspopup="dialog" aria-label="Open client note about payroll being covered">
             <img src="image0000002.jpg" alt="Client note: they officially made payroll and no more money is coming out of savings." width="1200" height="623" decoding="async">
           </button>
-          <p class="note-device-caption">AND THE MORNING PAYROLL CLEARED:</p>
+          <p class="note-device-caption">THE NEXT MORNING, THEY SAID PAYROLL WAS COVERED.</p>
         </div>
         <div class="world-vignette"></div>
         <div class="world-grain"></div>
@@ -1471,7 +1487,7 @@
               <span class="line"><span>YOU THE FIX.</span></span>
             </h1>
             <div class="station-support text">
-              <p>I trace the real path your customers take, find the one place they disappear, and build the finished repair. Your first fix is my gift.</p>
+              <p>I follow the path from first click to sale, find the step where people drop out, and build the finished fix. Your first fix is free.</p>
             </div>
             <a class="cta" href="#station-threshold" data-go="threshold">SHOW ME WHERE MINE LEAKS ↗</a>
           </div>
@@ -1488,23 +1504,23 @@
           </div>
           <div class="method-annots" aria-label="Method steps">
             <div class="method-annot" data-step="1" id="annot-1">
-              <span class="method-annot-num">01 — LOOK</span>
-              <p class="method-annot-text">I follow the real path a customer takes, step by step.</p>
+              <span class="method-annot-num">01 / LOOK</span>
+              <p class="method-annot-text">I walk through your site like a real customer.</p>
             </div>
             <div class="method-annot" data-step="2" id="annot-2">
-              <span class="method-annot-num">02 — FIND THE ONE LEAK</span>
-              <p class="method-annot-text">Not forty things. The one place most people disappear.</p>
+              <span class="method-annot-num">02 / FIND THE BREAK</span>
+              <p class="method-annot-text">I find the first key step where the path breaks.</p>
             </div>
             <div class="method-annot" data-step="3" id="annot-3">
-              <span class="method-annot-num">03 — BUILD THE FIX</span>
-              <p class="method-annot-text">Then I make the finished repair, ready for your site.</p>
+              <span class="method-annot-num">03 / BUILD THE FIX</span>
+              <p class="method-annot-text">I build the page, form, or follow-up that fixes it.</p>
             </div>
           </div>
         </section>
 
         <section class="station" data-station="proof" id="station-proof" aria-labelledby="proof-heading">
           <div class="station-copy">
-            <p class="station-kicker">PROOF, NOT PROMISES</p>
+            <p class="station-kicker">ONE REAL RESULT</p>
             <h2 class="proof-figure" id="proof-heading">
               <span class="currency">$</span><span id="proof-gross">40,114.81</span>
             </h2>
@@ -1512,23 +1528,21 @@
               <p class="proof-row"><strong>Gross volume</strong> <span id="proof-gross-full">$40,114.81</span> · <span class="delta">up 104.51%</span> from <span id="proof-gross-from">$19,615.40</span></p>
               <p class="proof-row"><strong>Net volume</strong> <span id="proof-net">$37,914.00</span> · <span class="delta">up 108.02%</span> from <span id="proof-net-from">$18,225.83</span></p>
             </div>
-            <p class="proof-qualifier">One Las Vegas service business. Their Stripe. Their words. Your results would be your own.</p>
-            <p class="proof-open-hint">Tap the console to open the full Stripe overview</p>
+            <p class="proof-qualifier">This was one Las Vegas service business, from May 15 to June 15, 2026. Your result will depend on your business.</p>
+            <p class="proof-open-hint">OPEN THE FULL STRIPE VIEW</p>
           </div>
         </section>
 
         <section class="station" data-station="jarrett" id="station-jarrett" aria-labelledby="jarrett-heading">
           <div class="station-copy">
-            <p class="station-kicker">WHO'S BEHIND IT</p>
+            <p class="station-kicker">BUILT BY JARRETT</p>
             <h2 class="display" id="jarrett-heading">
-              <span class="line"><span>I'M A BUILDER,</span></span>
-              <span class="line"><span>NOT A SALESMAN.</span></span>
+              <span class="line"><span>I BUILD</span></span>
+              <span class="line"><span>THE FIX</span></span>
+              <span class="line"><span>MYSELF.</span></span>
             </h2>
             <div class="station-support text">
-              <p class="support-primary">Tell me where your business is losing people, and I'll build the fix myself.</p>
-              <p class="support-extra">The real, finished thing — not a plan you have to build.</p>
-              <p class="support-extra">Your first one is my gift. If someone else would serve you better, I'll say so.</p>
-              <p class="support-extra">I care more about whether it works than whether you hire me.</p>
+              <p class="support-primary">You work with me from the first look through the finished fix.</p>
             </div>
           </div>
         </section>
@@ -1536,19 +1550,18 @@
         <section class="station" data-station="threshold" id="station-threshold" aria-labelledby="threshold-heading">
           <div class="station-copy">
             <div class="threshold-top">
-              <p class="station-kicker">THE FIRST FIX IS MY GIFT</p>
+              <p class="station-kicker">YOUR FIRST FIX IS FREE</p>
               <h2 class="display" id="threshold-heading">
-                <span class="line"><span>WANT ME</span></span>
-                <span class="line"><span>TO LOOK</span></span>
-                <span class="line"><span>AT YOURS?</span></span>
+                <span class="line"><span>SEND ME</span></span>
+                <span class="line"><span>YOUR SITE.</span></span>
               </h2>
             </div>
             <div class="threshold-bottom">
               <div class="station-support text">
-                <p>Tell me your business and where you feel the leak. I'll take a real look, and if something is worth fixing, I'll build it and send it over. Free, and yours to keep.</p>
+                <p>Send me your site and tell me what you want more of. I’ll build the first fix, and you keep it. If it helps, we can keep working together.</p>
               </div>
-              <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a>
-              <p class="invite-whisper">No catch. No meeting you have to sit through.</p>
+              <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
+              <p class="invite-whisper">If I find nothing worth fixing, I’ll tell you.</p>
             </div>
           </div>
         </section>
@@ -1780,12 +1793,12 @@
     stripe: {
       src: "image000001.jpg",
       alt: "Stripe dashboard overview for one Las Vegas service business: gross volume $40,114.81, up 104.51% from $19,615.40, May 15 2026 through June 15 2026.",
-      caption: "Full Stripe overview · May 15 – June 15 2026 · $40,114.81 gross volume"
+      caption: "Full Stripe view · May 15 to June 15, 2026 · $40,114.81 gross volume"
     },
     note: {
       src: "image0000002.jpg",
       alt: "Client note: they officially made payroll and no more money is coming out of savings.",
-      caption: "Their words · payroll cleared"
+      caption: "Their words · the next morning, payroll was covered"
     }
   };
 
