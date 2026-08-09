@@ -99,7 +99,7 @@
   }
 
   *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
+  html,body{margin:0;padding:0;overflow-anchor:none}
   html{
     background:var(--void);
     color:var(--ink);
@@ -1024,12 +1024,6 @@
   html[data-motion="off"] .method-annot[data-step="1"]{ left:10%; top:44%; }
   html[data-motion="off"] .method-annot[data-step="2"]{ left:30%; top:34%; }
   html[data-motion="off"] .method-annot[data-step="3"]{ left:48%; top:25%; }
-  @media (max-width:720px){
-    html[data-motion="off"] .method-annot[data-step="1"]{ left:6%; top:20%; }
-    html[data-motion="off"] .method-annot[data-step="2"]{ left:10%; top:31%; }
-    html[data-motion="off"] .method-annot[data-step="3"]{ left:14%; top:42%; }
-  }
-
   .lightbox{
     position:fixed;
     inset:0;
@@ -1106,241 +1100,378 @@
   html[data-motion="off"] .loader-bar,
   html[data-motion="off"] .loader-label{display:none}
 
+  /*
+   * COMPOUNDING — maintained asset
+   * Canonical path: index.html — #mobile-experience plus its <=720px render path.
+   * Future consumer: a portrait visitor deciding whether to send Jarrett a site.
+   * Activation: auto-load — @media (max-width:720px) and paintMobileExperience().
+   * Behavioral check: node smoke-test.mjs plus the rendered 360/390/430px seven-beat journey.
+   * Retirement: retire when this site no longer uses the Golden Arrival buyer journey on mobile.
+   */
+  .mobile-experience{display:none}
+
   @media (max-width:720px){
-    .journey{height:620svh}
-    html[data-motion="off"] .journey{height:520svh}
-    .station-rail{display:none}
+    :root{
+      --gutter:max(1.1rem, env(safe-area-inset-left));
+      --mobile-nav-height:3.25rem;
+    }
+
+    html{scrollbar-width:none}
+    html::-webkit-scrollbar{display:none}
+    body{overscroll-behavior-y:none}
+    .journey{height:960svh}
+    html[data-motion="off"] .journey{height:500svh}
+    .viewport{min-height:36rem}
+
+    .station,
+    .station-rail,
+    .distance-hud,
+    .site-footer,
+    .scroll-cue{display:none !important}
+
     .progress-bar{display:block}
-    .site-header{padding-top:calc(.75rem + 3px)}
-    .display{
-      font-size:clamp(2.125rem,9.7vw,2.375rem);
-      line-height:.97;
+    .site-header{
+      min-height:3.6rem;
+      padding:calc(.82rem + env(safe-area-inset-top)) var(--gutter) .7rem;
+      background:linear-gradient(180deg, rgba(3,9,11,.86) 0%, rgba(3,9,11,.38) 62%, transparent 100%);
+    }
+    .wordmark{font-size:.875rem;letter-spacing:.01em}
+    .motion-toggle{
+      min-height:2.75rem;
+      font-size:.8125rem;
+      font-weight:550;
+      letter-spacing:0;
     }
 
-    /* Mobile corridor washes — top wash for Leak/Method; bottom wash for person stations */
-    .station[data-station="leak"] .station-copy::before{
-      inset:auto -30% auto -30%;
-      top:0;
-      height:125%;
-      background:linear-gradient(180deg, rgba(4,10,12,.94) 0%, rgba(4,10,12,.82) 58%, rgba(4,10,12,.52) 82%, transparent 100%);
+    .world-frame{
+      object-position:50% 50%;
+      filter:saturate(.96) contrast(1.04) brightness(.84);
     }
-    .station[data-station="method"] .station-copy::before{
-      inset:auto -30% auto -30%;
-      top:0;
-      height:62%;
-      background:linear-gradient(180deg, rgba(4,10,12,.88) 0%, rgba(4,10,12,.70) 55%, transparent 100%);
-    }
-    .station[data-station="proof"] .station-copy::before{
-      inset:-10% -12% -16% -12%;
-      background:radial-gradient(ellipse 80% 90% at 50% 30%, rgba(4,10,12,.88), transparent 78%);
+    .world-vignette{
+      background:
+        linear-gradient(180deg, rgba(2,8,10,.38) 0%, transparent 22%),
+        radial-gradient(ellipse 96% 72% at 50% 45%, transparent 30%, rgba(2,8,10,.38) 100%);
     }
 
-    /* LEAK — type wall with support + CTA still reachable */
-    .station[data-station="leak"] .station-copy{
-      left:var(--gutter);
-      right:var(--gutter);
-      top:clamp(4.4rem,10vh,5.4rem);
-      max-width:none;
-    }
-    .station[data-station="leak"] .display{
-      font-size:clamp(2.125rem,9.7vw,2.375rem);
-      line-height:.96;
-    }
-
-    /* METHOD — bottom heading; annotations climb clear of headline */
-    .station[data-station="method"] .station-copy{
-      left:var(--gutter);
-      right:var(--gutter);
-      top:auto;
-      bottom:clamp(5.5rem,14vh,7rem);
-      max-width:none;
-    }
-    .station[data-station="method"] .display{
-      font-size:clamp(1.95rem,8.7vw,2.125rem);
-      line-height:.97;
-    }
-    .method-annot{ max-width:min(17rem,72vw); }
-    .method-annot[data-step="1"]{ left:6%; top:20%; }
-    .method-annot[data-step="2"]{ left:10%; top:31%; }
-    .method-annot[data-step="3"]{ left:14%; top:42%; }
-
-    /* PROOF — centred instrument stack; tap affordance visible */
-    .station[data-station="proof"] .station-copy{
-      left:50%;
-      right:auto;
-      top:auto;
-      bottom:clamp(4.8rem,11vh,6rem);
-      transform:translateX(-50%);
-      max-width:min(22rem, 90vw);
-      width:90vw;
-      text-align:center;
-    }
-    .proof-open-hint{display:block}
-    .proof-figure{font-size:clamp(2.4rem,12.8vw,3.125rem)}
-    .proof-values{max-width:100%; gap:.45rem}
-    .proof-row{white-space:normal}
-
-    /* JARRETT — face exclusion y110–515; bottom carrier only; one support sentence motion-on.
-       19rem/86vw clipped NOT A SALESMAN. terminal period at 390; fit longest masked line. */
-    .station[data-station="jarrett"] .station-copy{
-      left:var(--gutter);
-      right:auto;
-      top:auto;
-      bottom:clamp(6.2rem,14vh,7.4rem);
-      max-width:min(21rem, 90vw);
-      z-index:1;
-    }
-    .station[data-station="jarrett"] .display{
-      font-size:clamp(2rem,9.2vw,2.25rem);
-      line-height:.98;
-    }
-    .station[data-station="jarrett"] .station-support{
-      margin-top:1rem;
-    }
-    /* Content-box band retired: wash is station-level full-width (see ::after) */
-    .station[data-station="jarrett"] .station-copy::before{
-      content:none;
-    }
-
-    /* THRESHOLD — top group ends ≤y215; bottom group starts ≥y565; smile free */
-    .station[data-station="threshold"] .station-copy{
-      left:var(--gutter);
-      right:var(--gutter);
-      top:0;
-      bottom:0;
-      max-width:none;
+    .mobile-experience{
+      position:absolute;
+      inset:0;
+      z-index:21;
       display:block;
-      z-index:1;
+      pointer-events:none;
     }
-    .station[data-station="threshold"] .threshold-top{
+    .mobile-story-wash{
       position:absolute;
-      left:0;
-      right:0;
-      top:clamp(3.6rem,8vh,4.4rem);
-      max-width:min(20rem, 88vw);
-    }
-    .station[data-station="threshold"] .threshold-top::before{
-      inset:auto -30% auto -30%;
-      top:0;
-      height:120%;
-      background:linear-gradient(180deg, rgba(4,10,12,.88) 0%, rgba(4,10,12,.55) 55%, transparent 100%);
-    }
-    .station[data-station="threshold"] .threshold-bottom{
-      position:absolute;
-      left:0;
-      right:0;
-      top:auto;
-      bottom:clamp(6rem,13.5vh,7.2rem);
-      max-width:min(20rem, 88vw);
-    }
-    /* Content-box band retired: wash is station-level full-width (see ::after) */
-    .station[data-station="threshold"] .threshold-bottom::before{
-      content:none;
-    }
-    .station[data-station="threshold"] .display{
-      font-size:clamp(2.125rem,9.7vw,2.375rem);
-      line-height:.96;
-    }
-    .station[data-station="threshold"] .invite-email{
-      margin-top:0;
-      font-size:clamp(1.3rem,6.2vw,1.5rem);
-    }
-    /* Short support stays readable on mobile motion-on; face/smile free above bottom carrier */
-    html[data-motion="on"] .station[data-station="threshold"] .station-support{
-      display:block;
-      margin:0 0 .55rem;
-      max-width:min(19.5rem, 88vw);
-    }
-    html[data-motion="on"] .station[data-station="threshold"] .station-support .text,
-    html[data-motion="on"] .station[data-station="threshold"] .station-support.text{
-      font-size:clamp(1.0625rem, 4.35vw, 1.125rem);
-      line-height:1.42;
-    }
-    html[data-motion="on"] .station[data-station="threshold"] .invite-whisper{
-      margin-top:.45rem;
-      font-size:clamp(1rem, 4.1vw, 1.0625rem);
-      line-height:1.42;
-    }
-
-    /*
-     * Person-station light control — full-width station wash, not a content-box card.
-     * Dark end reaches the viewport edge; transparent edge dissolves into the corridor.
-     */
-    .station[data-station="jarrett"]::after,
-    .station[data-station="threshold"]::after{
-      content:"";
-      position:absolute;
-      left:0;
-      right:0;
-      bottom:0;
-      height:48%;
+      inset:0;
       z-index:0;
       pointer-events:none;
-      background:linear-gradient(
-        to top,
-        rgba(4,10,12,.96) 0%,
-        rgba(4,10,12,.90) 16%,
-        rgba(4,10,12,.72) 34%,
-        rgba(4,10,12,.42) 52%,
-        rgba(4,10,12,.18) 68%,
-        rgba(4,10,12,.06) 82%,
-        transparent 100%
-      );
+      background:
+        linear-gradient(180deg, transparent 35%, rgba(3,9,11,.16) 49%, rgba(3,9,11,.88) 76%, #03090b 100%),
+        radial-gradient(ellipse 100% 62% at 50% 46%, transparent 30%, rgba(3,9,11,.22) 100%);
+      transition:background .6s var(--ease-enter), opacity .45s linear;
+    }
+    html[data-mobile-station="proof"] .mobile-story-wash{
+      background:
+        linear-gradient(180deg, rgba(3,9,11,.28) 0%, transparent 24%, transparent 38%, rgba(3,9,11,.55) 58%, rgba(3,9,11,.96) 80%, #03090b 100%),
+        radial-gradient(ellipse 92% 50% at 50% 28%, transparent 28%, rgba(3,9,11,.34) 100%);
+    }
+    html[data-mobile-station="jarrett"] .mobile-story-wash,
+    html[data-mobile-station="threshold"] .mobile-story-wash{
+      background:
+        linear-gradient(180deg, rgba(3,9,11,.20) 0%, transparent 30%, rgba(3,9,11,.18) 46%, rgba(3,9,11,.92) 72%, #03090b 100%),
+        radial-gradient(ellipse 100% 64% at 50% 38%, transparent 30%, rgba(3,9,11,.30) 100%);
     }
 
+    .mobile-copy-stage{
+      position:absolute;
+      z-index:2;
+      left:var(--gutter);
+      right:var(--gutter);
+      bottom:calc(5.65rem + env(safe-area-inset-bottom));
+      min-height:18.25rem;
+      pointer-events:none;
+    }
+    .mobile-beat{
+      position:absolute;
+      inset:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      opacity:0;
+      visibility:hidden;
+      transform:translate3d(0,1.6rem,0);
+      transition:
+        opacity .36s linear,
+        transform .72s cubic-bezier(.16,1,.3,1),
+        visibility 0s linear .36s;
+    }
+    .mobile-beat.is-active{
+      opacity:1;
+      visibility:visible;
+      transform:none;
+      pointer-events:auto;
+      transition:
+        opacity .42s linear,
+        transform .72s cubic-bezier(.16,1,.3,1),
+        visibility 0s;
+    }
+    .mobile-beat.is-leaving{
+      opacity:0;
+      visibility:visible;
+      transform:translate3d(0,-.65rem,0);
+      pointer-events:none;
+      transition:
+        opacity .18s linear,
+        transform .34s cubic-bezier(.16,1,.3,1),
+        visibility 0s linear .2s;
+    }
+    html[data-motion="off"] .mobile-beat{
+      transition:none !important;
+      transform:none;
+    }
+
+    .mobile-kicker{
+      margin:0 0 .55rem;
+      font-family:var(--reading);
+      font-size:clamp(1rem,4.35vw,1.1rem);
+      font-weight:400;
+      font-style:italic;
+      line-height:1.3;
+      letter-spacing:0;
+      color:var(--cyan);
+    }
+    .mobile-title{
+      margin:0;
+      max-width:100%;
+      font-family:var(--display);
+      font-size:clamp(3rem,13.35vw,3.42rem);
+      font-weight:400;
+      font-optical-sizing:auto;
+      line-height:.92;
+      letter-spacing:0;
+      color:var(--ink);
+    }
+    .mobile-beat[data-mobile-beat="leak"] .mobile-title{
+      font-size:clamp(2.62rem,11.75vw,3rem);
+      line-height:.93;
+    }
+    .mobile-beat[data-mobile-beat="method-find"] .mobile-title{
+      font-size:clamp(2.72rem,12.2vw,3.15rem);
+      white-space:nowrap;
+    }
+    .mobile-beat[data-mobile-beat="jarrett"] .mobile-title,
+    .mobile-beat[data-mobile-beat="threshold"] .mobile-title{
+      font-size:clamp(2.8rem,12.55vw,3.2rem);
+    }
+    .mobile-proof-figure{
+      font-size:clamp(3.15rem,14.2vw,3.62rem);
+      line-height:.9;
+      font-variant-numeric:tabular-nums;
+      white-space:nowrap;
+    }
+    .mobile-proof-figure span{color:var(--amber)}
+    .mobile-body{
+      margin:.85rem 0 0;
+      max-width:32ch;
+      font-family:var(--reading);
+      font-size:clamp(1.075rem,4.65vw,1.2rem);
+      font-weight:400;
+      line-height:1.42;
+      letter-spacing:0;
+      color:var(--ink-soft);
+      text-wrap:pretty;
+    }
+    .mobile-proof-link{
+      align-self:flex-start;
+      min-height:2.75rem;
+      margin-top:.65rem;
+      border-bottom:1px solid rgba(94,231,240,.55);
+      font-family:var(--text);
+      font-size:.9rem;
+      font-weight:600;
+      line-height:1;
+      letter-spacing:0;
+      color:var(--ink);
+    }
+    .mobile-qualifier,
+    .mobile-whisper{
+      margin:.5rem 0 0;
+      max-width:36ch;
+      font-family:var(--reading);
+      font-size:clamp(.9rem,3.8vw,.98rem);
+      font-style:italic;
+      line-height:1.36;
+      letter-spacing:0;
+      color:var(--ink-mute);
+    }
+    .mobile-email{
+      align-self:flex-start;
+      min-height:2.75rem;
+      margin-top:.6rem;
+      border-bottom:2px solid var(--amber);
+      font-family:var(--text);
+      font-size:clamp(1.05rem,4.55vw,1.2rem);
+      font-weight:650;
+      line-height:2.65rem;
+      letter-spacing:0;
+      color:var(--ink);
+      white-space:nowrap;
+    }
+    .mobile-beat[data-mobile-beat="proof"],
+    .mobile-beat[data-mobile-beat="threshold"]{
+      padding-bottom:.05rem;
+    }
+
+    .mobile-swipe-cue{
+      position:absolute;
+      z-index:3;
+      right:var(--gutter);
+      bottom:calc(4.72rem + env(safe-area-inset-bottom));
+      margin:0;
+      font-family:var(--reading);
+      font-size:.95rem;
+      font-style:italic;
+      line-height:1;
+      letter-spacing:0;
+      color:var(--ink-soft);
+      opacity:0;
+      transform:translateY(.3rem);
+      transition:opacity .35s linear, transform .5s var(--ease-enter);
+    }
+    .mobile-swipe-cue.is-on{opacity:1;transform:none}
+
+    .mobile-nav{
+      position:absolute;
+      z-index:4;
+      left:var(--gutter);
+      right:var(--gutter);
+      bottom:calc(.72rem + env(safe-area-inset-bottom));
+      display:grid;
+      gap:.38rem;
+      pointer-events:auto;
+      transition:opacity .25s linear, visibility .25s;
+    }
+    .mobile-station-nav{grid-template-columns:repeat(5,1fr)}
+    .mobile-method-nav{
+      grid-template-columns:repeat(3,1fr);
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+    html[data-mobile-station="method"] .mobile-station-nav{
+      opacity:0;
+      visibility:hidden;
+      pointer-events:none;
+    }
+    html[data-mobile-station="method"] .mobile-method-nav{
+      opacity:1;
+      visibility:visible;
+      pointer-events:auto;
+    }
+    .mobile-nav button{
+      position:relative;
+      min-width:0;
+      min-height:var(--mobile-nav-height);
+      padding:.76rem 0 0;
+      font-family:var(--text);
+      font-size:clamp(.72rem,3.1vw,.8rem);
+      font-weight:550;
+      line-height:1;
+      letter-spacing:0;
+      text-align:left;
+      color:var(--ink-mute);
+    }
+    .mobile-nav button::before,
+    .mobile-nav button::after{
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:1px;
+    }
+    .mobile-nav button::before{background:rgba(232,244,244,.22)}
+    .mobile-nav button::after{
+      right:auto;
+      width:0;
+      height:3px;
+      top:-1px;
+      background:var(--cyan);
+      box-shadow:0 0 8px rgba(94,231,240,.4);
+      transition:width .45s cubic-bezier(.16,1,.3,1), background .3s ease;
+    }
+    .mobile-nav button.is-past{color:var(--ink-soft)}
+    .mobile-nav button.is-past::after{width:100%;background:rgba(94,231,240,.55)}
+    .mobile-nav button.is-active{color:var(--ink)}
+    .mobile-nav button.is-active::after{width:100%;background:var(--amber)}
+    .mobile-nav button:focus-visible{
+      outline:none;
+      color:var(--ink);
+      text-decoration:underline;
+      text-decoration-thickness:1px;
+      text-underline-offset:.35rem;
+    }
+
+    .note-mount{display:none !important}
     .console-spill{
-      top:30%;
-      width:min(92vw, 28rem);
-      height:min(40vh, 16rem);
-      transform:translate(-50%, 12%);
+      top:25.5%;
+      width:min(98vw, 26rem);
+      height:min(38vh, 18rem);
+      transform:translate(-50%, 8%);
     }
     .console-mount{
       left:50%;
-      top:30%;
-      width:min(78vw, 22rem);
-      transform:translate(-50%,-50%) rotateY(-3deg) rotateX(1deg);
+      top:26%;
+      width:min(88vw, 23rem);
+      transform:translate(-50%,-50%) rotateY(-2deg) rotateX(1deg);
     }
-    .console-housing{padding:12px}
-    .console-housing::before,
-    .console-housing::after{
-      width:10px;
-      height:8px;
-      top:4px;
+    .console-housing{padding:10px}
+    .loader-bar{width:min(140px,36vw)}
+
+    .lightbox{
+      align-items:stretch;
+      justify-content:stretch;
+      padding:0;
+      background:rgba(3,9,11,.97);
     }
-    .console-housing::before{ left:12px; }
-    .console-housing::after{ right:12px; }
-    /*
-     * Note as secondary instrument — right-anchored so rotate cannot escape the viewport.
-     * Extra right inset absorbs the AABB expansion from the slight tilt.
-     */
-    .note-mount{
-      left:auto;
-      right:calc(var(--gutter) + 1rem);
-      top:30%;
-      width:min(28vw, 6.25rem);
-      transform:translateY(-8%) rotate(-5deg);
-      transform-origin:100% 20%;
+    .lightbox-panel{
+      display:grid;
+      grid-template-rows:auto minmax(0,1fr) auto;
+      width:100%;
+      height:100svh;
+      max-width:none;
+      max-height:none;
+      padding:calc(.8rem + env(safe-area-inset-top)) var(--gutter) calc(1rem + env(safe-area-inset-bottom));
+      overflow:hidden;
     }
-    .note-device-caption{
-      white-space:normal;
+    .lightbox-close{
+      position:static;
+      grid-row:1;
+      justify-self:end;
+      min-height:2.75rem;
+      padding:0 .15rem;
+      border-bottom:1px solid rgba(94,231,240,.55);
+      font-size:.875rem;
+      letter-spacing:0;
+    }
+    .lightbox-panel img{
+      grid-row:2;
+      align-self:center;
+      width:100%;
       max-width:100%;
-      overflow-wrap:break-word;
-      hyphens:manual;
+      max-height:calc(100svh - 10rem);
+      object-fit:contain;
+      box-shadow:0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(232,244,244,.08);
+      touch-action:pinch-zoom;
     }
-    .world-frame{object-position:center 40%}
-    /* Separate vertical registers: HUD stays bottom-left; footer one line above, bottom-right */
-    .distance-hud{
-      bottom:clamp(.7rem,1.6vh,1.05rem);
+    .lightbox-caption{
+      grid-row:3;
+      margin:.8rem auto 0;
+      max-width:32ch;
+      font-size:1rem;
+      line-height:1.4;
     }
-    .site-footer{
-      left:auto;
-      right:var(--gutter);
-      bottom:clamp(2.2rem,4.8vh,2.75rem);
-      flex-direction:row;
-      gap:.45rem;
-    }
-    .site-footer p{margin:0}
-    .loader-bar{width:min(140px, 36vw)}
+    body.lightbox-open{overflow:hidden}
   }
 
   .no-js-route{
@@ -1480,6 +1611,74 @@
           </div>
         </header>
 
+        <div class="mobile-experience" id="mobile-experience" aria-label="The Golden Arrival mobile journey">
+          <div class="mobile-story-wash" aria-hidden="true"></div>
+
+          <div class="mobile-copy-stage" aria-live="polite">
+            <article class="mobile-beat is-active" data-mobile-beat="leak" data-mobile-station="leak">
+              <p class="mobile-kicker">The Leak</p>
+              <h1 class="mobile-title">I find where your business quietly loses customers.</h1>
+              <p class="mobile-body">Then I build you the fix. Your first fix is free.</p>
+            </article>
+
+            <article class="mobile-beat" data-mobile-beat="method-look" data-mobile-station="method" aria-hidden="true">
+              <p class="mobile-kicker">Follow the real path</p>
+              <h2 class="mobile-title">Look.</h2>
+              <p class="mobile-body">I walk through your site like a real customer.</p>
+            </article>
+
+            <article class="mobile-beat" data-mobile-beat="method-find" data-mobile-station="method" aria-hidden="true">
+              <p class="mobile-kicker">Follow the real path</p>
+              <h2 class="mobile-title">Find The Leak.</h2>
+              <p class="mobile-body">I find the first key step where the path breaks.</p>
+            </article>
+
+            <article class="mobile-beat" data-mobile-beat="method-build" data-mobile-station="method" aria-hidden="true">
+              <p class="mobile-kicker">Follow the real path</p>
+              <h2 class="mobile-title">Build The Fix.</h2>
+              <p class="mobile-body">I build the page, form, or follow-up that fixes it.</p>
+            </article>
+
+            <article class="mobile-beat" data-mobile-beat="proof" data-mobile-station="proof" aria-hidden="true">
+              <p class="mobile-kicker">One real result</p>
+              <h2 class="mobile-title mobile-proof-figure"><span aria-hidden="true">$</span>40,114.81</h2>
+              <p class="mobile-body">Gross volume rose 104.51% from $19,615.40 for one Las Vegas service business.</p>
+              <button type="button" class="mobile-proof-link" data-lightbox="stripe" aria-haspopup="dialog">Open the full Stripe result</button>
+              <p class="mobile-qualifier">May 15 to June 15, 2026. Your result will depend on your business.</p>
+            </article>
+
+            <article class="mobile-beat" data-mobile-beat="jarrett" data-mobile-station="jarrett" aria-hidden="true">
+              <p class="mobile-kicker">Built by Jarrett</p>
+              <h2 class="mobile-title">I build the fix myself.</h2>
+              <p class="mobile-body">You work with me from the first look through the finished fix.</p>
+            </article>
+
+            <article class="mobile-beat" data-mobile-beat="threshold" data-mobile-station="threshold" aria-hidden="true">
+              <p class="mobile-kicker">Your first fix is free</p>
+              <h2 class="mobile-title">Send me your site.</h2>
+              <p class="mobile-body">Tell me what you want more of. I’ll build the first fix, and you keep it. If it helps, we can keep working together.</p>
+              <a class="mobile-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
+              <p class="mobile-whisper">If I find nothing worth fixing, I’ll tell you.</p>
+            </article>
+          </div>
+
+          <p class="mobile-swipe-cue" id="mobile-swipe-cue">Swipe to follow</p>
+
+          <nav class="mobile-nav mobile-station-nav" aria-label="Journey sections">
+            <button type="button" class="is-active" data-go="leak" aria-current="step">Leak</button>
+            <button type="button" data-go="method">Method</button>
+            <button type="button" data-go="proof">Result</button>
+            <button type="button" data-go="jarrett">Me</button>
+            <button type="button" data-go="threshold">Start</button>
+          </nav>
+
+          <nav class="mobile-nav mobile-method-nav" aria-label="Method movements">
+            <button type="button" class="is-active" data-mobile-method-go="1" aria-current="step">Look</button>
+            <button type="button" data-mobile-method-go="2">Find</button>
+            <button type="button" data-mobile-method-go="3">Build</button>
+          </nav>
+        </div>
+
         <nav class="station-rail" id="station-rail" aria-label="Journey sections">
           <div class="station-rail-track" aria-hidden="true"></div>
           <div class="station-rail-marker" id="rail-marker" aria-hidden="true"></div>
@@ -1611,6 +1810,7 @@
     motionStorageKey: "jw-motion",
     mobileBreakpoint: 720,
     runwayVh: 600,
+    mobileRunwayVh: 960,
     stillRunwayVh: 500,
     frameCount: 361,
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
@@ -1633,10 +1833,22 @@
       jarrett:   { id: "jarrett",   label: "About me",     center: 0.76, enter: 0.65, hold: 0.70, exit: 0.86 },
       threshold: { id: "threshold", label: "Work with me", center: 0.94, enter: 0.86, hold: 0.90, exit: 1.01 }
     },
+    mobileStations: {
+      leak:      { id: "leak",      label: "The Leak",     center: 0.07, enter: 0.00, hold: 0.025, exit: 0.16 },
+      method:    { id: "method",    label: "How I work",   center: 0.31, enter: 0.16, hold: 0.18,  exit: 0.46 },
+      proof:     { id: "proof",     label: "Real result",  center: 0.555,enter: 0.46, hold: 0.48,  exit: 0.67 },
+      jarrett:   { id: "jarrett",   label: "About me",     center: 0.755,enter: 0.67, hold: 0.69,  exit: 0.84 },
+      threshold: { id: "threshold", label: "Work with me", center: 0.92, enter: 0.84, hold: 0.86,  exit: 1.01 }
+    },
     methodSteps: [
       { at: 0.20, until: 0.27 },
       { at: 0.27, until: 0.34 },
       { at: 0.34, until: 0.40 }
+    ],
+    mobileMethodSteps: [
+      { id: "method-look",  at: 0.16, until: 0.26, center: 0.21 },
+      { id: "method-find",  at: 0.26, until: 0.36, center: 0.31 },
+      { id: "method-build", at: 0.36, until: 0.46, center: 0.41 }
     ],
     /* Nonlinear frame map — progress 0..1 → frame index 0..360 */
     frameMap: [
@@ -1743,6 +1955,11 @@
   var lightboxPanel = document.getElementById("lightbox-panel");
   var loaderBar = document.getElementById("loader-bar");
   var loaderLabel = document.getElementById("loader-label");
+  var mobileExperience = document.getElementById("mobile-experience");
+  var mobileBeats = document.querySelectorAll(".mobile-beat");
+  var mobileStationButtons = document.querySelectorAll(".mobile-station-nav [data-go]");
+  var mobileMethodButtons = document.querySelectorAll("[data-mobile-method-go]");
+  var mobileSwipeCue = document.getElementById("mobile-swipe-cue");
 
   var mobileMq = window.matchMedia("(max-width:" + SITE_TUNING.mobileBreakpoint + "px)");
   var motionOn = root.getAttribute("data-motion") === "on";
@@ -1774,6 +1991,10 @@
   var renderRaf = 0;
   var lastFrameTs = 0;
   var activeStationId = "leak";
+  var activeMobileBeatId = "leak";
+  var mobileBeatTimer = 0;
+  var mobileExperiencePrimed = false;
+  var mobileScrollRaf = 0;
   var lastFocus = null;
   var introDone = false;
   var forcedStation = stationParam;
@@ -1828,6 +2049,11 @@
   }
   function isMobile() { return mobileMq.matches; }
 
+  function stationSpec(id) {
+    var map = isMobile() ? SITE_TUNING.mobileStations : SITE_TUNING.stations;
+    return map[id];
+  }
+
   function frameUrl(i) {
     i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
     var s = String(i);
@@ -1858,7 +2084,7 @@
       var still = SITE_TUNING.stillFrames[stationId];
       return still != null ? still : -1;
     }
-    var st = SITE_TUNING.stations[stationId];
+    var st = stationSpec(stationId);
     if (!st) return -1;
     return progressToFrame(st.center);
   }
@@ -2294,6 +2520,12 @@
   }
 
   function applyMotionPreference(on, persist) {
+    /* Changing motion mode changes the authored runway height. Preserve the
+       visitor's normalized place instead of throwing them into another station. */
+    var preservedProgress = 0;
+    if (journey && viewport) {
+      preservedProgress = clamp(window.scrollY / Math.max(1, journey.offsetHeight - viewport.offsetHeight), 0, 1);
+    }
     motionOn = !!on;
     root.setAttribute("data-motion", motionOn ? "on" : "off");
     if (persist) {
@@ -2310,6 +2542,10 @@
           : "Motion is off. Activate to enable full motion."
       );
     }
+    if (journey && viewport) {
+      var resizedTotal = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
+      window.scrollTo({ top: preservedProgress * resizedTotal, left: 0, behavior: "auto" });
+    }
     sampleScroll();
     paint(progressCurrent, true);
   }
@@ -2317,7 +2553,7 @@
   function stationStateAt(p) {
     var result = {};
     for (var i = 0; i < STATION_ORDER.length; i++) {
-      var s = SITE_TUNING.stations[STATION_ORDER[i]];
+      var s = stationSpec(STATION_ORDER[i]);
       var state = "idle";
       if (p >= s.enter && p < s.hold) state = "entering";
       else if (p >= s.hold && p < s.exit) state = "active";
@@ -2331,7 +2567,7 @@
   }
 
   function dominantStation(p) {
-    if (!motionOn) {
+    if (!motionOn && !isMobile()) {
       var band = 1 / STATION_ORDER.length;
       var idx = clamp(Math.floor(p / band + 0.0001), 0, STATION_ORDER.length - 1);
       if (p >= 0.999) idx = STATION_ORDER.length - 1;
@@ -2340,12 +2576,12 @@
     var best = "leak", bestDist = 1;
     for (var i = 0; i < STATION_ORDER.length; i++) {
       var id = STATION_ORDER[i];
-      var s = SITE_TUNING.stations[id];
+      var s = stationSpec(id);
       if (p >= s.enter && p < s.exit) return id;
       var d = Math.abs(p - s.center);
       if (d < bestDist) { bestDist = d; best = id; }
     }
-    if (p >= SITE_TUNING.stations.threshold.enter) return "threshold";
+    if (p >= stationSpec("threshold").enter) return "threshold";
     return best;
   }
 
@@ -2368,7 +2604,8 @@
     var gone = opacity <= 0.001;
     var present = opacity > 0.001;
     setMountLifecycle(consoleMount, "console-screen", present, interactive, gone);
-    setMountLifecycle(noteMount, "note-device", present, interactive, gone);
+    if (isMobile()) setMountLifecycle(noteMount, "note-device", false, false, true);
+    else setMountLifecycle(noteMount, "note-device", present, interactive, gone);
   }
 
   function setMountLifecycle(mount, buttonId, present, interactive, gone) {
@@ -2388,6 +2625,95 @@
         btn.setAttribute("aria-hidden", "true");
         btn.style.pointerEvents = "none";
       }
+    }
+  }
+
+  function mobileBeatAt(p, dom) {
+    if (dom !== "method") return dom;
+    var steps = SITE_TUNING.mobileMethodSteps;
+    for (var i = 0; i < steps.length; i++) {
+      if (p < steps[i].until) return steps[i].id;
+    }
+    return steps[steps.length - 1].id;
+  }
+
+  function renderMobileBeat(beatId, immediate) {
+    if (!mobileBeats.length || beatId === activeMobileBeatId) return;
+    activeMobileBeatId = beatId;
+    if (mobileBeatTimer) {
+      window.clearTimeout(mobileBeatTimer);
+      mobileBeatTimer = 0;
+    }
+
+    function commitBeat() {
+      for (var i = 0; i < mobileBeats.length; i++) {
+        var beat = mobileBeats[i];
+        var on = beat.getAttribute("data-mobile-beat") === activeMobileBeatId;
+        beat.classList.remove("is-leaving");
+        beat.classList.toggle("is-active", on);
+        beat.setAttribute("aria-hidden", on ? "false" : "true");
+      }
+    }
+
+    if (immediate || !motionOn) {
+      commitBeat();
+      return;
+    }
+
+    for (var b = 0; b < mobileBeats.length; b++) {
+      var current = mobileBeats[b];
+      if (current.classList.contains("is-active") && current.getAttribute("data-mobile-beat") !== beatId) {
+        current.classList.remove("is-active");
+        current.classList.add("is-leaving");
+        current.setAttribute("aria-hidden", "true");
+      }
+    }
+    mobileBeatTimer = window.setTimeout(function () {
+      commitBeat();
+      mobileBeatTimer = 0;
+    }, 210);
+  }
+
+  function paintMobileExperience(p, dom) {
+    if (!mobileExperience) return;
+    if (!isMobile()) {
+      mobileExperience.setAttribute("aria-hidden", "true");
+      root.removeAttribute("data-mobile-station");
+      root.removeAttribute("data-mobile-beat");
+      return;
+    }
+
+    mobileExperience.setAttribute("aria-hidden", "false");
+    var beatId = mobileBeatAt(p, dom);
+    root.setAttribute("data-mobile-station", dom);
+    root.setAttribute("data-mobile-beat", beatId);
+    renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn);
+    mobileExperiencePrimed = true;
+
+    var stationIndex = STATION_ORDER.indexOf(dom);
+    for (var i = 0; i < mobileStationButtons.length; i++) {
+      var stationButton = mobileStationButtons[i];
+      var buttonId = stationButton.getAttribute("data-go");
+      var buttonIndex = STATION_ORDER.indexOf(buttonId);
+      var active = buttonId === dom;
+      stationButton.classList.toggle("is-active", active);
+      stationButton.classList.toggle("is-past", buttonIndex >= 0 && buttonIndex < stationIndex);
+      if (active) stationButton.setAttribute("aria-current", "step");
+      else stationButton.removeAttribute("aria-current");
+    }
+
+    var methodIndex = beatId === "method-find" ? 1 : beatId === "method-build" ? 2 : 0;
+    for (var m = 0; m < mobileMethodButtons.length; m++) {
+      var methodButton = mobileMethodButtons[m];
+      var methodActive = dom === "method" && m === methodIndex;
+      methodButton.classList.toggle("is-active", methodActive);
+      methodButton.classList.toggle("is-past", dom === "method" && m < methodIndex);
+      if (methodActive) methodButton.setAttribute("aria-current", "step");
+      else methodButton.removeAttribute("aria-current");
+    }
+
+    if (mobileSwipeCue) {
+      mobileSwipeCue.classList.toggle("is-on", dom === "leak" && p < 0.035 && motionOn);
     }
   }
 
@@ -2413,12 +2739,14 @@
       }
     }
 
+    paintMobileExperience(p, dom);
+
     /* Method annotations accumulate as an arc (and unwind in reverse).
        Thresholds come only from SITE_TUNING.methodSteps[*].at. */
     for (var m = 0; m < methodAnnots.length; m++) {
       var annot = methodAnnots[m];
       var on = false;
-      if (dom === "method") {
+      if (!isMobile() && dom === "method") {
         if (!motionOn) {
           on = true;
         } else {
@@ -2523,6 +2851,15 @@
       paint(progressCurrent);
       return;
     }
+    /* Touch scrolling is already momentum-smoothed by the browser. The approved
+       mobile oracle maps that native movement directly; a second easing layer
+       made the corridor feel delayed and jerky. */
+    if (isMobile()) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      lastFrameTs = 0;
+      return;
+    }
     var tau = isMobile() ? SITE_TUNING.settle.tauMobileSec : SITE_TUNING.settle.tauDesktopSec;
     var alpha = 1 - Math.exp(-dt / Math.max(0.001, tau));
     progressCurrent += (progressTarget - progressCurrent) * alpha;
@@ -2536,19 +2873,59 @@
     }
   }
 
+  function cancelMobileGlide() {
+    if (!mobileScrollRaf) return;
+    window.cancelAnimationFrame(mobileScrollRaf);
+    mobileScrollRaf = 0;
+  }
+
+  function glideScrollTo(top) {
+    cancelMobileGlide();
+    var start = window.scrollY;
+    var distance = top - start;
+    var started = performance.now();
+    var duration = 760;
+
+    function glide(now) {
+      var elapsed = clamp((now - started) / duration, 0, 1);
+      var eased = 1 - Math.pow(1 - elapsed, 4);
+      window.scrollTo(0, start + distance * eased);
+      if (elapsed < 1) mobileScrollRaf = window.requestAnimationFrame(glide);
+      else {
+        mobileScrollRaf = 0;
+        sampleScroll();
+      }
+    }
+
+    mobileScrollRaf = window.requestAnimationFrame(glide);
+  }
+
   function scrollToStation(id, behavior) {
     if (!validStations[id] || !journey || !viewport) return;
-    var s = SITE_TUNING.stations[id];
+    var s = stationSpec(id);
     var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
     var top;
-    if (!motionOn) {
+    if (!motionOn && !isMobile()) {
       var idx = STATION_ORDER.indexOf(id);
       top = (idx / STATION_ORDER.length) * total + 1;
     } else {
       top = s.center * total;
     }
-    window.scrollTo({ top: top, left: 0, behavior: behavior || "auto" });
+    if (isMobile() && motionOn && behavior !== "auto") glideScrollTo(top);
+    else window.scrollTo({ top: top, left: 0, behavior: behavior || "auto" });
     sampleScroll();
+  }
+
+  function scrollToMobileMethodStep(step) {
+    var spec = SITE_TUNING.mobileMethodSteps[step - 1];
+    if (!spec || !journey || !viewport) return;
+    var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
+    var top = spec.center * total;
+    if (motionOn) glideScrollTo(top);
+    else {
+      window.scrollTo({ top: top, left: 0, behavior: "auto" });
+      sampleScroll();
+    }
   }
 
   function lightboxFocusables() {
@@ -2596,6 +2973,7 @@
     lightboxCaption.textContent = data.caption;
     lightbox.hidden = false;
     lightbox.classList.add("is-open");
+    body.classList.add("lightbox-open");
     window.setTimeout(function () {
       if (lightboxClose) lightboxClose.focus();
       else if (lightboxPanel) lightboxPanel.focus();
@@ -2605,6 +2983,7 @@
   function closeLightbox() {
     if (!lightbox) return;
     lightbox.classList.remove("is-open");
+    body.classList.remove("lightbox-open");
     lightbox.hidden = true;
     lightboxImg.removeAttribute("src");
     var opener = lastFocus;
@@ -2698,6 +3077,23 @@
   for (var gl = 0; gl < goLinks.length; gl++) {
     if (!goLinks[gl].classList.contains("station-rail-tick")) bindGo(goLinks[gl]);
   }
+
+  for (var mm = 0; mm < mobileMethodButtons.length; mm++) {
+    (function (button) {
+      button.addEventListener("click", function (e) {
+        e.preventDefault();
+        scrollToMobileMethodStep(Number(button.getAttribute("data-mobile-method-go")) || 1);
+      });
+      button.addEventListener("pointerup", function () { button.blur(); });
+    })(mobileMethodButtons[mm]);
+  }
+  for (var ms = 0; ms < mobileStationButtons.length; ms++) {
+    (function (button) {
+      button.addEventListener("pointerup", function () { button.blur(); });
+    })(mobileStationButtons[ms]);
+  }
+  window.addEventListener("touchstart", cancelMobileGlide, { passive: true });
+  window.addEventListener("wheel", cancelMobileGlide, { passive: true });
 
   var planeButtons = document.querySelectorAll("[data-lightbox]");
   for (var pi = 0; pi < planeButtons.length; pi++) {

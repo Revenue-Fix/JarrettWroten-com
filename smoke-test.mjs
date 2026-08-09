@@ -6,14 +6,15 @@
  * motion-off default path, unknown station fallback logic, frames 000/180/360,
  * and required local sources.
  *
- * Compounding residue — holistic visual-correction layout tripwires
- * Future consumer: Codex re-render / independent Opus visual review of this candidate
- * Activation: execute — `node jarrettwroten-site/smoke-test.mjs`
- * Behavioral check: asserts nowrap display, no wbr, Proof housing/spill, loader
+ * COMPOUNDING — focused test or tripwire
+ * Canonical path: smoke-test.mjs
+ * Future consumer: the next JarrettWroten.com editor and independent visual closer
+ * Activation: execute — `node smoke-test.mjs`
+ * Behavioral check: exercises normal/direct-entry frame behavior and asserts nowrap
+ *   display, no wbr, Proof housing/spill, loader,
  *   opening-neighbourhood, railCenters mapping, faceExclusionMobile, five distinct
- *   stationCarriers, footer zero-margin, mobile full-width person-station wash,
- *   mobile proof note right-anchor, mobile footer elevated above distance HUD,
- *   and frozen proof figures without remote runtime
+ *   stationCarriers, footer zero-margin, the seven-beat mobile journey, portrait
+ *   navigation/evidence contracts, and frozen proof figures without remote runtime
  * Retirement: retire when the page no longer uses the five-station Golden Arrival
  *   layout contract, or when a stronger live-pixel harness supersedes these structural
  *   tripwires for the same failure class
@@ -398,6 +399,40 @@ ok(
   'no-js route carries method steps'
 );
 
+// Mobile is a separately authored seven-beat buyer journey, not the desktop DOM
+// squeezed into a portrait viewport.
+{
+  const mobileExperience = html.match(/<div class="mobile-experience"[\s\S]*?<\/div>\s*<nav class="station-rail"/);
+  const mobileSrc = mobileExperience ? mobileExperience[0] : '';
+  const beatIds = [...mobileSrc.matchAll(/data-mobile-beat="([^"]+)"/g)].map((m) => m[1]);
+  ok(beatIds.length === 7, 'mobile journey has seven authored beats');
+  ok(new Set(beatIds).size === 7, 'mobile journey beat ids are unique');
+  for (const id of ['leak', 'method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold']) {
+    ok(beatIds.includes(id), 'mobile journey contains ' + id);
+  }
+
+  const stationNav = mobileSrc.match(/<nav class="mobile-nav mobile-station-nav"[\s\S]*?<\/nav>/);
+  const methodNav = mobileSrc.match(/<nav class="mobile-nav mobile-method-nav"[\s\S]*?<\/nav>/);
+  ok(!!stationNav && (stationNav[0].match(/<button\b/g) || []).length === 5, 'mobile station nav exposes five buyer-journey sections');
+  ok(!!methodNav && (methodNav[0].match(/<button\b/g) || []).length === 3, 'mobile Method nav exposes Look, Find, Build');
+
+  ok(/mobileRunwayVh:\s*960/.test(html) && /\.journey\s*\{\s*height:\s*960svh/.test(html), 'mobile runway is the authored 960svh journey');
+  ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
+  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.92/.test(html), 'mobile station centers are independently authored');
+  ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
+  ok(html.includes('if (isMobile()) {\n      progressCurrent = progressTarget;'), 'native touch momentum is not double-smoothed');
+  ok(/var duration\s*=\s*760/.test(html) && html.includes('glideScrollTo'), 'mobile explicit navigation uses the authored glide');
+  ok(html.includes('renderMobileBeat') && /window\.setTimeout\([\s\S]*?,\s*210\)/.test(html), 'mobile beat changes use erasure-before-arrival timing');
+  ok(html.includes('renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn)'), 'motion-off mobile beat changes are immediate');
+  ok(html.includes("visitor's normalized place") && /preservedProgress\s*\*\s*resizedTotal/.test(html), 'motion toggle preserves the current journey station');
+  ok(html.includes('html,body{margin:0;padding:0;overflow-anchor:none}'), 'runway resize disables browser scroll-anchor drift');
+  ok((html.match(/if \(!motionOn && !isMobile\(\)\)/g) || []).length >= 2, 'mobile motion-off keeps portrait station and Method ranges');
+  ok(html.includes('mobile-proof-link') && html.includes('data-lightbox="stripe"'), 'mobile result opens the real Stripe evidence');
+  ok(html.includes('body.classList.add("lightbox-open")') && html.includes('body.classList.remove("lightbox-open")'), 'mobile evidence view locks and restores page scroll');
+  ok(html.includes('grid-template-rows:auto minmax(0,1fr) auto') && html.includes('touch-action:pinch-zoom'), 'mobile evidence view is full-height and inspectable');
+  ok(html.includes('html::-webkit-scrollbar{display:none}') && html.includes('scrollbar-width:none'), 'mobile journey hides browser scrollbar chrome');
+}
+
 // Method annotation cumulative arc — focused behavioral oracle.
 // Future consumer: paintStations while a visitor scrolls Method (and reverse).
 // Catches exact-only reveal (one annot at a time) and requires cumulative comparison
@@ -477,17 +512,11 @@ ok(
     html.includes('max-width: min(38rem, 48vw)'),
   'jarrett desktop claim column fits longest display line'
 );
-ok(
-  html.includes('max-width:min(21rem, 90vw)') ||
-    html.includes('max-width: min(21rem, 90vw)'),
-  'jarrett mobile claim column fits longest display line'
-);
 ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'threshold separated carrier groups');
 ok(html.includes('stationCarriers'), 'distinct station carrier map');
 ok(html.includes('bottom:clamp(6rem,16vh,9rem)') || html.includes('bottom:clamp(6rem, 16vh, 9rem)'), 'method heading bottom-anchored desktop');
 ok(html.includes('left:10%; top:44%') || html.includes('left:10%;top:44%'), 'method annot 1 desktop depth position');
 ok(html.includes('left:48%; top:25%') || html.includes('left:48%;top:25%'), 'method annot 3 desktop depth position');
-ok(html.includes('left:6%; top:20%') || html.includes('left:6%;top:20%'), 'method annot 1 mobile clear of headline');
 ok(html.includes('top:34%') && html.includes('console-mount'), 'console lifted to 34% desktop');
 ok(html.includes('is-done'), 'loader dismiss class');
 ok(html.includes('displayScale'), 'two-peak display scale contract');
@@ -496,23 +525,6 @@ ok(html.includes('threshold: 72') || html.includes('threshold:72'), 'threshold d
 ok(html.includes('Jarrett Wroten · Las Vegas'), 'footer one-line mark');
 ok(/\.site-footer\s+p\s*\{\s*margin\s*:\s*0/.test(html) || html.includes('.site-footer p{margin:0}'), 'footer p zero margin');
 ok(html.includes('linear-gradient(100deg, rgba(4,10,12,.90)'), 'leak/method directional scrim');
-ok(
-  html.includes('station[data-station="jarrett"]::after') &&
-    html.includes('station[data-station="threshold"]::after') &&
-    html.includes('rgba(4,10,12,.96)') &&
-    html.includes('transparent 100%'),
-  'mobile person-station full-width bottom wash'
-);
-ok(
-  html.includes('right:calc(var(--gutter) + 1rem)') ||
-    html.includes('right:calc(var(--gutter)+1rem)'),
-  'mobile proof note right-anchored inside gutter'
-);
-ok(
-  html.includes('bottom:clamp(2.2rem,4.8vh,2.75rem)') ||
-    html.includes('bottom:clamp(2.2rem, 4.8vh, 2.75rem)'),
-  'mobile footer elevated above distance HUD'
-);
 ok(html.includes('dismissLoader'), 'loader dismiss after intro');
 ok(html.includes('openingNeighborhoodReady'), 'loader driven by opening frames');
 // Stripe crop path unchanged; no filter/tint on evidence img
@@ -854,25 +866,37 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
     }
     return 0;
   }
-  const stationCenters = {
+  const desktopStationCenters = {
     leak: 0.08,
     method: 0.3,
     proof: 0.52,
     jarrett: 0.76,
     threshold: 0.94
   };
-  const expectedMotionOn = {};
-  for (const [name, c] of Object.entries(stationCenters)) {
-    expectedMotionOn[name] = progressToFrameLocal(c);
+  const mobileStationCenters = {
+    leak: 0.07,
+    method: 0.31,
+    proof: 0.555,
+    jarrett: 0.755,
+    threshold: 0.92
+  };
+  function expectedFrames(centers) {
+    const frames = {};
+    for (const [name, center] of Object.entries(centers)) frames[name] = progressToFrameLocal(center);
+    return frames;
   }
-  ok(expectedMotionOn.leak === 24, 'oracle: leak center frame 24 (got ' + expectedMotionOn.leak + ')');
-  ok(expectedMotionOn.method === 120, 'oracle: method center frame 120 (got ' + expectedMotionOn.method + ')');
-  ok(expectedMotionOn.proof === 181, 'oracle: proof center frame 181 (got ' + expectedMotionOn.proof + ')');
-  ok(expectedMotionOn.jarrett === 294, 'oracle: jarrett center frame 294 (got ' + expectedMotionOn.jarrett + ')');
-  ok(expectedMotionOn.threshold === 354, 'oracle: threshold center frame 354 (got ' + expectedMotionOn.threshold + ')');
+  const expectedByViewport = {
+    'desktop-1536x864': expectedFrames(desktopStationCenters),
+    'mobile-390x844': expectedFrames(mobileStationCenters)
+  };
+  const expectedDesktop = expectedByViewport['desktop-1536x864'];
+  const expectedMobile = expectedByViewport['mobile-390x844'];
+  ok(JSON.stringify(expectedDesktop) === JSON.stringify({ leak: 24, method: 120, proof: 181, jarrett: 294, threshold: 354 }), 'oracle: desktop station center frames stay frozen');
+  ok(JSON.stringify(expectedMobile) === JSON.stringify({ leak: 23, method: 121, proof: 184, jarrett: 291, threshold: 349 }), 'oracle: mobile station center frames match portrait art direction');
 
   async function runForcedEntryOracle(stationName, viewportLabel) {
-    const entry = expectedMotionOn[stationName];
+    const expectedSet = expectedByViewport[viewportLabel];
+    const entry = expectedSet[stationName];
     const loadStarts = [];
     const ready = Object.create(null);
     const loading = Object.create(null);
@@ -927,7 +951,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
         if (j !== entry) loadFrameGated(j, false);
       }
       for (let j = 0; j < 24; j++) loadFrameGated(j, false);
-      for (const f of Object.values(expectedMotionOn)) loadFrameGated(f, false);
+      for (const f of Object.values(expectedSet)) loadFrameGated(f, false);
     }
 
     // Boot: only entry frame (matches corrected bootPreload)
@@ -992,7 +1016,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
 
   // Defect reconstruction: old boot order would start 0..23 before entry
   {
-    const entry = expectedMotionOn.jarrett;
+    const entry = expectedDesktop.jarrett;
     const badStarts = [];
     for (let i = 0; i < 24; i++) badStarts.push(i);
     badStarts.push(entry);
@@ -1007,7 +1031,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
   }
 
   for (const vp of ['desktop-1536x864', 'mobile-390x844']) {
-    for (const name of Object.keys(expectedMotionOn)) {
+    for (const name of Object.keys(expectedByViewport[vp])) {
       await runForcedEntryOracle(name, vp);
     }
   }
@@ -1027,7 +1051,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
 
   // Transient first-request failure then success: retry exact entry before background.
   {
-    const entry = expectedMotionOn.threshold; // 354 — the live consumer replay case
+    const entry = expectedDesktop.threshold; // 354 — the live consumer replay case
     const MAX_ATTEMPTS = 3;
     const RETRY_MS = 120;
     const loadStarts = [];
@@ -1128,7 +1152,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
 
   // Persistent failure: exhaust policy, unlock, do not freeze forever.
   {
-    const entry = expectedMotionOn.jarrett;
+    const entry = expectedDesktop.jarrett;
     const MAX_ATTEMPTS = 3;
     const RETRY_MS = 120;
     const loadStarts = [];
