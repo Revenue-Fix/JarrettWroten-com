@@ -1211,8 +1211,8 @@
       transform:none;
       pointer-events:auto;
       transition:
-        opacity .42s linear,
-        transform .72s cubic-bezier(.16,1,.3,1),
+        opacity .28s linear,
+        transform .28s cubic-bezier(.16,1,.3,1),
         visibility 0s;
     }
     .mobile-beat.is-leaving{
@@ -1221,9 +1221,9 @@
       transform:translate3d(0,-.65rem,0);
       pointer-events:none;
       transition:
-        opacity .18s linear,
-        transform .34s cubic-bezier(.16,1,.3,1),
-        visibility 0s linear .2s;
+        opacity .12s linear,
+        transform .12s cubic-bezier(.16,1,.3,1),
+        visibility 0s linear .14s;
     }
     html[data-motion="off"] .mobile-beat{
       transition:none !important;
@@ -1806,6 +1806,13 @@
    * frameMap: nonlinear progress→frame (0..360). Faster through empty travel,
    * holds for Proof and Jarrett, ends exactly on the approved smile.
    */
+  /*
+   * Maintained asset: responsive first-swipe mobile story handoff.
+   * Future consumer: portrait visitors entering the Golden Arrival journey.
+   * Activation: auto-load through this production entry document.
+   * Behavioral check: node smoke-test.mjs plus a 560px touch-scroll consumer probe.
+   * Retirement: only when this scroll-depth mobile journey is replaced end to end.
+   */
   var SITE_TUNING = {
     motionStorageKey: "jw-motion",
     mobileBreakpoint: 720,
@@ -1816,6 +1823,8 @@
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
     preloadBatch: 20,
     idleTimeoutMs: 1200,
+    mobileBeatArrivalDelayMs: 60,
+    mobileBeatCleanupDelayMs: 70,
     settle: {
       tauDesktopSec: 0.41,
       tauMobileSec: 0.41,
@@ -1834,8 +1843,8 @@
       threshold: { id: "threshold", label: "Work with me", center: 0.94, enter: 0.86, hold: 0.90, exit: 1.01 }
     },
     mobileStations: {
-      leak:      { id: "leak",      label: "The Leak",     center: 0.07, enter: 0.00, hold: 0.025, exit: 0.16 },
-      method:    { id: "method",    label: "How I work",   center: 0.31, enter: 0.16, hold: 0.18,  exit: 0.46 },
+      leak:      { id: "leak",      label: "The Leak",     center: 0.035,enter: 0.00, hold: 0.015, exit: 0.065 },
+      method:    { id: "method",    label: "How I work",   center: 0.31, enter: 0.065,hold: 0.09,  exit: 0.46 },
       proof:     { id: "proof",     label: "Real result",  center: 0.555,enter: 0.46, hold: 0.48,  exit: 0.67 },
       jarrett:   { id: "jarrett",   label: "About me",     center: 0.755,enter: 0.67, hold: 0.69,  exit: 0.84 },
       threshold: { id: "threshold", label: "Work with me", center: 0.92, enter: 0.84, hold: 0.86,  exit: 1.01 }
@@ -1846,9 +1855,9 @@
       { at: 0.34, until: 0.40 }
     ],
     mobileMethodSteps: [
-      { id: "method-look",  at: 0.16, until: 0.26, center: 0.21 },
-      { id: "method-find",  at: 0.26, until: 0.36, center: 0.31 },
-      { id: "method-build", at: 0.36, until: 0.46, center: 0.41 }
+      { id: "method-look",  at: 0.065, until: 0.19,  center: 0.13 },
+      { id: "method-find",  at: 0.19,  until: 0.315, center: 0.2525 },
+      { id: "method-build", at: 0.315, until: 0.46,  center: 0.3875 }
     ],
     /* Nonlinear frame map — progress 0..1 → frame index 0..360 */
     frameMap: [
@@ -1993,6 +2002,7 @@
   var activeStationId = "leak";
   var activeMobileBeatId = "leak";
   var mobileBeatTimer = 0;
+  var mobileBeatCleanupTimer = 0;
   var mobileExperiencePrimed = false;
   var mobileScrollRaf = 0;
   var lastFocus = null;
@@ -2644,6 +2654,10 @@
       window.clearTimeout(mobileBeatTimer);
       mobileBeatTimer = 0;
     }
+    if (mobileBeatCleanupTimer) {
+      window.clearTimeout(mobileBeatCleanupTimer);
+      mobileBeatCleanupTimer = 0;
+    }
 
     function commitBeat() {
       for (var i = 0; i < mobileBeats.length; i++) {
@@ -2660,18 +2674,39 @@
       return;
     }
 
+    /* Erase first, then start the arrival after one short breath. Immediate
+       overlap double-exposed the two large headlines; the old 210ms wait
+       made the swipe feel unanswered. */
     for (var b = 0; b < mobileBeats.length; b++) {
-      var current = mobileBeats[b];
-      if (current.classList.contains("is-active") && current.getAttribute("data-mobile-beat") !== beatId) {
-        current.classList.remove("is-active");
-        current.classList.add("is-leaving");
-        current.setAttribute("aria-hidden", "true");
+      var beat = mobileBeats[b];
+      var id = beat.getAttribute("data-mobile-beat");
+      var wasActive = beat.classList.contains("is-active");
+      beat.classList.remove("is-leaving");
+      if (id === beatId) {
+        beat.classList.remove("is-active");
+        beat.setAttribute("aria-hidden", "true");
+      } else if (wasActive) {
+        beat.classList.add("is-leaving");
+        beat.setAttribute("aria-hidden", "true");
+      } else {
+        beat.classList.remove("is-active");
+        beat.setAttribute("aria-hidden", "true");
       }
     }
     mobileBeatTimer = window.setTimeout(function () {
-      commitBeat();
+      for (var i = 0; i < mobileBeats.length; i++) {
+        var arriving = mobileBeats[i].getAttribute("data-mobile-beat") === activeMobileBeatId;
+        mobileBeats[i].classList.toggle("is-active", arriving);
+        mobileBeats[i].setAttribute("aria-hidden", arriving ? "false" : "true");
+      }
       mobileBeatTimer = 0;
-    }, 210);
+      mobileBeatCleanupTimer = window.setTimeout(function () {
+        for (var j = 0; j < mobileBeats.length; j++) {
+          mobileBeats[j].classList.remove("is-leaving");
+        }
+        mobileBeatCleanupTimer = 0;
+      }, SITE_TUNING.mobileBeatCleanupDelayMs);
+    }, SITE_TUNING.mobileBeatArrivalDelayMs);
   }
 
   function paintMobileExperience(p, dom) {

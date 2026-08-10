@@ -420,9 +420,33 @@ ok(
   ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
   ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.92/.test(html), 'mobile station centers are independently authored');
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
+  /*
+   * Focused tripwire: a standard first swipe must visibly advance the mobile story.
+   * Future consumer: maintainers changing mobile runway or station timing.
+   * Activation: execute `node smoke-test.mjs` before release.
+   * Behavioral check: the 390x844/560px consumer geometry lands in Method / Look.
+   * Retirement: only if native scroll-depth progression is removed from mobile.
+   */
+  const firstSwipeProgress = 560 / (9.6 * 844 - 844);
+  ok(
+    firstSwipeProgress >= 0.065 && firstSwipeProgress < 0.19,
+    'one standard 560px swipe at 390x844 enters Method Look'
+  );
+  ok(
+    /leak:[^\n]*exit:\s*0\.065/.test(html) && /method:[^\n]*enter:\s*0\.065/.test(html),
+    'mobile opening hands directly into Method after the first swipe'
+  );
   ok(html.includes('if (isMobile()) {\n      progressCurrent = progressTarget;'), 'native touch momentum is not double-smoothed');
   ok(/var duration\s*=\s*760/.test(html) && html.includes('glideScrollTo'), 'mobile explicit navigation uses the authored glide');
-  ok(html.includes('renderMobileBeat') && /window\.setTimeout\([\s\S]*?,\s*210\)/.test(html), 'mobile beat changes use erasure-before-arrival timing');
+  ok(
+    html.includes('Erase first, then start the arrival after one short breath') &&
+      /mobileBeatArrivalDelayMs:\s*60/.test(html) &&
+      /mobileBeatCleanupDelayMs:\s*70/.test(html) &&
+      html.includes('SITE_TUNING.mobileBeatArrivalDelayMs') &&
+      html.includes('SITE_TUNING.mobileBeatCleanupDelayMs') &&
+      !/window\.setTimeout\([\s\S]*?,\s*210\)/.test(html),
+    'mobile beat changes use a short erasure-to-arrival handoff without the old blank pause'
+  );
   ok(html.includes('renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn)'), 'motion-off mobile beat changes are immediate');
   ok(html.includes("visitor's normalized place") && /preservedProgress\s*\*\s*resizedTotal/.test(html), 'motion toggle preserves the current journey station');
   ok(html.includes('html,body{margin:0;padding:0;overflow-anchor:none}'), 'runway resize disables browser scroll-anchor drift');
@@ -874,7 +898,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
     threshold: 0.94
   };
   const mobileStationCenters = {
-    leak: 0.07,
+    leak: 0.035,
     method: 0.31,
     proof: 0.555,
     jarrett: 0.755,
@@ -892,7 +916,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
   const expectedDesktop = expectedByViewport['desktop-1536x864'];
   const expectedMobile = expectedByViewport['mobile-390x844'];
   ok(JSON.stringify(expectedDesktop) === JSON.stringify({ leak: 24, method: 120, proof: 181, jarrett: 294, threshold: 354 }), 'oracle: desktop station center frames stay frozen');
-  ok(JSON.stringify(expectedMobile) === JSON.stringify({ leak: 23, method: 121, proof: 184, jarrett: 291, threshold: 349 }), 'oracle: mobile station center frames match portrait art direction');
+  ok(JSON.stringify(expectedMobile) === JSON.stringify({ leak: 10, method: 121, proof: 184, jarrett: 291, threshold: 349 }), 'oracle: mobile station center frames match portrait art direction');
 
   async function runForcedEntryOracle(stationName, viewportLabel) {
     const expectedSet = expectedByViewport[viewportLabel];
