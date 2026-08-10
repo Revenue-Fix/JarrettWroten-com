@@ -630,6 +630,37 @@ ok(
       !/\.threshold-services\s*\{[^}]*right:\s*var\(--gutter\);/.test(html),
     'desktop Services keeps rail-clearance offset instead of flush gutter right'
   );
+  // Source-structure guards for the short-desktop Services / rail-label edge.
+  // These assert authored CSS shape only — they do not prove rendered geometry.
+  {
+    const shortDesktopServices = html.match(
+      /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-height:\s*540px\s*\)\s*\{[\s\S]*?\}[\s\S]*?\}[\s\S]*?\}/
+    );
+    const shortBlock = shortDesktopServices ? shortDesktopServices[0] : '';
+    ok(!!shortBlock, 'short-desktop Services media query is authored (min-width 721px, max-height 540px)');
+    ok(
+      shortBlock &&
+        /\.threshold-services\s*\{/.test(shortBlock) &&
+        /max-width:\s*min\(19rem,\s*28vw\)/.test(shortBlock) &&
+        /top:\s*clamp\(4\.6rem,10\.5vh,5\.8rem\)/.test(shortBlock),
+      'short-desktop Services rule widens leftward and tightens top without JS or display:none'
+    );
+    ok(
+      shortBlock &&
+        /\.threshold-services-list li\s*\{/.test(shortBlock) &&
+        !/display\s*:\s*none/.test(shortBlock) &&
+        !/visibility\s*:\s*hidden/.test(shortBlock),
+      'short-desktop Services keeps all service rows authored and visible in source'
+    );
+    ok(
+      !/@media\s*\(\s*max-width:\s*720px\s*\)[\s\S]{0,200}\.threshold-services/.test(html),
+      'short-desktop Services correction does not rewrite the ≤720px mobile path'
+    );
+  }
+  ok(
+    /html\[data-motion="off"\][\s\S]*?\.threshold-services[\s\S]*?opacity:\s*1\s*!important[\s\S]*?transform:\s*none\s*!important[\s\S]*?transition:\s*none\s*!important/.test(html),
+    'motion-off contract includes threshold-services snap (opacity/transform/transition)'
+  );
 
   const noJs = html.match(/<main class="no-js-route"[\s\S]*?<\/main>/);
   const noJsSrc = noJs ? noJs[0] : '';

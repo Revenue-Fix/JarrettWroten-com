@@ -1038,6 +1038,27 @@
     transition:opacity .75s var(--ease-overshoot), transform .75s var(--ease-overshoot);
     transition-delay:260ms;
   }
+  /*
+   * Short desktop threshold — keep the right-side Services stack clear of the
+   * active rail label without hiding rows or touching the ≤720px mobile path.
+   * Wider max-width grows left (right edge stays rail-cleared) so long service
+   * names stay one line and the stack shortens under short viewports.
+   */
+  @media (min-width:721px) and (max-height:540px){
+    .threshold-services{
+      top:clamp(4.6rem,10.5vh,5.8rem);
+      max-width:min(19rem, 28vw);
+    }
+    .threshold-services-label{
+      margin:0 0 .45rem;
+      font-size:clamp(.94rem,.96rem + .1vw,1.04rem);
+    }
+    .threshold-services-list li{
+      padding:.22rem 0;
+      font-size:clamp(.88rem,.86rem + .14vw,.98rem);
+      line-height:1.28;
+    }
+  }
 
   .site-footer{
     position:absolute;
@@ -1145,6 +1166,7 @@
   html[data-motion="off"] .station-support,
   html[data-motion="off"] .cta,
   html[data-motion="off"] .invite-email,
+  html[data-motion="off"] .threshold-services,
   html[data-motion="off"] .note-device-caption,
   html[data-motion="off"] .method-annot.is-on{
     opacity:1 !important;
