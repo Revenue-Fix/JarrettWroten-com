@@ -437,7 +437,7 @@ ok(
     /leak:[^\n]*exit:\s*0\.065/.test(html) && /method:[^\n]*enter:\s*0\.065/.test(html),
     'mobile opening hands directly into Method after the first swipe'
   );
-  ok(html.includes('if (isMobile()) {\n      progressCurrent = progressTarget;'), 'native touch momentum is not double-smoothed');
+  ok(/if \(isMobile\(\)\) \{\r?\n\s+progressCurrent = progressTarget;/.test(html), 'native touch momentum is not double-smoothed');
   ok(/var duration\s*=\s*760/.test(html) && html.includes('glideScrollTo'), 'mobile explicit navigation uses the authored glide');
   ok(
     html.includes('spatially erased above it') &&
