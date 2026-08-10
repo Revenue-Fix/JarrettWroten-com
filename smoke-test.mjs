@@ -416,9 +416,9 @@ ok(
   ok(!!stationNav && (stationNav[0].match(/<button\b/g) || []).length === 5, 'mobile station nav exposes five buyer-journey sections');
   ok(!!methodNav && (methodNav[0].match(/<button\b/g) || []).length === 3, 'mobile Method nav exposes Look, Find, Build');
 
-  ok(/mobileRunwayVh:\s*960/.test(html) && /\.journey\s*\{\s*height:\s*960svh/.test(html), 'mobile runway is the authored 960svh journey');
+  ok(/mobileRunwayVh:\s*840/.test(html) && /\.journey\s*\{\s*height:\s*840svh/.test(html), 'mobile runway is the authored 840svh journey');
   ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
-  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.92/.test(html), 'mobile station centers are independently authored');
+  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.91/.test(html), 'mobile station centers are independently authored');
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
   /*
    * Focused tripwire: a standard first swipe must visibly advance the mobile story.
@@ -427,7 +427,7 @@ ok(
    * Behavioral check: the 390x844/560px consumer geometry lands in Method / Look.
    * Retirement: only if native scroll-depth progression is removed from mobile.
    */
-  const firstSwipeProgress = 560 / (9.6 * 844 - 844);
+  const firstSwipeProgress = 560 / (8.4 * 844 - 844);
   ok(
     firstSwipeProgress >= 0.065 && firstSwipeProgress < 0.19,
     'one standard 560px swipe at 390x844 enters Method Look'
@@ -439,15 +439,29 @@ ok(
   ok(html.includes('if (isMobile()) {\n      progressCurrent = progressTarget;'), 'native touch momentum is not double-smoothed');
   ok(/var duration\s*=\s*760/.test(html) && html.includes('glideScrollTo'), 'mobile explicit navigation uses the authored glide');
   ok(
-    html.includes('Erase first, then start the arrival after one short breath') &&
-      /mobileBeatArrivalDelayMs:\s*60/.test(html) &&
-      /mobileBeatCleanupDelayMs:\s*70/.test(html) &&
-      html.includes('SITE_TUNING.mobileBeatArrivalDelayMs') &&
-      html.includes('SITE_TUNING.mobileBeatCleanupDelayMs') &&
-      !/window\.setTimeout\([\s\S]*?,\s*210\)/.test(html),
-    'mobile beat changes use a short erasure-to-arrival handoff without the old blank pause'
+    html.includes('spatially erased above it') &&
+      /mobileBeatEraseMs:\s*220/.test(html) &&
+      !html.includes('mobileBeatArrivalDelayMs') &&
+      html.includes('SITE_TUNING.mobileBeatEraseMs + 20') &&
+      html.includes('SITE_TUNING.mobileBeatEraseMs + "ms"') &&
+      /@keyframes mobile-beat-erase-forward\s*\{[\s\S]*?to\s*\{\s*clip-path:\s*inset\(0 0 100% 0\)/.test(html) &&
+      /@keyframes mobile-beat-reveal-forward\s*\{[\s\S]*?from\s*\{\s*clip-path:\s*inset\(100% 0 0 0\)/.test(html) &&
+      /arrivingBeat\.classList\.add\("is-arriving"\)[\s\S]*?leavingBeat\.classList\.add\("is-leaving"\)/.test(html),
+    'mobile beat changes use complementary spatial masks with no opacity overlap or blank pause'
+  );
+  const standardSwipeProgress = 560 / (8.4 * 844 - 844);
+  ok(
+    standardSwipeProgress * 6 >= 0.46 && standardSwipeProgress * 6 < 0.64 &&
+      standardSwipeProgress * 8 >= 0.64 && standardSwipeProgress * 8 < 0.82 &&
+      standardSwipeProgress * 10 >= 0.82,
+    'standard mobile swipes reach Proof by six, Jarrett by eight, and Threshold by ten'
   );
   ok(html.includes('renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn)'), 'motion-off mobile beat changes are immediate');
+  ok(
+    /\.mobile-swipe-cue\s*\{[\s\S]*?transition:none;[\s\S]*?\}[\s\S]*?\.mobile-swipe-cue\.is-on\s*\{[\s\S]*?transition:opacity/.test(html) &&
+      /\.mobile-nav\s*\{[\s\S]*?transition:none;/.test(html),
+    'mobile cue exits and navigation-mode changes never trail duplicate text'
+  );
   ok(html.includes("visitor's normalized place") && /preservedProgress\s*\*\s*resizedTotal/.test(html), 'motion toggle preserves the current journey station');
   ok(html.includes('html,body{margin:0;padding:0;overflow-anchor:none}'), 'runway resize disables browser scroll-anchor drift');
   ok((html.match(/if \(!motionOn && !isMobile\(\)\)/g) || []).length >= 2, 'mobile motion-off keeps portrait station and Method ranges');
