@@ -1106,8 +1106,9 @@
    * Future consumer: a portrait visitor deciding whether to send Jarrett a site.
    * Activation: auto-load — @media (max-width:720px) and paintMobileExperience().
    * Behavioral check: node smoke-test.mjs plus 560px CUA swipes through the rendered
-   * 360/390/430px journey; every 390px handoff has one active beat, a 100% complementary
-   * mask boundary, decoded world pixels, and zero lingering transition classes.
+   * 360/390/430px journey; Result holds for three settled swipes and Me for two, while
+   * every 390px handoff keeps one active beat, a complementary mask boundary, decoded
+   * world pixels, and zero lingering transition classes.
    * Retirement: retire when this site no longer uses the Golden Arrival buyer journey on mobile.
    */
   .mobile-experience{display:none}
@@ -1121,7 +1122,7 @@
     html{scrollbar-width:none}
     html::-webkit-scrollbar{display:none}
     body{overscroll-behavior-y:none}
-    .journey{height:840svh}
+    .journey{height:900svh}
     html[data-motion="off"] .journey{height:500svh}
     .viewport{min-height:36rem}
 
@@ -1845,7 +1846,7 @@
     motionStorageKey: "jw-motion",
     mobileBreakpoint: 720,
     runwayVh: 600,
-    mobileRunwayVh: 840,
+    mobileRunwayVh: 900,
     stillRunwayVh: 500,
     frameCount: 361,
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
@@ -1872,9 +1873,9 @@
     mobileStations: {
       leak:      { id: "leak",      label: "The Leak",     center: 0.035,enter: 0.00, hold: 0.015, exit: 0.065 },
       method:    { id: "method",    label: "How I work",   center: 0.31, enter: 0.065,hold: 0.09,  exit: 0.46 },
-      proof:     { id: "proof",     label: "Real result",  center: 0.55, enter: 0.46, hold: 0.48,  exit: 0.64 },
-      jarrett:   { id: "jarrett",   label: "About me",     center: 0.73, enter: 0.64, hold: 0.66,  exit: 0.82 },
-      threshold: { id: "threshold", label: "Work with me", center: 0.91, enter: 0.82, hold: 0.84,  exit: 1.01 }
+      proof:     { id: "proof",     label: "Real result",  center: 0.585,enter: 0.46, hold: 0.48,  exit: 0.71 },
+      jarrett:   { id: "jarrett",   label: "About me",     center: 0.80, enter: 0.71, hold: 0.73,  exit: 0.89 },
+      threshold: { id: "threshold", label: "Work with me", center: 0.95, enter: 0.89, hold: 0.91,  exit: 1.01 }
     },
     methodSteps: [
       { at: 0.20, until: 0.27 },

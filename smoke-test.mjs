@@ -416,9 +416,9 @@ ok(
   ok(!!stationNav && (stationNav[0].match(/<button\b/g) || []).length === 5, 'mobile station nav exposes five buyer-journey sections');
   ok(!!methodNav && (methodNav[0].match(/<button\b/g) || []).length === 3, 'mobile Method nav exposes Look, Find, Build');
 
-  ok(/mobileRunwayVh:\s*840/.test(html) && /\.journey\s*\{\s*height:\s*840svh/.test(html), 'mobile runway is the authored 840svh journey');
+  ok(/mobileRunwayVh:\s*900/.test(html) && /\.journey\s*\{\s*height:\s*900svh/.test(html), 'mobile runway is the authored 900svh journey');
   ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
-  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.91/.test(html), 'mobile station centers are independently authored');
+  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.95/.test(html), 'mobile station centers are independently authored');
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
   /*
    * Focused tripwire: a standard first swipe must visibly advance the mobile story.
@@ -427,7 +427,7 @@ ok(
    * Behavioral check: the 390x844/560px consumer geometry lands in Method / Look.
    * Retirement: only if native scroll-depth progression is removed from mobile.
    */
-  const firstSwipeProgress = 560 / (8.4 * 844 - 844);
+  const firstSwipeProgress = 560 / (9.0 * 844 - 844);
   ok(
     firstSwipeProgress >= 0.065 && firstSwipeProgress < 0.19,
     'one standard 560px swipe at 390x844 enters Method Look'
@@ -449,12 +449,36 @@ ok(
       /arrivingBeat\.classList\.add\("is-arriving"\)[\s\S]*?leavingBeat\.classList\.add\("is-leaving"\)/.test(html),
     'mobile beat changes use complementary spatial masks with no opacity overlap or blank pause'
   );
-  const standardSwipeProgress = 560 / (8.4 * 844 - 844);
+  /*
+   * FOCUSED TRIPWIRE — mobile Result dwell.
+   * Canonical path: smoke-test.mjs — representative mobile swipe geometry below.
+   * Future consumer: the maintainer changing mobile runway or chapter boundaries.
+   * Activation: execute — `node smoke-test.mjs` before release.
+   * Behavioral check: 560px swipes hold Result for three beats and Me for two at
+   * 360x800, 390x844, and 430x932.
+   * Retirement: retire only if mobile stops using native scroll-depth chapters.
+   */
+  const standardSwipeProgress = 560 / (9.0 * 844 - 844);
   ok(
-    standardSwipeProgress * 6 >= 0.46 && standardSwipeProgress * 6 < 0.64 &&
-      standardSwipeProgress * 8 >= 0.64 && standardSwipeProgress * 8 < 0.82 &&
-      standardSwipeProgress * 10 >= 0.82,
-    'standard mobile swipes reach Proof by six, Jarrett by eight, and Threshold by ten'
+    standardSwipeProgress * 6 >= 0.46 && standardSwipeProgress * 6 < 0.71 &&
+      standardSwipeProgress * 8 >= 0.46 && standardSwipeProgress * 8 < 0.71 &&
+      standardSwipeProgress * 9 >= 0.71 && standardSwipeProgress * 9 < 0.89 &&
+      standardSwipeProgress * 11 >= 0.89,
+    'standard mobile swipes hold Result through eight, reach Jarrett by nine, and Threshold by eleven'
+  );
+  const shortPhoneSwipeProgress = 560 / (9.0 * 800 - 800);
+  ok(
+    shortPhoneSwipeProgress * 6 >= 0.46 && shortPhoneSwipeProgress * 8 < 0.71 &&
+      shortPhoneSwipeProgress * 9 >= 0.71 && shortPhoneSwipeProgress * 10 < 0.89 &&
+      shortPhoneSwipeProgress * 11 >= 0.89,
+    '360x800 swipes preserve three Result beats and two Jarrett beats'
+  );
+  const tallPhoneSwipeProgress = 560 / (9.0 * 932 - 932);
+  ok(
+    tallPhoneSwipeProgress * 7 >= 0.46 && tallPhoneSwipeProgress * 9 < 0.71 &&
+      tallPhoneSwipeProgress * 10 >= 0.71 && tallPhoneSwipeProgress * 11 < 0.89 &&
+      tallPhoneSwipeProgress * 12 >= 0.89,
+    '430x932 swipes preserve three Result beats and two Jarrett beats'
   );
   ok(html.includes('renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn)'), 'motion-off mobile beat changes are immediate');
   ok(
