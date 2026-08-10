@@ -205,6 +205,7 @@
     height:100svh;
     width:100%;
     overflow:hidden;
+    overflow:clip;
     isolation:isolate;
     background:var(--void);
   }
@@ -1105,10 +1106,10 @@
    * Canonical path: index.html — #mobile-experience plus its <=720px render path.
    * Future consumer: a portrait visitor deciding whether to send Jarrett a site.
    * Activation: auto-load — @media (max-width:720px) and paintMobileExperience().
-   * Behavioral check: node smoke-test.mjs plus 560px CUA swipes through the rendered
-   * mobile journey; Look, Find, Build, Me, and Start each hold for four settled
-   * swipes, while Result holds for ten. At 320px the complete final invitation
-   * remains inside its clipped stage;
+   * Behavioral check: node smoke-test.mjs plus short and long CUA swipes through
+   * the rendered mobile journey; each physical swipe lands exactly one authored
+   * rest: Look, Find, Build, Result, Me, then Start. At 320px the complete final
+   * invitation remains inside its clipped stage;
    * every handoff keeps one active beat, decoded world pixels, and no stale class.
    * Retirement: retire when this site no longer uses the Golden Arrival buyer journey on mobile.
    */
@@ -1123,8 +1124,13 @@
     html{scrollbar-width:none}
     html::-webkit-scrollbar{display:none}
     body{overscroll-behavior-y:none}
-    .journey{height:calc(100svh + 10640px)}
+    .journey{height:calc(100svh + 3360px)}
     html[data-motion="off"] .journey{height:500svh}
+    .journey,
+    .viewport{
+      touch-action:pan-x pinch-zoom;
+      overscroll-behavior-y:contain;
+    }
     .viewport{min-height:36rem}
 
     .station,
@@ -1840,22 +1846,30 @@
    * Maintained asset: responsive first-swipe mobile story handoff.
    * Future consumer: portrait visitors entering the Golden Arrival journey.
    * Activation: auto-load through this production entry document.
-   * Behavioral check: node smoke-test.mjs plus a 560px touch-scroll consumer probe.
+   * Behavioral check: node smoke-test.mjs plus short/long forward and reverse
+   * gestures through all six authored rests.
    * Retirement: only when this scroll-depth mobile journey is replaced end to end.
    */
   var SITE_TUNING = {
     motionStorageKey: "jw-motion",
     mobileBreakpoint: 720,
     runwayVh: 600,
-    mobileSwipePx: 560,
-    mobileSwipesPerBeat: 4,
-    mobileLookSwipes: 3,
-    mobileFindSwipes: 3,
-    mobileBuildSwipes: 3,
-    mobileResultSwipes: 3,
-    mobileMeSwipes: 3,
-    mobileBeatCount: 6,
-    mobileRunwayPx: 10640,
+    mobileSectionPx: 560,
+    mobileSectionCount: 6,
+    mobileRunwayPx: 3360,
+    mobileSwipeThresholdPx: 24,
+    mobileWheelThresholdPx: 18,
+    mobileWheelIdleMs: 180,
+    mobileSectionGlideMs: 1200,
+    mobileStageStops: [
+      { id: "leak",         station: "leak",      progress: 0.000000000 },
+      { id: "method-look",  station: "method",    progress: 0.166666667 },
+      { id: "method-find",  station: "method",    progress: 0.333333333 },
+      { id: "method-build", station: "method",    progress: 0.500000000 },
+      { id: "proof",        station: "proof",     progress: 0.666666667 },
+      { id: "jarrett",      station: "jarrett",   progress: 0.833333333 },
+      { id: "threshold",    station: "threshold", progress: 1.000000000 }
+    ],
     stillRunwayVh: 500,
     frameCount: 361,
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
@@ -1880,11 +1894,11 @@
       threshold: { id: "threshold", label: "Work with me", center: 0.94, enter: 0.86, hold: 0.90, exit: 1.01 }
     },
     mobileStations: {
-      leak:      { id: "leak",      label: "The Leak",     center: 0.01,         enter: 0.00,         hold: 0.005,        exit: 0.02 },
-      method:    { id: "method",    label: "How I work",   center: 0.263157895, enter: 0.02,        hold: 0.052631579, exit: 0.500000000 },
-      proof:     { id: "proof",     label: "Real result",  center: 0.578947368, enter: 0.500000000, hold: 0.526315789, exit: 0.657894737 },
-      jarrett:   { id: "jarrett",   label: "About me",     center: 0.736842105, enter: 0.657894737, hold: 0.684210526, exit: 0.815789474 },
-      threshold: { id: "threshold", label: "Work with me", center: 0.921052632, enter: 0.815789474, hold: 0.842105263, exit: 1.01 }
+      leak:      { id: "leak",      label: "The Leak",     center: 0.000000000, enter: 0.000000000, hold: 0.000000000, exit: 0.083333333 },
+      method:    { id: "method",    label: "How I work",   center: 0.333333333, enter: 0.083333333, hold: 0.166666667, exit: 0.583333333 },
+      proof:     { id: "proof",     label: "Real result",  center: 0.666666667, enter: 0.583333333, hold: 0.666666667, exit: 0.750000000 },
+      jarrett:   { id: "jarrett",   label: "About me",     center: 0.833333333, enter: 0.750000000, hold: 0.833333333, exit: 0.916666667 },
+      threshold: { id: "threshold", label: "Work with me", center: 1.000000000, enter: 0.916666667, hold: 1.000000000, exit: 1.01 }
     },
     methodSteps: [
       { at: 0.20, until: 0.27 },
@@ -1892,9 +1906,9 @@
       { at: 0.34, until: 0.40 }
     ],
     mobileMethodSteps: [
-      { id: "method-look",  at: 0.02,        until: 0.184210526, center: 0.105263158 },
-      { id: "method-find",  at: 0.184210526, until: 0.342105263, center: 0.263157895 },
-      { id: "method-build", at: 0.342105263, until: 0.500000000, center: 0.421052632 }
+      { id: "method-look",  at: 0.083333333, until: 0.250000000, center: 0.166666667 },
+      { id: "method-find",  at: 0.250000000, until: 0.416666667, center: 0.333333333 },
+      { id: "method-build", at: 0.416666667, until: 0.583333333, center: 0.500000000 }
     ],
     /* Desktop nonlinear frame map — mobile uses one continuous linear velocity. */
     frameMap: [
@@ -1928,6 +1942,13 @@
       fullyPresent: 0.48,
       fadeStart: 0.58,
       fullyGone: 0.66,
+      interactiveMin: 0.92
+    },
+    mobileProofApparatus: {
+      approachStart: 0.54,
+      fullyPresent: 0.62,
+      fadeStart: 0.72,
+      fullyGone: 0.78,
       interactiveMin: 0.92
     },
     proof: {
@@ -2042,7 +2063,19 @@
   var mobileBeatCleanupTimer = 0;
   var mobileExperiencePrimed = false;
   var mobileScrollRaf = 0;
+  var mobileGlideLocked = false;
+  var mobileTouchActive = false;
+  var mobileTouchVertical = false;
+  var mobileTouchStartX = 0;
+  var mobileTouchStartY = 0;
+  var mobileTouchLastX = 0;
+  var mobileTouchLastY = 0;
+  var mobileWheelActive = false;
+  var mobileWheelTriggered = false;
+  var mobileWheelDelta = 0;
+  var mobileWheelIdleTimer = 0;
   var lastFocus = null;
+  var lightboxReturnTop = null;
   var introDone = false;
   var forcedStation = stationParam;
   var displayedFrame = -1;
@@ -2093,6 +2126,10 @@
     if (t <= 0) return 0;
     if (t >= 1) return 1;
     return t * t * (3 - 2 * t);
+  }
+  function smootherStep(t) {
+    t = clamp(t, 0, 1);
+    return t * t * t * (t * (t * 6 - 15) + 10);
   }
   function isMobile() { return mobileMq.matches; }
 
@@ -2573,6 +2610,7 @@
   function applyMotionPreference(on, persist) {
     /* Changing motion mode changes the authored runway height. Preserve the
        visitor's normalized place instead of throwing them into another station. */
+    cancelMobileGlide();
     var preservedProgress = 0;
     if (journey && viewport) {
       preservedProgress = clamp(window.scrollY / Math.max(1, journey.offsetHeight - viewport.offsetHeight), 0, 1);
@@ -2637,7 +2675,7 @@
   }
 
   function applyProofApparatus(p, dom) {
-    var life = SITE_TUNING.proofApparatus;
+    var life = isMobile() ? SITE_TUNING.mobileProofApparatus : SITE_TUNING.proofApparatus;
     var opacity = 0;
     var interactive = false;
     if (!motionOn) {
@@ -2867,7 +2905,7 @@
       var cs = SITE_TUNING.consoleLit.start;
       var cf = SITE_TUNING.consoleLit.full;
       lit = clamp((p - cs) / Math.max(0.0001, cf - cs), 0, 1);
-      var life = SITE_TUNING.proofApparatus;
+      var life = isMobile() ? SITE_TUNING.mobileProofApparatus : SITE_TUNING.proofApparatus;
       if (p >= life.fadeStart) {
         lit *= clamp(1 - (p - life.fadeStart) / Math.max(0.0001, life.fullyGone - life.fadeStart), 0, 1);
       }
@@ -2928,9 +2966,8 @@
       paint(progressCurrent);
       return;
     }
-    /* Touch scrolling is already momentum-smoothed by the browser. The approved
-       mobile oracle maps that native movement directly; a second easing layer
-       made the corridor feel delayed and jerky. */
+    /* The section glide already authors the mobile trajectory. Map its scroll
+       positions directly so a second easing layer cannot add lag or a tail. */
     if (isMobile()) {
       progressCurrent = progressTarget;
       paint(progressCurrent);
@@ -2951,30 +2988,172 @@
   }
 
   function cancelMobileGlide() {
-    if (!mobileScrollRaf) return;
-    window.cancelAnimationFrame(mobileScrollRaf);
+    if (mobileScrollRaf) window.cancelAnimationFrame(mobileScrollRaf);
     mobileScrollRaf = 0;
+    mobileGlideLocked = false;
+    root.removeAttribute("data-mobile-gliding");
   }
 
   function glideScrollTo(top) {
     cancelMobileGlide();
     var start = window.scrollY;
     var distance = top - start;
+    if (!motionOn || Math.abs(distance) < 0.5) {
+      window.scrollTo(0, top);
+      sampleScroll();
+      return;
+    }
     var started = performance.now();
-    var duration = 760;
+    var duration = SITE_TUNING.mobileSectionGlideMs;
+    mobileGlideLocked = true;
+    root.setAttribute("data-mobile-gliding", "true");
 
     function glide(now) {
       var elapsed = clamp((now - started) / duration, 0, 1);
-      var eased = 1 - Math.pow(1 - elapsed, 4);
+      /* One authored clock: zero-velocity departure, continuous travel, and a
+         zero-velocity landing. The input chooses the rest; it never scrubs it. */
+      var eased = smootherStep(elapsed);
       window.scrollTo(0, start + distance * eased);
       if (elapsed < 1) mobileScrollRaf = window.requestAnimationFrame(glide);
       else {
+        window.scrollTo(0, top);
         mobileScrollRaf = 0;
+        mobileGlideLocked = false;
+        root.removeAttribute("data-mobile-gliding");
         sampleScroll();
       }
     }
 
     mobileScrollRaf = window.requestAnimationFrame(glide);
+  }
+
+  function mobileStageIndexAtProgress(p) {
+    var stops = SITE_TUNING.mobileStageStops;
+    var best = 0;
+    var bestDistance = Infinity;
+    for (var i = 0; i < stops.length; i++) {
+      var distance = Math.abs(p - stops[i].progress);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  function scrollToMobileStageIndex(index) {
+    if (!journey || !viewport) return false;
+    var stops = SITE_TUNING.mobileStageStops;
+    var bounded = clamp(index, 0, stops.length - 1);
+    var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
+    var top = stops[bounded].progress * total;
+    if (motionOn) glideScrollTo(top);
+    else {
+      cancelMobileGlide();
+      window.scrollTo({ top: top, left: 0, behavior: "auto" });
+      sampleScroll();
+    }
+    return true;
+  }
+
+  function advanceMobileStage(direction) {
+    if (!isMobile() || mobileGlideLocked || !direction) return false;
+    if (lightbox && lightbox.classList.contains("is-open")) return false;
+    var current = mobileStageIndexAtProgress(computeProgress());
+    var next = clamp(current + (direction > 0 ? 1 : -1), 0, SITE_TUNING.mobileStageStops.length - 1);
+    if (next === current) return false;
+    return scrollToMobileStageIndex(next);
+  }
+
+  function resetMobileTouch() {
+    mobileTouchActive = false;
+    mobileTouchVertical = false;
+    mobileTouchStartX = mobileTouchStartY = 0;
+    mobileTouchLastX = mobileTouchLastY = 0;
+  }
+
+  function mobileGestureAvailable() {
+    return isMobile() && journey && viewport && !(lightbox && lightbox.classList.contains("is-open"));
+  }
+
+  function onMobileTouchStart(e) {
+    resetMobileTouch();
+    if (!mobileGestureAvailable() || mobileGlideLocked || !e.touches || e.touches.length !== 1) return;
+    var touch = e.touches[0];
+    mobileTouchActive = true;
+    mobileTouchStartX = mobileTouchLastX = touch.clientX;
+    mobileTouchStartY = mobileTouchLastY = touch.clientY;
+  }
+
+  function onMobileTouchMove(e) {
+    if (!mobileTouchActive || !mobileGestureAvailable()) return;
+    if (!e.touches || e.touches.length !== 1) {
+      resetMobileTouch();
+      return;
+    }
+    var touch = e.touches[0];
+    mobileTouchLastX = touch.clientX;
+    mobileTouchLastY = touch.clientY;
+    var dx = mobileTouchLastX - mobileTouchStartX;
+    var dy = mobileTouchLastY - mobileTouchStartY;
+    var absX = Math.abs(dx);
+    var absY = Math.abs(dy);
+
+    if (!mobileTouchVertical) {
+      if (absX < 7 && absY < 7) return;
+      if (absX > absY) {
+        resetMobileTouch();
+        return;
+      }
+      mobileTouchVertical = true;
+    }
+    e.preventDefault();
+  }
+
+  function onMobileTouchEnd(e) {
+    if (!mobileTouchActive) return;
+    if (e.touches && e.touches.length) {
+      resetMobileTouch();
+      return;
+    }
+    if (e.changedTouches && e.changedTouches.length) {
+      mobileTouchLastX = e.changedTouches[0].clientX;
+      mobileTouchLastY = e.changedTouches[0].clientY;
+    }
+    var dy = mobileTouchLastY - mobileTouchStartY;
+    var qualifies = mobileTouchVertical && Math.abs(dy) >= SITE_TUNING.mobileSwipeThresholdPx;
+    resetMobileTouch();
+    if (qualifies) advanceMobileStage(dy < 0 ? 1 : -1);
+  }
+
+  function onMobileTouchCancel() {
+    resetMobileTouch();
+  }
+
+  function closeMobileWheelGestureSoon() {
+    if (mobileWheelIdleTimer) window.clearTimeout(mobileWheelIdleTimer);
+    mobileWheelIdleTimer = window.setTimeout(function () {
+      mobileWheelActive = false;
+      mobileWheelTriggered = false;
+      mobileWheelDelta = 0;
+      mobileWheelIdleTimer = 0;
+    }, SITE_TUNING.mobileWheelIdleMs);
+  }
+
+  function onMobileWheel(e) {
+    if (!mobileGestureAvailable()) return;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    if (!mobileWheelActive) {
+      mobileWheelActive = true;
+      mobileWheelTriggered = false;
+      mobileWheelDelta = 0;
+    }
+    mobileWheelDelta += e.deltaY;
+    closeMobileWheelGestureSoon();
+    if (mobileWheelTriggered || Math.abs(mobileWheelDelta) < SITE_TUNING.mobileWheelThresholdPx) return;
+    mobileWheelTriggered = true;
+    if (!mobileGlideLocked) advanceMobileStage(mobileWheelDelta > 0 ? 1 : -1);
   }
 
   function scrollToStation(id, behavior) {
@@ -3044,6 +3223,19 @@
   function openLightbox(key) {
     var data = LIGHTBOX_SRC[key];
     if (!data || !lightbox) return;
+    /* Browser focus/scroll-into-view can move a sticky journey before the click
+       arrives. Pin the evidence view to the nearest authored mobile rest and
+       return to that exact rest when the dialog closes. */
+    lightboxReturnTop = null;
+    if (isMobile() && journey && viewport) {
+      cancelMobileGlide();
+      var stageIndex = mobileStageIndexAtProgress(computeProgress());
+      var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
+      lightboxReturnTop = SITE_TUNING.mobileStageStops[stageIndex].progress * total;
+      window.scrollTo(0, lightboxReturnTop);
+      progressCurrent = progressTarget = computeProgress();
+      paint(progressCurrent);
+    }
     lastFocus = document.activeElement;
     lightboxImg.src = data.src;
     lightboxImg.alt = data.alt;
@@ -3063,6 +3255,12 @@
     body.classList.remove("lightbox-open");
     lightbox.hidden = true;
     lightboxImg.removeAttribute("src");
+    if (lightboxReturnTop != null) {
+      window.scrollTo(0, lightboxReturnTop);
+      progressCurrent = progressTarget = computeProgress();
+      paint(progressCurrent);
+      lightboxReturnTop = null;
+    }
     var opener = lastFocus;
     lastFocus = null;
     if (opener && typeof opener.focus === "function") {
@@ -3111,6 +3309,10 @@
     }
     /* Normal homepage: open on frame 0 neighbourhood, then still keys, then idle rest */
     for (var i = 0; i < 24; i++) loadFrame(i, true);
+    var mobileStops = SITE_TUNING.mobileStageStops;
+    for (var m = 0; m < mobileStops.length; m++) {
+      loadFrame(mobileProgressToFrame(mobileStops[m].progress), true);
+    }
     var keys = SITE_TUNING.stillFrames;
     for (var k in keys) loadFrame(keys[k], true);
     preloadCursor = 24;
@@ -3127,12 +3329,23 @@
     }
   }, { passive: true });
 
-  window.addEventListener("resize", function () { sampleScroll(); });
+  window.addEventListener("resize", function () {
+    cancelMobileGlide();
+    sampleScroll();
+  });
 
   if (typeof mobileMq.addEventListener === "function") {
-    mobileMq.addEventListener("change", function () { sampleScroll(); });
+    mobileMq.addEventListener("change", function () {
+      cancelMobileGlide();
+      resetMobileTouch();
+      sampleScroll();
+    });
   } else if (typeof mobileMq.addListener === "function") {
-    mobileMq.addListener(function () { sampleScroll(); });
+    mobileMq.addListener(function () {
+      cancelMobileGlide();
+      resetMobileTouch();
+      sampleScroll();
+    });
   }
 
   if (motionToggle) {
@@ -3169,8 +3382,11 @@
       button.addEventListener("pointerup", function () { button.blur(); });
     })(mobileStationButtons[ms]);
   }
-  window.addEventListener("touchstart", cancelMobileGlide, { passive: true });
-  window.addEventListener("wheel", cancelMobileGlide, { passive: true });
+  window.addEventListener("touchstart", onMobileTouchStart, { passive: true });
+  window.addEventListener("touchmove", onMobileTouchMove, { passive: false });
+  window.addEventListener("touchend", onMobileTouchEnd, { passive: true });
+  window.addEventListener("touchcancel", onMobileTouchCancel, { passive: true });
+  window.addEventListener("wheel", onMobileWheel, { passive: false });
 
   var planeButtons = document.querySelectorAll("[data-lightbox]");
   for (var pi = 0; pi < planeButtons.length; pi++) {
@@ -3201,6 +3417,11 @@
     if (lightbox && lightbox.classList.contains("is-open")) return;
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "PageDown" && e.key !== "PageUp") return;
     if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable)) return;
+    if (isMobile()) {
+      e.preventDefault();
+      advanceMobileStage(e.key === "ArrowDown" || e.key === "PageDown" ? 1 : -1);
+      return;
+    }
     var idx = STATION_ORDER.indexOf(activeStationId);
     if (e.key === "ArrowDown" || e.key === "PageDown") {
       if (idx < STATION_ORDER.length - 1) {
@@ -3251,7 +3472,10 @@
     get desiredFrame() { return desiredFrame; },
     get framesReady() { return framesReadyCount; },
     get introDone() { return introDone; },
+    get mobileStage() { return SITE_TUNING.mobileStageStops[mobileStageIndexAtProgress(progressCurrent)].id; },
+    get mobileGliding() { return mobileGlideLocked; },
     go: scrollToStation,
+    goMobileStage: scrollToMobileStageIndex,
     progressToFrame: progressToFrame,
     progressToRailMarker: progressToRailMarker
   };

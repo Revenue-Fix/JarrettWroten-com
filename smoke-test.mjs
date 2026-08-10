@@ -417,33 +417,70 @@ ok(
   ok(!!methodNav && (methodNav[0].match(/<button\b/g) || []).length === 3, 'mobile Method nav exposes Look, Find, Build');
 
   ok(
-    /mobileSwipePx:\s*560[\s\S]*?mobileSwipesPerBeat:\s*4[\s\S]*?mobileLookSwipes:\s*3[\s\S]*?mobileFindSwipes:\s*3[\s\S]*?mobileBuildSwipes:\s*3[\s\S]*?mobileResultSwipes:\s*3[\s\S]*?mobileMeSwipes:\s*3[\s\S]*?mobileBeatCount:\s*6[\s\S]*?mobileRunwayPx:\s*10640/.test(html) &&
-      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 10640px\)/.test(html),
-    'mobile runway gives Look, Find, Build, Result, and Me three, and Start four 560px swipes'
+    /mobileSectionPx:\s*560[\s\S]*?mobileSectionCount:\s*6[\s\S]*?mobileRunwayPx:\s*3360[\s\S]*?mobileSwipeThresholdPx:\s*24[\s\S]*?mobileWheelThresholdPx:\s*18[\s\S]*?mobileSectionGlideMs:\s*1200/.test(html) &&
+      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 3360px\)/.test(html),
+    'mobile runway has six equal 560px authored section rests and one slow glide'
+  );
+  ok(
+    !/mobileSwipesPerBeat|mobileLookSwipes|mobileFindSwipes|mobileBuildSwipes|mobileResultSwipes|mobileMeSwipes|mobileBeatCount/.test(html),
+    'retired variable chapter-dwell counters cannot reintroduce distance-based skipping'
   );
   ok(!/mobileRunwayVh/.test(html), 'viewport-relative mobile runway retired in favor of invariant swipe distance');
   ok(/\.mobile-copy-stage\s*\{[\s\S]*?min-height:\s*20rem/.test(html), 'mobile copy stage contains the complete narrow-phone invitation');
   ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
-  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.921052632/.test(html), 'mobile station centers are independently authored');
+  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*1\.000000000/.test(html), 'mobile station centers end exactly at Start');
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
   /*
-   * Focused tripwire: a standard first swipe must visibly advance the mobile story.
-   * Future consumer: maintainers changing mobile runway or station timing.
+   * Focused tripwire: physical distance chooses direction only. Every qualifying
+   * gesture advances exactly one member of the authored stop list.
+   * Future consumer: maintainers changing mobile input or station timing.
    * Activation: execute `node smoke-test.mjs` before release.
-   * Behavioral check: the 390x844/560px consumer geometry lands in Method / Look.
-   * Retirement: only if native scroll-depth progression is removed from mobile.
+   * Behavioral check: short and long gestures both land in Method / Look first.
+   * Retirement: only if section-locked mobile progression is removed.
    */
-  const firstSwipeProgress = 560 / 10640;
+  const mobileStageStops = [
+    ['leak', 0],
+    ['method-look', 1 / 6],
+    ['method-find', 2 / 6],
+    ['method-build', 3 / 6],
+    ['proof', 4 / 6],
+    ['jarrett', 5 / 6],
+    ['threshold', 1]
+  ];
   ok(
-    firstSwipeProgress >= 0.02 && firstSwipeProgress < 0.184210526,
-    'one standard 560px swipe enters Method Look at every supported mobile height'
+    /mobileStageStops:\s*\[[\s\S]*?"leak"[\s\S]*?"method-look"[\s\S]*?"method-find"[\s\S]*?"method-build"[\s\S]*?"proof"[\s\S]*?"jarrett"[\s\S]*?"threshold"/.test(html),
+    'mobile stage-stop source preserves the exact opening, Look, Find, Build, Result, Me, Start order'
   );
   ok(
-    /leak:[^\n]*exit:\s*0\.02/.test(html) && /method:[^\n]*enter:\s*0\.02/.test(html),
-    'mobile opening hands directly into Method after the first swipe'
+    mobileStageStops.every((stop, index) => Math.abs(stop[1] - index / 6) < 1e-9),
+    'mobile stage-stop oracle uses six equal spatial destinations'
   );
-  ok(/if \(isMobile\(\)\) \{\r?\n\s+progressCurrent = progressTarget;/.test(html), 'native touch momentum is not double-smoothed');
-  ok(/var duration\s*=\s*760/.test(html) && html.includes('glideScrollTo'), 'mobile explicit navigation uses the authored glide');
+  ok(
+    /if \(isMobile\(\)\) \{\r?\n\s+progressCurrent = progressTarget;/.test(html) &&
+      /var eased\s*=\s*smootherStep\(elapsed\)/.test(html),
+    'the authored section glide is the only mobile smoothing clock'
+  );
+  ok(
+    html.includes('mobileGlideLocked') &&
+      /mobileSectionGlideMs:\s*1200/.test(html) &&
+      /function smootherStep\(t\)/.test(html) &&
+      html.includes('zero-velocity departure') &&
+      html.includes('zero-velocity landing'),
+    'mobile section travel uses a slow finite smootherstep with locked endpoints'
+  );
+  ok(
+    html.includes('window.addEventListener("touchmove", onMobileTouchMove, { passive: false })') &&
+      html.includes('window.addEventListener("wheel", onMobileWheel, { passive: false })') &&
+      /function onMobileTouchEnd\(e\)[\s\S]*?Math\.abs\(dy\) >= SITE_TUNING\.mobileSwipeThresholdPx[\s\S]*?dy < 0 \? 1 : -1/.test(html) &&
+      /function onMobileWheel\(e\)[\s\S]*?mobileWheelTriggered[\s\S]*?advanceMobileStage\(mobileWheelDelta > 0 \? 1 : -1\)/.test(html),
+    'touch and wheel gestures discard travel magnitude after qualifying and choose direction once'
+  );
+  ok(
+    /function onMobileTouchMove\(e\)[\s\S]*?e\.touches\.length !== 1[\s\S]*?resetMobileTouch\(\)/.test(html) &&
+      /function onMobileTouchEnd\(e\)[\s\S]*?e\.touches && e\.touches\.length[\s\S]*?resetMobileTouch\(\)/.test(html) &&
+      /touch-action:\s*pan-x pinch-zoom/.test(html),
+    'multi-touch cancels section navigation while pinch zoom remains authored'
+  );
   ok(
     html.includes('spatially erased above it') &&
       /mobileBeatEraseMs:\s*220/.test(html) &&
@@ -456,36 +493,37 @@ ok(
     'mobile beat changes use complementary spatial masks with no opacity overlap or blank pause'
   );
   /*
-   * FOCUSED TRIPWIRE — mobile chapter dwell and ending fit.
-   * Canonical path: smoke-test.mjs — representative mobile swipe geometry below.
-   * Future consumer: the maintainer changing mobile runway or chapter boundaries.
+   * FOCUSED TRIPWIRE — one gesture per authored rest and ending fit.
+   * Canonical path: smoke-test.mjs — deterministic stage transition oracle below.
+   * Future consumer: the maintainer changing mobile input or stage boundaries.
    * Activation: execute — `node smoke-test.mjs` before release.
-   * Behavioral check: a viewport-invariant 10640px scroll distance holds Look,
-   * Find, Build, Result, and Me for three 560px swipes, and Start for four.
-   * Retirement: retire only if mobile stops using native scroll-depth chapters.
+   * Behavioral check: six forward decisions produce Look, Find, Build, Result,
+   * Me, Start; reversing produces the exact inverse with no skipped rest.
+   * Retirement: retire only if mobile stops using authored section locks.
    */
-  const standardSwipeProgress = 560 / 10640;
-  const beatAtSwipe = (swipe) => {
-    const p = Math.min(1, standardSwipeProgress * swipe);
-    if (p < 0.184210526) return 'method-look';
-    if (p < 0.342105263) return 'method-find';
-    if (p < 0.500000000) return 'method-build';
-    if (p < 0.657894737) return 'proof';
-    if (p < 0.815789474) return 'jarrett';
-    return 'threshold';
-  };
-  const mobileSwipeSequence = Array.from({ length: 19 }, (_, index) => beatAtSwipe(index + 1));
-  const expectedMobileSwipeSequence = [
-    ...Array(3).fill('method-look'),
-    ...Array(3).fill('method-find'),
-    ...Array(3).fill('method-build'),
-    ...Array(3).fill('proof'),
-    ...Array(3).fill('jarrett'),
-    ...Array(4).fill('threshold')
-  ];
+  const transitionStage = (index, direction) => Math.max(0, Math.min(6, index + Math.sign(direction)));
+  const mobileSwipeSequence = [];
+  let stageIndex = 0;
+  for (let i = 0; i < 6; i++) {
+    stageIndex = transitionStage(stageIndex, 1);
+    mobileSwipeSequence.push(mobileStageStops[stageIndex][0]);
+  }
   ok(
-    JSON.stringify(mobileSwipeSequence) === JSON.stringify(expectedMobileSwipeSequence),
-    'Look, Find, Build, Result, and Me hold for three standard swipes, and Start for four'
+    JSON.stringify(mobileSwipeSequence) === JSON.stringify(['method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold']),
+    'six forward swipes produce Look, Find, Build, Result, Me, then Start exactly once each'
+  );
+  const reverseSequence = [];
+  for (let i = 0; i < 6; i++) {
+    stageIndex = transitionStage(stageIndex, -1);
+    reverseSequence.push(mobileStageStops[stageIndex][0]);
+  }
+  ok(
+    JSON.stringify(reverseSequence) === JSON.stringify(['jarrett', 'proof', 'method-build', 'method-find', 'method-look', 'leak']),
+    'six reverse swipes unwind every authored rest without skipping'
+  );
+  ok(
+    JSON.stringify(mobileStageStops.slice(1).map((stop) => Math.round(stop[1] * 360))) === JSON.stringify([60, 120, 180, 240, 300, 360]),
+    'mobile background destinations advance continuously in exact 60-frame steps'
   );
   ok(
     !html.includes('mobileVisualProgress') &&
@@ -501,9 +539,18 @@ ok(
   );
   ok(html.includes("visitor's normalized place") && /preservedProgress\s*\*\s*resizedTotal/.test(html), 'motion toggle preserves the current journey station');
   ok(html.includes('html,body{margin:0;padding:0;overflow-anchor:none}'), 'runway resize disables browser scroll-anchor drift');
+  ok(
+    /\.viewport\s*\{[\s\S]*?overflow:hidden;[\s\S]*?overflow:clip;/.test(html),
+    'sticky viewport clips without becoming a programmatically scrollable inner container'
+  );
   ok((html.match(/if \(!motionOn && !isMobile\(\)\)/g) || []).length >= 2, 'mobile motion-off keeps portrait station and Method ranges');
   ok(html.includes('mobile-proof-link') && html.includes('data-lightbox="stripe"'), 'mobile result opens the real Stripe evidence');
   ok(html.includes('body.classList.add("lightbox-open")') && html.includes('body.classList.remove("lightbox-open")'), 'mobile evidence view locks and restores page scroll');
+  ok(
+    /function openLightbox\(key\)[\s\S]*?mobileStageIndexAtProgress\(computeProgress\(\)\)[\s\S]*?lightboxReturnTop[\s\S]*?window\.scrollTo\(0, lightboxReturnTop\)/.test(html) &&
+      /function closeLightbox\(\)[\s\S]*?lightboxReturnTop != null[\s\S]*?window\.scrollTo\(0, lightboxReturnTop\)/.test(html),
+    'mobile evidence dialog pins and restores the nearest authored rest'
+  );
   ok(html.includes('grid-template-rows:auto minmax(0,1fr) auto') && html.includes('touch-action:pinch-zoom'), 'mobile evidence view is full-height and inspectable');
   ok(html.includes('html::-webkit-scrollbar{display:none}') && html.includes('scrollbar-width:none'), 'mobile journey hides browser scrollbar chrome');
 }
