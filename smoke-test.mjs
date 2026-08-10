@@ -13,7 +13,7 @@
  * Behavioral check: exercises normal/direct-entry frame behavior and asserts nowrap
  *   display, no wbr, Proof housing/spill, loader,
  *   opening-neighbourhood, railCenters mapping, faceExclusionMobile, five distinct
- *   stationCarriers, footer zero-margin, the seven-beat mobile journey, portrait
+ *   stationCarriers, footer zero-margin, the eight-beat mobile journey, portrait
  *   navigation/evidence contracts, and frozen proof figures without remote runtime
  * Retirement: retire when the page no longer uses the five-station Golden Arrival
  *   layout contract, or when a stronger live-pixel harness supersedes these structural
@@ -399,15 +399,15 @@ ok(
   'no-js route carries method steps'
 );
 
-// Mobile is a separately authored seven-beat buyer journey, not the desktop DOM
+// Mobile is a separately authored eight-beat buyer journey, not the desktop DOM
 // squeezed into a portrait viewport.
 {
   const mobileExperience = html.match(/<div class="mobile-experience"[\s\S]*?<\/div>\s*<nav class="station-rail"/);
   const mobileSrc = mobileExperience ? mobileExperience[0] : '';
   const beatIds = [...mobileSrc.matchAll(/data-mobile-beat="([^"]+)"/g)].map((m) => m[1]);
-  ok(beatIds.length === 7, 'mobile journey has seven authored beats');
-  ok(new Set(beatIds).size === 7, 'mobile journey beat ids are unique');
-  for (const id of ['leak', 'method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold']) {
+  ok(beatIds.length === 8, 'mobile journey has eight authored beats');
+  ok(new Set(beatIds).size === 8, 'mobile journey beat ids are unique');
+  for (const id of ['leak', 'method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold', 'services']) {
     ok(beatIds.includes(id), 'mobile journey contains ' + id);
   }
 
@@ -415,21 +415,48 @@ ok(
   const methodNav = mobileSrc.match(/<nav class="mobile-nav mobile-method-nav"[\s\S]*?<\/nav>/);
   ok(!!stationNav && (stationNav[0].match(/<button\b/g) || []).length === 5, 'mobile station nav exposes five buyer-journey sections');
   ok(!!methodNav && (methodNav[0].match(/<button\b/g) || []).length === 3, 'mobile Method nav exposes Look, Find, Build');
+  ok(
+    /data-go="method"/.test(stationNav ? stationNav[0] : '') &&
+      /data-go="threshold"/.test(stationNav ? stationNav[0] : '') &&
+      !/data-go="services"/.test(stationNav ? stationNav[0] : ''),
+    'mobile primary nav keeps Method and Start station targets without a Services tab'
+  );
 
   ok(
-    /mobileSectionPx:\s*560[\s\S]*?mobileSectionCount:\s*6[\s\S]*?mobileRunwayPx:\s*3360[\s\S]*?mobileSwipeThresholdPx:\s*24[\s\S]*?mobileWheelThresholdPx:\s*18[\s\S]*?mobileSectionGlideMs:\s*1200/.test(html) &&
-      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 3360px\)/.test(html),
-    'mobile runway has six equal 560px authored section rests and one slow glide'
+    /mobileSectionPx:\s*560[\s\S]*?mobileSectionCount:\s*7[\s\S]*?mobileRunwayPx:\s*3920[\s\S]*?mobileSwipeThresholdPx:\s*24[\s\S]*?mobileWheelThresholdPx:\s*18[\s\S]*?mobileSectionGlideMs:\s*1200/.test(html) &&
+      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 3920px\)/.test(html),
+    'mobile runway has seven equal 560px authored section rests and one slow glide'
   );
   ok(
     !/mobileSwipesPerBeat|mobileLookSwipes|mobileFindSwipes|mobileBuildSwipes|mobileResultSwipes|mobileMeSwipes|mobileBeatCount/.test(html),
     'retired variable chapter-dwell counters cannot reintroduce distance-based skipping'
   );
   ok(!/mobileRunwayVh/.test(html), 'viewport-relative mobile runway retired in favor of invariant swipe distance');
-  ok(/\.mobile-copy-stage\s*\{[\s\S]*?min-height:\s*20rem/.test(html), 'mobile copy stage contains the complete narrow-phone invitation');
+  ok(!/\.viewport\s*\{[^}]*min-height:\s*36rem/.test(html) && !/min-height:\s*36rem/.test(html), 'mobile viewport no longer forces min-height 36rem');
+  ok(
+    /\.mobile-copy-stage\s*\{[\s\S]*?top:\s*calc\([^;]*safe-area-inset-top[\s\S]*?bottom:\s*calc\([^;]*safe-area-inset-bottom/.test(html) &&
+      !/\.mobile-copy-stage\s*\{[\s\S]*?min-height:\s*20rem/.test(html),
+    'mobile copy stage uses explicit safe top and bottom bounds without bottom-only min-height'
+  );
+  ok(
+    /@media\s*\(max-height:\s*640px\)/.test(html) && /@media\s*\(max-height:\s*520px\)/.test(html),
+    'short-height mobile type adjustments are authored'
+  );
   ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
-  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*1\.000000000/.test(html), 'mobile station centers end exactly at Start');
+  ok(
+    /mobileStations:\s*\{[\s\S]*?method:[\s\S]*?center:\s*0\.142857143[\s\S]*?threshold:[\s\S]*?center:\s*0\.857142857/.test(html),
+    'mobile Method primary lands on Look and Start lands on Start, not Services'
+  );
+  ok(
+    /mobileStageStops:[\s\S]*?id:\s*"method-look"[\s\S]*?progress:\s*0\.142857143[\s\S]*?id:\s*"threshold"[\s\S]*?progress:\s*0\.857142857[\s\S]*?id:\s*"services"[\s\S]*?progress:\s*1\.000000000/.test(html),
+    'stage stops place Method/Look, Start, and Services at the exact authored rests'
+  );
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
+  ok(
+    /data-mobile-beat="method-find"[\s\S]*?<h2 class="mobile-title">Find The<br>Leak\.<\/h2>/.test(mobileSrc) &&
+      !/\.mobile-beat\[data-mobile-beat="method-find"\]\s*\.mobile-title\s*\{[^}]*white-space:\s*nowrap/.test(html),
+    'mobile Find uses an authored two-line title without nowrap overflow'
+  );
   /*
    * Focused tripwire: physical distance chooses direction only. Every qualifying
    * gesture advances exactly one member of the authored stop list.
@@ -440,21 +467,23 @@ ok(
    */
   const mobileStageStops = [
     ['leak', 0],
-    ['method-look', 1 / 6],
-    ['method-find', 2 / 6],
-    ['method-build', 3 / 6],
-    ['proof', 4 / 6],
-    ['jarrett', 5 / 6],
-    ['threshold', 1]
+    ['method-look', 1 / 7],
+    ['method-find', 2 / 7],
+    ['method-build', 3 / 7],
+    ['proof', 4 / 7],
+    ['jarrett', 5 / 7],
+    ['threshold', 6 / 7],
+    ['services', 1]
   ];
   ok(
-    /mobileStageStops:\s*\[[\s\S]*?"leak"[\s\S]*?"method-look"[\s\S]*?"method-find"[\s\S]*?"method-build"[\s\S]*?"proof"[\s\S]*?"jarrett"[\s\S]*?"threshold"/.test(html),
-    'mobile stage-stop source preserves the exact opening, Look, Find, Build, Result, Me, Start order'
+    /mobileStageStops:\s*\[[\s\S]*?"leak"[\s\S]*?"method-look"[\s\S]*?"method-find"[\s\S]*?"method-build"[\s\S]*?"proof"[\s\S]*?"jarrett"[\s\S]*?"threshold"[\s\S]*?"services"/.test(html),
+    'mobile stage-stop source preserves Look through Services order'
   );
   ok(
-    mobileStageStops.every((stop, index) => Math.abs(stop[1] - index / 6) < 1e-9),
-    'mobile stage-stop oracle uses six equal spatial destinations'
+    mobileStageStops.every((stop, index) => Math.abs(stop[1] - index / 7) < 1e-9),
+    'mobile stage-stop oracle uses seven equal spatial destinations from 0 through 1'
   );
+  ok(mobileStageStops.length === 8, 'eight mobile stage stops from 0 through 1 at exact sevenths');
   ok(
     /if \(isMobile\(\)\) \{\r?\n\s+progressCurrent = progressTarget;/.test(html) &&
       /var eased\s*=\s*smootherStep\(elapsed\)/.test(html),
@@ -497,33 +526,33 @@ ok(
    * Canonical path: smoke-test.mjs — deterministic stage transition oracle below.
    * Future consumer: the maintainer changing mobile input or stage boundaries.
    * Activation: execute — `node smoke-test.mjs` before release.
-   * Behavioral check: six forward decisions produce Look, Find, Build, Result,
-   * Me, Start; reversing produces the exact inverse with no skipped rest.
+   * Behavioral check: seven forward decisions produce Look through Services;
+   * reversing produces the exact inverse with no skipped rest.
    * Retirement: retire only if mobile stops using authored section locks.
    */
-  const transitionStage = (index, direction) => Math.max(0, Math.min(6, index + Math.sign(direction)));
+  const transitionStage = (index, direction) => Math.max(0, Math.min(7, index + Math.sign(direction)));
   const mobileSwipeSequence = [];
   let stageIndex = 0;
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 7; i++) {
     stageIndex = transitionStage(stageIndex, 1);
     mobileSwipeSequence.push(mobileStageStops[stageIndex][0]);
   }
   ok(
-    JSON.stringify(mobileSwipeSequence) === JSON.stringify(['method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold']),
-    'six forward swipes produce Look, Find, Build, Result, Me, then Start exactly once each'
+    JSON.stringify(mobileSwipeSequence) === JSON.stringify(['method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold', 'services']),
+    'seven forward swipes produce Look, Find, Build, Result, Me, Start, then Services exactly once each'
   );
   const reverseSequence = [];
-  for (let i = 0; i < 6; i++) {
+  for (let i = 0; i < 7; i++) {
     stageIndex = transitionStage(stageIndex, -1);
     reverseSequence.push(mobileStageStops[stageIndex][0]);
   }
   ok(
-    JSON.stringify(reverseSequence) === JSON.stringify(['jarrett', 'proof', 'method-build', 'method-find', 'method-look', 'leak']),
-    'six reverse swipes unwind every authored rest without skipping'
+    JSON.stringify(reverseSequence) === JSON.stringify(['threshold', 'jarrett', 'proof', 'method-build', 'method-find', 'method-look', 'leak']),
+    'seven reverse swipes unwind every authored rest without skipping'
   );
   ok(
-    JSON.stringify(mobileStageStops.slice(1).map((stop) => Math.round(stop[1] * 360))) === JSON.stringify([60, 120, 180, 240, 300, 360]),
-    'mobile background destinations advance continuously in exact 60-frame steps'
+    JSON.stringify(mobileStageStops.map((stop) => Math.round(stop[1] * 360))) === JSON.stringify([0, 51, 103, 154, 206, 257, 309, 360]),
+    'mobile background destinations advance continuously across exact seventh-frame stops'
   );
   ok(
     !html.includes('mobileVisualProgress') &&
@@ -553,6 +582,63 @@ ok(
   );
   ok(html.includes('grid-template-rows:auto minmax(0,1fr) auto') && html.includes('touch-action:pinch-zoom'), 'mobile evidence view is full-height and inspectable');
   ok(html.includes('html::-webkit-scrollbar{display:none}') && html.includes('scrollbar-width:none'), 'mobile journey hides browser scrollbar chrome');
+}
+
+
+// Terminal Services composition — mobile beat, desktop threshold right side, no-js fallback.
+{
+  const serviceItems = [
+    'Custom Website Design',
+    'Revenue Pipeline Optimization',
+    'Lead Generation',
+    'Customer Journey Audits',
+    'Landing Pages & Follow-Up Systems'
+  ];
+  const mobileExperience = html.match(/<div class="mobile-experience"[\s\S]*?<\/div>\s*<nav class="station-rail"/);
+  const mobileSrc = mobileExperience ? mobileExperience[0] : '';
+  const mobileServices = mobileSrc.match(/data-mobile-beat="services"[\s\S]*?<\/article>/);
+  ok(!!mobileServices, 'mobile services beat is present');
+  ok(
+    mobileServices &&
+      /<h2 class="mobile-title">Services<\/h2>/.test(mobileServices[0]) &&
+      serviceItems.every((item) => mobileServices[0].includes(item.replace('&', '&amp;')) || mobileServices[0].includes(item)),
+    'mobile services beat carries the exact Services label and ordered list'
+  );
+  ok(
+    mobileServices &&
+      /data-mobile-station="threshold"/.test(mobileServices[0]) &&
+      /aria-hidden="true"/.test(mobileServices[0]),
+    'services beat belongs to the Start station and begins inactive/hidden'
+  );
+
+  const desktopThreshold = html.match(/<section class="station" data-station="threshold"[\s\S]*?<\/section>/);
+  const desktopSrc = desktopThreshold ? desktopThreshold[0] : '';
+  ok(
+    /class="threshold-services"/.test(desktopSrc) &&
+      /id="services-heading">Services</.test(desktopSrc) &&
+      /threshold-services-list/.test(desktopSrc) &&
+      serviceItems.every((item) => desktopSrc.includes(item.replace('&', '&amp;')) || desktopSrc.includes(item)),
+    'desktop threshold carries Services in the terminal right-side composition'
+  );
+  ok(
+    /\.station\[data-station="threshold"\]\.is-active \.threshold-services/.test(html) &&
+      /\.station\[data-station="threshold"\]\.is-held \.threshold-services/.test(html),
+    'desktop Services reveals with the existing threshold station lifecycle'
+  );
+
+  const noJs = html.match(/<main class="no-js-route"[\s\S]*?<\/main>/);
+  const noJsSrc = noJs ? noJs[0] : '';
+  ok(
+    noJsSrc.includes('>Services<') &&
+      serviceItems.every((item) => noJsSrc.includes(item.replace('&', '&amp;')) || noJsSrc.includes(item)),
+    'no-js fallback presents the service offering'
+  );
+  ok(
+    function mobileBeatAt(p, dom) {
+      return /function mobileBeatAt\(p, dom\)[\s\S]*?mobileStageStops[\s\S]*?return stops\[idx\]\.id/.test(html);
+    }(),
+    'mobile beat lifecycle resolves active Services from stage stops like every other beat'
+  );
 }
 
 // Method annotation cumulative arc — focused behavioral oracle.

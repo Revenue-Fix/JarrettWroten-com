@@ -982,6 +982,62 @@
     letter-spacing:0;
     color:var(--ink-mute);
   }
+  /* THRESHOLD services — right-side terminal list; left CTA + portrait stay free */
+  .threshold-services{
+    position:absolute;
+    isolation:isolate;
+    right:var(--gutter);
+    top:clamp(5.4rem,13vh,7.2rem);
+    z-index:2;
+    max-width:min(17.5rem, 22vw);
+    opacity:0;
+    transform:translateY(12px);
+    pointer-events:none;
+  }
+  .threshold-services::before{
+    content:"";
+    position:absolute;
+    z-index:-1;
+    pointer-events:none;
+    inset:-16% -18% -18% -28%;
+    background:
+      radial-gradient(ellipse 74% 72% at 72% 38%, rgba(4,10,12,.8) 0%, rgba(4,10,12,.36) 50%, transparent 76%);
+  }
+  .threshold-services-label{
+    margin:0 0 .7rem;
+    font-family:var(--reading);
+    font-weight:400;
+    font-style:italic;
+    font-synthesis:none;
+    font-size:clamp(1rem,1.02rem + .12vw,1.12rem);
+    line-height:1.3;
+    letter-spacing:0;
+    color:var(--cyan);
+  }
+  .threshold-services-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  .threshold-services-list li{
+    margin:0;
+    padding:.38rem 0;
+    font-family:var(--text);
+    font-weight:500;
+    font-size:clamp(.95rem,.92rem + .18vw,1.05rem);
+    line-height:1.35;
+    letter-spacing:0;
+    color:var(--ink-soft);
+    border-top:1px solid rgba(232,244,244,.12);
+  }
+  .threshold-services-list li:first-child{border-top:0;padding-top:0}
+  .station[data-station="threshold"].is-active .threshold-services,
+  .station[data-station="threshold"].is-held .threshold-services{
+    opacity:1;
+    transform:none;
+    transition:opacity .75s var(--ease-overshoot), transform .75s var(--ease-overshoot);
+    transition-delay:260ms;
+  }
 
   .site-footer{
     position:absolute;
@@ -1108,8 +1164,8 @@
    * Activation: auto-load — @media (max-width:720px) and paintMobileExperience().
    * Behavioral check: node smoke-test.mjs plus short and long CUA swipes through
    * the rendered mobile journey; each physical swipe lands exactly one authored
-   * rest: Look, Find, Build, Result, Me, then Start. At 320px the complete final
-   * invitation remains inside its clipped stage;
+   * rest: Look, Find, Build, Result, Me, Start, then Services. Copy stays inside an
+   * explicit safe region between header/safe-area top and nav/safe-area bottom;
    * every handoff keeps one active beat, decoded world pixels, and no stale class.
    * Retirement: retire when this site no longer uses the Golden Arrival buyer journey on mobile.
    */
@@ -1124,15 +1180,13 @@
     html{scrollbar-width:none}
     html::-webkit-scrollbar{display:none}
     body{overscroll-behavior-y:none}
-    .journey{height:calc(100svh + 3360px)}
+    .journey{height:calc(100svh + 3920px)}
     html[data-motion="off"] .journey{height:500svh}
     .journey,
     .viewport{
       touch-action:pan-x pinch-zoom;
       overscroll-behavior-y:contain;
     }
-    .viewport{min-height:36rem}
-
     .station,
     .station-rail,
     .distance-hud,
@@ -1197,8 +1251,8 @@
       z-index:2;
       left:var(--gutter);
       right:var(--gutter);
-      bottom:calc(5.65rem + env(safe-area-inset-bottom));
-      min-height:20rem;
+      top:calc(3.75rem + env(safe-area-inset-top));
+      bottom:calc(4.55rem + env(safe-area-inset-bottom));
       pointer-events:none;
     }
     .mobile-beat{
@@ -1289,7 +1343,7 @@
     }
     .mobile-beat[data-mobile-beat="method-find"] .mobile-title{
       font-size:clamp(2.72rem,12.2vw,3.15rem);
-      white-space:nowrap;
+      max-width:11.5ch;
     }
     .mobile-beat[data-mobile-beat="jarrett"] .mobile-title,
     .mobile-beat[data-mobile-beat="threshold"] .mobile-title{
@@ -1350,8 +1404,32 @@
       white-space:nowrap;
     }
     .mobile-beat[data-mobile-beat="proof"],
-    .mobile-beat[data-mobile-beat="threshold"]{
+    .mobile-beat[data-mobile-beat="threshold"],
+    .mobile-beat[data-mobile-beat="services"]{
       padding-bottom:.05rem;
+    }
+    .mobile-beat[data-mobile-beat="services"] .mobile-title{
+      font-size:clamp(2.35rem,10.8vw,2.85rem);
+    }
+    .mobile-services-list{
+      list-style:none;
+      margin:.7rem 0 0;
+      padding:0;
+      max-width:28ch;
+    }
+    .mobile-services-list li{
+      position:relative;
+      margin:0;
+      padding:.28rem 0 .28rem 0;
+      font-family:var(--text);
+      font-size:clamp(.98rem,4.2vw,1.08rem);
+      font-weight:500;
+      line-height:1.32;
+      letter-spacing:0;
+      color:var(--ink-soft);
+    }
+    .mobile-services-list li + li{
+      border-top:1px solid rgba(232,244,244,.12);
     }
 
     .mobile-swipe-cue{
@@ -1446,6 +1524,65 @@
       text-decoration:underline;
       text-decoration-thickness:1px;
       text-underline-offset:.35rem;
+    }
+
+
+    /* Intentional short-height mobile: keep hierarchy, fit the safe copy stage. */
+    @media (max-height:640px){
+      .mobile-kicker{
+        margin-bottom:.4rem;
+        font-size:clamp(.92rem,3.9vw,1.02rem);
+      }
+      .mobile-title{
+        font-size:clamp(2.35rem,11.2vw,2.9rem);
+      }
+      .mobile-beat[data-mobile-beat="leak"] .mobile-title{
+        font-size:clamp(2.05rem,9.8vw,2.45rem);
+      }
+      .mobile-beat[data-mobile-beat="method-find"] .mobile-title{
+        font-size:clamp(2.25rem,10.6vw,2.75rem);
+      }
+      .mobile-beat[data-mobile-beat="jarrett"] .mobile-title,
+      .mobile-beat[data-mobile-beat="threshold"] .mobile-title{
+        font-size:clamp(2.25rem,10.8vw,2.75rem);
+      }
+      .mobile-proof-figure{
+        font-size:clamp(2.55rem,12vw,3.05rem);
+      }
+      .mobile-body{
+        margin-top:.55rem;
+        font-size:clamp(.98rem,4.15vw,1.08rem);
+        line-height:1.36;
+      }
+      .mobile-qualifier,
+      .mobile-whisper{
+        margin-top:.35rem;
+        font-size:clamp(.84rem,3.5vw,.92rem);
+      }
+      .mobile-email{
+        margin-top:.4rem;
+        font-size:clamp(.98rem,4.1vw,1.1rem);
+        line-height:2.4rem;
+      }
+      .mobile-services-list{
+        margin-top:.45rem;
+      }
+      .mobile-services-list li{
+        padding:.2rem 0;
+        font-size:clamp(.9rem,3.9vw,1rem);
+      }
+    }
+    @media (max-height:520px){
+      .mobile-kicker{margin-bottom:.28rem;font-size:.88rem}
+      .mobile-title{font-size:clamp(1.95rem,9.6vw,2.35rem);line-height:.94}
+      .mobile-beat[data-mobile-beat="leak"] .mobile-title{font-size:clamp(1.72rem,8.6vw,2.05rem)}
+      .mobile-beat[data-mobile-beat="method-find"] .mobile-title{font-size:clamp(1.9rem,9.2vw,2.25rem)}
+      .mobile-body{margin-top:.4rem;font-size:.94rem;line-height:1.32;max-width:34ch}
+      .mobile-proof-figure{font-size:clamp(2.15rem,10.5vw,2.55rem)}
+      .mobile-email{margin-top:.28rem;font-size:.95rem;line-height:2.15rem}
+      .mobile-qualifier,
+      .mobile-whisper{font-size:.82rem}
+      .mobile-services-list li{padding:.14rem 0;font-size:.88rem}
     }
 
     .note-mount{display:none !important}
@@ -1597,6 +1734,16 @@
       </div>
       <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
       <p class="invite-whisper">If I find nothing worth fixing, I’ll tell you.</p>
+      <h2 class="display">Services</h2>
+      <div class="text">
+        <ol>
+          <li>Custom Website Design</li>
+          <li>Revenue Pipeline Optimization</li>
+          <li>Lead Generation</li>
+          <li>Customer Journey Audits</li>
+          <li>Landing Pages &amp; Follow-Up Systems</li>
+        </ol>
+      </div>
       <footer><p>Jarrett Wroten · Las Vegas</p></footer>
     </div>
   </main>
@@ -1665,7 +1812,7 @@
 
             <article class="mobile-beat" data-mobile-beat="method-find" data-mobile-station="method" aria-hidden="true">
               <p class="mobile-kicker">Follow the real path</p>
-              <h2 class="mobile-title">Find The Leak.</h2>
+              <h2 class="mobile-title">Find The<br>Leak.</h2>
               <p class="mobile-body">I find the first key step where the path breaks.</p>
             </article>
 
@@ -1695,6 +1842,17 @@
               <p class="mobile-body">Tell me what you want more of. I’ll build the first fix, and you keep it. If it helps, we can keep working together.</p>
               <a class="mobile-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
               <p class="mobile-whisper">If I find nothing worth fixing, I’ll tell you.</p>
+            </article>
+
+            <article class="mobile-beat" data-mobile-beat="services" data-mobile-station="threshold" aria-hidden="true">
+              <h2 class="mobile-title">Services</h2>
+              <ol class="mobile-services-list">
+                <li>Custom Website Design</li>
+                <li>Revenue Pipeline Optimization</li>
+                <li>Lead Generation</li>
+                <li>Customer Journey Audits</li>
+                <li>Landing Pages &amp; Follow-Up Systems</li>
+              </ol>
             </article>
           </div>
 
@@ -1814,6 +1972,16 @@
               <p class="invite-whisper">If I find nothing worth fixing, I’ll tell you.</p>
             </div>
           </div>
+          <aside class="threshold-services" aria-labelledby="services-heading">
+            <h3 class="threshold-services-label" id="services-heading">Services</h3>
+            <ol class="threshold-services-list">
+              <li>Custom Website Design</li>
+              <li>Revenue Pipeline Optimization</li>
+              <li>Lead Generation</li>
+              <li>Customer Journey Audits</li>
+              <li>Landing Pages &amp; Follow-Up Systems</li>
+            </ol>
+          </aside>
         </section>
 
         <p class="scroll-cue" id="scroll-cue">Scroll to follow the path</p>
@@ -1847,7 +2015,7 @@
    * Future consumer: portrait visitors entering the Golden Arrival journey.
    * Activation: auto-load through this production entry document.
    * Behavioral check: node smoke-test.mjs plus short/long forward and reverse
-   * gestures through all six authored rests.
+   * gestures through all seven authored section rests (eight stage stops).
    * Retirement: only when this scroll-depth mobile journey is replaced end to end.
    */
   var SITE_TUNING = {
@@ -1855,20 +2023,21 @@
     mobileBreakpoint: 720,
     runwayVh: 600,
     mobileSectionPx: 560,
-    mobileSectionCount: 6,
-    mobileRunwayPx: 3360,
+    mobileSectionCount: 7,
+    mobileRunwayPx: 3920,
     mobileSwipeThresholdPx: 24,
     mobileWheelThresholdPx: 18,
     mobileWheelIdleMs: 180,
     mobileSectionGlideMs: 1200,
     mobileStageStops: [
       { id: "leak",         station: "leak",      progress: 0.000000000 },
-      { id: "method-look",  station: "method",    progress: 0.166666667 },
-      { id: "method-find",  station: "method",    progress: 0.333333333 },
-      { id: "method-build", station: "method",    progress: 0.500000000 },
-      { id: "proof",        station: "proof",     progress: 0.666666667 },
-      { id: "jarrett",      station: "jarrett",   progress: 0.833333333 },
-      { id: "threshold",    station: "threshold", progress: 1.000000000 }
+      { id: "method-look",  station: "method",    progress: 0.142857143 },
+      { id: "method-find",  station: "method",    progress: 0.285714286 },
+      { id: "method-build", station: "method",    progress: 0.428571429 },
+      { id: "proof",        station: "proof",     progress: 0.571428571 },
+      { id: "jarrett",      station: "jarrett",   progress: 0.714285714 },
+      { id: "threshold",    station: "threshold", progress: 0.857142857 },
+      { id: "services",     station: "threshold", progress: 1.000000000 }
     ],
     stillRunwayVh: 500,
     frameCount: 361,
@@ -1894,11 +2063,11 @@
       threshold: { id: "threshold", label: "Work with me", center: 0.94, enter: 0.86, hold: 0.90, exit: 1.01 }
     },
     mobileStations: {
-      leak:      { id: "leak",      label: "The Leak",     center: 0.000000000, enter: 0.000000000, hold: 0.000000000, exit: 0.083333333 },
-      method:    { id: "method",    label: "How I work",   center: 0.333333333, enter: 0.083333333, hold: 0.166666667, exit: 0.583333333 },
-      proof:     { id: "proof",     label: "Real result",  center: 0.666666667, enter: 0.583333333, hold: 0.666666667, exit: 0.750000000 },
-      jarrett:   { id: "jarrett",   label: "About me",     center: 0.833333333, enter: 0.750000000, hold: 0.833333333, exit: 0.916666667 },
-      threshold: { id: "threshold", label: "Work with me", center: 1.000000000, enter: 0.916666667, hold: 1.000000000, exit: 1.01 }
+      leak:      { id: "leak",      label: "The Leak",     center: 0.000000000, enter: 0.000000000, hold: 0.000000000, exit: 0.071428571 },
+      method:    { id: "method",    label: "How I work",   center: 0.142857143, enter: 0.071428571, hold: 0.142857143, exit: 0.500000000 },
+      proof:     { id: "proof",     label: "Real result",  center: 0.571428571, enter: 0.500000000, hold: 0.571428571, exit: 0.642857143 },
+      jarrett:   { id: "jarrett",   label: "About me",     center: 0.714285714, enter: 0.642857143, hold: 0.714285714, exit: 0.785714286 },
+      threshold: { id: "threshold", label: "Work with me", center: 0.857142857, enter: 0.785714286, hold: 0.857142857, exit: 1.01 }
     },
     methodSteps: [
       { at: 0.20, until: 0.27 },
@@ -1906,9 +2075,9 @@
       { at: 0.34, until: 0.40 }
     ],
     mobileMethodSteps: [
-      { id: "method-look",  at: 0.083333333, until: 0.250000000, center: 0.166666667 },
-      { id: "method-find",  at: 0.250000000, until: 0.416666667, center: 0.333333333 },
-      { id: "method-build", at: 0.416666667, until: 0.583333333, center: 0.500000000 }
+      { id: "method-look",  at: 0.071428571, until: 0.214285714, center: 0.142857143 },
+      { id: "method-find",  at: 0.214285714, until: 0.357142857, center: 0.285714286 },
+      { id: "method-build", at: 0.357142857, until: 0.500000000, center: 0.428571429 }
     ],
     /* Desktop nonlinear frame map — mobile uses one continuous linear velocity. */
     frameMap: [
@@ -1945,10 +2114,10 @@
       interactiveMin: 0.92
     },
     mobileProofApparatus: {
-      approachStart: 0.54,
-      fullyPresent: 0.62,
-      fadeStart: 0.72,
-      fullyGone: 0.78,
+      approachStart: 0.46,
+      fullyPresent: 0.54,
+      fadeStart: 0.64,
+      fullyGone: 0.70,
       interactiveMin: 0.92
     },
     proof: {
@@ -2718,6 +2887,9 @@
   }
 
   function mobileBeatAt(p, dom) {
+    var stops = SITE_TUNING.mobileStageStops;
+    var idx = mobileStageIndexAtProgress(p);
+    if (stops[idx]) return stops[idx].id;
     if (dom !== "method") return dom;
     var steps = SITE_TUNING.mobileMethodSteps;
     for (var i = 0; i < steps.length; i++) {
