@@ -417,14 +417,14 @@ ok(
   ok(!!methodNav && (methodNav[0].match(/<button\b/g) || []).length === 3, 'mobile Method nav exposes Look, Find, Build');
 
   ok(
-    /mobileSwipePx:\s*560[\s\S]*?mobileSwipesPerBeat:\s*6[\s\S]*?mobileBeatCount:\s*6[\s\S]*?mobileRunwayPx:\s*20160/.test(html) &&
-      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 20160px\)/.test(html),
-    'mobile runway is six 560px swipes for each of six post-opening beats'
+    /mobileSwipePx:\s*560[\s\S]*?mobileSwipesPerBeat:\s*6[\s\S]*?mobileResultSwipes:\s*10[\s\S]*?mobileBeatCount:\s*6[\s\S]*?mobileRunwayPx:\s*22400/.test(html) &&
+      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 22400px\)/.test(html),
+    'mobile runway gives Result ten 560px swipes and every other post-opening beat six'
   );
   ok(!/mobileRunwayVh/.test(html), 'viewport-relative mobile runway retired in favor of invariant swipe distance');
   ok(/\.mobile-copy-stage\s*\{[\s\S]*?min-height:\s*20rem/.test(html), 'mobile copy stage contains the complete narrow-phone invitation');
   ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
-  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.930555556/.test(html), 'mobile station centers are independently authored');
+  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.9375/.test(html), 'mobile station centers are independently authored');
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
   /*
    * Focused tripwire: a standard first swipe must visibly advance the mobile story.
@@ -433,9 +433,9 @@ ok(
    * Behavioral check: the 390x844/560px consumer geometry lands in Method / Look.
    * Retirement: only if native scroll-depth progression is removed from mobile.
    */
-  const firstSwipeProgress = 560 / 20160;
+  const firstSwipeProgress = 560 / 22400;
   ok(
-    firstSwipeProgress >= 0.02 && firstSwipeProgress < 0.180555556,
+    firstSwipeProgress >= 0.02 && firstSwipeProgress < 0.1625,
     'one standard 560px swipe enters Method Look at every supported mobile height'
   );
   ok(
@@ -460,32 +460,39 @@ ok(
    * Canonical path: smoke-test.mjs — representative mobile swipe geometry below.
    * Future consumer: the maintainer changing mobile runway or chapter boundaries.
    * Activation: execute — `node smoke-test.mjs` before release.
-   * Behavioral check: a viewport-invariant 20160px scroll distance holds each of
-   * Look, Find, Build, Result, Me, and Start for exactly six 560px swipes.
+   * Behavioral check: a viewport-invariant 22400px scroll distance holds Result
+   * for ten 560px swipes and Look, Find, Build, Me, and Start for exactly six.
    * Retirement: retire only if mobile stops using native scroll-depth chapters.
    */
-  const standardSwipeProgress = 560 / 20160;
+  const standardSwipeProgress = 560 / 22400;
   const beatAtSwipe = (swipe) => {
     const p = Math.min(1, standardSwipeProgress * swipe);
-    if (p < 0.180555556) return 'method-look';
-    if (p < 0.347222222) return 'method-find';
-    if (p < 0.513888889) return 'method-build';
-    if (p < 0.680555556) return 'proof';
-    if (p < 0.847222222) return 'jarrett';
+    if (p < 0.1625) return 'method-look';
+    if (p < 0.3125) return 'method-find';
+    if (p < 0.4625) return 'method-build';
+    if (p < 0.7125) return 'proof';
+    if (p < 0.8625) return 'jarrett';
     return 'threshold';
   };
-  const sixSwipeSequence = Array.from({ length: 36 }, (_, index) => beatAtSwipe(index + 1));
-  const expectedSixSwipeSequence = [
+  const mobileSwipeSequence = Array.from({ length: 40 }, (_, index) => beatAtSwipe(index + 1));
+  const expectedMobileSwipeSequence = [
     ...Array(6).fill('method-look'),
     ...Array(6).fill('method-find'),
     ...Array(6).fill('method-build'),
-    ...Array(6).fill('proof'),
+    ...Array(10).fill('proof'),
     ...Array(6).fill('jarrett'),
     ...Array(6).fill('threshold')
   ];
   ok(
-    JSON.stringify(sixSwipeSequence) === JSON.stringify(expectedSixSwipeSequence),
-    'all six post-opening mobile beats hold for exactly six standard swipes'
+    JSON.stringify(mobileSwipeSequence) === JSON.stringify(expectedMobileSwipeSequence),
+    'Result holds for ten standard swipes while every other post-opening mobile beat holds for six'
+  );
+  ok(
+    /mobileVisualProgressMap:\s*\[[\s\S]*?p:\s*0\.4625[\s\S]*?v:\s*0\.513888889[\s\S]*?p:\s*0\.7000[\s\S]*?v:\s*0\.666666667[\s\S]*?p:\s*0\.7125[\s\S]*?v:\s*0\.680555556/.test(html) &&
+      /var visualP\s*=\s*mobileVisualProgress\(p\)/.test(html) &&
+      /frame\s*=\s*progressToFrame\(visualP\)/.test(html) &&
+      /paintStations\(p, visualP\)/.test(html),
+    'ten-swipe Result stretches the prior proof visual timeline instead of revealing Jarrett early'
   );
   ok(html.includes('renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn)'), 'motion-off mobile beat changes are immediate');
   ok(
@@ -522,7 +529,7 @@ ok(
     'methodSteps entries expose .at thresholds'
   );
 
-  const paintMatch = html.match(/function paintStations\(p\)\s*\{[\s\S]*?\n  \}/);
+  const paintMatch = html.match(/function paintStations\(p(?:,\s*visualP)?\)\s*\{[\s\S]*?\n  \}/);
   const paintSrc = paintMatch ? paintMatch[0] : '';
   ok(!!paintSrc, 'paintStations present for method arc oracle');
   ok(

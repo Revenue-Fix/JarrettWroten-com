@@ -1106,8 +1106,9 @@
    * Future consumer: a portrait visitor deciding whether to send Jarrett a site.
    * Activation: auto-load — @media (max-width:720px) and paintMobileExperience().
    * Behavioral check: node smoke-test.mjs plus 560px CUA swipes through the rendered
-   * mobile journey; Look, Find, Build, Result, Me, and Start each hold for six settled
-   * swipes. At 320px the complete final invitation remains inside its clipped stage;
+   * mobile journey; Look, Find, Build, Me, and Start each hold for six settled
+   * swipes, while Result holds for ten. At 320px the complete final invitation
+   * remains inside its clipped stage;
    * every handoff keeps one active beat, decoded world pixels, and no stale class.
    * Retirement: retire when this site no longer uses the Golden Arrival buyer journey on mobile.
    */
@@ -1122,7 +1123,7 @@
     html{scrollbar-width:none}
     html::-webkit-scrollbar{display:none}
     body{overscroll-behavior-y:none}
-    .journey{height:calc(100svh + 20160px)}
+    .journey{height:calc(100svh + 22400px)}
     html[data-motion="off"] .journey{height:500svh}
     .viewport{min-height:36rem}
 
@@ -1848,8 +1849,9 @@
     runwayVh: 600,
     mobileSwipePx: 560,
     mobileSwipesPerBeat: 6,
+    mobileResultSwipes: 10,
     mobileBeatCount: 6,
-    mobileRunwayPx: 20160,
+    mobileRunwayPx: 22400,
     stillRunwayVh: 500,
     frameCount: 361,
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
@@ -1875,10 +1877,10 @@
     },
     mobileStations: {
       leak:      { id: "leak",      label: "The Leak",     center: 0.01,         enter: 0.00,         hold: 0.005,        exit: 0.02 },
-      method:    { id: "method",    label: "How I work",   center: 0.263888889,  enter: 0.02,         hold: 0.027777778,  exit: 0.513888889 },
-      proof:     { id: "proof",     label: "Real result",  center: 0.597222222,  enter: 0.513888889,  hold: 0.527777778,  exit: 0.680555556 },
-      jarrett:   { id: "jarrett",   label: "About me",     center: 0.763888889,  enter: 0.680555556,  hold: 0.694444444,  exit: 0.847222222 },
-      threshold: { id: "threshold", label: "Work with me", center: 0.930555556,  enter: 0.847222222,  hold: 0.861111111,  exit: 1.01 }
+      method:    { id: "method",    label: "How I work",   center: 0.2375,       enter: 0.02,         hold: 0.025,        exit: 0.4625 },
+      proof:     { id: "proof",     label: "Real result",  center: 0.5875,       enter: 0.4625,       hold: 0.475,        exit: 0.7125 },
+      jarrett:   { id: "jarrett",   label: "About me",     center: 0.7875,       enter: 0.7125,       hold: 0.725,        exit: 0.8625 },
+      threshold: { id: "threshold", label: "Work with me", center: 0.9375,       enter: 0.8625,       hold: 0.875,        exit: 1.01 }
     },
     methodSteps: [
       { at: 0.20, until: 0.27 },
@@ -1886,9 +1888,20 @@
       { at: 0.34, until: 0.40 }
     ],
     mobileMethodSteps: [
-      { id: "method-look",  at: 0.02,        until: 0.180555556, center: 0.097222222 },
-      { id: "method-find",  at: 0.180555556, until: 0.347222222, center: 0.263888889 },
-      { id: "method-build", at: 0.347222222, until: 0.513888889, center: 0.430555556 }
+      { id: "method-look",  at: 0.02,   until: 0.1625, center: 0.0875 },
+      { id: "method-find",  at: 0.1625, until: 0.3125, center: 0.2375 },
+      { id: "method-build", at: 0.3125, until: 0.4625, center: 0.3875 }
+    ],
+    /* Result receives four extra reading swipes without advancing the corridor
+       into Jarrett early. v preserves the prior six-swipe visual timeline. */
+    mobileVisualProgressMap: [
+      { p: 0.0000, v: 0.000000000 },
+      { p: 0.4625, v: 0.513888889 },
+      { p: 0.4750, v: 0.527777778 },
+      { p: 0.7000, v: 0.666666667 },
+      { p: 0.7125, v: 0.680555556 },
+      { p: 0.8625, v: 0.847222222 },
+      { p: 1.0000, v: 1.000000000 }
     ],
     /* Nonlinear frame map — progress 0..1 → frame index 0..360 */
     frameMap: [
@@ -2649,6 +2662,20 @@
     else setMountLifecycle(noteMount, "note-device", present, interactive, gone);
   }
 
+  function mobileVisualProgress(p) {
+    if (!isMobile()) return p;
+    var map = SITE_TUNING.mobileVisualProgressMap;
+    if (p <= map[0].p) return map[0].v;
+    if (p >= map[map.length - 1].p) return map[map.length - 1].v;
+    for (var i = 0; i < map.length - 1; i++) {
+      var a = map[i], b = map[i + 1];
+      if (p >= a.p && p <= b.p) {
+        return lerp(a.v, b.v, (p - a.p) / Math.max(0.0001, b.p - a.p));
+      }
+    }
+    return p;
+  }
+
   function setMountLifecycle(mount, buttonId, present, interactive, gone) {
     if (!mount) return;
     var btn = document.getElementById(buttonId);
@@ -2784,7 +2811,8 @@
     }
   }
 
-  function paintStations(p) {
+  function paintStations(p, visualP) {
+    visualP = typeof visualP === "number" ? visualP : p;
     var dom = dominantStation(p);
     activeStationId = dom;
     var states = stationStateAt(p);
@@ -2856,21 +2884,22 @@
     else {
       var cs = SITE_TUNING.consoleLit.start;
       var cf = SITE_TUNING.consoleLit.full;
-      lit = clamp((p - cs) / Math.max(0.0001, cf - cs), 0, 1);
+      lit = clamp((visualP - cs) / Math.max(0.0001, cf - cs), 0, 1);
       var life = SITE_TUNING.proofApparatus;
-      if (p >= life.fadeStart) {
-        lit *= clamp(1 - (p - life.fadeStart) / Math.max(0.0001, life.fullyGone - life.fadeStart), 0, 1);
+      if (visualP >= life.fadeStart) {
+        lit *= clamp(1 - (visualP - life.fadeStart) / Math.max(0.0001, life.fullyGone - life.fadeStart), 0, 1);
       }
     }
     root.style.setProperty("--console-lit", lit.toFixed(4));
-    applyProofApparatus(p, dom);
+    applyProofApparatus(visualP, dom);
 
-    var sig = motionOn ? clamp(0.25 + p * 0.7, 0.25, 0.95) : 0.55;
+    var sig = motionOn ? clamp(0.25 + visualP * 0.7, 0.25, 0.95) : 0.55;
     root.style.setProperty("--signal-core", sig.toFixed(4));
   }
 
   function paint(p) {
     p = clamp(p, 0, 1);
+    var visualP = mobileVisualProgress(p);
     root.style.setProperty("--progress", p.toFixed(5));
 
     var frame;
@@ -2879,10 +2908,10 @@
       frame = SITE_TUNING.stillFrames[id] || 0;
       activeStationId = id;
     } else {
-      frame = progressToFrame(p);
+      frame = progressToFrame(visualP);
     }
     showFrame(frame);
-    paintStations(p);
+    paintStations(p, visualP);
   }
 
   function computeProgress() {
