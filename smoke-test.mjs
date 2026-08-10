@@ -416,10 +416,15 @@ ok(
   ok(!!stationNav && (stationNav[0].match(/<button\b/g) || []).length === 5, 'mobile station nav exposes five buyer-journey sections');
   ok(!!methodNav && (methodNav[0].match(/<button\b/g) || []).length === 3, 'mobile Method nav exposes Look, Find, Build');
 
-  ok(/mobileRunwayVh:\s*1020/.test(html) && /\.journey\s*\{\s*height:\s*1020svh/.test(html), 'mobile runway is the authored 1020svh journey');
+  ok(
+    /mobileSwipePx:\s*560[\s\S]*?mobileSwipesPerBeat:\s*6[\s\S]*?mobileBeatCount:\s*6[\s\S]*?mobileRunwayPx:\s*20160/.test(html) &&
+      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 20160px\)/.test(html),
+    'mobile runway is six 560px swipes for each of six post-opening beats'
+  );
+  ok(!/mobileRunwayVh/.test(html), 'viewport-relative mobile runway retired in favor of invariant swipe distance');
   ok(/\.mobile-copy-stage\s*\{[\s\S]*?min-height:\s*20rem/.test(html), 'mobile copy stage contains the complete narrow-phone invitation');
   ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
-  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.95/.test(html), 'mobile station centers are independently authored');
+  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.930555556/.test(html), 'mobile station centers are independently authored');
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
   /*
    * Focused tripwire: a standard first swipe must visibly advance the mobile story.
@@ -428,13 +433,13 @@ ok(
    * Behavioral check: the 390x844/560px consumer geometry lands in Method / Look.
    * Retirement: only if native scroll-depth progression is removed from mobile.
    */
-  const firstSwipeProgress = 560 / (10.2 * 844 - 844);
+  const firstSwipeProgress = 560 / 20160;
   ok(
-    firstSwipeProgress >= 0.065 && firstSwipeProgress < 0.19,
-    'one standard 560px swipe at 390x844 enters Method Look'
+    firstSwipeProgress >= 0.02 && firstSwipeProgress < 0.180555556,
+    'one standard 560px swipe enters Method Look at every supported mobile height'
   );
   ok(
-    /leak:[^\n]*exit:\s*0\.065/.test(html) && /method:[^\n]*enter:\s*0\.065/.test(html),
+    /leak:[^\n]*exit:\s*0\.02/.test(html) && /method:[^\n]*enter:\s*0\.02/.test(html),
     'mobile opening hands directly into Method after the first swipe'
   );
   ok(/if \(isMobile\(\)\) \{\r?\n\s+progressCurrent = progressTarget;/.test(html), 'native touch momentum is not double-smoothed');
@@ -455,33 +460,32 @@ ok(
    * Canonical path: smoke-test.mjs — representative mobile swipe geometry below.
    * Future consumer: the maintainer changing mobile runway or chapter boundaries.
    * Activation: execute — `node smoke-test.mjs` before release.
-   * Behavioral check: 560px swipes hold Find for two beats at all representative
-   * widths, and preserve the approved Result/Me/Start cadence at 360x800 and 390x844.
+   * Behavioral check: a viewport-invariant 20160px scroll distance holds each of
+   * Look, Find, Build, Result, Me, and Start for exactly six 560px swipes.
    * Retirement: retire only if mobile stops using native scroll-depth chapters.
    */
-  const standardSwipeProgress = 560 / (10.2 * 844 - 844);
+  const standardSwipeProgress = 560 / 20160;
+  const beatAtSwipe = (swipe) => {
+    const p = Math.min(1, standardSwipeProgress * swipe);
+    if (p < 0.180555556) return 'method-look';
+    if (p < 0.347222222) return 'method-find';
+    if (p < 0.513888889) return 'method-build';
+    if (p < 0.680555556) return 'proof';
+    if (p < 0.847222222) return 'jarrett';
+    return 'threshold';
+  };
+  const sixSwipeSequence = Array.from({ length: 36 }, (_, index) => beatAtSwipe(index + 1));
+  const expectedSixSwipeSequence = [
+    ...Array(6).fill('method-look'),
+    ...Array(6).fill('method-find'),
+    ...Array(6).fill('method-build'),
+    ...Array(6).fill('proof'),
+    ...Array(6).fill('jarrett'),
+    ...Array(6).fill('threshold')
+  ];
   ok(
-    standardSwipeProgress * 3 >= 0.19 && standardSwipeProgress * 4 < 0.315 &&
-      standardSwipeProgress * 5 >= 0.315 && standardSwipeProgress * 6 < 0.46 &&
-      standardSwipeProgress * 7 >= 0.46 && standardSwipeProgress * 9 < 0.71 &&
-      standardSwipeProgress * 10 >= 0.71 && standardSwipeProgress * 11 < 0.84 &&
-      standardSwipeProgress * 12 >= 0.84,
-    '390x844 swipes hold Find twice, Build twice, Result three times, Me twice, then Start'
-  );
-  const shortPhoneSwipeProgress = 560 / (10.2 * 800 - 800);
-  ok(
-    shortPhoneSwipeProgress * 3 >= 0.19 && shortPhoneSwipeProgress * 4 < 0.315 &&
-      shortPhoneSwipeProgress * 5 >= 0.315 && shortPhoneSwipeProgress * 6 < 0.46 &&
-      shortPhoneSwipeProgress * 7 >= 0.46 && shortPhoneSwipeProgress * 9 < 0.71 &&
-      shortPhoneSwipeProgress * 10 >= 0.71 && shortPhoneSwipeProgress * 11 < 0.84 &&
-      shortPhoneSwipeProgress * 12 >= 0.84,
-    '360x800 swipes preserve the two/two/three/two mobile chapter cadence'
-  );
-  const tallPhoneSwipeProgress = 560 / (10.2 * 932 - 932);
-  ok(
-    tallPhoneSwipeProgress * 3 >= 0.19 && tallPhoneSwipeProgress * 4 < 0.315 &&
-      tallPhoneSwipeProgress * 5 >= 0.315,
-    '430x932 swipes also give Find two complete resting beats'
+    JSON.stringify(sixSwipeSequence) === JSON.stringify(expectedSixSwipeSequence),
+    'all six post-opening mobile beats hold for exactly six standard swipes'
   );
   ok(html.includes('renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn)'), 'motion-off mobile beat changes are immediate');
   ok(

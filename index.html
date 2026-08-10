@@ -1106,9 +1106,9 @@
    * Future consumer: a portrait visitor deciding whether to send Jarrett a site.
    * Activation: auto-load — @media (max-width:720px) and paintMobileExperience().
    * Behavioral check: node smoke-test.mjs plus 560px CUA swipes through the rendered
-   * 360/390/430px journey; Find holds for two settled swipes, Result for three, and Me
-   * for two. At 320px the complete final invitation remains inside its clipped stage;
-   * every 390px handoff keeps one active beat, decoded world pixels, and no stale class.
+   * mobile journey; Look, Find, Build, Result, Me, and Start each hold for six settled
+   * swipes. At 320px the complete final invitation remains inside its clipped stage;
+   * every handoff keeps one active beat, decoded world pixels, and no stale class.
    * Retirement: retire when this site no longer uses the Golden Arrival buyer journey on mobile.
    */
   .mobile-experience{display:none}
@@ -1122,7 +1122,7 @@
     html{scrollbar-width:none}
     html::-webkit-scrollbar{display:none}
     body{overscroll-behavior-y:none}
-    .journey{height:1020svh}
+    .journey{height:calc(100svh + 20160px)}
     html[data-motion="off"] .journey{height:500svh}
     .viewport{min-height:36rem}
 
@@ -1846,7 +1846,10 @@
     motionStorageKey: "jw-motion",
     mobileBreakpoint: 720,
     runwayVh: 600,
-    mobileRunwayVh: 1020,
+    mobileSwipePx: 560,
+    mobileSwipesPerBeat: 6,
+    mobileBeatCount: 6,
+    mobileRunwayPx: 20160,
     stillRunwayVh: 500,
     frameCount: 361,
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
@@ -1871,11 +1874,11 @@
       threshold: { id: "threshold", label: "Work with me", center: 0.94, enter: 0.86, hold: 0.90, exit: 1.01 }
     },
     mobileStations: {
-      leak:      { id: "leak",      label: "The Leak",     center: 0.035,enter: 0.00, hold: 0.015, exit: 0.065 },
-      method:    { id: "method",    label: "How I work",   center: 0.31, enter: 0.065,hold: 0.09,  exit: 0.46 },
-      proof:     { id: "proof",     label: "Real result",  center: 0.585,enter: 0.46, hold: 0.48,  exit: 0.71 },
-      jarrett:   { id: "jarrett",   label: "About me",     center: 0.80, enter: 0.71, hold: 0.73,  exit: 0.84 },
-      threshold: { id: "threshold", label: "Work with me", center: 0.95, enter: 0.84, hold: 0.86,  exit: 1.01 }
+      leak:      { id: "leak",      label: "The Leak",     center: 0.01,         enter: 0.00,         hold: 0.005,        exit: 0.02 },
+      method:    { id: "method",    label: "How I work",   center: 0.263888889,  enter: 0.02,         hold: 0.027777778,  exit: 0.513888889 },
+      proof:     { id: "proof",     label: "Real result",  center: 0.597222222,  enter: 0.513888889,  hold: 0.527777778,  exit: 0.680555556 },
+      jarrett:   { id: "jarrett",   label: "About me",     center: 0.763888889,  enter: 0.680555556,  hold: 0.694444444,  exit: 0.847222222 },
+      threshold: { id: "threshold", label: "Work with me", center: 0.930555556,  enter: 0.847222222,  hold: 0.861111111,  exit: 1.01 }
     },
     methodSteps: [
       { at: 0.20, until: 0.27 },
@@ -1883,9 +1886,9 @@
       { at: 0.34, until: 0.40 }
     ],
     mobileMethodSteps: [
-      { id: "method-look",  at: 0.065, until: 0.19,  center: 0.13 },
-      { id: "method-find",  at: 0.19,  until: 0.315, center: 0.2525 },
-      { id: "method-build", at: 0.315, until: 0.46,  center: 0.3875 }
+      { id: "method-look",  at: 0.02,        until: 0.180555556, center: 0.097222222 },
+      { id: "method-find",  at: 0.180555556, until: 0.347222222, center: 0.263888889 },
+      { id: "method-build", at: 0.347222222, until: 0.513888889, center: 0.430555556 }
     ],
     /* Nonlinear frame map — progress 0..1 → frame index 0..360 */
     frameMap: [
