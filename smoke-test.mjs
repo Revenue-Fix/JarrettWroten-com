@@ -434,9 +434,9 @@ ok(
   ok(!/mobileRunwayVh/.test(html), 'viewport-relative mobile runway retired in favor of invariant swipe distance');
   ok(!/\.viewport\s*\{[^}]*min-height:\s*36rem/.test(html) && !/min-height:\s*36rem/.test(html), 'mobile viewport no longer forces min-height 36rem');
   ok(
-    /\.mobile-copy-stage\s*\{[\s\S]*?top:\s*calc\([^;]*safe-area-inset-top[\s\S]*?bottom:\s*calc\([^;]*safe-area-inset-bottom/.test(html) &&
+    /\.mobile-copy-stage\s*\{[\s\S]*?top:\s*calc\(4\.5rem \+ env\(safe-area-inset-top\)\)[\s\S]*?bottom:\s*calc\([^;]*safe-area-inset-bottom/.test(html) &&
       !/\.mobile-copy-stage\s*\{[\s\S]*?min-height:\s*20rem/.test(html),
-    'mobile copy stage uses explicit safe top and bottom bounds without bottom-only min-height'
+    'mobile copy stage top clears the header with safe-area-aware 4.5rem bound without bottom-only min-height'
   );
   ok(
     /@media\s*\(max-height:\s*640px\)/.test(html) && /@media\s*\(max-height:\s*520px\)/.test(html),
@@ -562,9 +562,9 @@ ok(
   );
   ok(html.includes('renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn)'), 'motion-off mobile beat changes are immediate');
   ok(
-    /\.mobile-swipe-cue\s*\{[\s\S]*?transition:none;[\s\S]*?\}[\s\S]*?\.mobile-swipe-cue\.is-on\s*\{[\s\S]*?transition:opacity/.test(html) &&
+    /\.mobile-swipe-cue\s*\{[\s\S]*?top:\s*calc\([^;]*safe-area-inset-top[\s\S]*?bottom:\s*auto;[\s\S]*?transition:none;[\s\S]*?\}[\s\S]*?\.mobile-swipe-cue\.is-on\s*\{[\s\S]*?transition:opacity/.test(html) &&
       /\.mobile-nav\s*\{[\s\S]*?transition:none;/.test(html),
-    'mobile cue exits and navigation-mode changes never trail duplicate text'
+    'mobile swipe cue sits in the quiet upper safe region with bottom:auto and never trails duplicate text'
   );
   ok(html.includes("visitor's normalized place") && /preservedProgress\s*\*\s*resizedTotal/.test(html), 'motion toggle preserves the current journey station');
   ok(html.includes('html,body{margin:0;padding:0;overflow-anchor:none}'), 'runway resize disables browser scroll-anchor drift');
@@ -624,6 +624,11 @@ ok(
     /\.station\[data-station="threshold"\]\.is-active \.threshold-services/.test(html) &&
       /\.station\[data-station="threshold"\]\.is-held \.threshold-services/.test(html),
     'desktop Services reveals with the existing threshold station lifecycle'
+  );
+  ok(
+    /\.threshold-services\s*\{[^}]*right:\s*calc\(var\(--gutter\) \+ 3\.25rem\)/.test(html) &&
+      !/\.threshold-services\s*\{[^}]*right:\s*var\(--gutter\);/.test(html),
+    'desktop Services keeps rail-clearance offset instead of flush gutter right'
   );
 
   const noJs = html.match(/<main class="no-js-route"[\s\S]*?<\/main>/);

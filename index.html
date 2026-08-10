@@ -986,7 +986,7 @@
   .threshold-services{
     position:absolute;
     isolation:isolate;
-    right:var(--gutter);
+    right:calc(var(--gutter) + 3.25rem);
     top:clamp(5.4rem,13vh,7.2rem);
     z-index:2;
     max-width:min(17.5rem, 22vw);
@@ -1251,7 +1251,7 @@
       z-index:2;
       left:var(--gutter);
       right:var(--gutter);
-      top:calc(3.75rem + env(safe-area-inset-top));
+      top:calc(4.5rem + env(safe-area-inset-top));
       bottom:calc(4.55rem + env(safe-area-inset-bottom));
       pointer-events:none;
     }
@@ -1436,7 +1436,8 @@
       position:absolute;
       z-index:3;
       right:var(--gutter);
-      bottom:calc(4.72rem + env(safe-area-inset-bottom));
+      top:calc(4.5rem + env(safe-area-inset-top));
+      bottom:auto;
       margin:0;
       font-family:var(--reading);
       font-size:.95rem;
