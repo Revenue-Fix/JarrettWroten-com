@@ -1123,7 +1123,7 @@
     html{scrollbar-width:none}
     html::-webkit-scrollbar{display:none}
     body{overscroll-behavior-y:none}
-    .journey{height:calc(100svh + 16800px)}
+    .journey{height:calc(100svh + 15120px)}
     html[data-motion="off"] .journey{height:500svh}
     .viewport{min-height:36rem}
 
@@ -1849,9 +1849,10 @@
     runwayVh: 600,
     mobileSwipePx: 560,
     mobileSwipesPerBeat: 4,
-    mobileResultSwipes: 10,
+    mobileBuildSwipes: 3,
+    mobileResultSwipes: 8,
     mobileBeatCount: 6,
-    mobileRunwayPx: 16800,
+    mobileRunwayPx: 15120,
     stillRunwayVh: 500,
     frameCount: 361,
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
@@ -1877,10 +1878,10 @@
     },
     mobileStations: {
       leak:      { id: "leak",      label: "The Leak",     center: 0.01,         enter: 0.00,         hold: 0.005,        exit: 0.02 },
-      method:    { id: "method",    label: "How I work",   center: 0.216666667,  enter: 0.02,         hold: 0.033333333,  exit: 0.416666667 },
-      proof:     { id: "proof",     label: "Real result",  center: 0.583333333,  enter: 0.416666667,  hold: 0.433333333,  exit: 0.75 },
-      jarrett:   { id: "jarrett",   label: "About me",     center: 0.816666667,  enter: 0.75,         hold: 0.766666667,  exit: 0.883333333 },
-      threshold: { id: "threshold", label: "Work with me", center: 0.95,         enter: 0.883333333,  hold: 0.9,          exit: 1.01 }
+      method:    { id: "method",    label: "How I work",   center: 0.240740741,  enter: 0.02,         hold: 0.037037037,  exit: 0.425925926 },
+      proof:     { id: "proof",     label: "Real result",  center: 0.574074074,  enter: 0.425925926,  hold: 0.444444444,  exit: 0.722222222 },
+      jarrett:   { id: "jarrett",   label: "About me",     center: 0.796296296,  enter: 0.722222222,  hold: 0.740740741,  exit: 0.870370370 },
+      threshold: { id: "threshold", label: "Work with me", center: 0.944444444,  enter: 0.870370370,  hold: 0.888888889,  exit: 1.01 }
     },
     methodSteps: [
       { at: 0.20, until: 0.27 },
@@ -1888,9 +1889,9 @@
       { at: 0.34, until: 0.40 }
     ],
     mobileMethodSteps: [
-      { id: "method-look",  at: 0.02,        until: 0.15,        center: 0.083333333 },
-      { id: "method-find",  at: 0.15,        until: 0.283333333, center: 0.216666667 },
-      { id: "method-build", at: 0.283333333, until: 0.416666667, center: 0.35 }
+      { id: "method-look",  at: 0.02,        until: 0.166666667, center: 0.092592593 },
+      { id: "method-find",  at: 0.166666667, until: 0.314814815, center: 0.240740741 },
+      { id: "method-build", at: 0.314814815, until: 0.425925926, center: 0.370370370 }
     ],
     /* Desktop nonlinear frame map — mobile uses one continuous linear velocity. */
     frameMap: [

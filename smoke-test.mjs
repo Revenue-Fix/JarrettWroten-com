@@ -417,14 +417,14 @@ ok(
   ok(!!methodNav && (methodNav[0].match(/<button\b/g) || []).length === 3, 'mobile Method nav exposes Look, Find, Build');
 
   ok(
-    /mobileSwipePx:\s*560[\s\S]*?mobileSwipesPerBeat:\s*4[\s\S]*?mobileResultSwipes:\s*10[\s\S]*?mobileBeatCount:\s*6[\s\S]*?mobileRunwayPx:\s*16800/.test(html) &&
-      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 16800px\)/.test(html),
-    'mobile runway gives Result ten 560px swipes and every other post-opening beat four'
+    /mobileSwipePx:\s*560[\s\S]*?mobileSwipesPerBeat:\s*4[\s\S]*?mobileBuildSwipes:\s*3[\s\S]*?mobileResultSwipes:\s*8[\s\S]*?mobileBeatCount:\s*6[\s\S]*?mobileRunwayPx:\s*15120/.test(html) &&
+      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 15120px\)/.test(html),
+    'mobile runway gives Build three, Result eight, and the remaining post-opening beats four 560px swipes'
   );
   ok(!/mobileRunwayVh/.test(html), 'viewport-relative mobile runway retired in favor of invariant swipe distance');
   ok(/\.mobile-copy-stage\s*\{[\s\S]*?min-height:\s*20rem/.test(html), 'mobile copy stage contains the complete narrow-phone invitation');
   ok(!/620svh|520svh/.test(html), 'retired squeezed-desktop mobile runway removed');
-  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.95/.test(html), 'mobile station centers are independently authored');
+  ok(/mobileStations:\s*\{[\s\S]*?threshold:[\s\S]*?center:\s*0\.944444444/.test(html), 'mobile station centers are independently authored');
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
   /*
    * Focused tripwire: a standard first swipe must visibly advance the mobile story.
@@ -433,7 +433,7 @@ ok(
    * Behavioral check: the 390x844/560px consumer geometry lands in Method / Look.
    * Retirement: only if native scroll-depth progression is removed from mobile.
    */
-  const firstSwipeProgress = 560 / 16800;
+  const firstSwipeProgress = 560 / 15120;
   ok(
     firstSwipeProgress >= 0.02 && firstSwipeProgress < 0.15,
     'one standard 560px swipe enters Method Look at every supported mobile height'
@@ -460,32 +460,32 @@ ok(
    * Canonical path: smoke-test.mjs — representative mobile swipe geometry below.
    * Future consumer: the maintainer changing mobile runway or chapter boundaries.
    * Activation: execute — `node smoke-test.mjs` before release.
-   * Behavioral check: a viewport-invariant 16800px scroll distance holds Result
-   * for ten 560px swipes and Look, Find, Build, Me, and Start for exactly four.
+   * Behavioral check: a viewport-invariant 15120px scroll distance holds Build
+   * for three 560px swipes, Result for eight, and Look, Find, Me, and Start for four.
    * Retirement: retire only if mobile stops using native scroll-depth chapters.
    */
-  const standardSwipeProgress = 560 / 16800;
+  const standardSwipeProgress = 560 / 15120;
   const beatAtSwipe = (swipe) => {
     const p = Math.min(1, standardSwipeProgress * swipe);
-    if (p < 0.15) return 'method-look';
-    if (p < 0.283333333) return 'method-find';
-    if (p < 0.416666667) return 'method-build';
-    if (p < 0.75) return 'proof';
-    if (p < 0.883333333) return 'jarrett';
+    if (p < 0.166666667) return 'method-look';
+    if (p < 0.314814815) return 'method-find';
+    if (p < 0.425925926) return 'method-build';
+    if (p < 0.722222222) return 'proof';
+    if (p < 0.870370370) return 'jarrett';
     return 'threshold';
   };
-  const mobileSwipeSequence = Array.from({ length: 30 }, (_, index) => beatAtSwipe(index + 1));
+  const mobileSwipeSequence = Array.from({ length: 27 }, (_, index) => beatAtSwipe(index + 1));
   const expectedMobileSwipeSequence = [
     ...Array(4).fill('method-look'),
     ...Array(4).fill('method-find'),
-    ...Array(4).fill('method-build'),
-    ...Array(10).fill('proof'),
+    ...Array(3).fill('method-build'),
+    ...Array(8).fill('proof'),
     ...Array(4).fill('jarrett'),
     ...Array(4).fill('threshold')
   ];
   ok(
     JSON.stringify(mobileSwipeSequence) === JSON.stringify(expectedMobileSwipeSequence),
-    'Result holds for ten standard swipes while every other post-opening mobile beat holds for four'
+    'Build holds for three standard swipes, Result for eight, and the remaining post-opening beats for four'
   );
   ok(
     !html.includes('mobileVisualProgress') &&
@@ -950,10 +950,10 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
   };
   const mobileStationCenters = {
     leak: 0.01,
-    method: 0.216666667,
-    proof: 0.583333333,
-    jarrett: 0.816666667,
-    threshold: 0.95
+    method: 0.240740741,
+    proof: 0.574074074,
+    jarrett: 0.796296296,
+    threshold: 0.944444444
   };
   function expectedFrames(centers, linear) {
     const frames = {};
@@ -969,7 +969,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
   const expectedDesktop = expectedByViewport['desktop-1536x864'];
   const expectedMobile = expectedByViewport['mobile-390x844'];
   ok(JSON.stringify(expectedDesktop) === JSON.stringify({ leak: 24, method: 120, proof: 181, jarrett: 294, threshold: 354 }), 'oracle: desktop station center frames stay frozen');
-  ok(JSON.stringify(expectedMobile) === JSON.stringify({ leak: 4, method: 78, proof: 210, jarrett: 294, threshold: 342 }), 'oracle: mobile station center frames follow the continuous linear world path');
+  ok(JSON.stringify(expectedMobile) === JSON.stringify({ leak: 4, method: 87, proof: 207, jarrett: 287, threshold: 340 }), 'oracle: mobile station center frames follow the continuous linear world path');
 
   async function runForcedEntryOracle(stationName, viewportLabel) {
     const expectedSet = expectedByViewport[viewportLabel];
