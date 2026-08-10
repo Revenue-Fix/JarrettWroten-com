@@ -618,39 +618,70 @@ ok(
       /id="services-heading">Services</.test(desktopSrc) &&
       /threshold-services-list/.test(desktopSrc) &&
       serviceItems.every((item) => desktopSrc.includes(item.replace('&', '&amp;')) || desktopSrc.includes(item)),
-    'desktop threshold carries Services in the terminal right-side composition'
+    'desktop threshold carries Services label and ordered list'
   );
+  // DOM/reading order: Services is the middle member of the left threshold column.
+  // Source-structure only — does not prove rendered geometry.
+  {
+    const copyOpen = desktopSrc.indexOf('class="station-copy"');
+    const copyClose = desktopSrc.indexOf('</div>', desktopSrc.indexOf('threshold-bottom'));
+    const servicesAt = desktopSrc.indexOf('class="threshold-services"');
+    const topAt = desktopSrc.indexOf('class="threshold-top"');
+    const bottomAt = desktopSrc.indexOf('class="threshold-bottom"');
+    ok(
+      copyOpen !== -1 &&
+        topAt > copyOpen &&
+        servicesAt > topAt &&
+        bottomAt > servicesAt &&
+        servicesAt < copyClose &&
+        bottomAt < copyClose &&
+        !/class="threshold-bottom"[\s\S]*?class="threshold-services"/.test(desktopSrc),
+      'desktop Services sits between threshold-top and threshold-bottom inside station-copy'
+    );
+  }
   ok(
     /\.station\[data-station="threshold"\]\.is-active \.threshold-services/.test(html) &&
       /\.station\[data-station="threshold"\]\.is-held \.threshold-services/.test(html),
     'desktop Services reveals with the existing threshold station lifecycle'
   );
   ok(
-    /\.threshold-services\s*\{[^}]*right:\s*calc\(var\(--gutter\) \+ 3\.25rem\)/.test(html) &&
-      !/\.threshold-services\s*\{[^}]*right:\s*var\(--gutter\);/.test(html),
-    'desktop Services keeps rail-clearance offset instead of flush gutter right'
+    /\.threshold-services\s*\{[^}]*position:\s*relative/.test(html) &&
+      !/\.threshold-services\s*\{[^}]*right:\s*calc\(var\(--gutter\) \+ 3\.25rem\)/.test(html) &&
+      !/\.threshold-services\s*\{[^}]*right:\s*var\(--gutter\)/.test(html),
+    'desktop Services is flow-placed in the left column, not absolute right-side'
   );
-  // Source-structure guards for the short-desktop Services / rail-label edge.
+  // Source-structure guards for short-desktop middle-slot spacing.
   // These assert authored CSS shape only — they do not prove rendered geometry.
   {
-    const shortDesktopServices = html.match(
-      /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-height:\s*540px\s*\)\s*\{[\s\S]*?\}[\s\S]*?\}[\s\S]*?\}/
+    const shortHead = html.match(
+      /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-height:\s*540px\s*\)\s*\{/
     );
-    const shortBlock = shortDesktopServices ? shortDesktopServices[0] : '';
+    let shortBlock = '';
+    if (shortHead) {
+      let depth = 1;
+      let i = shortHead.index + shortHead[0].length;
+      while (i < html.length && depth > 0) {
+        if (html[i] === '{') depth += 1;
+        else if (html[i] === '}') depth -= 1;
+        i += 1;
+      }
+      shortBlock = html.slice(shortHead.index, i);
+    }
     ok(!!shortBlock, 'short-desktop Services media query is authored (min-width 721px, max-height 540px)');
     ok(
       shortBlock &&
-        /\.threshold-services\s*\{/.test(shortBlock) &&
-        /max-width:\s*min\(19rem,\s*28vw\)/.test(shortBlock) &&
-        /top:\s*clamp\(4\.6rem,10\.5vh,5\.8rem\)/.test(shortBlock),
-      'short-desktop Services rule widens leftward and tightens top without JS or display:none'
-    );
-    ok(
-      shortBlock &&
+        /\.station\[data-station="threshold"\] \.station-copy\s*\{/.test(shortBlock) &&
+        /\.threshold-services-label\s*\{/.test(shortBlock) &&
         /\.threshold-services-list li\s*\{/.test(shortBlock) &&
         !/display\s*:\s*none/.test(shortBlock) &&
         !/visibility\s*:\s*hidden/.test(shortBlock),
-      'short-desktop Services keeps all service rows authored and visible in source'
+      'short-desktop Services tightens middle-slot type/spacing without hiding rows'
+    );
+    ok(
+      shortBlock &&
+        /padding:\s*\.1rem\s+0/.test(shortBlock) &&
+        ((desktopSrc.match(/threshold-services-list[\s\S]*?<\/ol>/) || [''])[0].match(/<li>/g) || []).length === 5,
+      'short-desktop Services keeps all five service rows authored and visible in source'
     );
     ok(
       !/@media\s*\(\s*max-width:\s*720px\s*\)[\s\S]{0,200}\.threshold-services/.test(html),
