@@ -3,6 +3,8 @@
  * Focused structural/behavior test for the complete Work passage.
  * Filesystem + HTML assertions (no network). Does not replace smoke-test.mjs.
  * Run: node work-smoke-test.mjs
+ * Future consumer: every local Work-route revision before adoption or publication.
+ * Retire only when the Work route is retired or these boundaries move intact to its successor suite.
  */
 import fs from 'fs';
 import path from 'path';
@@ -52,6 +54,7 @@ const requiredPhrases = [
   'Jarrett Wroten',
   'Work',
   'Motion on',
+  'Scroll',
   'Rana Levy',
   'Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.',
   'Ready Now',
@@ -119,6 +122,7 @@ if (noJsMatch) {
     'Dylan Prorok',
     'https://prorok.jarrettwroten.com/',
     'Independent redesign concept—not commissioned or approved by Dylan Prorok.',
+    '../assets/golden-arrival/frames/ga-360.webp',
     'Your site should feel like your work.',
     'mailto:Jarrett@JarrettWroten.com',
     'https://calendar.app.google/rTkdNoWpm6iRrXhB7',
@@ -146,7 +150,12 @@ ok(workHtml.includes('../assets/work/rana/ring-poster.jpg'), 'ring poster');
 ok(workHtml.includes('../demos/dylan-prorok/dylan-portrait.jpg'), 'ProRok portrait reused');
 ok(workHtml.includes('../demos/dylan-prorok/sakura-ink-bloom.mp4'), 'ProRok ink video reused');
 ok(workHtml.includes('../assets/golden-arrival/frames/ga-000.webp'), 'corridor entry frame');
+ok(workHtml.includes('../assets/work/corridor-entry-loop.mp4'), 'corridor entry motion path');
 ok(/autoplay\s+muted\s+loop\s+playsinline\s+preload="metadata"/.test(workHtml), 'ambient video attributes');
+ok(
+  /id="corridor-motion-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml),
+  'corridor motion autoplays inline with eager local preload'
+);
 ok(!/src=["']https?:\/\//i.test(workHtml), 'no remote script/media src on work route');
 ok(!/fonts\.gstatic\.com|fonts\.googleapis\.com/i.test(workHtml), 'no external font CDN');
 
@@ -157,7 +166,15 @@ ok(workHtml.includes('Math.exp(-dt') || workHtml.includes('Math.exp(-dt /'), 'si
 ok(workHtml.includes('data-motion="off"') || workHtml.includes("data-motion\", on ?"), 'motion-off path present');
 ok(workHtml.includes('terminalHold') && workHtml.includes('--terminal-hold'), 'terminal progress mapping');
 ok(workHtml.includes('layer-terminal') && workHtml.includes('copy-terminal'), 'terminal world + copy rest');
-ok(workHtml.includes('terminal-return') && workHtml.includes('ga-000.webp'), 'terminal reuses corridor frame as return');
+ok(
+  /class="terminal-return"\s+src="\.\.\/assets\/golden-arrival\/frames\/ga-360\.webp"/.test(workHtml),
+  'terminal resolves to approved Jarrett close-up'
+);
+ok(
+  /class="scroll-invitation"[\s\S]*?<span>Scroll<\/span>/.test(workHtml) &&
+    /--entry-cue/.test(workHtml),
+  'centered Scroll invitation is mapped to entry progress'
+);
 ok(
   /\.layer-terminal\s*\{[\s\S]*?--mask-open\s*:\s*max\s*\(\s*0\.001\s*,\s*var\(--terminal-hold\)\s*\)/.test(workHtml),
   'terminal uses spatial mask aperture (not opacity primary)'
@@ -198,6 +215,7 @@ ok(workHtml.includes('scrollbar-width:none') || workHtml.includes('scrollbar-wid
 ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'), 'ProRok night-ink media grade');
 ok(/aria-label="Back to Jarrett"/.test(workHtml), 'wordmark accessible back label');
 ok(workHtml.includes('no-js-route'), 'no-JS fallback on work route');
+ok(/\.no-js-poster\s*\{[\s\S]*?height\s*:\s*auto/.test(workHtml), 'no-JS media preserves intrinsic aspect ratio');
 ok(workHtml.includes('min-height:44px') || workHtml.includes('min-height: 44px'), '44px touch targets present');
 // Mobile Rana rest: square ring film is the full-bleed subject carrier so landscape
 // studio cover-crops cannot leave only a dark material field + residual badge.
@@ -227,17 +245,31 @@ for (const [rel, expected] of Object.entries(ranaHashes)) {
 }
 const prorokPortrait = mustExist('demos/dylan-prorok/dylan-portrait.jpg');
 const prorokInk = mustExist('demos/dylan-prorok/sakura-ink-bloom.mp4');
+// Maintained asset: assets/work/corridor-entry-loop.mp4 auto-loads through
+// work/index.html#corridor-motion-video for Work-route visitors. The hash/weight
+// assertions below plus the rendered playback probe are its behavioral check.
+// Retire it only when an owner-approved moving opening replaces this consumer.
+const corridorEntry = mustExist('assets/work/corridor-entry-loop.mp4');
+const terminalPortrait = mustExist('assets/golden-arrival/frames/ga-360.webp');
 if (prorokPortrait) {
   ok(sha256(prorokPortrait) === '3c6eb7e4d23aca8e5bcf0784c934346a392d2421f28420699bd681aa99dfc397', 'dylan-portrait.jpg SHA-256');
 }
 if (prorokInk) {
   ok(sha256(prorokInk) === '6c44c0204d994c3a504feecadd5da0ccf070113a8dbf2bfbee195dc8a4fe523d', 'sakura-ink-bloom.mp4 SHA-256');
 }
+if (corridorEntry) {
+  ok(sha256(corridorEntry) === '9a73d9709618212846ffdee29fd20e541bf16767b3a79b829197ad00e2b963f3', 'corridor-entry-loop.mp4 SHA-256');
+}
+if (terminalPortrait) {
+  ok(sha256(terminalPortrait) === '552fba13d339f46bf909735f3b629c5574545fd7626021e7f371d650149bf224', 'ga-360.webp SHA-256');
+}
 // Media weight gate: heavy autoplay pair must stay well under the prior ~14 MB load
 const studioBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/studio-banner.mp4')).size;
 const inkBytes = fs.statSync(path.join(ROOT, 'demos/dylan-prorok/sakura-ink-bloom.mp4')).size;
 const ringBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/ring-alexandrite.mp4')).size;
-ok(studioBytes + inkBytes + ringBytes < 5_500_000, 'autoplay media under 5.5 MB total');
+const entryBytes = fs.statSync(path.join(ROOT, 'assets/work/corridor-entry-loop.mp4')).size;
+ok(studioBytes + inkBytes + ringBytes + entryBytes < 5_500_000, 'autoplay media under 5.5 MB total');
+ok(entryBytes < 1_200_000, 'corridor-entry-loop under 1.2 MB');
 ok(studioBytes < 3_500_000, 'studio-banner under 3.5 MB');
 ok(inkBytes < 600_000, 'sakura-ink-bloom under 600 KB');
 // Do not duplicate ProRok binaries under work/

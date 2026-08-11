@@ -7,6 +7,7 @@
 <meta name="description" content="A continuous craft route through selected work — from the corridor into Rana Levy’s gem studio, through Dylan Prorok, then a clear next step.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
 <link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-000.webp">
+<link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-360.webp">
 <link rel="preload" as="image" href="../assets/work/rana/studio-opening.jpg">
 <link rel="preload" as="image" href="../assets/work/rana/studio-poster.jpg">
 <link rel="preload" as="image" href="../assets/work/rana/ring-poster.jpg">
@@ -110,6 +111,7 @@
     --prorok-hold:0;
     --ring-presence:0;
     --terminal-hold:0;
+    --entry-cue:1;
     --enter-veil:0;
   }
 
@@ -193,6 +195,13 @@
       contrast(calc(1 + var(--corridor-dark) * .08));
     will-change:transform,filter;
   }
+  .corridor-poster{z-index:0}
+  .corridor-motion{
+    z-index:1;
+    opacity:0;
+    transition:opacity .45s var(--ease-enter);
+  }
+  .corridor-motion.is-ready{opacity:1}
   .corridor-energy{
     position:absolute;
     inset:0;
@@ -431,7 +440,7 @@
     opacity:calc(1 - var(--terminal-hold) * .55);
   }
 
-  /* ── Terminal rest: return to the corridor threshold after both project worlds ──
+  /* ── Terminal rest: Jarrett arrives after both project worlds ──
      One connected spatial tear (not a viewport-ratio inset window or detached bands). */
   .layer-terminal{
     z-index:4;
@@ -469,20 +478,20 @@
     will-change:mask-image,-webkit-mask-image;
   }
   .layer-terminal.is-revealing{visibility:visible}
-  /* Re-grade the approved corridor frame as an earned return / next doorway. */
+  /* The approved smiling portrait is the earned human arrival. */
   .terminal-return{
     position:absolute;
     inset:0;
     width:100%;
     height:100%;
     object-fit:cover;
-    /* Closer crop toward the amber threshold — not the opening wide shot. */
-    object-position:50% 58%;
-    transform:scale(calc(1.24 - var(--terminal-hold) * .1));
+    /* Keep Jarrett dominant while leaving the left copy field readable. */
+    object-position:45% 50%;
+    transform:scale(calc(1.2 - var(--terminal-hold) * .1));
     filter:
-      saturate(calc(1.05 + var(--terminal-hold) * .22))
-      brightness(calc(.78 + var(--terminal-hold) * .22))
-      contrast(calc(1.08 + var(--terminal-hold) * .06));
+      saturate(calc(.96 + var(--terminal-hold) * .06))
+      brightness(calc(.82 + var(--terminal-hold) * .18))
+      contrast(calc(1.04 + var(--terminal-hold) * .05));
     will-change:transform,filter;
   }
   .terminal-energy{
@@ -607,6 +616,43 @@
   .nav-link.is-current{
     color:var(--ink);
     box-shadow:inset 0 -2px 0 rgba(94,231,240,.75);
+  }
+
+  .scroll-invitation{
+    position:absolute;
+    z-index:24;
+    left:50%;
+    top:52%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.8rem;
+    color:var(--ink);
+    font-family:var(--display);
+    font-size:clamp(1.35rem, 1.1rem + 1vw, 2rem);
+    font-style:italic;
+    font-weight:450;
+    line-height:1;
+    letter-spacing:0;
+    text-shadow:0 2px 18px rgba(4,10,12,.9), 0 0 30px rgba(4,10,12,.55);
+    opacity:var(--entry-cue);
+    transform:translate3d(-50%, calc(-50% + (1 - var(--entry-cue)) * -1rem), 0);
+    pointer-events:none;
+    will-change:opacity,transform;
+  }
+  .scroll-invitation::after{
+    content:"";
+    display:block;
+    width:1px;
+    height:clamp(2.7rem, 6vh, 4rem);
+    background:linear-gradient(180deg, rgba(232,244,244,.92), rgba(94,231,240,0));
+    transform-origin:50% 0;
+    animation:scrollInvitation 1.8s var(--ease-enter) infinite;
+  }
+  @keyframes scrollInvitation{
+    0%,18%{transform:scaleY(.14); opacity:.25}
+    58%{transform:scaleY(1); opacity:1}
+    100%{transform:translateY(.6rem) scaleY(.38); opacity:0}
   }
 
   .scene-copy{
@@ -796,9 +842,11 @@
   }
   html[data-motion="off"] .terminal-return{
     /* Hold the return grade at rest — not a motion soft-tail. */
-    filter:saturate(1.27) brightness(1) contrast(1.14);
-    transform:scale(1.14);
+    filter:saturate(1.02) brightness(1) contrast(1.09);
+    transform:scale(1.1);
   }
+  html[data-motion="off"] .corridor-motion{display:none}
+  html[data-motion="off"] .scroll-invitation::after{animation:none; opacity:.72}
   html[data-motion="off"] .rana-ring-stage{
     filter:none;
     mix-blend-mode:screen;
@@ -856,6 +904,7 @@
   }
   .no-js-poster{
     width:100%;
+    height:auto;
     max-width:36rem;
     margin:1rem 0 1.5rem;
     border-radius:0;
@@ -884,6 +933,10 @@
     .nav-link[data-role="back-home"]{display:none}
 
     .corridor-frame{object-position:50% 48%}
+    .scroll-invitation{
+      top:50%;
+      font-size:clamp(1.35rem, 7vw, 1.7rem);
+    }
     /* Live mobile Rana: landscape studio cover crops can lose the gem into dark
        material fields on the narrow strip. Square ring film is the subject carrier
        (same pattern as ProRok portrait) — full-bleed material world, not a badge. */
@@ -966,8 +1019,8 @@
         linear-gradient(90deg, rgba(11,8,7,.42) 0%, rgba(11,8,7,.08) 48%, rgba(11,8,7,.3) 100%);
     }
     .terminal-return{
-      object-position:50% 54%;
-      transform:scale(calc(1.28 - var(--terminal-hold) * .1));
+      object-position:45% 50%;
+      transform:scale(calc(1.2 - var(--terminal-hold) * .1));
     }
     .terminal-energy{
       background:
@@ -983,8 +1036,8 @@
     }
     .terminal-wash{
       background:
-        linear-gradient(180deg, rgba(4,10,12,.35) 0%, transparent 16%, transparent 52%, rgba(4,10,12,.58) 100%),
-        linear-gradient(90deg, rgba(4,10,12,.5) 0%, rgba(4,10,12,.16) 38%, transparent 62%);
+        linear-gradient(180deg, rgba(4,10,12,.3) 0%, transparent 22%, transparent 48%, rgba(4,10,12,.84) 100%),
+        linear-gradient(90deg, rgba(4,10,12,.42) 0%, rgba(4,10,12,.1) 44%, transparent 76%);
     }
     .scene-copy{
       left:var(--gutter);
@@ -1082,6 +1135,7 @@
       <img class="no-js-poster" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="Dylan Prorok tattooing in the studio." width="617" height="849">
       <p><a href="https://prorok.jarrettwroten.com/">Visit the concept</a></p>
       <p>Independent redesign concept—not commissioned or approved by Dylan Prorok.</p>
+      <img class="no-js-poster" src="../assets/golden-arrival/frames/ga-360.webp" alt="Jarrett Wroten smiling in the corridor." width="1280" height="720">
       <h2>Your site should feel like your work.</h2>
       <p>Send me your site. I’ll find the first place the path breaks and show you what I’d change.</p>
       <p><a href="mailto:Jarrett@JarrettWroten.com">Send me your site</a></p>
@@ -1093,7 +1147,15 @@
     <div class="viewport" id="viewport" aria-label="Work passage from corridor through Rana and ProRok to the next step">
       <div class="world-stack" aria-hidden="true">
         <div class="layer layer-corridor" id="layer-corridor">
-          <img class="corridor-frame" src="../assets/golden-arrival/frames/ga-000.webp" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
+          <img class="corridor-frame corridor-poster" id="corridor-poster" src="../assets/golden-arrival/frames/ga-000.webp" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
+          <video
+            class="corridor-frame corridor-motion"
+            id="corridor-motion-video"
+            data-video
+            src="../assets/work/corridor-entry-loop.mp4"
+            poster="../assets/golden-arrival/frames/ga-000.webp"
+            autoplay muted loop playsinline preload="auto"
+            width="1280" height="720"></video>
           <div class="corridor-energy"></div>
           <div class="corridor-vignette"></div>
         </div>
@@ -1144,7 +1206,7 @@
         </div>
 
         <div class="layer layer-terminal" id="layer-terminal" aria-hidden="true">
-          <img class="terminal-return" src="../assets/golden-arrival/frames/ga-000.webp" alt="" width="1280" height="720" decoding="async">
+          <img class="terminal-return" src="../assets/golden-arrival/frames/ga-360.webp" alt="" width="1280" height="720" decoding="async">
           <div class="terminal-energy"></div>
           <div class="terminal-threshold"></div>
           <div class="terminal-vignette"></div>
@@ -1175,6 +1237,8 @@
             </script>
           </div>
         </header>
+
+        <div class="scroll-invitation" id="scroll-invitation" aria-hidden="true"><span>Scroll</span></div>
 
         <div class="scene-copy scene-copy--rana" id="copy-rana">
           <h1 class="scene-name">Rana Levy</h1>
@@ -1220,6 +1284,7 @@
   var copyProrok = document.getElementById("copy-prorok");
   var copyTerminal = document.getElementById("copy-terminal");
 
+  var corridorVideo = document.getElementById("corridor-motion-video");
   var studioVideo = document.getElementById("rana-studio-video");
   var ringVideo = document.getElementById("rana-ring-video");
   var inkVideo = document.getElementById("prorok-ink-video");
@@ -1328,6 +1393,7 @@
     var prorokOpen = range(p, MAP.prorokOpen.a, MAP.prorokOpen.b);
     var prorokHold = plateau(p, MAP.prorokHold.a, MAP.prorokHold.b, MAP.prorokHold.c, MAP.prorokHold.d);
     var terminalHold = range(p, MAP.terminalHold.a, MAP.terminalHold.b);
+    var entryCue = 1 - range(p, 0.015, 0.11);
 
     /* Motion-off snaps to four composed rests: corridor, Rana, ProRok, terminal */
     if (!motionOn) {
@@ -1353,6 +1419,7 @@
     root.style.setProperty("--prorok-open", prorokOpen.toFixed(4));
     root.style.setProperty("--prorok-hold", prorokHold.toFixed(4));
     root.style.setProperty("--terminal-hold", terminalHold.toFixed(4));
+    root.style.setProperty("--entry-cue", entryCue.toFixed(4));
 
     /* Hard reveal gate: layers stay fully absent at open === 0 (visibility),
        then spatially unmask once progress actually begins. No crossfade. */
@@ -1444,16 +1511,23 @@
       video.classList.add("is-ready");
       video.style.opacity = "";
     });
+    if (video.readyState >= 2) {
+      video.classList.add("is-ready");
+      video.style.opacity = "";
+    }
   }
 
   function syncVideos(p) {
     if (!motionOn) {
+      pauseSafe(corridorVideo);
       pauseSafe(studioVideo);
       pauseSafe(ringVideo);
       pauseSafe(inkVideo);
       return;
     }
     armVideos();
+    if (p < 0.16) playSafe(corridorVideo);
+    else pauseSafe(corridorVideo);
     if (p > 0.14 && p < 0.62) playSafe(studioVideo);
     else pauseSafe(studioVideo);
     if (p > 0.26 && p < 0.56) playSafe(ringVideo);
@@ -1508,6 +1582,7 @@
     sampleScroll();
   });
 
+  bindPosterFallback(corridorVideo, document.getElementById("corridor-poster"));
   bindPosterFallback(studioVideo, document.getElementById("rana-poster"));
   bindPosterFallback(ringVideo, document.getElementById("ring-poster"));
   bindPosterFallback(inkVideo, document.getElementById("prorok-poster"));
