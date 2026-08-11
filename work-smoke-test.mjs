@@ -96,7 +96,16 @@ ok(workHtml.includes('jw-motion') && workHtml.includes('data-motion'), 'motion p
 ok(/var TAU = 0\.41/.test(workHtml) || /TAU\s*=\s*0\.41/.test(workHtml), 'work route TAU = 0.41');
 ok(workHtml.includes('Math.exp(-dt') || workHtml.includes('Math.exp(-dt /'), 'single time-constant smoothing');
 ok(workHtml.includes('data-motion="off"') || workHtml.includes("data-motion\", on ?"), 'motion-off path present');
-ok(workHtml.includes('clip-path') || workHtml.includes('-webkit-clip-path'), 'spatial clip-path reveal');
+ok(
+  workHtml.includes('clip-path') ||
+    workHtml.includes('-webkit-clip-path') ||
+    workHtml.includes('mask-image') ||
+    workHtml.includes('-webkit-mask-image'),
+  'spatial clip/mask reveal'
+);
+ok(workHtml.includes('scrollbar-width:none') || workHtml.includes('scrollbar-width: none'), 'native scrollbar hidden');
+ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'), 'ProRok night-ink media grade');
+ok(/aria-label="Back to Jarrett"/.test(workHtml), 'wordmark accessible back label');
 ok(workHtml.includes('no-js-route'), 'no-JS fallback on work route');
 
 // Composition anti-patterns (markup-level)
