@@ -693,6 +693,114 @@ ok(
     'motion-off contract includes threshold-services snap (opacity/transform/transition)'
   );
 
+  /*
+   * FOCUSED TRIPWIRE — secondary booking CTA on Start/threshold.
+   * Canonical path: smoke-test.mjs booking block below.
+   * Future consumer: maintainer editing the free-fix invite or calendar URL.
+   * Activation: execute — `node smoke-test.mjs`.
+   * Behavioral check: desktop .threshold-bottom and mobile threshold beat both
+   *   carry the exact Google Calendar URL, target=_blank + rel=noopener noreferrer,
+   *   and exact outward copy with only "Book a call." linked. Source-shape only —
+   *   does not prove rendered geometry, focus rings, or 44px hit boxes; Codex
+   *   exercises those on pixels independently.
+   * Retirement: retire only when booking is intentionally removed or relocated
+   *   and an equal consumer-facing conversion check supersedes this block.
+   */
+  {
+    const BOOKING_URL = 'https://calendar.app.google/rTkdNoWpm6iRrXhB7';
+    const urlEsc = BOOKING_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const urlCount = (html.match(new RegExp(urlEsc, 'g')) || []).length;
+    ok(urlCount === 2, 'booking URL appears exactly twice in rendered markup (got ' + urlCount + ')');
+
+    // Extract full threshold-bottom by start index through invite-whisper close.
+    // Source-structure only — does not prove rendered geometry.
+    const bottomStart = desktopSrc.indexOf('class="threshold-bottom"');
+    const whisperClose = desktopSrc.indexOf('</p>', desktopSrc.indexOf('class="invite-whisper"'));
+    const bottomSrc =
+      bottomStart !== -1 && whisperClose !== -1
+        ? desktopSrc.slice(bottomStart, whisperClose + 4)
+        : '';
+    const desktopBookRe =
+      /<p class="invite-book">Want to talk first\? <a class="invite-book-link" href="https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call\.<\/a><\/p>/;
+    ok(desktopBookRe.test(bottomSrc), 'desktop threshold-bottom has exact booking line with linked phrase');
+    ok(
+      bottomSrc.includes(BOOKING_URL) &&
+        (/class="invite-book-link"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/.test(bottomSrc) ||
+          /class="invite-book-link"[^>]*rel="noopener noreferrer"[^>]*target="_blank"/.test(bottomSrc)),
+      'desktop booking anchor uses _blank + noopener noreferrer inside threshold-bottom'
+    );
+    // Order: email → booking → whisper (source order only).
+    {
+      const emailAt = bottomSrc.indexOf('class="invite-email"');
+      const bookAt = bottomSrc.indexOf('class="invite-book"');
+      const whisperAt = bottomSrc.indexOf('class="invite-whisper"');
+      ok(
+        emailAt !== -1 && bookAt > emailAt && whisperAt > bookAt,
+        'desktop booking line sits after email and before whisper in threshold-bottom'
+      );
+    }
+
+    // Prefer the Start threshold beat, not the later services beat which also
+    // carries data-mobile-station="threshold".
+    const mobileThreshold = mobileSrc.match(
+      /<article class="mobile-beat" data-mobile-beat="threshold"[\s\S]*?<\/article>/
+    );
+    const mobileThresholdSrc = mobileThreshold ? mobileThreshold[0] : '';
+    const mobileBookRe =
+      /<p class="mobile-book">Want to talk first\? <a class="mobile-book-link" href="https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call\.<\/a><\/p>/;
+    ok(mobileBookRe.test(mobileThresholdSrc), 'mobile threshold beat has exact booking line with linked phrase');
+    ok(
+      mobileThresholdSrc.includes(BOOKING_URL) &&
+        (/class="mobile-book-link"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/.test(mobileThresholdSrc) ||
+          /class="mobile-book-link"[^>]*rel="noopener noreferrer"[^>]*target="_blank"/.test(mobileThresholdSrc)),
+      'mobile booking anchor uses _blank + noopener noreferrer inside threshold beat'
+    );
+    {
+      const emailAt = mobileThresholdSrc.indexOf('class="mobile-email"');
+      const bookAt = mobileThresholdSrc.indexOf('class="mobile-book"');
+      const whisperAt = mobileThresholdSrc.indexOf('class="mobile-whisper"');
+      ok(
+        emailAt !== -1 && bookAt > emailAt && whisperAt > bookAt,
+        'mobile booking line sits after email and before whisper in threshold beat'
+      );
+    }
+
+    // Exact outward copy appears in both surfaces (linked phrase split across <a>).
+    ok(
+      /Want to talk first\? <a[^>]*>Book a call\.<\/a>/.test(bottomSrc) &&
+        /Want to talk first\? <a[^>]*>Book a call\.<\/a>/.test(mobileThresholdSrc),
+      'booking outward copy is exact on desktop and mobile'
+    );
+
+    // No new mobile beat / journey rest introduced by the booking CTA.
+    const beatIds = [...mobileSrc.matchAll(/data-mobile-beat="([^"]+)"/g)].map((m) => m[1]);
+    ok(
+      beatIds.length === 8 &&
+        JSON.stringify(beatIds) ===
+          JSON.stringify([
+            'leak',
+            'method-look',
+            'method-find',
+            'method-build',
+            'proof',
+            'jarrett',
+            'threshold',
+            'services',
+          ]),
+      'booking CTA introduces no new mobile beat (eight-beat journey preserved)'
+    );
+    ok(
+      /\.invite-book-link::before\s*\{[^}]*height:\s*44px/.test(html) &&
+        /\.mobile-book-link::before\s*\{[^}]*height:\s*44px/.test(html),
+      'booking anchors author 44px hit targets via ::before (source-shape; not pixel proof)'
+    );
+    ok(
+      /\.invite-book-link:focus-visible/.test(html) &&
+        /\.mobile-book-link:focus-visible/.test(html),
+      'booking anchors author visible keyboard focus states (source-shape; not pixel proof)'
+    );
+  }
+
   const noJs = html.match(/<main class="no-js-route"[\s\S]*?<\/main>/);
   const noJsSrc = noJs ? noJs[0] : '';
   ok(

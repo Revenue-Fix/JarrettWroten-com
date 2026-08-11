@@ -974,8 +974,50 @@
     transition:opacity .75s var(--ease-overshoot), transform .75s var(--ease-overshoot);
     transition-delay:200ms;
   }
+  /* Secondary booking path — subordinate to the free-fix email invite.
+     Static (no entrance motion) so Motion On/Off both keep it fully usable. */
+  .invite-book{
+    margin:clamp(.4rem,.95vh,.65rem) 0 0;
+    max-width:34ch;
+    font-family:var(--reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(.95rem,.97rem + .08vw,1.04rem);
+    line-height:1.45;
+    letter-spacing:0;
+    color:var(--ink-mute);
+  }
+  .invite-book-link{
+    position:relative;
+    display:inline;
+    font-family:var(--text);
+    font-weight:500;
+    color:var(--cyan);
+    border-bottom:1px solid rgba(94,231,240,.42);
+    transition:color .2s ease, border-color .2s ease;
+  }
+  /* Expanded hit box without a bulky button-shaped sentence */
+  .invite-book-link::before{
+    content:"";
+    position:absolute;
+    left:-.2em;
+    right:-.2em;
+    top:50%;
+    transform:translateY(-50%);
+    height:44px;
+    min-width:44px;
+  }
+  .invite-book-link:hover{
+    color:var(--cyan);
+    border-bottom-color:var(--cyan);
+  }
+  .invite-book-link:focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:3px;
+    border-bottom-color:var(--cyan);
+  }
   .invite-whisper{
-    margin:clamp(.55rem,1.2vh,.85rem) 0 0;
+    margin:clamp(.4rem,.9vh,.65rem) 0 0;
     font-family:var(--reading);
     font-weight:400;
     font-synthesis:none;
@@ -1061,8 +1103,13 @@
       font-size:clamp(1.15rem,1.45vw,1.4rem);
       min-height:2.5rem;
     }
+    .station[data-station="threshold"] .invite-book{
+      margin-top:clamp(.22rem,.45vh,.35rem);
+      font-size:clamp(.86rem,.88rem + .06vw,.94rem);
+      line-height:1.3;
+    }
     .station[data-station="threshold"] .invite-whisper{
-      margin-top:clamp(.3rem,.6vh,.45rem);
+      margin-top:clamp(.25rem,.5vh,.4rem);
       font-size:clamp(.9rem,.92rem + .08vw,.98rem);
       line-height:1.35;
     }
@@ -1442,6 +1489,40 @@
       color:var(--ink);
       white-space:nowrap;
     }
+    /* Secondary booking path on Start — subordinate to .mobile-email */
+    .mobile-book{
+      margin:.45rem 0 0;
+      max-width:32ch;
+      font-family:var(--reading);
+      font-weight:400;
+      font-size:clamp(.9rem,3.8vw,.98rem);
+      line-height:1.4;
+      letter-spacing:0;
+      color:var(--ink-mute);
+    }
+    .mobile-book-link{
+      position:relative;
+      display:inline;
+      font-family:var(--text);
+      font-weight:500;
+      color:var(--cyan);
+      border-bottom:1px solid rgba(94,231,240,.42);
+    }
+    .mobile-book-link::before{
+      content:"";
+      position:absolute;
+      left:-.2em;
+      right:-.2em;
+      top:50%;
+      transform:translateY(-50%);
+      height:44px;
+      min-width:44px;
+    }
+    .mobile-book-link:focus-visible{
+      outline:2px solid var(--cyan);
+      outline-offset:3px;
+      border-bottom-color:var(--cyan);
+    }
     .mobile-beat[data-mobile-beat="proof"],
     .mobile-beat[data-mobile-beat="threshold"],
     .mobile-beat[data-mobile-beat="services"]{
@@ -1599,6 +1680,10 @@
         margin-top:.35rem;
         font-size:clamp(.84rem,3.5vw,.92rem);
       }
+      .mobile-book{
+        margin-top:.28rem;
+        font-size:clamp(.84rem,3.5vw,.92rem);
+      }
       .mobile-email{
         margin-top:.4rem;
         font-size:clamp(.98rem,4.1vw,1.1rem);
@@ -1620,6 +1705,7 @@
       .mobile-body{margin-top:.4rem;font-size:.94rem;line-height:1.32;max-width:34ch}
       .mobile-proof-figure{font-size:clamp(2.15rem,10.5vw,2.55rem)}
       .mobile-email{margin-top:.28rem;font-size:.95rem;line-height:2.15rem}
+      .mobile-book{margin-top:.2rem;font-size:.82rem}
       .mobile-qualifier,
       .mobile-whisper{font-size:.82rem}
       .mobile-services-list li{padding:.14rem 0;font-size:.88rem}
@@ -1881,6 +1967,7 @@
               <h2 class="mobile-title">Send me your site.</h2>
               <p class="mobile-body">Tell me what you want more of. I’ll build the first fix, and you keep it. If it helps, we can keep working together.</p>
               <a class="mobile-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
+              <p class="mobile-book">Want to talk first? <a class="mobile-book-link" href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call.</a></p>
               <p class="mobile-whisper">If I find nothing worth fixing, I’ll tell you.</p>
             </article>
 
@@ -2019,6 +2106,7 @@
                 <p>Send me your site and tell me what you want more of. I’ll build the first fix, and you keep it. If it helps, we can keep working together.</p>
               </div>
               <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
+              <p class="invite-book">Want to talk first? <a class="invite-book-link" href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call.</a></p>
               <p class="invite-whisper">If I find nothing worth fixing, I’ll tell you.</p>
             </div>
           </div>
