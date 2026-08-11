@@ -103,6 +103,22 @@ ok(
     workHtml.includes('-webkit-mask-image'),
   'spatial clip/mask reveal'
 );
+// Zero-state reveal gate + nonzero mask floor (structural; not pixel proof).
+// Prevents Chromium multi-mask radial-gradient(0% 0% ...) covering the corridor.
+ok(
+  /--mask-open\s*:\s*max\s*\(\s*0\.001\s*,\s*var\(--(?:rana|prorok)-open\)\s*\)/.test(workHtml) &&
+    (workHtml.match(/--mask-open\s*:\s*max\s*\(\s*0\.001\s*,/g) || []).length >= 2,
+  'nonzero mask radius floor on both reveal layers'
+);
+ok(
+  /\.layer-rana\s*\{[\s\S]*?visibility\s*:\s*hidden/.test(workHtml) &&
+    /\.layer-prorok\s*\{[\s\S]*?visibility\s*:\s*hidden/.test(workHtml) &&
+    /\.layer-rana\.is-revealing\s*\{\s*visibility\s*:\s*visible\s*\}/.test(workHtml) &&
+    /\.layer-prorok\.is-revealing\s*\{\s*visibility\s*:\s*visible\s*\}/.test(workHtml) &&
+    /classList\.toggle\s*\(\s*["']is-revealing["']\s*,\s*(?:ranaOpen|prorokOpen)\s*>\s*0\s*\)/.test(workHtml) &&
+    (workHtml.match(/classList\.toggle\s*\(\s*["']is-revealing["']/g) || []).length >= 2,
+  'zero-state reveal gate (visibility + is-revealing class) on both layers'
+);
 ok(workHtml.includes('scrollbar-width:none') || workHtml.includes('scrollbar-width: none'), 'native scrollbar hidden');
 ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'), 'ProRok night-ink media grade');
 ok(/aria-label="Back to Jarrett"/.test(workHtml), 'wordmark accessible back label');

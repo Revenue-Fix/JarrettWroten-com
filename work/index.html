@@ -214,25 +214,31 @@
   /* ── Rana world: refractive material takeover from corridor amber core ── */
   .layer-rana{
     z-index:2;
+    /* Hard zero-state gate: layer is completely absent until open begins.
+       Chromium can treat multi-mask radial-gradient(0% 0% ...) as covering,
+       so never rely on zero-radius masks alone to hide the layer. */
+    visibility:hidden;
+    /* Nonzero floor so mask radii never collapse to degenerate 0% 0%. */
+    --mask-open:max(0.001, var(--rana-open));
     /* Multi-lobed facet/bleed — not a clean oval portal with black crescents. */
     -webkit-mask-image:
-      radial-gradient(ellipse calc(var(--rana-open) * 118%) calc(var(--rana-open) * 96%) at 50% 54%, #000 0%, #000 52%, transparent 78%),
-      radial-gradient(ellipse calc(var(--rana-open) * 92%) calc(var(--rana-open) * 128%) at 38% 48%, #000 0%, #000 48%, transparent 74%),
-      radial-gradient(ellipse calc(var(--rana-open) * 108%) calc(var(--rana-open) * 82%) at 64% 58%, #000 0%, #000 50%, transparent 76%),
-      radial-gradient(ellipse calc(var(--rana-open) * 78%) calc(var(--rana-open) * 110%) at 46% 36%, #000 0%, #000 46%, transparent 72%),
-      radial-gradient(ellipse calc(var(--rana-open) * 86%) calc(var(--rana-open) * 74%) at 56% 72%, #000 0%, #000 44%, transparent 70%),
-      radial-gradient(ellipse calc(var(--rana-open) * 70%) calc(var(--rana-open) * 98%) at 22% 60%, #000 0%, #000 42%, transparent 68%),
-      radial-gradient(ellipse calc(var(--rana-open) * 74%) calc(var(--rana-open) * 88%) at 80% 42%, #000 0%, #000 40%, transparent 68%),
-      radial-gradient(ellipse calc(var(--rana-open) * 155%) calc(var(--rana-open) * 145%) at 50% 52%, #000 0%, #000 62%, transparent 88%);
+      radial-gradient(ellipse calc(var(--mask-open) * 118%) calc(var(--mask-open) * 96%) at 50% 54%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--mask-open) * 92%) calc(var(--mask-open) * 128%) at 38% 48%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 108%) calc(var(--mask-open) * 82%) at 64% 58%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--mask-open) * 78%) calc(var(--mask-open) * 110%) at 46% 36%, #000 0%, #000 46%, transparent 72%),
+      radial-gradient(ellipse calc(var(--mask-open) * 86%) calc(var(--mask-open) * 74%) at 56% 72%, #000 0%, #000 44%, transparent 70%),
+      radial-gradient(ellipse calc(var(--mask-open) * 70%) calc(var(--mask-open) * 98%) at 22% 60%, #000 0%, #000 42%, transparent 68%),
+      radial-gradient(ellipse calc(var(--mask-open) * 74%) calc(var(--mask-open) * 88%) at 80% 42%, #000 0%, #000 40%, transparent 68%),
+      radial-gradient(ellipse calc(var(--mask-open) * 155%) calc(var(--mask-open) * 145%) at 50% 52%, #000 0%, #000 62%, transparent 88%);
     mask-image:
-      radial-gradient(ellipse calc(var(--rana-open) * 118%) calc(var(--rana-open) * 96%) at 50% 54%, #000 0%, #000 52%, transparent 78%),
-      radial-gradient(ellipse calc(var(--rana-open) * 92%) calc(var(--rana-open) * 128%) at 38% 48%, #000 0%, #000 48%, transparent 74%),
-      radial-gradient(ellipse calc(var(--rana-open) * 108%) calc(var(--rana-open) * 82%) at 64% 58%, #000 0%, #000 50%, transparent 76%),
-      radial-gradient(ellipse calc(var(--rana-open) * 78%) calc(var(--rana-open) * 110%) at 46% 36%, #000 0%, #000 46%, transparent 72%),
-      radial-gradient(ellipse calc(var(--rana-open) * 86%) calc(var(--rana-open) * 74%) at 56% 72%, #000 0%, #000 44%, transparent 70%),
-      radial-gradient(ellipse calc(var(--rana-open) * 70%) calc(var(--rana-open) * 98%) at 22% 60%, #000 0%, #000 42%, transparent 68%),
-      radial-gradient(ellipse calc(var(--rana-open) * 74%) calc(var(--rana-open) * 88%) at 80% 42%, #000 0%, #000 40%, transparent 68%),
-      radial-gradient(ellipse calc(var(--rana-open) * 155%) calc(var(--rana-open) * 145%) at 50% 52%, #000 0%, #000 62%, transparent 88%);
+      radial-gradient(ellipse calc(var(--mask-open) * 118%) calc(var(--mask-open) * 96%) at 50% 54%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--mask-open) * 92%) calc(var(--mask-open) * 128%) at 38% 48%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 108%) calc(var(--mask-open) * 82%) at 64% 58%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--mask-open) * 78%) calc(var(--mask-open) * 110%) at 46% 36%, #000 0%, #000 46%, transparent 72%),
+      radial-gradient(ellipse calc(var(--mask-open) * 86%) calc(var(--mask-open) * 74%) at 56% 72%, #000 0%, #000 44%, transparent 70%),
+      radial-gradient(ellipse calc(var(--mask-open) * 70%) calc(var(--mask-open) * 98%) at 22% 60%, #000 0%, #000 42%, transparent 68%),
+      radial-gradient(ellipse calc(var(--mask-open) * 74%) calc(var(--mask-open) * 88%) at 80% 42%, #000 0%, #000 40%, transparent 68%),
+      radial-gradient(ellipse calc(var(--mask-open) * 155%) calc(var(--mask-open) * 145%) at 50% 52%, #000 0%, #000 62%, transparent 88%);
     -webkit-mask-composite:source-over;
     mask-composite:add;
     -webkit-mask-repeat:no-repeat;
@@ -241,6 +247,7 @@
     mask-size:100% 100%;
     will-change:mask-image,-webkit-mask-image;
   }
+  .layer-rana.is-revealing{visibility:visible}
   .rana-media,
   .prorok-media{
     position:absolute;
@@ -329,27 +336,32 @@
   .layer-prorok{
     z-index:3;
     background:var(--sumi);
+    /* Hard zero-state gate: Sumi layer must not paint at progress 0.
+       Degenerate multi-mask zero-radius composition can occlude the corridor. */
+    visibility:hidden;
+    /* Nonzero floor so mask radii never collapse to degenerate 0% 0%. */
+    --mask-open:max(0.001, var(--prorok-open));
     /* Irregular ink blot lobes — no flat quadrilateral / panel silhouette. */
     -webkit-mask-image:
-      radial-gradient(ellipse calc(var(--prorok-open) * 92%) calc(var(--prorok-open) * 70%) at 6% 94%, #000 0%, #000 46%, transparent 74%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 78%) calc(var(--prorok-open) * 88%) at 28% 100%, #000 0%, #000 50%, transparent 76%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 68%) calc(var(--prorok-open) * 58%) at 0% 72%, #000 0%, #000 42%, transparent 70%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 102%) calc(var(--prorok-open) * 54%) at 48% 100%, #000 0%, #000 48%, transparent 74%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 58%) calc(var(--prorok-open) * 96%) at 4% 48%, #000 0%, #000 40%, transparent 68%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 72%) calc(var(--prorok-open) * 64%) at 18% 82%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 54%) calc(var(--prorok-open) * 76%) at 38% 88%, #000 0%, #000 38%, transparent 66%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 48%) calc(var(--prorok-open) * 52%) at 12% 30%, #000 0%, #000 36%, transparent 64%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 160%) calc(var(--prorok-open) * 150%) at 22% 78%, #000 0%, #000 58%, transparent 84%);
+      radial-gradient(ellipse calc(var(--mask-open) * 92%) calc(var(--mask-open) * 70%) at 6% 94%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 78%) calc(var(--mask-open) * 88%) at 28% 100%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--mask-open) * 68%) calc(var(--mask-open) * 58%) at 0% 72%, #000 0%, #000 42%, transparent 70%),
+      radial-gradient(ellipse calc(var(--mask-open) * 102%) calc(var(--mask-open) * 54%) at 48% 100%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 58%) calc(var(--mask-open) * 96%) at 4% 48%, #000 0%, #000 40%, transparent 68%),
+      radial-gradient(ellipse calc(var(--mask-open) * 72%) calc(var(--mask-open) * 64%) at 18% 82%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--mask-open) * 54%) calc(var(--mask-open) * 76%) at 38% 88%, #000 0%, #000 38%, transparent 66%),
+      radial-gradient(ellipse calc(var(--mask-open) * 48%) calc(var(--mask-open) * 52%) at 12% 30%, #000 0%, #000 36%, transparent 64%),
+      radial-gradient(ellipse calc(var(--mask-open) * 160%) calc(var(--mask-open) * 150%) at 22% 78%, #000 0%, #000 58%, transparent 84%);
     mask-image:
-      radial-gradient(ellipse calc(var(--prorok-open) * 92%) calc(var(--prorok-open) * 70%) at 6% 94%, #000 0%, #000 46%, transparent 74%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 78%) calc(var(--prorok-open) * 88%) at 28% 100%, #000 0%, #000 50%, transparent 76%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 68%) calc(var(--prorok-open) * 58%) at 0% 72%, #000 0%, #000 42%, transparent 70%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 102%) calc(var(--prorok-open) * 54%) at 48% 100%, #000 0%, #000 48%, transparent 74%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 58%) calc(var(--prorok-open) * 96%) at 4% 48%, #000 0%, #000 40%, transparent 68%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 72%) calc(var(--prorok-open) * 64%) at 18% 82%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 54%) calc(var(--prorok-open) * 76%) at 38% 88%, #000 0%, #000 38%, transparent 66%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 48%) calc(var(--prorok-open) * 52%) at 12% 30%, #000 0%, #000 36%, transparent 64%),
-      radial-gradient(ellipse calc(var(--prorok-open) * 160%) calc(var(--prorok-open) * 150%) at 22% 78%, #000 0%, #000 58%, transparent 84%);
+      radial-gradient(ellipse calc(var(--mask-open) * 92%) calc(var(--mask-open) * 70%) at 6% 94%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 78%) calc(var(--mask-open) * 88%) at 28% 100%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--mask-open) * 68%) calc(var(--mask-open) * 58%) at 0% 72%, #000 0%, #000 42%, transparent 70%),
+      radial-gradient(ellipse calc(var(--mask-open) * 102%) calc(var(--mask-open) * 54%) at 48% 100%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 58%) calc(var(--mask-open) * 96%) at 4% 48%, #000 0%, #000 40%, transparent 68%),
+      radial-gradient(ellipse calc(var(--mask-open) * 72%) calc(var(--mask-open) * 64%) at 18% 82%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--mask-open) * 54%) calc(var(--mask-open) * 76%) at 38% 88%, #000 0%, #000 38%, transparent 66%),
+      radial-gradient(ellipse calc(var(--mask-open) * 48%) calc(var(--mask-open) * 52%) at 12% 30%, #000 0%, #000 36%, transparent 64%),
+      radial-gradient(ellipse calc(var(--mask-open) * 160%) calc(var(--mask-open) * 150%) at 22% 78%, #000 0%, #000 58%, transparent 84%);
     -webkit-mask-composite:source-over;
     mask-composite:add;
     -webkit-mask-repeat:no-repeat;
@@ -358,6 +370,7 @@
     mask-size:100% 100%;
     will-change:mask-image,-webkit-mask-image;
   }
+  .layer-prorok.is-revealing{visibility:visible}
   .prorok-ink{
     /* Actual watercolor media remapped into Sumi-black / vermilion night-ink. */
     object-position:48% 40%;
@@ -901,6 +914,8 @@
   var studioVideo = document.getElementById("rana-studio-video");
   var ringVideo = document.getElementById("rana-ring-video");
   var inkVideo = document.getElementById("prorok-ink-video");
+  var layerRana = document.getElementById("layer-rana");
+  var layerProrok = document.getElementById("layer-prorok");
 
   var motionOn = root.getAttribute("data-motion") !== "off";
   var progressTarget = 0;
@@ -1016,6 +1031,11 @@
     root.style.setProperty("--ring-presence", ring.toFixed(4));
     root.style.setProperty("--prorok-open", prorokOpen.toFixed(4));
     root.style.setProperty("--prorok-hold", prorokHold.toFixed(4));
+
+    /* Hard reveal gate: layers stay fully absent at open === 0 (visibility),
+       then spatially unmask once progress actually begins. No crossfade. */
+    if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
+    if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
 
     if (copyRana) {
       copyRana.style.pointerEvents = ranaHold > 0.55 && prorokOpen < 0.45 ? "auto" : "none";
