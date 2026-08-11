@@ -1,18 +1,10 @@
 <!doctype html>
-<!--
-  Maintained asset: complete local Work passage (corridor → Rana → ProRok → terminal).
-  Future consumer: Jarrett and visitors on the local Work route; implementers preserving the passage.
-  Activation: retrieve — open work/index.html (or /work/) in a browser from this repo root.
-  Behavioral check: node work-smoke-test.mjs (plus owner visual walk of desktop/mobile rests).
-  Retirement: when a successor Work route fully replaces this passage and its smoke contract.
--->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Work | Jarrett Wroten</title>
 <meta name="description" content="A continuous craft route through selected work — from the corridor into Rana Levy’s gem studio, through Dylan Prorok, then a clear next step.">
-<meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
 <link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-000.webp">
 <link rel="preload" as="image" href="../assets/work/rana/studio-opening.jpg">
@@ -431,31 +423,96 @@
     opacity:calc(1 - var(--terminal-hold) * .55);
   }
 
-  /* ── Terminal rest: continuation after both project worlds — not a card or footer ── */
+  /* ── Terminal rest: return to the corridor threshold after both project worlds ──
+     Spatial doorway aperture (not a full-frame opacity crossfade into blank gradient). */
   .layer-terminal{
     z-index:4;
     visibility:hidden;
-    opacity:var(--terminal-hold);
-    background:var(--sumi);
+    background:var(--void);
     pointer-events:none;
+    /* Hard zero-state gate + nonzero floor — same family as Rana/ProRok reveals. */
+    --mask-open:max(0.001, var(--terminal-hold));
+    /* Vertical door aperture + lower amber threshold bloom, then full-frame open. */
+    -webkit-mask-image:
+      radial-gradient(ellipse calc(var(--mask-open) * 34%) calc(var(--mask-open) * 108%) at 50% 46%, #000 0%, #000 54%, transparent 80%),
+      radial-gradient(ellipse calc(var(--mask-open) * 52%) calc(var(--mask-open) * 46%) at 50% 56%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--mask-open) * 26%) calc(var(--mask-open) * 72%) at 40% 48%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--mask-open) * 26%) calc(var(--mask-open) * 72%) at 60% 48%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--mask-open) * 78%) calc(var(--mask-open) * 34%) at 50% 76%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 44%) calc(var(--mask-open) * 28%) at 50% 68%, #000 0%, #000 42%, transparent 70%),
+      radial-gradient(ellipse calc(var(--mask-open) * 160%) calc(var(--mask-open) * 150%) at 50% 52%, #000 0%, #000 60%, transparent 88%);
+    mask-image:
+      radial-gradient(ellipse calc(var(--mask-open) * 34%) calc(var(--mask-open) * 108%) at 50% 46%, #000 0%, #000 54%, transparent 80%),
+      radial-gradient(ellipse calc(var(--mask-open) * 52%) calc(var(--mask-open) * 46%) at 50% 56%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--mask-open) * 26%) calc(var(--mask-open) * 72%) at 40% 48%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--mask-open) * 26%) calc(var(--mask-open) * 72%) at 60% 48%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--mask-open) * 78%) calc(var(--mask-open) * 34%) at 50% 76%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 44%) calc(var(--mask-open) * 28%) at 50% 68%, #000 0%, #000 42%, transparent 70%),
+      radial-gradient(ellipse calc(var(--mask-open) * 160%) calc(var(--mask-open) * 150%) at 50% 52%, #000 0%, #000 60%, transparent 88%);
+    -webkit-mask-composite:source-over;
+    mask-composite:add;
+    -webkit-mask-repeat:no-repeat;
+    mask-repeat:no-repeat;
+    -webkit-mask-size:100% 100%;
+    mask-size:100% 100%;
+    will-change:mask-image,-webkit-mask-image;
   }
   .layer-terminal.is-revealing{visibility:visible}
-  .terminal-atmosphere{
+  /* Re-grade the approved corridor frame as an earned return / next doorway. */
+  .terminal-return{
     position:absolute;
     inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    /* Closer crop toward the amber threshold — not the opening wide shot. */
+    object-position:50% 58%;
+    transform:scale(calc(1.24 - var(--terminal-hold) * .1));
+    filter:
+      saturate(calc(1.05 + var(--terminal-hold) * .22))
+      brightness(calc(.78 + var(--terminal-hold) * .22))
+      contrast(calc(1.08 + var(--terminal-hold) * .06));
+    will-change:transform,filter;
+  }
+  .terminal-energy{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:calc(.45 + var(--terminal-hold) * .5);
     background:
-      radial-gradient(ellipse 70% 55% at 48% 42%, rgba(8,14,16,.2) 0%, rgba(4,10,12,.72) 58%, rgba(4,10,12,.94) 100%),
-      linear-gradient(180deg, rgba(4,10,12,.55) 0%, rgba(4,10,12,.2) 34%, rgba(4,10,12,.78) 100%);
+      radial-gradient(ellipse 38% 34% at 50% 48%, rgba(94,231,240,.22) 0%, transparent 62%),
+      radial-gradient(ellipse 28% 22% at 50% 62%, rgba(217,122,58,.34) 0%, transparent 68%),
+      radial-gradient(ellipse 70% 48% at 50% 52%, transparent 42%, rgba(4,10,12,.28) 100%);
+    mix-blend-mode:screen;
   }
   .terminal-threshold{
     position:absolute;
     inset:0;
     pointer-events:none;
-    opacity:calc(.35 + var(--terminal-hold) * .65);
+    opacity:calc(.4 + var(--terminal-hold) * .6);
     background:
-      radial-gradient(ellipse 46% 28% at 42% 68%, rgba(217,122,58,.22) 0%, transparent 68%),
-      radial-gradient(ellipse 28% 18% at 58% 72%, rgba(94,231,240,.08) 0%, transparent 70%);
+      radial-gradient(ellipse 42% 26% at 50% 64%, rgba(217,122,58,.32) 0%, transparent 70%),
+      radial-gradient(ellipse 22% 16% at 50% 58%, rgba(255,214,170,.14) 0%, transparent 68%),
+      radial-gradient(ellipse 36% 20% at 48% 46%, rgba(94,231,240,.12) 0%, transparent 72%);
     mix-blend-mode:screen;
+  }
+  .terminal-vignette{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 82% 72% at 50% 46%, transparent 28%, rgba(4,10,12,.22) 68%, rgba(4,10,12,.72) 100%);
+    opacity:calc(.75 + var(--terminal-hold) * .2);
+  }
+  /* Soft edge for passage copy only — leave the doorway world legible. */
+  .terminal-wash{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(100deg, rgba(4,10,12,.58) 0%, rgba(4,10,12,.22) 26%, rgba(4,10,12,.04) 48%, transparent 64%),
+      linear-gradient(180deg, rgba(4,10,12,.28) 0%, transparent 18%, transparent 58%, rgba(4,10,12,.52) 100%);
+    opacity:calc(.55 + var(--terminal-hold) * .4);
   }
 
   .grain{
@@ -706,18 +763,29 @@
   }
 
   /* Motion-off: composed rests, no soft blur tails.
-     Keep media grade on ProRok ink — that is palette composition, not motion. */
+     Keep media grade on ProRok ink and terminal return — palette composition, not motion. */
   html[data-motion="off"] .corridor-frame,
   html[data-motion="off"] .rana-studio,
   html[data-motion="off"] .rana-ring-stage,
   html[data-motion="off"] .scene-copy,
-  html[data-motion="off"] .layer-terminal{
+  html[data-motion="off"] .layer-terminal,
+  html[data-motion="off"] .terminal-return{
     transition:none !important;
+  }
+  html[data-motion="off"] .corridor-frame,
+  html[data-motion="off"] .rana-studio,
+  html[data-motion="off"] .rana-ring-stage,
+  html[data-motion="off"] .scene-copy{
     filter:none;
   }
   html[data-motion="off"] .prorok-ink{
     transition:none !important;
     filter:url(#gradeNightInk) contrast(1.1) saturate(1.08);
+  }
+  html[data-motion="off"] .terminal-return{
+    /* Hold the return grade at rest — not a motion soft-tail. */
+    filter:saturate(1.27) brightness(1) contrast(1.14);
+    transform:scale(1.14);
   }
   html[data-motion="off"] .rana-ring-stage{
     filter:none;
@@ -725,9 +793,6 @@
   }
   html[data-motion="off"] .scene-copy{
     transform:none;
-  }
-  html[data-motion="off"] .layer-terminal{
-    opacity:var(--terminal-hold);
   }
 
   /* No-JS readable path */
@@ -851,10 +916,26 @@
         linear-gradient(180deg, rgba(11,8,7,.5) 0%, rgba(11,8,7,.12) 26%, rgba(11,8,7,.28) 56%, rgba(11,8,7,.86) 100%),
         linear-gradient(90deg, rgba(11,8,7,.55) 0%, rgba(11,8,7,.12) 55%, rgba(11,8,7,.4) 100%);
     }
+    .terminal-return{
+      object-position:50% 54%;
+      transform:scale(calc(1.28 - var(--terminal-hold) * .1));
+    }
+    .terminal-energy{
+      background:
+        radial-gradient(ellipse 48% 36% at 50% 46%, rgba(94,231,240,.2) 0%, transparent 64%),
+        radial-gradient(ellipse 36% 24% at 50% 66%, rgba(217,122,58,.3) 0%, transparent 70%),
+        radial-gradient(ellipse 78% 52% at 50% 52%, transparent 40%, rgba(4,10,12,.32) 100%);
+    }
     .terminal-threshold{
       background:
-        radial-gradient(ellipse 70% 32% at 50% 74%, rgba(217,122,58,.26) 0%, transparent 70%),
-        radial-gradient(ellipse 40% 22% at 48% 62%, rgba(94,231,240,.08) 0%, transparent 72%);
+        radial-gradient(ellipse 58% 28% at 50% 68%, rgba(217,122,58,.3) 0%, transparent 70%),
+        radial-gradient(ellipse 34% 18% at 50% 58%, rgba(255,214,170,.12) 0%, transparent 68%),
+        radial-gradient(ellipse 40% 20% at 48% 44%, rgba(94,231,240,.1) 0%, transparent 72%);
+    }
+    .terminal-wash{
+      background:
+        linear-gradient(180deg, rgba(4,10,12,.35) 0%, transparent 16%, transparent 52%, rgba(4,10,12,.58) 100%),
+        linear-gradient(90deg, rgba(4,10,12,.5) 0%, rgba(4,10,12,.16) 38%, transparent 62%);
     }
     .scene-copy{
       left:var(--gutter);
@@ -942,7 +1023,9 @@
       <p><a href="../">Back to Jarrett</a> · Work</p>
       <h1>Rana Levy</h1>
       <p>Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.</p>
-      <p>Ready Now, Made To Order, and Custom Consultation stay clear without pulling you out of the world.</p>
+      <p>Ready Now</p>
+      <p>Made To Order</p>
+      <p>Custom Consultation</p>
       <img class="no-js-poster" src="../assets/work/rana/studio-poster.jpg" alt="Rana Levy at the bench in her gem studio." width="1920" height="960">
       <p><a href="https://rana.jarrettwroten.com/">Visit the live site</a></p>
       <h2>Dylan Prorok</h2>
@@ -1012,8 +1095,11 @@
         </div>
 
         <div class="layer layer-terminal" id="layer-terminal" aria-hidden="true">
-          <div class="terminal-atmosphere"></div>
+          <img class="terminal-return" src="../assets/golden-arrival/frames/ga-000.webp" alt="" width="1280" height="720" decoding="async">
+          <div class="terminal-energy"></div>
           <div class="terminal-threshold"></div>
+          <div class="terminal-vignette"></div>
+          <div class="terminal-wash"></div>
         </div>
 
         <div class="grain"></div>
@@ -1044,7 +1130,6 @@
         <div class="scene-copy scene-copy--rana" id="copy-rana">
           <h1 class="scene-name">Rana Levy</h1>
           <p class="scene-line">Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.</p>
-          <p class="scene-support">Ready Now, Made To Order, and Custom Consultation stay clear without pulling you out of the world.</p>
           <ul class="scene-paths" aria-label="In-world paths on the live Rana site">
             <li>Ready Now</li>
             <li>Made To Order</li>

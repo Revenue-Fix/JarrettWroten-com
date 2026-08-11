@@ -2,17 +2,7 @@
 /**
  * Focused structural/behavior test for the complete Work passage.
  * Filesystem + HTML assertions (no network). Does not replace smoke-test.mjs.
- *
- * Residue: Work passage contract tripwire
- * Disposition: focused test or tripwire
- * Future consumer: any implementer changing work/index.html before merge
- * Activation: execute — node work-smoke-test.mjs
- * Behavioral check: asserts copy truth, four external actions, TAU, masks,
- * frozen asset hashes, motion-off terminal rest, and no remote runtime deps
- * Retirement: when the Work passage is retired or its acceptance contract is
- * formally replaced by a successor test that covers the same bans
- *
- * Activation: node work-smoke-test.mjs
+ * Run: node work-smoke-test.mjs
  */
 import fs from 'fs';
 import path from 'path';
@@ -53,6 +43,10 @@ ok(rootHtml.includes('CNAME') || fs.existsSync(path.join(ROOT, 'CNAME')), 'CNAME
 const cname = fs.readFileSync(path.join(ROOT, 'CNAME'), 'utf8').trim();
 ok(cname === 'jarrettwroten.com', 'CNAME content unchanged');
 
+// Public Work route must not ship a restrictive robots ban
+ok(!/<meta\s+name=["']robots["'][^>]*content=["'][^"']*noindex/i.test(workHtml), 'work route has no robots=noindex');
+ok(!/content=["']noindex["']/i.test(workHtml), 'work route has no noindex content');
+
 // Work page: owner-approved copy anchors + chrome
 const requiredPhrases = [
   'Jarrett Wroten',
@@ -60,7 +54,6 @@ const requiredPhrases = [
   'Motion on',
   'Rana Levy',
   'Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.',
-  'Ready Now, Made To Order, and Custom Consultation stay clear without pulling you out of the world.',
   'Ready Now',
   'Made To Order',
   'Custom Consultation',
@@ -78,6 +71,11 @@ const requiredPhrases = [
 for (const phrase of requiredPhrases) {
   ok(workHtml.includes(phrase), 'work copy: ' + phrase);
 }
+// Redundant Rana support sentence removed — path labels carry the three routes alone
+ok(
+  !workHtml.includes('Ready Now, Made To Order, and Custom Consultation stay clear without pulling you out of the world.'),
+  'Rana support sentence not repeated beside path labels'
+);
 
 // Forbidden relationship labels attached to Rana (ProRok may use redesign/concept)
 const ranaBlocks = [...workHtml.matchAll(/Rana Levy[\s\S]{0,280}/g)].map((m) => m[0]);
@@ -159,6 +157,15 @@ ok(workHtml.includes('Math.exp(-dt') || workHtml.includes('Math.exp(-dt /'), 'si
 ok(workHtml.includes('data-motion="off"') || workHtml.includes("data-motion\", on ?"), 'motion-off path present');
 ok(workHtml.includes('terminalHold') && workHtml.includes('--terminal-hold'), 'terminal progress mapping');
 ok(workHtml.includes('layer-terminal') && workHtml.includes('copy-terminal'), 'terminal world + copy rest');
+ok(workHtml.includes('terminal-return') && workHtml.includes('ga-000.webp'), 'terminal reuses corridor frame as return');
+ok(
+  /\.layer-terminal\s*\{[\s\S]*?--mask-open\s*:\s*max\s*\(\s*0\.001\s*,\s*var\(--terminal-hold\)\s*\)/.test(workHtml),
+  'terminal uses spatial mask aperture (not opacity primary)'
+);
+ok(
+  !/\.layer-terminal\s*\{[^}]*opacity\s*:\s*var\(--terminal-hold\)/.test(workHtml),
+  'terminal layer is not an opacity crossfade'
+);
 ok(
   /Motion-off snaps to four composed rests/i.test(workHtml) ||
     (workHtml.includes('terminalHold = 1') && workHtml.includes('terminalHold = 0')),
