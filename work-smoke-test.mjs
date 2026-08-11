@@ -419,6 +419,58 @@ ok(
   'terminal mask rebuilt as connected vertical tear'
 );
 
+// Live doorway lightning — structural tripwires (not rendered-pixel proof).
+// Consumer: visitor at /work/ opening with motion on; Codex exercises rendered motion separately.
+{
+  const corridorLayerMatch = workHtml.match(
+    /id="layer-corridor"[\s\S]*?(?=<div class="layer layer-rana"|id="layer-rana")/
+  );
+  const corridorLayer = corridorLayerMatch ? corridorLayerMatch[0] : '';
+  ok(!!corridorLayer, 'corridor layer markup extractable for lightning checks');
+  ok(
+    /class="corridor-lightning"/.test(corridorLayer) &&
+      /aria-hidden="true"/.test(corridorLayer.match(/<svg[\s\S]*?class="corridor-lightning"[\s\S]*?>/)?.[0] || corridorLayer) &&
+      /corridor-lightning[\s\S]*?aria-hidden="true"|aria-hidden="true"[\s\S]*?corridor-lightning/.test(corridorLayer),
+    'aria-hidden lightning overlay exists inside corridor layer'
+  );
+  ok(
+    /class="bolt bolt--left"/.test(corridorLayer) && /class="bolt bolt--right"/.test(corridorLayer),
+    'both left and right bolt groups exist'
+  );
+  ok(
+    (corridorLayer.match(/class="bolt-charge"/g) || []).length >= 2 &&
+      /@keyframes\s+boltChargeTravel/.test(workHtml) &&
+      /stroke-dashoffset/.test(workHtml) &&
+      /stroke-dasharray/.test(workHtml),
+    'charge travel is animated along bolt paths'
+  );
+  ok(
+    /attributeName=["']d["']/.test(corridorLayer) &&
+      (corridorLayer.match(/<animate\b[^>]*attributeName=["']d["']/g) || []).length >= 4,
+    'bolt geometry has path-morph motion (not only opacity)'
+  );
+  ok(
+    /html\[data-motion=["']off["']\]\s*\.corridor-lightning\s*\{[\s\S]*?display\s*:\s*none/.test(workHtml),
+    'motion-off disables/hides the animated lightning overlay'
+  );
+  ok(
+    /html\[data-motion=["']off["']\]\s*\.corridor-motion\s*\{\s*display\s*:\s*none/.test(workHtml) &&
+      /corridor-poster|ga-000\.webp/.test(workHtml),
+    'motion-off keeps baked corridor still (poster path remains)'
+  );
+  // Whole-scene flicker falsifier: .corridor-frame must not host a lightning keyframe animation.
+  ok(
+    !/\.corridor-frame\s*\{[^}]*\banimation\s*:/.test(workHtml) &&
+      !/@keyframes\s+[^{]*corridor[^{]*\{[^}]*(opacity|brightness|contrast|filter)/i.test(workHtml),
+    'corridor frame has no whole-scene lightning flicker animation'
+  );
+  ok(
+    /viewBox=["']0 0 1280 720["']/.test(corridorLayer) &&
+      /preserveAspectRatio=["']xMidYMid slice["']/.test(corridorLayer),
+    'lightning overlay is geometry-locked to 1280x720 media cover'
+  );
+}
+
 // node --check on this test file and smoke-test remain runnable
 const selfCheck = spawnSync(process.execPath, ['--check', path.join(ROOT, 'work-smoke-test.mjs')], { encoding: 'utf8' });
 ok(selfCheck.status === 0, 'work-smoke-test.mjs syntax');

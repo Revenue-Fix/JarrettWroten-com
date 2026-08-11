@@ -212,9 +212,74 @@
       radial-gradient(ellipse 70% 50% at 50% 50%, transparent 40%, rgba(4,10,12,.35) 100%);
     mix-blend-mode:screen;
   }
+  /* Live doorway lightning — full-bleed, locked to 1280×720 corridor media.
+     Charge travels each bolt; path topology morphs. Not a whole-frame flicker. */
+  .corridor-lightning{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:2;
+    pointer-events:none;
+    overflow:hidden;
+    transform:scale(calc(1 + var(--corridor-dark) * .06));
+    transform-origin:center center;
+    opacity:calc((1 - var(--corridor-dark)) * (1 - var(--rana-open)) * .94);
+    mix-blend-mode:screen;
+  }
+  .corridor-lightning .bolt-halo,
+  .corridor-lightning .bolt-core,
+  .corridor-lightning .bolt-charge,
+  .corridor-lightning .bolt-charge-soft{
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .corridor-lightning .bolt-halo{
+    stroke:rgba(94,231,240,.26);
+    stroke-width:6.5;
+  }
+  .corridor-lightning .bolt-core{
+    stroke:rgba(168,248,255,.4);
+    stroke-width:1.3;
+  }
+  .corridor-lightning .bolt-charge-soft{
+    stroke:rgba(94,231,240,.5);
+    stroke-width:4.2;
+    stroke-dasharray:18 82;
+    animation:boltChargeTravel 2.4s linear infinite;
+  }
+  .corridor-lightning .bolt-charge{
+    stroke:#E8FFFF;
+    stroke-width:2.05;
+    stroke-dasharray:10 90;
+    animation:boltChargeTravel 1.82s linear infinite;
+  }
+  /* Restrained left/right asymmetry — not a metronomic blink. */
+  .corridor-lightning .bolt--left .bolt-charge{
+    animation-duration:1.82s;
+    animation-delay:0s;
+  }
+  .corridor-lightning .bolt--left .bolt-charge-soft{
+    animation-duration:2.4s;
+    animation-delay:-.42s;
+  }
+  .corridor-lightning .bolt--right .bolt-charge{
+    animation-duration:2.18s;
+    animation-delay:-.92s;
+  }
+  .corridor-lightning .bolt--right .bolt-charge-soft{
+    animation-duration:2.76s;
+    animation-delay:-1.55s;
+  }
+  @keyframes boltChargeTravel{
+    from{stroke-dashoffset:0}
+    to{stroke-dashoffset:-100}
+  }
   .corridor-vignette{
     position:absolute;
     inset:0;
+    z-index:3;
     pointer-events:none;
     background:
       radial-gradient(ellipse 78% 68% at 50% 48%, transparent 35%, rgba(4,10,12,.28) 72%, rgba(4,10,12,.78) 100%);
@@ -847,6 +912,10 @@
     transform:scale(1);
   }
   html[data-motion="off"] .corridor-motion{display:none}
+  /* Motion-off keeps baked lightning in the corridor still; hide only the live overlay. */
+  html[data-motion="off"] .corridor-lightning{
+    display:none;
+  }
   html[data-motion="off"] .scroll-invitation::after{animation:none; opacity:.72}
   html[data-motion="off"] .rana-ring-stage{
     filter:none;
@@ -934,6 +1003,11 @@
     .nav-link[data-role="back-home"]{display:none}
 
     .corridor-frame{object-position:50% 48%}
+    /* Match corridor-frame object-position:50% 48% under cover crop so bolts hold the arch. */
+    .corridor-lightning{
+      top:-2%;
+      height:104%;
+    }
     .scroll-invitation{
       top:50%;
       font-size:clamp(1.35rem, 7vw, 1.7rem);
@@ -1157,6 +1231,94 @@
             autoplay muted loop playsinline preload="auto"
             width="1280" height="720"></video>
           <div class="corridor-energy"></div>
+          <!-- Geometry-locked live lightning: charge travels + bolt paths morph. Motion-off hides this; baked media lightning remains. -->
+          <svg
+            class="corridor-lightning"
+            id="corridor-lightning"
+            viewBox="0 0 1280 720"
+            preserveAspectRatio="xMidYMid slice"
+            aria-hidden="true"
+            focusable="false">
+            <defs>
+              <filter id="workBoltGlow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1.7" result="boltBlur"/>
+                <feMerge>
+                  <feMergeNode in="boltBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <!-- Left bolt lineage ≈ (590,237) → upper-left diagonal → x≈545..560 @ y≈375 -->
+            <g class="bolt bolt--left" filter="url(#workBoltGlow)">
+              <path class="bolt-halo" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+                <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+              </path>
+              <path class="bolt-core" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+                <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+              </path>
+              <path class="bolt-charge-soft" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+                <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+              </path>
+              <path class="bolt-charge" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+                <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+              </path>
+            </g>
+            <!-- Right bolt lineage ≈ (686,237) → upper-right diagonal → x≈720..735 @ y≈375 -->
+            <g class="bolt bolt--right" filter="url(#workBoltGlow)">
+              <path class="bolt-halo" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+                <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+              </path>
+              <path class="bolt-core" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+                <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+              </path>
+              <path class="bolt-charge-soft" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+                <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+              </path>
+              <path class="bolt-charge" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+                <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+              </path>
+            </g>
+          </svg>
           <div class="corridor-vignette"></div>
         </div>
 
