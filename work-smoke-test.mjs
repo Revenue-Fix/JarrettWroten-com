@@ -199,6 +199,14 @@ ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'
 ok(/aria-label="Back to Jarrett"/.test(workHtml), 'wordmark accessible back label');
 ok(workHtml.includes('no-js-route'), 'no-JS fallback on work route');
 ok(workHtml.includes('min-height:44px') || workHtml.includes('min-height: 44px'), '44px touch targets present');
+// Mobile Rana rest: square ring film is the full-bleed subject carrier so landscape
+// studio cover-crops cannot leave only a dark material field + residual badge.
+ok(
+  /@media\s*\(\s*max-width\s*:\s*720px\s*\)[\s\S]*?\.rana-ring-stage\s*\{[\s\S]*?width\s*:\s*100%[\s\S]*?height\s*:\s*100%/.test(workHtml) &&
+    /@media\s*\(\s*max-width\s*:\s*720px\s*\)[\s\S]*?\.rana-ring-stage\s*\{[\s\S]*?mix-blend-mode\s*:\s*normal/.test(workHtml) &&
+    /@media\s*\(\s*max-width\s*:\s*720px\s*\)[\s\S]*?subject carrier/.test(workHtml),
+  'mobile Rana ring stage is full-bleed subject carrier (not residual badge)'
+);
 
 // Composition anti-patterns (markup-level)
 ok(!/<iframe\b/i.test(workHtml), 'no iframe embeds');

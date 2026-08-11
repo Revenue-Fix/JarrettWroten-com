@@ -884,21 +884,49 @@
     .nav-link[data-role="back-home"]{display:none}
 
     .corridor-frame{object-position:50% 48%}
-    /* Centered cover crops — narrow portrait strips must not bisect the gem. */
-    .rana-studio{object-position:50% 48%}
-    .rana-opening{object-position:50% 50%}
+    /* Live mobile Rana: landscape studio cover crops can lose the gem into dark
+       material fields on the narrow strip. Square ring film is the subject carrier
+       (same pattern as ProRok portrait) — full-bleed material world, not a badge. */
+    .rana-studio{
+      object-position:50% 42%;
+      /* Atmospheric underlayer while the ring carrier holds the rest. */
+      filter:saturate(1.04) contrast(1.05) brightness(calc(.86 + var(--rana-hold) * .06));
+    }
+    .rana-opening{object-position:50% 48%}
     .rana-ring-stage{
-      right:-18%;
-      bottom:8%;
-      width:min(88vw, 24rem);
-      height:min(48vh, 22rem);
-      opacity:calc(var(--ring-presence) * .34);
-      filter:saturate(1.18) contrast(1.04) brightness(1.2) blur(.55px);
+      inset:0;
+      right:auto;
+      bottom:auto;
+      width:100%;
+      height:100%;
+      opacity:calc(var(--ring-presence) * .97);
+      transform:
+        translate3d(0, calc((1 - var(--ring-presence)) * 3%), 0)
+        scale(calc(1.02 + var(--ring-presence) * .02));
+      mix-blend-mode:normal;
+      filter:saturate(1.1) contrast(1.06) brightness(1.03);
+    }
+    .rana-ring-stage .media-fill{
+      object-position:48% 36%;
+      /* Soft full-bleed window only — no circular sticker edge. */
+      -webkit-mask-image:
+        radial-gradient(ellipse 130% 110% at 50% 40%, #000 0%, #000 58%, transparent 92%),
+        linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+      mask-image:
+        radial-gradient(ellipse 130% 110% at 50% 40%, #000 0%, #000 58%, transparent 92%),
+        linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+      -webkit-mask-composite:source-in;
+      mask-composite:intersect;
     }
     .rana-wash{
       background:
-        linear-gradient(180deg, rgba(4,10,12,.5) 0%, rgba(4,10,12,.12) 28%, rgba(4,10,12,.2) 55%, rgba(4,10,12,.78) 100%),
-        linear-gradient(90deg, rgba(4,10,12,.55) 0%, transparent 50%);
+        linear-gradient(180deg, rgba(4,10,12,.42) 0%, rgba(4,10,12,.08) 26%, rgba(4,10,12,.18) 54%, rgba(4,10,12,.8) 100%),
+        linear-gradient(90deg, rgba(4,10,12,.48) 0%, transparent 52%);
+    }
+    /* Motion-off must not reapply desktop residual screen-blend on the carrier. */
+    html[data-motion="off"] .rana-ring-stage{
+      mix-blend-mode:normal;
+      filter:saturate(1.08) contrast(1.05) brightness(1.02);
     }
     /* Live mobile ProRok: portrait is the subject carrier. Graded sakura paper is near-black;
        without a strong portrait stack the rest collapses to an empty sumi field. */
