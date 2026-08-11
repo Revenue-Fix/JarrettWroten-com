@@ -1,7 +1,16 @@
 #!/usr/bin/env node
 /**
- * Focused structural/behavior test for the Work passage visual oracle.
+ * Focused structural/behavior test for the complete Work passage.
  * Filesystem + HTML assertions (no network). Does not replace smoke-test.mjs.
+ *
+ * Residue: Work passage contract tripwire
+ * Disposition: focused test or tripwire
+ * Future consumer: any implementer changing work/index.html before merge
+ * Activation: execute — node work-smoke-test.mjs
+ * Behavioral check: asserts copy truth, four external actions, TAU, masks,
+ * frozen asset hashes, motion-off terminal rest, and no remote runtime deps
+ * Retirement: when the Work passage is retired or its acceptance contract is
+ * formally replaced by a successor test that covers the same bans
  *
  * Activation: node work-smoke-test.mjs
  */
@@ -44,17 +53,26 @@ ok(rootHtml.includes('CNAME') || fs.existsSync(path.join(ROOT, 'CNAME')), 'CNAME
 const cname = fs.readFileSync(path.join(ROOT, 'CNAME'), 'utf8').trim();
 ok(cname === 'jarrettwroten.com', 'CNAME content unchanged');
 
-// Work page: visible words only
+// Work page: owner-approved copy anchors + chrome
 const requiredPhrases = [
   'Jarrett Wroten',
   'Work',
   'Motion on',
   'Rana Levy',
-  'Custom gems turn heads.',
+  'Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.',
+  'Ready Now, Made To Order, and Custom Consultation stay clear without pulling you out of the world.',
+  'Ready Now',
+  'Made To Order',
+  'Custom Consultation',
   'Visit the live site',
   'Dylan Prorok',
-  'Independent redesign concept',
+  'A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.',
   'Independent redesign concept—not commissioned or approved by Dylan Prorok.',
+  'Visit the concept',
+  'Your site should feel like your work.',
+  'Send me your site. I’ll find the first place the path breaks and show you what I’d change.',
+  'Send me your site',
+  'Book a call',
   'Back to Jarrett',
 ];
 for (const phrase of requiredPhrases) {
@@ -72,11 +90,54 @@ ok(
   !/Rana Levy[^.]{0,80}\b(redesign|concept)\b/i.test(workHtml),
   'Rana not labeled redesign/concept'
 );
+// ProRok honesty: no healed-work / approval / commission implication beyond the disclosure
+ok(!/\bhealed[- ]work\b/i.test(workHtml), 'no healed-work claim');
+ok(
+  !/\b(Dylan Prorok|ProRok)\b[^.]{0,120}\b(approved|commissioned|hired|client)\b/i.test(
+    workHtml.replace(/Independent redesign concept—not commissioned or approved by Dylan Prorok\./g, '')
+  ),
+  'no ProRok approval/commission implication outside disclosure'
+);
 
-// Links
+// Links — four external actions + home
 ok(workHtml.includes('https://rana.jarrettwroten.com/'), 'Rana live site URL');
+ok(workHtml.includes('https://prorok.jarrettwroten.com/'), 'ProRok concept URL');
+ok(/href=["']mailto:Jarrett@JarrettWroten\.com["']/.test(workHtml), 'direct mailto action');
+ok(workHtml.includes('https://calendar.app.google/rTkdNoWpm6iRrXhB7'), 'booking URL');
 ok(/href="\.\.\/"/.test(workHtml) && workHtml.includes('Back to Jarrett'), 'route back home');
 ok(!/href=["']#["']/.test(workHtml), 'no dead hash-only links');
+ok(!/<form\b/i.test(workHtml), 'no email form — mailto + booking only');
+
+// No-JS truth path: identity → Rana → ProRok disclosure → terminal, with all four actions
+const noJsMatch = workHtml.match(/id="no-js-route"[\s\S]*?<\/main>/i);
+ok(!!noJsMatch, 'no-JS route block present');
+if (noJsMatch) {
+  const noJs = noJsMatch[0];
+  const markers = [
+    'Jarrett Wroten',
+    'Rana Levy',
+    'Ready Now',
+    'https://rana.jarrettwroten.com/',
+    'Dylan Prorok',
+    'https://prorok.jarrettwroten.com/',
+    'Independent redesign concept—not commissioned or approved by Dylan Prorok.',
+    'Your site should feel like your work.',
+    'mailto:Jarrett@JarrettWroten.com',
+    'https://calendar.app.google/rTkdNoWpm6iRrXhB7',
+  ];
+  let last = -1;
+  let orderOk = true;
+  for (const m of markers) {
+    const at = noJs.indexOf(m);
+    if (at < 0 || at < last) {
+      orderOk = false;
+      failures.push('no-JS word/action order missing or out of order: ' + m);
+      break;
+    }
+    last = at;
+  }
+  if (orderOk) ok(true, 'no-JS readable order + four external actions');
+}
 
 // Media wiring — local only, real posters, ambient video attrs
 ok(workHtml.includes('../assets/work/rana/studio-banner.mp4'), 'studio video path');
@@ -91,11 +152,18 @@ ok(/autoplay\s+muted\s+loop\s+playsinline\s+preload="metadata"/.test(workHtml), 
 ok(!/src=["']https?:\/\//i.test(workHtml), 'no remote script/media src on work route');
 ok(!/fonts\.gstatic\.com|fonts\.googleapis\.com/i.test(workHtml), 'no external font CDN');
 
-// Motion contract
+// Motion contract + terminal rest mapping
 ok(workHtml.includes('jw-motion') && workHtml.includes('data-motion'), 'motion preference wiring');
 ok(/var TAU = 0\.41/.test(workHtml) || /TAU\s*=\s*0\.41/.test(workHtml), 'work route TAU = 0.41');
 ok(workHtml.includes('Math.exp(-dt') || workHtml.includes('Math.exp(-dt /'), 'single time-constant smoothing');
 ok(workHtml.includes('data-motion="off"') || workHtml.includes("data-motion\", on ?"), 'motion-off path present');
+ok(workHtml.includes('terminalHold') && workHtml.includes('--terminal-hold'), 'terminal progress mapping');
+ok(workHtml.includes('layer-terminal') && workHtml.includes('copy-terminal'), 'terminal world + copy rest');
+ok(
+  /Motion-off snaps to four composed rests/i.test(workHtml) ||
+    (workHtml.includes('terminalHold = 1') && workHtml.includes('terminalHold = 0')),
+  'motion-off includes terminal composed rest'
+);
 ok(
   workHtml.includes('clip-path') ||
     workHtml.includes('-webkit-clip-path') ||
@@ -123,10 +191,12 @@ ok(workHtml.includes('scrollbar-width:none') || workHtml.includes('scrollbar-wid
 ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'), 'ProRok night-ink media grade');
 ok(/aria-label="Back to Jarrett"/.test(workHtml), 'wordmark accessible back label');
 ok(workHtml.includes('no-js-route'), 'no-JS fallback on work route');
+ok(workHtml.includes('min-height:44px') || workHtml.includes('min-height: 44px'), '44px touch targets present');
 
 // Composition anti-patterns (markup-level)
 ok(!/<iframe\b/i.test(workHtml), 'no iframe embeds');
 ok(!/browser mockup|device frame|carousel|modal preview/i.test(workHtml), 'no mockup/carousel language');
+ok(!/portfolio|case study|design award|award-winning/i.test(workHtml), 'no portfolio jargon');
 
 // Assets present with frozen hashes (Rana staged bytes)
 const ranaHashes = {

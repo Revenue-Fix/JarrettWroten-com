@@ -1,10 +1,17 @@
 <!doctype html>
+<!--
+  Maintained asset: complete local Work passage (corridor → Rana → ProRok → terminal).
+  Future consumer: Jarrett and visitors on the local Work route; implementers preserving the passage.
+  Activation: retrieve — open work/index.html (or /work/) in a browser from this repo root.
+  Behavioral check: node work-smoke-test.mjs (plus owner visual walk of desktop/mobile rests).
+  Retirement: when a successor Work route fully replaces this passage and its smoke contract.
+-->
 <html lang="en">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Work | Jarrett Wroten</title>
-<meta name="description" content="A first passage through selected work — from the corridor into Rana Levy’s gem studio, then to Dylan Prorok.">
+<meta name="description" content="A continuous craft route through selected work — from the corridor into Rana Levy’s gem studio, through Dylan Prorok, then a clear next step.">
 <meta name="robots" content="noindex">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
 <link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-000.webp">
@@ -110,6 +117,7 @@
     --prorok-open:0;
     --prorok-hold:0;
     --ring-presence:0;
+    --terminal-hold:0;
     --enter-veil:0;
   }
 
@@ -144,10 +152,11 @@
 
   .passage{
     position:relative;
-    height:340svh;
+    /* Corridor → Rana craft → ProRok craft → terminal — enough depth for rests without dead scroll. */
+    height:460svh;
     background:var(--void);
   }
-  html[data-motion="off"] .passage{height:300svh}
+  html[data-motion="off"] .passage{height:400svh}
 
   .viewport{
     position:sticky;
@@ -419,14 +428,42 @@
     background:
       linear-gradient(90deg, rgba(11,8,7,.78) 0%, rgba(11,8,7,.35) 26%, rgba(11,8,7,.05) 55%, rgba(11,8,7,.28) 100%),
       linear-gradient(180deg, rgba(11,8,7,.42) 0%, transparent 20%, transparent 68%, rgba(11,8,7,.7) 100%);
+    opacity:calc(1 - var(--terminal-hold) * .55);
+  }
+
+  /* ── Terminal rest: continuation after both project worlds — not a card or footer ── */
+  .layer-terminal{
+    z-index:4;
+    visibility:hidden;
+    opacity:var(--terminal-hold);
+    background:var(--sumi);
+    pointer-events:none;
+  }
+  .layer-terminal.is-revealing{visibility:visible}
+  .terminal-atmosphere{
+    position:absolute;
+    inset:0;
+    background:
+      radial-gradient(ellipse 70% 55% at 48% 42%, rgba(8,14,16,.2) 0%, rgba(4,10,12,.72) 58%, rgba(4,10,12,.94) 100%),
+      linear-gradient(180deg, rgba(4,10,12,.55) 0%, rgba(4,10,12,.2) 34%, rgba(4,10,12,.78) 100%);
+  }
+  .terminal-threshold{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:calc(.35 + var(--terminal-hold) * .65);
+    background:
+      radial-gradient(ellipse 46% 28% at 42% 68%, rgba(217,122,58,.22) 0%, transparent 68%),
+      radial-gradient(ellipse 28% 18% at 58% 72%, rgba(94,231,240,.08) 0%, transparent 70%);
+    mix-blend-mode:screen;
   }
 
   .grain{
     position:absolute;
     inset:-20%;
-    z-index:4;
+    z-index:5;
     pointer-events:none;
-    opacity:calc(.1 + var(--prorok-open) * .08);
+    opacity:calc(.1 + var(--prorok-open) * .06 + var(--terminal-hold) * .04);
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
     background-size:180px 180px;
   }
@@ -450,7 +487,8 @@
   .ui > *{pointer-events:none}
   .site-header,
   .scene-copy,
-  .scene-link{
+  .scene-link,
+  .scene-action{
     pointer-events:auto;
   }
 
@@ -516,11 +554,26 @@
     transform:translate3d(0, calc((1 - var(--rana-hold)) * 1.4rem), 0);
     filter:blur(calc((1 - var(--rana-hold)) * 4px));
   }
+  /* ProRok rest: distinct beat — longer craft line, vermilion action, disclosure under the link. */
   .scene-copy--prorok{
     color:var(--paper);
-    opacity:var(--prorok-hold);
+    left:var(--gutter);
+    right:auto;
+    bottom:clamp(1.8rem, 7.5vh, 4rem);
+    max-width:min(30rem, 78vw);
+    opacity:calc(var(--prorok-hold) * (1 - var(--terminal-hold) * 1.2));
     transform:translate3d(0, calc((1 - var(--prorok-hold)) * 1.5rem), 0);
     filter:blur(calc((1 - var(--prorok-hold)) * 4px));
+  }
+  .scene-copy--terminal{
+    color:var(--ink);
+    left:var(--gutter);
+    right:var(--gutter);
+    bottom:clamp(2rem, 9vh, 4.6rem);
+    max-width:min(36rem, 90vw);
+    opacity:var(--terminal-hold);
+    transform:translate3d(0, calc((1 - var(--terminal-hold)) * 1.2rem), 0);
+    filter:blur(calc((1 - var(--terminal-hold)) * 3px));
   }
   .scene-name{
     margin:0 0 .55rem;
@@ -531,18 +584,63 @@
     line-height:.96;
     letter-spacing:0;
   }
+  .scene-copy--prorok .scene-name{
+    font-size:clamp(2.15rem, 4.8vw, 3.6rem);
+    margin-bottom:.7rem;
+  }
+  .scene-copy--terminal .scene-name{
+    font-size:clamp(2.2rem, 5vw, 3.7rem);
+    max-width:16ch;
+    margin-bottom:.75rem;
+  }
   .scene-line{
+    margin:0 0 .85rem;
+    font-family:var(--reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(1.05rem,1.05rem + .35vw,1.3rem);
+    line-height:1.45;
+    letter-spacing:0;
+    color:var(--ink-soft);
+    max-width:34ch;
+  }
+  .scene-copy--prorok .scene-line{
+    color:var(--paper-dim);
+    max-width:32ch;
+    margin-bottom:1rem;
+  }
+  .scene-copy--terminal .scene-line{
+    max-width:36ch;
+    margin-bottom:1.15rem;
+  }
+  .scene-support{
     margin:0 0 1rem;
     font-family:var(--reading);
     font-weight:400;
     font-synthesis:none;
-    font-size:clamp(1.05rem,1.05rem + .35vw,1.35rem);
-    line-height:1.45;
+    font-size:clamp(1rem, 1rem + .2vw, 1.12rem);
+    line-height:1.5;
+    letter-spacing:0;
+    color:var(--ink-mute);
+    max-width:36ch;
+  }
+  /* In-world paths — plain reading lines, never pills or cards. */
+  .scene-paths{
+    margin:0 0 1.05rem;
+    padding:0;
+    list-style:none;
+    font-family:var(--reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(1.02rem, 1.02rem + .18vw, 1.14rem);
+    line-height:1.55;
     letter-spacing:0;
     color:var(--ink-soft);
-    max-width:28ch;
   }
-  .scene-copy--prorok .scene-line{color:var(--paper-dim)}
+  .scene-paths li{
+    margin:0;
+    padding:0;
+  }
   .scene-link{
     display:inline-flex;
     align-items:center;
@@ -556,20 +654,10 @@
   }
   .scene-copy--prorok .scene-link{
     color:var(--paper);
-    border-bottom-color:rgba(178,58,44,.7);
-    pointer-events:none;
-    border-bottom:0;
-    font-family:var(--reading);
-    font-weight:400;
-    font-style:italic;
-    font-synthesis:none;
-    font-size:clamp(.95rem, .95rem + .15vw, 1.05rem);
-    line-height:1.45;
-    max-width:36ch;
-    min-height:0;
+    border-bottom-color:rgba(178,58,44,.72);
   }
   .scene-disclosure{
-    margin:.85rem 0 0;
+    margin:.7rem 0 0;
     font-family:var(--reading);
     font-weight:400;
     font-style:italic;
@@ -580,6 +668,26 @@
     color:var(--paper-dim);
     max-width:38ch;
   }
+  .scene-actions{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:.35rem 1.6rem;
+    margin:0;
+    padding:0;
+  }
+  .scene-action{
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
+    color:var(--ink);
+    border-bottom:1px solid rgba(217,122,58,.7);
+  }
+  .scene-action:hover{color:var(--ink)}
 
   .progress-hairline{
     position:absolute;
@@ -602,7 +710,8 @@
   html[data-motion="off"] .corridor-frame,
   html[data-motion="off"] .rana-studio,
   html[data-motion="off"] .rana-ring-stage,
-  html[data-motion="off"] .scene-copy{
+  html[data-motion="off"] .scene-copy,
+  html[data-motion="off"] .layer-terminal{
     transition:none !important;
     filter:none;
   }
@@ -616,6 +725,9 @@
   }
   html[data-motion="off"] .scene-copy{
     transform:none;
+  }
+  html[data-motion="off"] .layer-terminal{
+    opacity:var(--terminal-hold);
   }
 
   /* No-JS readable path */
@@ -673,8 +785,9 @@
   }
 
   @media (max-width:720px){
-    .passage{height:360svh}
-    html[data-motion="off"] .passage{height:320svh}
+    /* Mobile is a separately composed full-bleed passage, not scaled desktop. */
+    .passage{height:520svh}
+    html[data-motion="off"] .passage{height:460svh}
 
     .site-header{
       min-height:3.6rem;
@@ -738,28 +851,62 @@
         linear-gradient(180deg, rgba(11,8,7,.5) 0%, rgba(11,8,7,.12) 26%, rgba(11,8,7,.28) 56%, rgba(11,8,7,.86) 100%),
         linear-gradient(90deg, rgba(11,8,7,.55) 0%, rgba(11,8,7,.12) 55%, rgba(11,8,7,.4) 100%);
     }
+    .terminal-threshold{
+      background:
+        radial-gradient(ellipse 70% 32% at 50% 74%, rgba(217,122,58,.26) 0%, transparent 70%),
+        radial-gradient(ellipse 40% 22% at 48% 62%, rgba(94,231,240,.08) 0%, transparent 72%);
+    }
     .scene-copy{
       left:var(--gutter);
       right:var(--gutter);
       bottom:calc(1.2rem + env(safe-area-inset-bottom));
       max-width:none;
     }
+    .scene-copy--prorok{
+      max-width:none;
+    }
+    .scene-copy--terminal{
+      max-width:none;
+    }
     .scene-name{
       font-size:clamp(2.05rem,10vw,2.7rem);
     }
+    .scene-copy--prorok .scene-name{
+      font-size:clamp(1.95rem, 9.2vw, 2.5rem);
+    }
+    .scene-copy--terminal .scene-name{
+      font-size:clamp(1.95rem, 9vw, 2.55rem);
+      max-width:14ch;
+    }
     .scene-line{
       font-size:1.05rem;
-      max-width:22ch;
+      max-width:28ch;
+    }
+    .scene-copy--prorok .scene-line{
+      max-width:30ch;
+    }
+    .scene-support{
+      max-width:32ch;
+      font-size:1rem;
     }
     .scene-disclosure{
-      max-width:30ch;
+      max-width:32ch;
       font-size:.95rem;
+    }
+    .scene-actions{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:.15rem;
+    }
+    .scene-action{
+      min-height:2.75rem;
     }
   }
 
   @media (max-width:380px){
     .nav-link[data-role="work-label"]{display:none}
     .scene-name{font-size:1.9rem}
+    .scene-copy--terminal .scene-name{font-size:1.85rem}
   }
 </style>
 </head>
@@ -794,18 +941,24 @@
       <p class="wordmark">Jarrett Wroten</p>
       <p><a href="../">Back to Jarrett</a> · Work</p>
       <h1>Rana Levy</h1>
-      <p>Custom gems turn heads.</p>
+      <p>Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.</p>
+      <p>Ready Now, Made To Order, and Custom Consultation stay clear without pulling you out of the world.</p>
       <img class="no-js-poster" src="../assets/work/rana/studio-poster.jpg" alt="Rana Levy at the bench in her gem studio." width="1920" height="960">
       <p><a href="https://rana.jarrettwroten.com/">Visit the live site</a></p>
       <h2>Dylan Prorok</h2>
-      <p>Independent redesign concept</p>
+      <p>A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.</p>
       <img class="no-js-poster" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="Dylan Prorok tattooing in the studio." width="617" height="849">
+      <p><a href="https://prorok.jarrettwroten.com/">Visit the concept</a></p>
       <p>Independent redesign concept—not commissioned or approved by Dylan Prorok.</p>
+      <h2>Your site should feel like your work.</h2>
+      <p>Send me your site. I’ll find the first place the path breaks and show you what I’d change.</p>
+      <p><a href="mailto:Jarrett@JarrettWroten.com">Send me your site</a></p>
+      <p><a href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" rel="noopener">Book a call</a></p>
     </div>
   </main>
 
   <div class="passage" id="passage">
-    <div class="viewport" id="viewport" aria-label="Work passage from corridor into Rana and the ProRok threshold">
+    <div class="viewport" id="viewport" aria-label="Work passage from corridor through Rana and ProRok to the next step">
       <div class="world-stack" aria-hidden="true">
         <div class="layer layer-corridor" id="layer-corridor">
           <img class="corridor-frame" src="../assets/golden-arrival/frames/ga-000.webp" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
@@ -858,6 +1011,11 @@
           </div>
         </div>
 
+        <div class="layer layer-terminal" id="layer-terminal" aria-hidden="true">
+          <div class="terminal-atmosphere"></div>
+          <div class="terminal-threshold"></div>
+        </div>
+
         <div class="grain"></div>
         <div class="enter-veil" id="enter-veil"></div>
       </div>
@@ -885,14 +1043,30 @@
 
         <div class="scene-copy scene-copy--rana" id="copy-rana">
           <h1 class="scene-name">Rana Levy</h1>
-          <p class="scene-line">Custom gems turn heads.</p>
+          <p class="scene-line">Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.</p>
+          <p class="scene-support">Ready Now, Made To Order, and Custom Consultation stay clear without pulling you out of the world.</p>
+          <ul class="scene-paths" aria-label="In-world paths on the live Rana site">
+            <li>Ready Now</li>
+            <li>Made To Order</li>
+            <li>Custom Consultation</li>
+          </ul>
           <a class="scene-link" href="https://rana.jarrettwroten.com/" rel="noopener">Visit the live site</a>
         </div>
 
         <div class="scene-copy scene-copy--prorok" id="copy-prorok">
           <h2 class="scene-name">Dylan Prorok</h2>
-          <p class="scene-line">Independent redesign concept</p>
+          <p class="scene-line">A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.</p>
+          <a class="scene-link" href="https://prorok.jarrettwroten.com/" rel="noopener">Visit the concept</a>
           <p class="scene-disclosure">Independent redesign concept—not commissioned or approved by Dylan Prorok.</p>
+        </div>
+
+        <div class="scene-copy scene-copy--terminal" id="copy-terminal">
+          <h2 class="scene-name">Your site should feel like your work.</h2>
+          <p class="scene-line">Send me your site. I’ll find the first place the path breaks and show you what I’d change.</p>
+          <div class="scene-actions">
+            <a class="scene-action" href="mailto:Jarrett@JarrettWroten.com">Send me your site</a>
+            <a class="scene-action" href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" rel="noopener">Book a call</a>
+          </div>
         </div>
       </div>
     </div>
@@ -910,12 +1084,14 @@
   var motionToggle = document.getElementById("motion-toggle");
   var copyRana = document.getElementById("copy-rana");
   var copyProrok = document.getElementById("copy-prorok");
+  var copyTerminal = document.getElementById("copy-terminal");
 
   var studioVideo = document.getElementById("rana-studio-video");
   var ringVideo = document.getElementById("rana-ring-video");
   var inkVideo = document.getElementById("prorok-ink-video");
   var layerRana = document.getElementById("layer-rana");
   var layerProrok = document.getElementById("layer-prorok");
+  var layerTerminal = document.getElementById("layer-terminal");
 
   var motionOn = root.getAttribute("data-motion") !== "off";
   var progressTarget = 0;
@@ -925,24 +1101,27 @@
   var videosArmed = false;
 
   /* Scroll map — continuous depth with composed rests.
-     0.00–0.16 corridor entry
-     0.12–0.40 corridor opens into Rana
-     0.36–0.58 Rana rest
-     0.54–0.82 Rana erases into ProRok
-     0.78–1.00 ProRok threshold rest */
+     0.00–0.12 corridor entry + amber threshold
+     0.10–0.28 corridor opens into Rana (faceted takeover)
+     0.24–0.46 Rana craft rest (hand, cut, light + paths)
+     0.44–0.62 Rana erases into ProRok (organic ink)
+     0.58–0.78 ProRok craft rest (scale, body flow)
+     0.76–1.00 terminal world after both projects */
   var MAP = {
-    corridorDark: { a: 0.08, b: 0.36 },
-    ranaOpen:     { a: 0.12, b: 0.40 },
-    ranaHold:     { a: 0.34, b: 0.48, c: 0.58, d: 0.78 },
-    ring:         { a: 0.38, b: 0.52, c: 0.60, d: 0.78 },
-    prorokOpen:   { a: 0.56, b: 0.82 },
-    prorokHold:   { a: 0.76, b: 0.90 }
+    corridorDark: { a: 0.06, b: 0.24 },
+    ranaOpen:     { a: 0.10, b: 0.28 },
+    ranaHold:     { a: 0.22, b: 0.30, c: 0.44, d: 0.56 },
+    ring:         { a: 0.26, b: 0.34, c: 0.46, d: 0.56 },
+    prorokOpen:   { a: 0.46, b: 0.64 },
+    prorokHold:   { a: 0.58, b: 0.66, c: 0.76, d: 0.88 },
+    terminalHold: { a: 0.78, b: 0.90 }
   };
 
   var STILL = {
     corridor: 0.04,
-    rana: 0.48,
-    prorok: 0.92
+    rana: 0.38,
+    prorok: 0.70,
+    terminal: 0.94
   };
 
   function clamp(v, a, b) {
@@ -1012,16 +1191,23 @@
     var ranaHold = plateau(p, MAP.ranaHold.a, MAP.ranaHold.b, MAP.ranaHold.c, MAP.ranaHold.d);
     var ring = plateau(p, MAP.ring.a, MAP.ring.b, MAP.ring.c, MAP.ring.d);
     var prorokOpen = range(p, MAP.prorokOpen.a, MAP.prorokOpen.b);
-    var prorokHold = range(p, MAP.prorokHold.a, MAP.prorokHold.b);
+    var prorokHold = plateau(p, MAP.prorokHold.a, MAP.prorokHold.b, MAP.prorokHold.c, MAP.prorokHold.d);
+    var terminalHold = range(p, MAP.terminalHold.a, MAP.terminalHold.b);
 
-    /* Motion-off snaps to three composed rests */
+    /* Motion-off snaps to four composed rests: corridor, Rana, ProRok, terminal */
     if (!motionOn) {
-      if (p < 0.28) {
-        corridorDark = 0.08; ranaOpen = 0; ranaHold = 0; ring = 0; prorokOpen = 0; prorokHold = 0;
-      } else if (p < 0.68) {
-        corridorDark = 1; ranaOpen = 1; ranaHold = 1; ring = 1; prorokOpen = 0; prorokHold = 0;
+      if (p < 0.22) {
+        corridorDark = 0.08; ranaOpen = 0; ranaHold = 0; ring = 0;
+        prorokOpen = 0; prorokHold = 0; terminalHold = 0;
+      } else if (p < 0.48) {
+        corridorDark = 1; ranaOpen = 1; ranaHold = 1; ring = 1;
+        prorokOpen = 0; prorokHold = 0; terminalHold = 0;
+      } else if (p < 0.74) {
+        corridorDark = 1; ranaOpen = 1; ranaHold = 0.12; ring = 0;
+        prorokOpen = 1; prorokHold = 1; terminalHold = 0;
       } else {
-        corridorDark = 1; ranaOpen = 1; ranaHold = 0.15; ring = 0; prorokOpen = 1; prorokHold = 1;
+        corridorDark = 1; ranaOpen = 1; ranaHold = 0; ring = 0;
+        prorokOpen = 1; prorokHold = 0.18; terminalHold = 1;
       }
     }
 
@@ -1031,17 +1217,22 @@
     root.style.setProperty("--ring-presence", ring.toFixed(4));
     root.style.setProperty("--prorok-open", prorokOpen.toFixed(4));
     root.style.setProperty("--prorok-hold", prorokHold.toFixed(4));
+    root.style.setProperty("--terminal-hold", terminalHold.toFixed(4));
 
     /* Hard reveal gate: layers stay fully absent at open === 0 (visibility),
        then spatially unmask once progress actually begins. No crossfade. */
     if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
     if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
+    if (layerTerminal) layerTerminal.classList.toggle("is-revealing", terminalHold > 0);
 
     if (copyRana) {
       copyRana.style.pointerEvents = ranaHold > 0.55 && prorokOpen < 0.45 ? "auto" : "none";
     }
     if (copyProrok) {
-      copyProrok.style.pointerEvents = prorokHold > 0.55 ? "auto" : "none";
+      copyProrok.style.pointerEvents = prorokHold > 0.55 && terminalHold < 0.45 ? "auto" : "none";
+    }
+    if (copyTerminal) {
+      copyTerminal.style.pointerEvents = terminalHold > 0.55 ? "auto" : "none";
     }
   }
 
@@ -1123,11 +1314,11 @@
       return;
     }
     armVideos();
-    if (p > 0.18 && p < 0.82) playSafe(studioVideo);
+    if (p > 0.14 && p < 0.62) playSafe(studioVideo);
     else pauseSafe(studioVideo);
-    if (p > 0.36 && p < 0.78) playSafe(ringVideo);
+    if (p > 0.26 && p < 0.56) playSafe(ringVideo);
     else pauseSafe(ringVideo);
-    if (p > 0.58) playSafe(inkVideo);
+    if (p > 0.48 && p < 0.92) playSafe(inkVideo);
     else pauseSafe(inkVideo);
   }
 
