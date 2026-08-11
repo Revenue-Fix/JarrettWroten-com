@@ -170,6 +170,22 @@ ok(
   /class="terminal-return"\s+src="\.\.\/assets\/golden-arrival\/frames\/ga-360\.webp"/.test(workHtml),
   'terminal resolves to approved Jarrett close-up'
 );
+// Focused tripwire — canonical: work-smoke-test.mjs; consumer/activation: Work release
+// preflight executes `node work-smoke-test.mjs`; check: native-scale headroom plus no central
+// amber mouth cast; retire when the terminal portrait carrier is replaced.
+ok(
+  /\.terminal-return\s*\{[\s\S]*?object-position\s*:\s*45% 0%[\s\S]*?transform\s*:\s*scale\(calc\(1\.08 - var\(--terminal-hold\) \* \.08\)\)/.test(workHtml),
+  'terminal portrait preserves headroom and settles to native scale'
+);
+ok(
+  /html\[data-motion="off"\] \.terminal-return\s*\{[\s\S]*?transform\s*:\s*scale\(1\)/.test(workHtml),
+  'motion-off terminal portrait remains at native scale'
+);
+ok(
+  !workHtml.includes('at 50% 62%, rgba(217,122,58,.34)') &&
+    !workHtml.includes('at 50% 64%, rgba(217,122,58,.32)'),
+  'terminal arrival glows do not cross Jarrett mouth and beard'
+);
 ok(
   /class="scroll-invitation"[\s\S]*?<span>Scroll<\/span>/.test(workHtml) &&
     /--entry-cue/.test(workHtml),

@@ -478,20 +478,22 @@
     will-change:mask-image,-webkit-mask-image;
   }
   .layer-terminal.is-revealing{visibility:visible}
-  /* The approved smiling portrait is the earned human arrival. */
+  /* Maintained asset — canonical: work/index.html; consumer/activation: /work/ auto-loads
+     this earned human arrival; check: rendered terminal rests at wide + mobile viewports;
+     retire when the terminal portrait or its full-bleed carrier is replaced. */
   .terminal-return{
     position:absolute;
     inset:0;
     width:100%;
     height:100%;
     object-fit:cover;
-    /* Keep Jarrett dominant while leaving the left copy field readable. */
-    object-position:45% 50%;
-    transform:scale(calc(1.2 - var(--terminal-hold) * .1));
+    /* Preserve the complete head at wide viewports; the source already carries the close-up. */
+    object-position:45% 0%;
+    transform:scale(calc(1.08 - var(--terminal-hold) * .08));
     filter:
-      saturate(calc(.96 + var(--terminal-hold) * .06))
+      saturate(calc(.94 + var(--terminal-hold) * .06))
       brightness(calc(.82 + var(--terminal-hold) * .18))
-      contrast(calc(1.04 + var(--terminal-hold) * .05));
+      contrast(calc(1.02 + var(--terminal-hold) * .02));
     will-change:transform,filter;
   }
   .terminal-energy{
@@ -500,8 +502,8 @@
     pointer-events:none;
     opacity:calc(.45 + var(--terminal-hold) * .5);
     background:
-      radial-gradient(ellipse 38% 34% at 50% 48%, rgba(94,231,240,.22) 0%, transparent 62%),
-      radial-gradient(ellipse 28% 22% at 50% 62%, rgba(217,122,58,.34) 0%, transparent 68%),
+      radial-gradient(ellipse 34% 34% at 8% 72%, rgba(94,231,240,.18) 0%, transparent 66%),
+      radial-gradient(ellipse 30% 28% at 92% 76%, rgba(217,122,58,.14) 0%, transparent 70%),
       radial-gradient(ellipse 70% 48% at 50% 52%, transparent 42%, rgba(4,10,12,.28) 100%);
     mix-blend-mode:screen;
   }
@@ -511,9 +513,8 @@
     pointer-events:none;
     opacity:calc(.4 + var(--terminal-hold) * .6);
     background:
-      radial-gradient(ellipse 42% 26% at 50% 64%, rgba(217,122,58,.32) 0%, transparent 70%),
-      radial-gradient(ellipse 22% 16% at 50% 58%, rgba(255,214,170,.14) 0%, transparent 68%),
-      radial-gradient(ellipse 36% 20% at 48% 46%, rgba(94,231,240,.12) 0%, transparent 72%);
+      radial-gradient(ellipse 34% 18% at 8% 94%, rgba(217,122,58,.16) 0%, transparent 72%),
+      radial-gradient(ellipse 34% 18% at 92% 94%, rgba(94,231,240,.1) 0%, transparent 72%);
     mix-blend-mode:screen;
   }
   .terminal-vignette{
@@ -842,8 +843,8 @@
   }
   html[data-motion="off"] .terminal-return{
     /* Hold the return grade at rest — not a motion soft-tail. */
-    filter:saturate(1.02) brightness(1) contrast(1.09);
-    transform:scale(1.1);
+    filter:saturate(1) brightness(1) contrast(1.04);
+    transform:scale(1);
   }
   html[data-motion="off"] .corridor-motion{display:none}
   html[data-motion="off"] .scroll-invitation::after{animation:none; opacity:.72}
@@ -1019,20 +1020,19 @@
         linear-gradient(90deg, rgba(11,8,7,.42) 0%, rgba(11,8,7,.08) 48%, rgba(11,8,7,.3) 100%);
     }
     .terminal-return{
-      object-position:45% 50%;
-      transform:scale(calc(1.2 - var(--terminal-hold) * .1));
+      object-position:45% 0%;
+      transform:scale(calc(1.08 - var(--terminal-hold) * .08));
     }
     .terminal-energy{
       background:
-        radial-gradient(ellipse 48% 36% at 50% 46%, rgba(94,231,240,.2) 0%, transparent 64%),
-        radial-gradient(ellipse 36% 24% at 50% 66%, rgba(217,122,58,.3) 0%, transparent 70%),
+        radial-gradient(ellipse 52% 34% at 0% 76%, rgba(94,231,240,.16) 0%, transparent 68%),
+        radial-gradient(ellipse 52% 30% at 100% 78%, rgba(217,122,58,.12) 0%, transparent 72%),
         radial-gradient(ellipse 78% 52% at 50% 52%, transparent 40%, rgba(4,10,12,.32) 100%);
     }
     .terminal-threshold{
       background:
-        radial-gradient(ellipse 58% 28% at 50% 68%, rgba(217,122,58,.3) 0%, transparent 70%),
-        radial-gradient(ellipse 34% 18% at 50% 58%, rgba(255,214,170,.12) 0%, transparent 68%),
-        radial-gradient(ellipse 40% 20% at 48% 44%, rgba(94,231,240,.1) 0%, transparent 72%);
+        radial-gradient(ellipse 58% 20% at 0% 96%, rgba(217,122,58,.14) 0%, transparent 72%),
+        radial-gradient(ellipse 58% 20% at 100% 96%, rgba(94,231,240,.08) 0%, transparent 72%);
     }
     .terminal-wash{
       background:
