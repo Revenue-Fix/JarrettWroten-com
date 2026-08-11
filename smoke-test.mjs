@@ -907,6 +907,148 @@ ok(
     );
   }
 
+  /*
+   * FOCUSED TRIPWIRE — threshold Work invitation under Services.
+   * Canonical path: smoke-test.mjs Work-invitation block below.
+   * Future consumer: maintainer editing the free-fix invite, Services list, or Work exit.
+   * Activation: execute — `node smoke-test.mjs`.
+   * Behavioral check: exact "See my recent work" copy once in desktop threshold Services
+   *   pocket and once in the mobile Services beat; both href="work/" with shared
+   *   data-work-exit binding; source order Services list → invitation → contact;
+   *   44px + focus-visible authored; header/no-JS Work + jw-work-enter preserved.
+   *   Source-shape only — does not prove rendered geometry or pixel hit boxes.
+   * Retirement: retire only when the invitation is intentionally removed/relocated
+   *   and an equal consumer-facing conversion check supersedes this block.
+   */
+  {
+    const INVITE_COPY = 'See my recent work';
+    const inviteRe = /See my recent work/g;
+    const inviteHits = html.match(inviteRe) || [];
+    ok(inviteHits.length === 2, 'Work invitation copy appears exactly twice (desktop + mobile; got ' + inviteHits.length + ')');
+
+    const desktopServicesBlock = desktopSrc.match(
+      /class="threshold-services"[\s\S]*?<\/aside>/
+    );
+    const desktopServicesSrc = desktopServicesBlock ? desktopServicesBlock[0] : '';
+    ok(
+      desktopServicesSrc.includes(INVITE_COPY) &&
+        /class="threshold-work-invite"/.test(desktopServicesSrc) &&
+        /href="work\/"/.test(desktopServicesSrc) &&
+        /data-work-exit/.test(desktopServicesSrc),
+      'desktop threshold Services pocket carries exact invitation with href=work/ and data-work-exit'
+    );
+    ok(
+      ((desktopServicesSrc.match(inviteRe) || []).length === 1),
+      'desktop threshold carries invitation copy exactly once'
+    );
+
+    // Source order: Services list → invitation → threshold-bottom contact block.
+    {
+      const listClose = desktopSrc.indexOf('</ol>', desktopSrc.indexOf('threshold-services-list'));
+      const inviteAt = desktopSrc.indexOf('class="threshold-work-invite"');
+      const bottomAt = desktopSrc.indexOf('class="threshold-bottom"');
+      ok(
+        listClose !== -1 &&
+          inviteAt > listClose &&
+          bottomAt > inviteAt &&
+          !/class="threshold-bottom"[\s\S]*?class="threshold-work-invite"/.test(desktopSrc),
+        'desktop source order is Services list → Work invitation → threshold contact block'
+      );
+    }
+
+    const mobileServicesSrc = mobileServices ? mobileServices[0] : '';
+    ok(
+      mobileServicesSrc.includes(INVITE_COPY) &&
+        /class="mobile-work-invite"/.test(mobileServicesSrc) &&
+        /href="work\/"/.test(mobileServicesSrc) &&
+        /data-work-exit/.test(mobileServicesSrc),
+      'mobile Services beat carries exact invitation with href=work/ and data-work-exit'
+    );
+    ok(
+      ((mobileServicesSrc.match(inviteRe) || []).length === 1),
+      'mobile Services beat carries invitation copy exactly once'
+    );
+    // Source order: five service rows → invitation; no new beat.
+    {
+      const listClose = mobileServicesSrc.indexOf('</ol>');
+      const inviteAt = mobileServicesSrc.indexOf('class="mobile-work-invite"');
+      const liCount = (mobileServicesSrc.match(/<li>/g) || []).length;
+      ok(
+        liCount === 5 && listClose !== -1 && inviteAt > listClose,
+        'mobile source order is five Services rows → Work invitation'
+      );
+    }
+    {
+      const beatIds = [...mobileSrc.matchAll(/data-mobile-beat="([^"]+)"/g)].map((m) => m[1]);
+      ok(
+        beatIds.length === 8 &&
+          JSON.stringify(beatIds) ===
+            JSON.stringify([
+              'leak',
+              'method-look',
+              'method-find',
+              'method-build',
+              'proof',
+              'jarrett',
+              'threshold',
+              'services',
+            ]),
+        'Work invitation introduces no new mobile beat (eight-beat journey preserved)'
+      );
+    }
+
+    ok(
+      /\.threshold-work-invite\s*\{[^}]*min-height:\s*44px/.test(html) &&
+        /\.mobile-work-invite\s*\{[^}]*min-height:\s*44px/.test(html),
+      'Work invitation authors 44px minimum pointer targets (source-shape; not pixel proof)'
+    );
+    ok(
+      /\.threshold-work-invite:focus-visible/.test(html) &&
+        /\.mobile-work-invite:focus-visible/.test(html),
+      'Work invitation authors visible keyboard focus states (source-shape; not pixel proof)'
+    );
+    ok(
+      /\.threshold-work-invite\s*\{[^}]*font-family:\s*var\(--text\)/.test(html) &&
+        /\.mobile-work-invite\s*\{[^}]*font-family:\s*var\(--text\)/.test(html) &&
+        /\.threshold-work-invite\s*\{[^}]*letter-spacing:\s*0/.test(html) &&
+        !/\.threshold-work-invite\s*\{[^}]*text-transform:\s*uppercase/.test(html),
+      'Work invitation uses editorial typography (var(--text), normal tracking, no all-caps)'
+    );
+    ok(
+      /work-invite-arrow/.test(html) &&
+        /\.threshold-work-invite::after/.test(html) &&
+        /\.mobile-work-invite::after/.test(html),
+      'Work invitation authors directional affordance (arrow + charge line)'
+    );
+
+    // Shared authored Work-exit binding: header + invitations; one implementation.
+    ok(
+      /id="work-link"/.test(html) &&
+        /querySelectorAll\s*\(\s*["']#work-link,\s*a\[data-work-exit\]["']\s*\)/.test(html) &&
+        /sessionStorage\.setItem\s*\(\s*["']jw-work-enter["']\s*,\s*["']1["']\s*\)/.test(html) &&
+        /setAttribute\s*\(\s*["']data-work-exit["']\s*,\s*["']on["']\s*\)/.test(html),
+      'header Work + data-work-exit invitations share one Work-exit binding with jw-work-enter'
+    );
+    ok(
+      /class="work-link"[^>]*href="work\/"[^>]*>Work</.test(html) ||
+        /id="work-link"[^>]*href="work\/"[^>]*>Work</.test(html),
+      'header Work route preserved (id=work-link, href=work/)'
+    );
+    ok(
+      /class="no-js-route"[\s\S]*?<a class="work-link" href="work\/">Work<\/a>/.test(html),
+      'no-JS Work route preserved'
+    );
+    // Modified-click passthrough preserved in shared binding.
+    ok(
+      /e\.metaKey\s*\|\|\s*e\.ctrlKey\s*\|\|\s*e\.shiftKey\s*\|\|\s*e\.altKey\s*\|\|\s*e\.button\s*===\s*1/.test(html),
+      'Work-exit binding preserves modified-click / middle-click passthrough'
+    );
+    ok(
+      /if\s*\(\s*!motionOn\s*\)\s*\{[\s\S]*?window\.location\.href\s*=\s*href/.test(html),
+      'Work-exit binding navigates directly when motion is off'
+    );
+  }
+
   const noJs = html.match(/<main class="no-js-route"[\s\S]*?<\/main>/);
   const noJsSrc = noJs ? noJs[0] : '';
   ok(

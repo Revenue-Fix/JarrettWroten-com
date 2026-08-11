@@ -1183,6 +1183,62 @@
     border-top:1px solid rgba(232,244,244,.12);
   }
   .threshold-services-list li:first-child{border-top:0;padding-top:0}
+  /*
+   * Threshold Work invitation — earned next step under Services, above contact.
+   * Editorial text link with modest arrow + charge line; not a card/pill/button.
+   */
+  .threshold-work-invite{
+    position:relative;
+    display:inline-flex;
+    align-items:center;
+    gap:.42em;
+    width:fit-content;
+    max-width:100%;
+    margin:clamp(.55rem,1.15vh,.85rem) 0 0;
+    min-height:44px;
+    padding:.12em 0 .22em;
+    font-family:var(--text);
+    font-weight:500;
+    font-size:clamp(.95rem,.92rem + .14vw,1.04rem);
+    line-height:1.35;
+    letter-spacing:0;
+    color:var(--ink-mute);
+  }
+  .threshold-work-invite::after{
+    content:"";
+    position:absolute;
+    left:0;
+    right:0;
+    bottom:0;
+    height:1px;
+    background:linear-gradient(90deg, var(--cyan), rgba(94,231,240,.12));
+    transform:scaleX(.2);
+    transform-origin:left center;
+    opacity:.5;
+    transition:transform .4s var(--ease-enter), opacity .25s ease;
+  }
+  .threshold-work-invite .work-invite-arrow{
+    display:inline-block;
+    color:var(--cyan);
+    transition:transform .28s var(--ease-enter);
+  }
+  .threshold-work-invite:hover,
+  .threshold-work-invite:focus-visible{
+    color:var(--cyan);
+  }
+  .threshold-work-invite:hover::after,
+  .threshold-work-invite:focus-visible::after{
+    transform:scaleX(1);
+    opacity:1;
+  }
+  .threshold-work-invite:hover .work-invite-arrow,
+  .threshold-work-invite:focus-visible .work-invite-arrow{
+    transform:translateX(.16em);
+  }
+  .threshold-work-invite:focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:3px;
+  }
   .station[data-station="threshold"].is-active .threshold-services,
   .station[data-station="threshold"].is-held .threshold-services{
     opacity:1;
@@ -1229,6 +1285,12 @@
       padding:.1rem 0;
       font-size:clamp(.8rem,.78rem + .1vw,.9rem);
       line-height:1.2;
+    }
+    .threshold-work-invite{
+      margin-top:.28rem;
+      min-height:2.5rem;
+      font-size:clamp(.8rem,.78rem + .08vw,.88rem);
+      padding:.08em 0 .14em;
     }
   }
 
@@ -1669,6 +1731,59 @@
     .mobile-services-list li + li{
       border-top:1px solid rgba(232,244,244,.12);
     }
+    /* Same Work invitation as desktop threshold, inside final Services beat */
+    .mobile-work-invite{
+      position:relative;
+      align-self:flex-start;
+      display:inline-flex;
+      align-items:center;
+      gap:.4em;
+      margin-top:.55rem;
+      min-height:44px;
+      padding:.1em 0 .18em;
+      font-family:var(--text);
+      font-weight:500;
+      font-size:clamp(.95rem,4.05vw,1.04rem);
+      line-height:1.35;
+      letter-spacing:0;
+      color:var(--ink-mute);
+      max-width:100%;
+    }
+    .mobile-work-invite::after{
+      content:"";
+      position:absolute;
+      left:0;
+      right:0;
+      bottom:0;
+      height:1px;
+      background:linear-gradient(90deg, var(--cyan), rgba(94,231,240,.12));
+      transform:scaleX(.2);
+      transform-origin:left center;
+      opacity:.5;
+      transition:transform .4s var(--ease-enter), opacity .25s ease;
+    }
+    .mobile-work-invite .work-invite-arrow{
+      display:inline-block;
+      color:var(--cyan);
+      transition:transform .28s var(--ease-enter);
+    }
+    .mobile-work-invite:hover,
+    .mobile-work-invite:focus-visible{
+      color:var(--cyan);
+    }
+    .mobile-work-invite:hover::after,
+    .mobile-work-invite:focus-visible::after{
+      transform:scaleX(1);
+      opacity:1;
+    }
+    .mobile-work-invite:hover .work-invite-arrow,
+    .mobile-work-invite:focus-visible .work-invite-arrow{
+      transform:translateX(.16em);
+    }
+    .mobile-work-invite:focus-visible{
+      outline:2px solid var(--cyan);
+      outline-offset:3px;
+    }
 
     .mobile-swipe-cue{
       position:absolute;
@@ -1814,6 +1929,10 @@
         padding:.2rem 0;
         font-size:clamp(.9rem,3.9vw,1rem);
       }
+      .mobile-work-invite{
+        margin-top:.35rem;
+        font-size:clamp(.88rem,3.7vw,.96rem);
+      }
     }
     @media (max-height:520px){
       .mobile-kicker{margin-bottom:.28rem;font-size:.88rem}
@@ -1827,6 +1946,13 @@
       .mobile-qualifier,
       .mobile-whisper{font-size:.82rem}
       .mobile-services-list li{padding:.14rem 0;font-size:.88rem}
+      .mobile-work-invite{
+        margin-top:.22rem;
+        font-size:.86rem;
+      }
+      .mobile-beat[data-mobile-beat="services"] .mobile-title{
+        font-size:clamp(1.85rem,9vw,2.2rem);
+      }
     }
 
     .note-mount{display:none !important}
@@ -2195,6 +2321,7 @@
                 <li>Customer Journey Audits</li>
                 <li>Landing Pages &amp; Follow-Up Systems</li>
               </ol>
+              <a class="mobile-work-invite" href="work/" data-work-exit>See my recent work<span class="work-invite-arrow" aria-hidden="true"> →</span></a>
             </article>
           </div>
 
@@ -2315,6 +2442,7 @@
                 <li>Customer Journey Audits</li>
                 <li>Landing Pages &amp; Follow-Up Systems</li>
               </ol>
+              <a class="threshold-work-invite" href="work/" data-work-exit>See my recent work<span class="work-invite-arrow" aria-hidden="true"> →</span></a>
             </aside>
             <div class="threshold-bottom">
               <div class="station-support text">
@@ -3907,17 +4035,17 @@
     });
   }
 
-  /* Work route: short authored exit, then navigate. Keyboard/direct entry stay reliable. */
+  /* Work route: short authored exit, then navigate. Header + threshold invitations share one binding. */
   (function bindWorkExit() {
-    var workLink = document.getElementById("work-link");
-    if (!workLink) return;
+    var workLinks = document.querySelectorAll("#work-link, a[data-work-exit]");
+    if (!workLinks.length) return;
     var navigating = false;
-    workLink.addEventListener("click", function (e) {
+    function onWorkExitClick(e) {
       if (navigating) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
       e.preventDefault();
       navigating = true;
-      var href = workLink.getAttribute("href") || "work/";
+      var href = this.getAttribute("href") || "work/";
       try { sessionStorage.setItem("jw-work-enter", "1"); } catch (err) {}
       if (!motionOn) {
         window.location.href = href;
@@ -3927,7 +4055,10 @@
       window.setTimeout(function () {
         window.location.href = href;
       }, 420);
-    });
+    }
+    for (var wi = 0; wi < workLinks.length; wi++) {
+      workLinks[wi].addEventListener("click", onWorkExitClick);
+    }
   })();
 
   function bindGo(el) {
