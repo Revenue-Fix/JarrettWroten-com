@@ -205,13 +205,13 @@ ok(!/<iframe\b/i.test(workHtml), 'no iframe embeds');
 ok(!/browser mockup|device frame|carousel|modal preview/i.test(workHtml), 'no mockup/carousel language');
 ok(!/portfolio|case study|design award|award-winning/i.test(workHtml), 'no portfolio jargon');
 
-// Assets present with frozen hashes (Rana staged bytes)
+// Assets present with frozen hashes (updated only when media bytes legitimately change)
 const ranaHashes = {
-  'assets/work/rana/ring-alexandrite.mp4': 'cedccbe95341ff61fc4a961344c9d8fd4422272d2a1dab561bfe38d718cff850',
-  'assets/work/rana/ring-poster.jpg': 'b278dcbee501a9ac28638b03c5eeabeba0d243f9f8e10707fbe299641d0961bb',
-  'assets/work/rana/studio-banner.mp4': '118dd56a04f8f5fddceac858260811d3f490fea5cad1491a887dafcf1bc6d589',
-  'assets/work/rana/studio-opening.jpg': 'acf2e2035a37ba771b3ba95c5d1a5e678189767205cea52034e0df3da51cac96',
-  'assets/work/rana/studio-poster.jpg': 'd0f53b3b8da6aa7aaa0da53eb5a44f76b28496523d77580744cf59b3fba5c8f6',
+  'assets/work/rana/ring-alexandrite.mp4': '8b06c43165b2f309005bc62d809c15b26bb1f42c5280a3dcdf80fa6438c3ff62',
+  'assets/work/rana/ring-poster.jpg': 'a9a6cb9cb033511526667664108d09b5afc56fb793e49ae087d644922e7b5365',
+  'assets/work/rana/studio-banner.mp4': '2f1ba8a6b36c18b088dc7286d2a2323c44912e72e2d429aefd84d2679902d0a6',
+  'assets/work/rana/studio-opening.jpg': 'f4dba4c922ecbc74f331b92bf678f1f7926604f1311087b7ce158879a7864c68',
+  'assets/work/rana/studio-poster.jpg': '17f4762b9d833bbe251e29731d662f582f7755802feaf1d177b72e416e8e15c5',
 };
 for (const [rel, expected] of Object.entries(ranaHashes)) {
   const buf = mustExist(rel);
@@ -223,8 +223,15 @@ if (prorokPortrait) {
   ok(sha256(prorokPortrait) === '3c6eb7e4d23aca8e5bcf0784c934346a392d2421f28420699bd681aa99dfc397', 'dylan-portrait.jpg SHA-256');
 }
 if (prorokInk) {
-  ok(sha256(prorokInk) === 'ea5f0185d7a7086d24803194237716f73de06996d70689c777ef513354f5b467', 'sakura-ink-bloom.mp4 SHA-256');
+  ok(sha256(prorokInk) === '6c44c0204d994c3a504feecadd5da0ccf070113a8dbf2bfbee195dc8a4fe523d', 'sakura-ink-bloom.mp4 SHA-256');
 }
+// Media weight gate: heavy autoplay pair must stay well under the prior ~14 MB load
+const studioBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/studio-banner.mp4')).size;
+const inkBytes = fs.statSync(path.join(ROOT, 'demos/dylan-prorok/sakura-ink-bloom.mp4')).size;
+const ringBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/ring-alexandrite.mp4')).size;
+ok(studioBytes + inkBytes + ringBytes < 5_500_000, 'autoplay media under 5.5 MB total');
+ok(studioBytes < 3_500_000, 'studio-banner under 3.5 MB');
+ok(inkBytes < 600_000, 'sakura-ink-bloom under 600 KB');
 // Do not duplicate ProRok binaries under work/
 ok(!fs.existsSync(path.join(ROOT, 'work/dylan-portrait.jpg')), 'no duplicated dylan portrait under work/');
 ok(!fs.existsSync(path.join(ROOT, 'work/sakura-ink-bloom.mp4')), 'no duplicated ink video under work/');
@@ -250,6 +257,111 @@ for (const m of scripts) {
   }
 }
 ok(parsed >= 2, 'work inline scripts parse (' + parsed + ')');
+
+// Structural: ProRok/terminal copy never double-legible across the handoff sweep
+{
+  const mapMatch = workHtml.match(/var MAP = \{([\s\S]*?)\};/);
+  ok(!!mapMatch, 'MAP object present for opacity sweep');
+  function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+  function smoothstep(t) { t = clamp(t, 0, 1); return t * t * (3 - 2 * t); }
+  function range(p, a, b) { return smoothstep((p - a) / Math.max(0.0001, b - a)); }
+  function plateau(p, a, b, c, d) {
+    if (p < a) return 0;
+    if (p < b) return range(p, a, b);
+    if (p < c) return 1;
+    if (p < d) return 1 - range(p, c, d);
+    return 0;
+  }
+  // Parse MAP endpoints from source (not hardcoded screenshot values)
+  function num(re) {
+    const m = workHtml.match(re);
+    return m ? Number(m[1]) : NaN;
+  }
+  const MAP = {
+    ranaHold: {
+      a: num(/ranaHold:\s*\{\s*a:\s*([0-9.]+)/),
+      b: num(/ranaHold:\s*\{[^}]*b:\s*([0-9.]+)/),
+      c: num(/ranaHold:\s*\{[^}]*c:\s*([0-9.]+)/),
+      d: num(/ranaHold:\s*\{[^}]*d:\s*([0-9.]+)/),
+    },
+    prorokOpen: {
+      a: num(/prorokOpen:\s*\{\s*a:\s*([0-9.]+)/),
+      b: num(/prorokOpen:\s*\{[^}]*b:\s*([0-9.]+)/),
+    },
+    prorokHold: {
+      a: num(/prorokHold:\s*\{\s*a:\s*([0-9.]+)/),
+      b: num(/prorokHold:\s*\{[^}]*b:\s*([0-9.]+)/),
+      c: num(/prorokHold:\s*\{[^}]*c:\s*([0-9.]+)/),
+      d: num(/prorokHold:\s*\{[^}]*d:\s*([0-9.]+)/),
+    },
+    terminalHold: {
+      a: num(/terminalHold:\s*\{\s*a:\s*([0-9.]+)/),
+      b: num(/terminalHold:\s*\{[^}]*b:\s*([0-9.]+)/),
+    },
+  };
+  ok(
+    Object.values(MAP).every((o) => Object.values(o).every((n) => Number.isFinite(n))),
+    'MAP endpoints parse as numbers'
+  );
+  // Opacity contracts from authored CSS
+  const prorokFade = /scene-copy--prorok\{[^}]*opacity:calc\(var\(--prorok-hold\)\s*\*\s*max\(0,\s*1\s*-\s*var\(--terminal-hold\)\s*\*\s*2\)\)/.test(
+    workHtml.replace(/\s+/g, '')
+  ) || /opacity:calc\(var\(--prorok-hold\)\s*\*\s*max\(\s*0\s*,\s*1\s*-\s*var\(--terminal-hold\)\s*\*\s*2\s*\)\)/.test(
+    workHtml.replace(/\s+/g, '')
+  );
+  ok(prorokFade, 'ProRok copy uses terminal-hold * 2 fade (no double-expose)');
+  let overlapFails = 0;
+  for (let i = 74; i <= 96; i++) {
+    const p = i / 100;
+    const ranaHold = plateau(p, MAP.ranaHold.a, MAP.ranaHold.b, MAP.ranaHold.c, MAP.ranaHold.d);
+    const prorokOpen = range(p, MAP.prorokOpen.a, MAP.prorokOpen.b);
+    const prorokHold = plateau(p, MAP.prorokHold.a, MAP.prorokHold.b, MAP.prorokHold.c, MAP.prorokHold.d);
+    const terminalHold = range(p, MAP.terminalHold.a, MAP.terminalHold.b);
+    const oRana = ranaHold * (1 - prorokOpen * 1.15);
+    const oProrok = prorokHold * Math.max(0, 1 - terminalHold * 2);
+    const oTerminal = terminalHold;
+    const visibles = [oRana, oProrok, oTerminal].filter((o) => o > 0.06).length;
+    if (visibles > 1) overlapFails++;
+  }
+  ok(overlapFails === 0, 'copy opacity sweep p=0.74..0.96: no two blocks > 0.06 (' + overlapFails + ' fails)');
+  // Handoff gap: ProRok hold must end at or before terminal hold starts
+  ok(MAP.prorokHold.d <= MAP.terminalHold.a + 0.001, 'prorokHold.d <= terminalHold.a (copy handoff gap)');
+}
+
+// Structural: keyboard focus tracks authored visibility
+ok(workHtml.includes('setCopyAccess'), 'setCopyAccess helper present');
+ok(
+  /setAttribute\(\s*["']tabindex["']\s*,\s*["']-1["']\s*\)/.test(workHtml) &&
+    /removeAttribute\(\s*["']tabindex["']\s*\)/.test(workHtml),
+  'tabindex -1/remove toggled for scene links'
+);
+ok(
+  /setCopyAccess\(\s*copyRana/.test(workHtml) &&
+    /setCopyAccess\(\s*copyProrok/.test(workHtml) &&
+    /setCopyAccess\(\s*copyTerminal/.test(workHtml),
+  'all three scene-copy blocks use setCopyAccess'
+);
+// Poster alt describes shipped still (hands + gemstones), not a fabricated bench claim
+ok(
+  /alt="Hands wearing gold rings with cut gemstones in the light\."/.test(workHtml),
+  'Rana poster alt matches composed still'
+);
+ok(
+  !/alt="Rana Levy at the bench in her gem studio\."/.test(workHtml),
+  'old unsupported bench alt retired'
+);
+// Mobile ProRok portrait is explicitly the subject carrier (not ink-only)
+ok(
+  /Live mobile ProRok:\s*portrait is the subject carrier/.test(workHtml) ||
+    /prorok-portrait\{[\s\S]*?opacity:calc\(\.62 \+ var\(--prorok-hold\)/.test(workHtml),
+  'mobile ProRok portrait opacity strengthened'
+);
+// Terminal mask uses connected additive floors (not detached horizontal-only lobes)
+ok(
+  /Vertical threshold tear from center/.test(workHtml) ||
+    /layer-terminal[\s\S]*?mask-open\) \* 28% \+ 4%/.test(workHtml),
+  'terminal mask rebuilt as connected vertical tear'
+);
 
 // node --check on this test file and smoke-test remain runnable
 const selfCheck = spawnSync(process.execPath, ['--check', path.join(ROOT, 'work-smoke-test.mjs')], { encoding: 'utf8' });

@@ -254,6 +254,9 @@
     position:absolute;
     inset:0;
   }
+  .prorok-media{
+    isolation:isolate;
+  }
   .media-fill{
     position:absolute;
     inset:0;
@@ -267,8 +270,8 @@
   }
   .media-fill[data-video].is-ready{opacity:1}
   .rana-studio{
-    /* Full-bleed hero — crop toward the sharp macro-gem subject in studio media. */
-    object-position:58% 38%;
+    /* Full-bleed hero — center the subject so desktop and mobile cover crops keep gem + scale cue. */
+    object-position:50% 46%;
     transform:scale(calc(1.06 - var(--rana-hold) * .04));
     filter:saturate(1.08) contrast(1.08) brightness(calc(.94 + var(--rana-hold) * .08));
   }
@@ -278,7 +281,7 @@
     width:100%;
     height:100%;
     object-fit:cover;
-    object-position:48% 40%;
+    object-position:50% 48%;
     opacity:calc(max(0, 1 - var(--rana-hold) * 1.55) * .55);
     mix-blend-mode:screen;
     filter:brightness(1.05) contrast(1.06) saturate(1.05);
@@ -374,6 +377,7 @@
   .layer-prorok.is-revealing{visibility:visible}
   .prorok-ink{
     /* Actual watercolor media remapped into Sumi-black / vermilion night-ink. */
+    z-index:1;
     object-position:48% 40%;
     filter:url(#gradeNightInk) contrast(1.1) saturate(1.08);
     transform:scale(calc(1.1 - var(--prorok-hold) * .05));
@@ -381,7 +385,9 @@
     mix-blend-mode:normal;
   }
   .prorok-portrait{
+    /* Subject carrier above graded ink — must remain legible when the live MP4 is black paper. */
     position:absolute;
+    z-index:2;
     right:clamp(0%, 3vw, 8%);
     top:0;
     width:min(54vw, 42rem);
@@ -405,6 +411,7 @@
   .prorok-seal{
     position:absolute;
     inset:0;
+    z-index:3;
     pointer-events:none;
     opacity:calc(.35 + var(--prorok-hold) * .45);
     background:
@@ -415,6 +422,7 @@
   .prorok-wash{
     position:absolute;
     inset:0;
+    z-index:4;
     pointer-events:none;
     /* Edge negative for copy only — world darkness comes from graded media. */
     background:
@@ -424,7 +432,7 @@
   }
 
   /* ── Terminal rest: return to the corridor threshold after both project worlds ──
-     Spatial doorway aperture (not a full-frame opacity crossfade into blank gradient). */
+     One connected spatial tear (not a viewport-ratio inset window or detached bands). */
   .layer-terminal{
     z-index:4;
     visibility:hidden;
@@ -432,23 +440,26 @@
     pointer-events:none;
     /* Hard zero-state gate + nonzero floor — same family as Rana/ProRok reveals. */
     --mask-open:max(0.001, var(--terminal-hold));
-    /* Vertical door aperture + lower amber threshold bloom, then full-frame open. */
+    /* Vertical threshold tear from center — every lobe overlaps its neighbours at low open.
+       Fixed additive floors keep early silhouettes connected; envelope grows into full-bleed. */
     -webkit-mask-image:
-      radial-gradient(ellipse calc(var(--mask-open) * 34%) calc(var(--mask-open) * 108%) at 50% 46%, #000 0%, #000 54%, transparent 80%),
-      radial-gradient(ellipse calc(var(--mask-open) * 52%) calc(var(--mask-open) * 46%) at 50% 56%, #000 0%, #000 50%, transparent 76%),
-      radial-gradient(ellipse calc(var(--mask-open) * 26%) calc(var(--mask-open) * 72%) at 40% 48%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--mask-open) * 26%) calc(var(--mask-open) * 72%) at 60% 48%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--mask-open) * 78%) calc(var(--mask-open) * 34%) at 50% 76%, #000 0%, #000 48%, transparent 74%),
-      radial-gradient(ellipse calc(var(--mask-open) * 44%) calc(var(--mask-open) * 28%) at 50% 68%, #000 0%, #000 42%, transparent 70%),
-      radial-gradient(ellipse calc(var(--mask-open) * 160%) calc(var(--mask-open) * 150%) at 50% 52%, #000 0%, #000 60%, transparent 88%);
+      radial-gradient(ellipse calc(var(--mask-open) * 28% + 4%) calc(var(--mask-open) * 120% + 10%) at 50% 48%, #000 0%, #000 58%, transparent 84%),
+      radial-gradient(ellipse calc(var(--mask-open) * 42% + 3%) calc(var(--mask-open) * 78% + 8%) at 44% 50%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--mask-open) * 42% + 3%) calc(var(--mask-open) * 78% + 8%) at 56% 50%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--mask-open) * 52% + 4%) calc(var(--mask-open) * 56% + 6%) at 50% 40%, #000 0%, #000 52%, transparent 80%),
+      radial-gradient(ellipse calc(var(--mask-open) * 58% + 4%) calc(var(--mask-open) * 62% + 6%) at 50% 62%, #000 0%, #000 52%, transparent 80%),
+      radial-gradient(ellipse calc(var(--mask-open) * 36% + 2%) calc(var(--mask-open) * 48% + 4%) at 47% 55%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 36% + 2%) calc(var(--mask-open) * 48% + 4%) at 53% 55%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 155%) calc(var(--mask-open) * 145%) at 50% 50%, #000 0%, #000 58%, transparent 88%);
     mask-image:
-      radial-gradient(ellipse calc(var(--mask-open) * 34%) calc(var(--mask-open) * 108%) at 50% 46%, #000 0%, #000 54%, transparent 80%),
-      radial-gradient(ellipse calc(var(--mask-open) * 52%) calc(var(--mask-open) * 46%) at 50% 56%, #000 0%, #000 50%, transparent 76%),
-      radial-gradient(ellipse calc(var(--mask-open) * 26%) calc(var(--mask-open) * 72%) at 40% 48%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--mask-open) * 26%) calc(var(--mask-open) * 72%) at 60% 48%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--mask-open) * 78%) calc(var(--mask-open) * 34%) at 50% 76%, #000 0%, #000 48%, transparent 74%),
-      radial-gradient(ellipse calc(var(--mask-open) * 44%) calc(var(--mask-open) * 28%) at 50% 68%, #000 0%, #000 42%, transparent 70%),
-      radial-gradient(ellipse calc(var(--mask-open) * 160%) calc(var(--mask-open) * 150%) at 50% 52%, #000 0%, #000 60%, transparent 88%);
+      radial-gradient(ellipse calc(var(--mask-open) * 28% + 4%) calc(var(--mask-open) * 120% + 10%) at 50% 48%, #000 0%, #000 58%, transparent 84%),
+      radial-gradient(ellipse calc(var(--mask-open) * 42% + 3%) calc(var(--mask-open) * 78% + 8%) at 44% 50%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--mask-open) * 42% + 3%) calc(var(--mask-open) * 78% + 8%) at 56% 50%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--mask-open) * 52% + 4%) calc(var(--mask-open) * 56% + 6%) at 50% 40%, #000 0%, #000 52%, transparent 80%),
+      radial-gradient(ellipse calc(var(--mask-open) * 58% + 4%) calc(var(--mask-open) * 62% + 6%) at 50% 62%, #000 0%, #000 52%, transparent 80%),
+      radial-gradient(ellipse calc(var(--mask-open) * 36% + 2%) calc(var(--mask-open) * 48% + 4%) at 47% 55%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 36% + 2%) calc(var(--mask-open) * 48% + 4%) at 53% 55%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--mask-open) * 155%) calc(var(--mask-open) * 145%) at 50% 50%, #000 0%, #000 58%, transparent 88%);
     -webkit-mask-composite:source-over;
     mask-composite:add;
     -webkit-mask-repeat:no-repeat;
@@ -618,7 +629,8 @@
     right:auto;
     bottom:clamp(1.8rem, 7.5vh, 4rem);
     max-width:min(30rem, 78vw);
-    opacity:calc(var(--prorok-hold) * (1 - var(--terminal-hold) * 1.2));
+    /* Harder fade than the world handoff so two copy blocks never double-expose. */
+    opacity:calc(var(--prorok-hold) * max(0, 1 - var(--terminal-hold) * 2));
     transform:translate3d(0, calc((1 - var(--prorok-hold)) * 1.5rem), 0);
     filter:blur(calc((1 - var(--prorok-hold)) * 4px));
   }
@@ -872,8 +884,9 @@
     .nav-link[data-role="back-home"]{display:none}
 
     .corridor-frame{object-position:50% 48%}
-    .rana-studio{object-position:60% 34%}
-    .rana-opening{object-position:55% 35%}
+    /* Centered cover crops — narrow portrait strips must not bisect the gem. */
+    .rana-studio{object-position:50% 48%}
+    .rana-opening{object-position:50% 50%}
     .rana-ring-stage{
       right:-18%;
       bottom:8%;
@@ -887,24 +900,31 @@
         linear-gradient(180deg, rgba(4,10,12,.5) 0%, rgba(4,10,12,.12) 28%, rgba(4,10,12,.2) 55%, rgba(4,10,12,.78) 100%),
         linear-gradient(90deg, rgba(4,10,12,.55) 0%, transparent 50%);
     }
+    /* Live mobile ProRok: portrait is the subject carrier. Graded sakura paper is near-black;
+       without a strong portrait stack the rest collapses to an empty sumi field. */
     .prorok-portrait{
       right:auto;
       left:0;
       width:100%;
-      object-position:54% 12%;
-      opacity:calc(.4 + var(--prorok-hold) * .68);
+      height:100%;
+      object-position:50% 14%;
+      opacity:calc(.62 + var(--prorok-hold) * .42);
+      filter:saturate(.94) contrast(1.14) brightness(1.06);
+      /* Two soft masks only — three-way intersect was over-erasing the subject on portrait viewports. */
       mask-image:
-        radial-gradient(ellipse 88% 70% at 50% 36%, #000 0%, #000 48%, transparent 82%),
-        linear-gradient(180deg, transparent 0%, #000 12%, #000 64%, transparent 94%),
-        linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
+        radial-gradient(ellipse 98% 78% at 50% 34%, #000 0%, #000 58%, transparent 88%),
+        linear-gradient(180deg, #000 0%, #000 62%, transparent 96%);
       -webkit-mask-image:
-        radial-gradient(ellipse 88% 70% at 50% 36%, #000 0%, #000 48%, transparent 82%),
-        linear-gradient(180deg, transparent 0%, #000 12%, #000 64%, transparent 94%),
-        linear-gradient(90deg, transparent 0%, #000 8%, #000 92%, transparent 100%);
-      -webkit-mask-composite:source-in, source-in;
-      mask-composite:intersect, intersect;
+        radial-gradient(ellipse 98% 78% at 50% 34%, #000 0%, #000 58%, transparent 88%),
+        linear-gradient(180deg, #000 0%, #000 62%, transparent 96%);
+      -webkit-mask-composite:source-in;
+      mask-composite:intersect;
     }
-    .prorok-ink{object-position:58% 38%}
+    .prorok-ink{
+      object-position:50% 42%;
+      /* Ink world stays present but does not crush the subject zone to pure void. */
+      opacity:calc(.48 + var(--prorok-hold) * .4);
+    }
     .prorok-seal{
       opacity:calc(.4 + var(--prorok-hold) * .4);
       background:
@@ -912,9 +932,10 @@
         radial-gradient(ellipse 40% 28% at 70% 78%, rgba(178,58,44,.16) 0%, transparent 70%);
     }
     .prorok-wash{
+      /* Bottom/side negative for copy; keep the upper subject zone open. */
       background:
-        linear-gradient(180deg, rgba(11,8,7,.5) 0%, rgba(11,8,7,.12) 26%, rgba(11,8,7,.28) 56%, rgba(11,8,7,.86) 100%),
-        linear-gradient(90deg, rgba(11,8,7,.55) 0%, rgba(11,8,7,.12) 55%, rgba(11,8,7,.4) 100%);
+        linear-gradient(180deg, rgba(11,8,7,.22) 0%, rgba(11,8,7,.04) 28%, rgba(11,8,7,.32) 58%, rgba(11,8,7,.88) 100%),
+        linear-gradient(90deg, rgba(11,8,7,.42) 0%, rgba(11,8,7,.08) 48%, rgba(11,8,7,.3) 100%);
     }
     .terminal-return{
       object-position:50% 54%;
@@ -1026,7 +1047,7 @@
       <p>Ready Now</p>
       <p>Made To Order</p>
       <p>Custom Consultation</p>
-      <img class="no-js-poster" src="../assets/work/rana/studio-poster.jpg" alt="Rana Levy at the bench in her gem studio." width="1920" height="960">
+      <img class="no-js-poster" src="../assets/work/rana/studio-poster.jpg" alt="Hands wearing gold rings with cut gemstones in the light." width="1280" height="640">
       <p><a href="https://rana.jarrettwroten.com/">Visit the live site</a></p>
       <h2>Dylan Prorok</h2>
       <p>A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.</p>
@@ -1051,7 +1072,7 @@
 
         <div class="layer layer-rana" id="layer-rana">
           <div class="rana-media">
-            <img class="media-fill rana-studio" id="rana-poster" src="../assets/work/rana/studio-poster.jpg" alt="" width="1920" height="960" decoding="async">
+            <img class="media-fill rana-studio" id="rana-poster" src="../assets/work/rana/studio-poster.jpg" alt="" width="1280" height="640" decoding="async">
             <video
               class="media-fill rana-studio"
               id="rana-studio-video"
@@ -1059,10 +1080,10 @@
               src="../assets/work/rana/studio-banner.mp4"
               poster="../assets/work/rana/studio-poster.jpg"
               autoplay muted loop playsinline preload="metadata"
-              width="1920" height="960"></video>
-            <img class="rana-opening" src="../assets/work/rana/studio-opening.jpg" alt="" width="1920" height="960" decoding="async">
+              width="1280" height="640"></video>
+            <img class="rana-opening" src="../assets/work/rana/studio-opening.jpg" alt="" width="1280" height="640" decoding="async">
             <div class="rana-ring-stage" id="rana-ring-stage">
-              <img class="media-fill" id="ring-poster" src="../assets/work/rana/ring-poster.jpg" alt="" width="1000" height="1000" decoding="async">
+              <img class="media-fill" id="ring-poster" src="../assets/work/rana/ring-poster.jpg" alt="" width="720" height="720" decoding="async">
               <video
                 class="media-fill"
                 id="rana-ring-video"
@@ -1070,7 +1091,7 @@
                 src="../assets/work/rana/ring-alexandrite.mp4"
                 poster="../assets/work/rana/ring-poster.jpg"
                 autoplay muted loop playsinline preload="metadata"
-                width="1000" height="1000"></video>
+                width="720" height="720"></video>
             </div>
             <div class="rana-bloom"></div>
             <div class="rana-wash"></div>
@@ -1087,7 +1108,7 @@
               src="../demos/dylan-prorok/sakura-ink-bloom.mp4"
               poster="../demos/dylan-prorok/dylan-portrait.jpg"
               autoplay muted loop playsinline preload="metadata"
-              width="1280" height="720"></video>
+              width="960" height="540"></video>
             <img class="prorok-portrait" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
             <div class="prorok-seal" aria-hidden="true"></div>
             <div class="prorok-wash"></div>
@@ -1190,16 +1211,17 @@
      0.10–0.28 corridor opens into Rana (faceted takeover)
      0.24–0.46 Rana craft rest (hand, cut, light + paths)
      0.44–0.62 Rana erases into ProRok (organic ink)
-     0.58–0.78 ProRok craft rest (scale, body flow)
-     0.76–1.00 terminal world after both projects */
+     0.58–0.76 ProRok craft rest (scale, body flow)
+     0.81–1.00 terminal world after both projects
+     ProRok copy exits before terminal copy enters (no double-legible copy). */
   var MAP = {
     corridorDark: { a: 0.06, b: 0.24 },
     ranaOpen:     { a: 0.10, b: 0.28 },
     ranaHold:     { a: 0.22, b: 0.30, c: 0.44, d: 0.56 },
     ring:         { a: 0.26, b: 0.34, c: 0.46, d: 0.56 },
     prorokOpen:   { a: 0.46, b: 0.64 },
-    prorokHold:   { a: 0.58, b: 0.66, c: 0.76, d: 0.88 },
-    terminalHold: { a: 0.78, b: 0.90 }
+    prorokHold:   { a: 0.58, b: 0.66, c: 0.73, d: 0.79 },
+    terminalHold: { a: 0.81, b: 0.93 }
   };
 
   var STILL = {
@@ -1292,7 +1314,7 @@
         prorokOpen = 1; prorokHold = 1; terminalHold = 0;
       } else {
         corridorDark = 1; ranaOpen = 1; ranaHold = 0; ring = 0;
-        prorokOpen = 1; prorokHold = 0.18; terminalHold = 1;
+        prorokOpen = 1; prorokHold = 0; terminalHold = 1;
       }
     }
 
@@ -1310,14 +1332,19 @@
     if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
     if (layerTerminal) layerTerminal.classList.toggle("is-revealing", terminalHold > 0);
 
-    if (copyRana) {
-      copyRana.style.pointerEvents = ranaHold > 0.55 && prorokOpen < 0.45 ? "auto" : "none";
-    }
-    if (copyProrok) {
-      copyProrok.style.pointerEvents = prorokHold > 0.55 && terminalHold < 0.45 ? "auto" : "none";
-    }
-    if (copyTerminal) {
-      copyTerminal.style.pointerEvents = terminalHold > 0.55 ? "auto" : "none";
+    /* Focusability tracks authored visibility — hidden copy must not take Tab. */
+    setCopyAccess(copyRana, ranaHold > 0.55 && prorokOpen < 0.45);
+    setCopyAccess(copyProrok, prorokHold > 0.55 && terminalHold < 0.35);
+    setCopyAccess(copyTerminal, terminalHold > 0.55);
+  }
+
+  function setCopyAccess(el, active) {
+    if (!el) return;
+    el.style.pointerEvents = active ? "auto" : "none";
+    var nodes = el.querySelectorAll("a, button");
+    for (var i = 0; i < nodes.length; i++) {
+      if (active) nodes[i].removeAttribute("tabindex");
+      else nodes[i].setAttribute("tabindex", "-1");
     }
   }
 
