@@ -510,6 +510,45 @@
     white-space:nowrap;
   }
   .motion-toggle:hover{color:var(--ink)}
+  .work-link{
+    min-height:44px;
+    min-width:44px;
+    padding:.35rem .2rem;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
+    color:var(--ink-soft);
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+  }
+  .work-link:hover{color:var(--ink)}
+
+  /* Authored homepage → Work exit: darken corridor, open a spatial aperture */
+  .work-exit-veil{
+    position:fixed;
+    inset:0;
+    z-index:400;
+    pointer-events:none;
+    opacity:0;
+    background:var(--void);
+    clip-path:circle(0% at 78% 8%);
+    -webkit-clip-path:circle(0% at 78% 8%);
+    transition:
+      opacity .42s var(--ease-enter),
+      clip-path .48s var(--ease-enter),
+      -webkit-clip-path .48s var(--ease-enter);
+  }
+  html[data-work-exit="on"] .work-exit-veil{
+    opacity:1;
+    clip-path:circle(160% at 50% 45%);
+    -webkit-clip-path:circle(160% at 50% 45%);
+  }
+  html[data-work-exit="on"] .journey{
+    filter:brightness(.42) saturate(.7);
+    transition:filter .4s var(--ease-enter);
+  }
 
   .progress-bar{
     display:none;
@@ -1292,6 +1331,12 @@
       font-weight:550;
       letter-spacing:0;
     }
+    .work-link{
+      min-height:2.75rem;
+      font-size:.8125rem;
+      font-weight:550;
+      letter-spacing:0;
+    }
 
     .world-frame{
       object-position:50% 50%;
@@ -1814,9 +1859,16 @@
     letter-spacing:.01em;
     color:var(--ink-mute);
   }
+  .no-js-stack .work-link{
+    display:inline-flex;
+    margin:0 0 1.1rem;
+    border-bottom:1px solid rgba(94,231,240,.55);
+    color:var(--ink);
+  }
 </style>
 </head>
 <body>
+  <div class="work-exit-veil" id="work-exit-veil" aria-hidden="true"></div>
   <noscript>
     <style>
       #journey, #lightbox{display:none !important}
@@ -1829,6 +1881,7 @@
     <div class="no-js-wash" aria-hidden="true"></div>
     <div class="no-js-stack">
       <p class="wordmark">Jarrett Wroten</p>
+      <a class="work-link" href="work/">Work</a>
       <p class="station-kicker">The Leak</p>
       <h1 class="display">I find where your business quietly loses customers. Then I build you the fix.</h1>
       <div class="text">
@@ -1906,6 +1959,7 @@
         <header class="site-header">
           <div class="wordmark">Jarrett Wroten</div>
           <div class="header-tools">
+            <a class="work-link" id="work-link" href="work/">Work</a>
             <button type="button" class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">Motion on</button>
             <script>
             (function () {
@@ -3653,6 +3707,29 @@
       applyMotionPreference(!motionOn, true);
     });
   }
+
+  /* Work route: short authored exit, then navigate. Keyboard/direct entry stay reliable. */
+  (function bindWorkExit() {
+    var workLink = document.getElementById("work-link");
+    if (!workLink) return;
+    var navigating = false;
+    workLink.addEventListener("click", function (e) {
+      if (navigating) return;
+      if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1) return;
+      e.preventDefault();
+      navigating = true;
+      var href = workLink.getAttribute("href") || "work/";
+      try { sessionStorage.setItem("jw-work-enter", "1"); } catch (err) {}
+      if (!motionOn) {
+        window.location.href = href;
+        return;
+      }
+      root.setAttribute("data-work-exit", "on");
+      window.setTimeout(function () {
+        window.location.href = href;
+      }, 420);
+    });
+  })();
 
   function bindGo(el) {
     el.addEventListener("click", function (e) {

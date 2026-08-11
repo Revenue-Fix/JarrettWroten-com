@@ -1,0 +1,1091 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Work | Jarrett Wroten</title>
+<meta name="description" content="A first passage through selected work — from the corridor into Rana Levy’s gem studio, then to Dylan Prorok.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
+<link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-000.webp">
+<link rel="preload" as="image" href="../assets/work/rana/studio-opening.jpg">
+<link rel="preload" as="image" href="../assets/work/rana/studio-poster.jpg">
+<link rel="preload" as="image" href="../assets/work/rana/ring-poster.jpg">
+<link rel="preload" as="image" href="../demos/dylan-prorok/dylan-portrait.jpg">
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/bodoni-moda-latin-variable.woff2" crossorigin>
+<link rel="preload" as="font" type="font/woff2" href="../assets/fonts/ibm-plex-sans-latin-variable.woff2" crossorigin>
+<script>
+(function () {
+  try {
+    var stored = localStorage.getItem("jw-motion");
+    var on = stored === "off" ? false : true;
+    document.documentElement.setAttribute("data-motion", on ? "on" : "off");
+    if (stored === "on" || stored === "off") {
+      document.documentElement.setAttribute("data-motion-user", stored);
+    }
+  } catch (e) {
+    document.documentElement.setAttribute("data-motion", "on");
+  }
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var mq = params.get("motion");
+    if (mq === "off" || mq === "on") {
+      document.documentElement.setAttribute("data-motion", mq);
+      document.documentElement.setAttribute("data-motion-user", mq);
+    }
+  } catch (e2) {}
+  try {
+    if (sessionStorage.getItem("jw-work-enter") === "1") {
+      document.documentElement.setAttribute("data-work-enter", "1");
+      sessionStorage.removeItem("jw-work-enter");
+    }
+  } catch (e3) {}
+})();
+</script>
+<style>
+  @font-face{
+    font-family:"Bodoni Moda";
+    src:url("../assets/fonts/bodoni-moda-latin-variable.woff2") format("woff2");
+    font-weight:400 900;
+    font-style:normal;
+    font-display:swap;
+  }
+  @font-face{
+    font-family:"IBM Plex Sans";
+    src:url("../assets/fonts/ibm-plex-sans-latin-variable.woff2") format("woff2");
+    font-weight:100 700;
+    font-style:normal;
+    font-display:swap;
+  }
+  @font-face{
+    font-family:"Rana Reader Fallback";
+    src:url("../assets/fonts/rana-reader-fallback-roman.woff2") format("woff2");
+    font-weight:400;
+    font-style:normal;
+    font-display:swap;
+  }
+  @font-face{
+    font-family:"Rana Reader Fallback";
+    src:url("../assets/fonts/rana-reader-fallback-italic.woff2") format("woff2");
+    font-weight:400;
+    font-style:italic;
+    font-display:swap;
+  }
+  @font-face{
+    font-family:"Rana Reader Fallback";
+    src:url("../assets/fonts/rana-reader-fallback-bold.woff2") format("woff2");
+    font-weight:700;
+    font-style:normal;
+    font-display:swap;
+  }
+  @font-face{
+    font-family:"Rana Reader Fallback";
+    src:url("../assets/fonts/rana-reader-fallback-bolditalic.woff2") format("woff2");
+    font-weight:700;
+    font-style:italic;
+    font-display:swap;
+  }
+
+  :root{
+    --void:#040A0C;
+    --ink:#E8F4F4;
+    --ink-soft:rgba(232,244,244,.92);
+    --ink-mute:rgba(208,228,230,.82);
+    --cyan:#5EE7F0;
+    --amber:#D97A3A;
+    --sumi:#0B0807;
+    --paper:#EFE7D8;
+    --paper-dim:rgba(239,231,216,.78);
+    --vermilion:#B23A2C;
+    --display:"Bodoni Moda","Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --reading:Georgia,"Rana Reader Fallback","Times New Roman",Times,serif;
+    --text:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --ease-enter:cubic-bezier(.16,.84,.24,1);
+    --gutter:clamp(1.1rem,3.6vw,2.75rem);
+    --top-chrome:clamp(2.9rem,5.2vh,3.4rem);
+    --progress:0;
+    --corridor-dark:0;
+    --rana-open:0;
+    --rana-hold:0;
+    --prorok-open:0;
+    --prorok-hold:0;
+    --ring-presence:0;
+    --enter-veil:0;
+  }
+
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;overflow-anchor:none}
+  html{
+    background:var(--void);
+    color:var(--ink);
+    scroll-behavior:auto;
+  }
+  body{
+    min-height:100%;
+    font-family:var(--text);
+    -webkit-font-smoothing:antialiased;
+    -moz-osx-font-smoothing:grayscale;
+    text-rendering:optimizeLegibility;
+    background:var(--void);
+    overflow-x:hidden;
+  }
+  a{color:inherit;text-decoration:none}
+  button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
+  img,video{display:block;max-width:100%}
+  :focus-visible{
+    outline:2px solid var(--cyan);
+    outline-offset:3px;
+  }
+
+  .passage{
+    position:relative;
+    height:340svh;
+    background:var(--void);
+  }
+  html[data-motion="off"] .passage{height:300svh}
+
+  .viewport{
+    position:sticky;
+    top:0;
+    height:100svh;
+    width:100%;
+    overflow:hidden;
+    overflow:clip;
+    isolation:isolate;
+    background:var(--void);
+  }
+
+  .world-stack{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+  }
+
+  .layer{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+  }
+
+  /* ── Corridor lineage ── */
+  .layer-corridor{
+    z-index:1;
+    background:var(--void);
+  }
+  .corridor-frame{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center center;
+    transform:scale(calc(1 + var(--corridor-dark) * .06));
+    filter:
+      saturate(calc(1 - var(--corridor-dark) * .35))
+      brightness(calc(1 - var(--corridor-dark) * .72))
+      contrast(calc(1 + var(--corridor-dark) * .08));
+    will-change:transform,filter;
+  }
+  .corridor-energy{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:calc(.55 * (1 - var(--rana-open) * .85));
+    background:
+      radial-gradient(ellipse 42% 36% at 50% 54%, rgba(217,122,58,.28) 0%, transparent 62%),
+      radial-gradient(ellipse 70% 50% at 50% 50%, transparent 40%, rgba(4,10,12,.35) 100%);
+    mix-blend-mode:screen;
+  }
+  .corridor-vignette{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 78% 68% at 50% 48%, transparent 35%, rgba(4,10,12,.28) 72%, rgba(4,10,12,.78) 100%);
+    opacity:calc(1 - var(--rana-open) * .4);
+  }
+
+  /* ── Rana world: spatial open from corridor amber core ── */
+  .layer-rana{
+    z-index:2;
+    clip-path:circle(calc(var(--rana-open) * 145%) at 50% 54%);
+    -webkit-clip-path:circle(calc(var(--rana-open) * 145%) at 50% 54%);
+    will-change:clip-path;
+  }
+  .rana-media,
+  .prorok-media{
+    position:absolute;
+    inset:0;
+  }
+  .media-fill{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+  }
+  .media-fill[data-video]{
+    opacity:0;
+    transition:opacity .35s var(--ease-enter);
+  }
+  .media-fill[data-video].is-ready{opacity:1}
+  .rana-studio{
+    object-position:62% 42%;
+    transform:scale(calc(1.04 - var(--rana-hold) * .03));
+    filter:saturate(1.05) contrast(1.04) brightness(calc(.92 + var(--rana-hold) * .08));
+  }
+  .rana-opening{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:48% 40%;
+    opacity:calc(max(0, 1 - var(--rana-hold) * 1.35) * .92);
+    mix-blend-mode:screen;
+    filter:brightness(1.08) contrast(1.08);
+  }
+  .rana-ring-stage{
+    position:absolute;
+    right:clamp(-4%, 2vw, 8%);
+    bottom:clamp(-6%, 2vh, 8%);
+    width:min(48vw, 34rem);
+    height:min(62vh, 34rem);
+    opacity:var(--ring-presence);
+    transform:
+      translate3d(calc((1 - var(--ring-presence)) * 8%), calc((1 - var(--ring-presence)) * 6%), 0)
+      scale(calc(.88 + var(--ring-presence) * .12));
+    filter:drop-shadow(0 18px 40px rgba(4,10,12,.45));
+    will-change:opacity,transform;
+  }
+  .rana-ring-stage .media-fill{
+    border-radius:50% 42% 48% 50%;
+    object-position:50% 45%;
+    mask-image:radial-gradient(circle at 50% 48%, #000 42%, transparent 72%);
+    -webkit-mask-image:radial-gradient(circle at 50% 48%, #000 42%, transparent 72%);
+  }
+  .rana-bloom{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:calc(.2 + var(--rana-hold) * .35);
+    background:
+      radial-gradient(ellipse 50% 42% at 58% 40%, rgba(255,236,210,.22) 0%, transparent 58%),
+      radial-gradient(ellipse 36% 30% at 70% 62%, rgba(200,160,255,.12) 0%, transparent 60%);
+    mix-blend-mode:screen;
+  }
+  .rana-wash{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(100deg, rgba(4,10,12,.58) 0%, rgba(4,10,12,.18) 34%, rgba(4,10,12,.05) 58%, rgba(4,10,12,.42) 100%),
+      linear-gradient(180deg, rgba(4,10,12,.42) 0%, transparent 24%, transparent 68%, rgba(4,10,12,.55) 100%);
+  }
+
+  /* ── ProRok threshold: mineral light erased by ink ── */
+  .layer-prorok{
+    z-index:3;
+    /* Ink wipe from deep left/bottom rather than rectangular crossfade */
+    clip-path:polygon(
+      calc(var(--prorok-open) * -8%) 100%,
+      calc(var(--prorok-open) * 118%) 100%,
+      calc(var(--prorok-open) * 108%) calc(100% - var(--prorok-open) * 118%),
+      calc(var(--prorok-open) * -12%) calc(100% - var(--prorok-open) * 92%)
+    );
+    -webkit-clip-path:polygon(
+      calc(var(--prorok-open) * -8%) 100%,
+      calc(var(--prorok-open) * 118%) 100%,
+      calc(var(--prorok-open) * 108%) calc(100% - var(--prorok-open) * 118%),
+      calc(var(--prorok-open) * -12%) calc(100% - var(--prorok-open) * 92%)
+    );
+    will-change:clip-path;
+    background:var(--sumi);
+  }
+  .prorok-ink{
+    object-position:50% 42%;
+    filter:saturate(.9) contrast(1.08) brightness(calc(.72 + var(--prorok-hold) * .18));
+    transform:scale(calc(1.08 - var(--prorok-hold) * .04));
+  }
+  .prorok-portrait{
+    position:absolute;
+    right:clamp(0%, 4vw, 10%);
+    top:0;
+    width:min(52vw, 40rem);
+    height:100%;
+    object-fit:cover;
+    object-position:52% 18%;
+    opacity:calc(.15 + var(--prorok-hold) * .92);
+    mask-image:linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%),
+               linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    -webkit-mask-image:linear-gradient(90deg, transparent 0%, #000 22%, #000 78%, transparent 100%),
+                       linear-gradient(180deg, transparent 0%, #000 12%, #000 88%, transparent 100%);
+    -webkit-mask-composite:source-in;
+    mask-composite:intersect;
+    filter:saturate(.94) contrast(1.05);
+  }
+  .prorok-wash{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(90deg, rgba(11,8,7,.88) 0%, rgba(11,8,7,.55) 28%, rgba(11,8,7,.12) 58%, rgba(11,8,7,.5) 100%),
+      linear-gradient(180deg, rgba(11,8,7,.5) 0%, transparent 22%, transparent 70%, rgba(11,8,7,.72) 100%),
+      radial-gradient(ellipse 50% 40% at 72% 38%, rgba(178,58,44,.16) 0%, transparent 65%);
+  }
+
+  .grain{
+    position:absolute;
+    inset:-20%;
+    z-index:4;
+    pointer-events:none;
+    opacity:calc(.1 + var(--prorok-open) * .08);
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    background-size:180px 180px;
+  }
+
+  .enter-veil{
+    position:absolute;
+    inset:0;
+    z-index:6;
+    pointer-events:none;
+    background:var(--void);
+    opacity:var(--enter-veil);
+  }
+
+  /* ── UI chrome ── */
+  .ui{
+    position:absolute;
+    inset:0;
+    z-index:20;
+    pointer-events:none;
+  }
+  .ui > *{pointer-events:none}
+  .site-header,
+  .scene-copy,
+  .scene-link{
+    pointer-events:auto;
+  }
+
+  .site-header{
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:30;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    padding:clamp(.85rem,1.8vh,1.15rem) var(--gutter);
+    min-height:var(--top-chrome);
+    background:linear-gradient(180deg, rgba(3,9,11,.72) 0%, rgba(3,9,11,.28) 62%, transparent 100%);
+  }
+  .wordmark{
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.015em;
+    color:var(--ink);
+    white-space:nowrap;
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+  }
+  .header-tools{
+    display:flex;
+    align-items:center;
+    gap:clamp(.45rem,1.4vw,1rem);
+  }
+  .nav-link,
+  .motion-toggle{
+    min-height:44px;
+    min-width:44px;
+    padding:.35rem .35rem;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
+    color:var(--ink-soft);
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+  }
+  .nav-link:hover,
+  .motion-toggle:hover{color:var(--ink)}
+  .nav-link.is-current{
+    color:var(--ink);
+    box-shadow:inset 0 -2px 0 rgba(94,231,240,.75);
+  }
+
+  .scene-copy{
+    position:absolute;
+    z-index:25;
+    left:var(--gutter);
+    bottom:clamp(1.6rem,6vh,3.4rem);
+    max-width:min(34rem, 86vw);
+    color:var(--ink);
+  }
+  .scene-copy--rana{
+    opacity:calc(var(--rana-hold) * (1 - var(--prorok-open) * 1.15));
+    transform:translate3d(0, calc((1 - var(--rana-hold)) * 1.4rem), 0);
+    filter:blur(calc((1 - var(--rana-hold)) * 4px));
+  }
+  .scene-copy--prorok{
+    color:var(--paper);
+    opacity:var(--prorok-hold);
+    transform:translate3d(0, calc((1 - var(--prorok-hold)) * 1.5rem), 0);
+    filter:blur(calc((1 - var(--prorok-hold)) * 4px));
+  }
+  .scene-name{
+    margin:0 0 .55rem;
+    font-family:var(--display);
+    font-weight:400;
+    font-optical-sizing:auto;
+    font-size:clamp(2.4rem,5.4vw,4.2rem);
+    line-height:.96;
+    letter-spacing:0;
+  }
+  .scene-line{
+    margin:0 0 1rem;
+    font-family:var(--reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(1.05rem,1.05rem + .35vw,1.35rem);
+    line-height:1.45;
+    letter-spacing:0;
+    color:var(--ink-soft);
+    max-width:28ch;
+  }
+  .scene-copy--prorok .scene-line{color:var(--paper-dim)}
+  .scene-link{
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    font-family:var(--text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
+    color:var(--ink);
+    border-bottom:1px solid rgba(94,231,240,.55);
+  }
+  .scene-copy--prorok .scene-link{
+    color:var(--paper);
+    border-bottom-color:rgba(178,58,44,.7);
+    pointer-events:none;
+    border-bottom:0;
+    font-family:var(--reading);
+    font-weight:400;
+    font-style:italic;
+    font-synthesis:none;
+    font-size:clamp(.95rem, .95rem + .15vw, 1.05rem);
+    line-height:1.45;
+    max-width:36ch;
+    min-height:0;
+  }
+  .scene-disclosure{
+    margin:.85rem 0 0;
+    font-family:var(--reading);
+    font-weight:400;
+    font-style:italic;
+    font-synthesis:none;
+    font-size:clamp(.95rem, .95rem + .12vw, 1.02rem);
+    line-height:1.45;
+    letter-spacing:0;
+    color:var(--paper-dim);
+    max-width:38ch;
+  }
+
+  .progress-hairline{
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:31;
+    height:2px;
+    background:rgba(232,244,244,.08);
+    pointer-events:none;
+  }
+  .progress-hairline > span{
+    display:block;
+    height:100%;
+    width:calc(var(--progress) * 100%);
+    background:linear-gradient(90deg, var(--cyan), var(--amber));
+    box-shadow:0 0 10px rgba(94,231,240,.28);
+  }
+
+  /* Motion-off: composed rests, no soft blur tails */
+  html[data-motion="off"] .corridor-frame,
+  html[data-motion="off"] .rana-studio,
+  html[data-motion="off"] .prorok-ink,
+  html[data-motion="off"] .rana-ring-stage,
+  html[data-motion="off"] .scene-copy{
+    transition:none !important;
+    filter:none;
+  }
+  html[data-motion="off"] .scene-copy{
+    transform:none;
+  }
+
+  /* No-JS readable path */
+  .no-js-route{
+    display:none;
+    position:relative;
+    min-height:100vh;
+    color:var(--ink);
+    background:var(--void);
+    overflow-x:hidden;
+  }
+  .no-js-stack{
+    position:relative;
+    z-index:1;
+    max-width:42rem;
+    margin:0 auto;
+    padding:clamp(1.4rem,4vh,2.4rem) var(--gutter) clamp(2.5rem,6vh,4rem);
+  }
+  .no-js-stack h1,
+  .no-js-stack h2{
+    font-family:var(--display);
+    font-weight:400;
+    font-optical-sizing:auto;
+    line-height:.98;
+    letter-spacing:0;
+    margin:0 0 .85rem;
+  }
+  .no-js-stack h1{font-size:clamp(2.2rem,5.4vw,3.4rem)}
+  .no-js-stack h2{font-size:clamp(1.8rem,4vw,2.6rem); margin-top:2rem}
+  .no-js-stack p{
+    font-family:var(--reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:1.05rem;
+    line-height:1.5;
+    letter-spacing:0;
+    color:var(--ink-soft);
+    max-width:40ch;
+  }
+  .no-js-stack a{
+    font-family:var(--text);
+    font-weight:600;
+    color:var(--ink);
+    border-bottom:1px solid rgba(94,231,240,.55);
+  }
+  .no-js-stack .wordmark{
+    margin:0 0 1.5rem;
+    border:0;
+  }
+  .no-js-poster{
+    width:100%;
+    max-width:36rem;
+    margin:1rem 0 1.5rem;
+    border-radius:0;
+  }
+
+  @media (max-width:720px){
+    .passage{height:360svh}
+    html[data-motion="off"] .passage{height:320svh}
+
+    .site-header{
+      min-height:3.6rem;
+      padding:calc(.82rem + env(safe-area-inset-top)) var(--gutter) .7rem;
+    }
+    .wordmark{font-size:.875rem}
+    .nav-link,
+    .motion-toggle{
+      min-height:2.75rem;
+      font-size:.8125rem;
+      font-weight:550;
+      letter-spacing:0;
+      padding:.3rem .2rem;
+    }
+    .header-tools{gap:.35rem}
+
+    .corridor-frame{object-position:50% 48%}
+    .rana-studio{object-position:72% 36%}
+    .rana-opening{object-position:55% 35%}
+    .rana-ring-stage{
+      right:-12%;
+      bottom:18%;
+      width:min(78vw, 22rem);
+      height:min(42vh, 20rem);
+      opacity:calc(var(--ring-presence) * .92);
+    }
+    .rana-wash{
+      background:
+        linear-gradient(180deg, rgba(4,10,12,.5) 0%, rgba(4,10,12,.12) 28%, rgba(4,10,12,.2) 55%, rgba(4,10,12,.78) 100%),
+        linear-gradient(90deg, rgba(4,10,12,.55) 0%, transparent 50%);
+    }
+    .prorok-portrait{
+      right:auto;
+      left:0;
+      width:100%;
+      object-position:54% 12%;
+      opacity:calc(.25 + var(--prorok-hold) * .8);
+      mask-image:linear-gradient(180deg, transparent 0%, #000 14%, #000 62%, transparent 92%),
+                 linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+      -webkit-mask-image:linear-gradient(180deg, transparent 0%, #000 14%, #000 62%, transparent 92%),
+                         linear-gradient(90deg, transparent 0%, #000 10%, #000 90%, transparent 100%);
+    }
+    .prorok-ink{object-position:62% 40%}
+    .prorok-wash{
+      background:
+        linear-gradient(180deg, rgba(11,8,7,.55) 0%, rgba(11,8,7,.18) 28%, rgba(11,8,7,.35) 58%, rgba(11,8,7,.88) 100%),
+        linear-gradient(90deg, rgba(11,8,7,.7) 0%, rgba(11,8,7,.2) 60%, rgba(11,8,7,.45) 100%);
+    }
+    .scene-copy{
+      left:var(--gutter);
+      right:var(--gutter);
+      bottom:calc(1.2rem + env(safe-area-inset-bottom));
+      max-width:none;
+    }
+    .scene-name{
+      font-size:clamp(2.05rem,10vw,2.7rem);
+    }
+    .scene-line{
+      font-size:1.05rem;
+      max-width:22ch;
+    }
+    .scene-disclosure{
+      max-width:30ch;
+      font-size:.95rem;
+    }
+  }
+
+  @media (max-width:380px){
+    .nav-link[data-role="work-label"]{display:none}
+    .scene-name{font-size:1.9rem}
+  }
+</style>
+</head>
+<body>
+  <noscript>
+    <style>
+      #passage{display:none !important}
+      .no-js-route{display:block !important}
+      body{overflow:auto !important; min-height:100%}
+    </style>
+  </noscript>
+
+  <main class="no-js-route" id="no-js-route" aria-label="Readable work passage without JavaScript">
+    <div class="no-js-stack">
+      <p class="wordmark">Jarrett Wroten</p>
+      <p><a href="../">Back to Jarrett</a> · Work</p>
+      <h1>Rana Levy</h1>
+      <p>Custom gems turn heads.</p>
+      <img class="no-js-poster" src="../assets/work/rana/studio-poster.jpg" alt="Rana Levy at the bench in her gem studio." width="1920" height="960">
+      <p><a href="https://rana.jarrettwroten.com/">Visit the live site</a></p>
+      <h2>Dylan Prorok</h2>
+      <p>Independent redesign concept</p>
+      <img class="no-js-poster" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="Dylan Prorok tattooing in the studio." width="617" height="849">
+      <p>Independent redesign concept—not commissioned or approved by Dylan Prorok.</p>
+    </div>
+  </main>
+
+  <div class="passage" id="passage">
+    <div class="viewport" id="viewport" aria-label="Work passage from corridor into Rana and the ProRok threshold">
+      <div class="world-stack" aria-hidden="true">
+        <div class="layer layer-corridor" id="layer-corridor">
+          <img class="corridor-frame" src="../assets/golden-arrival/frames/ga-000.webp" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
+          <div class="corridor-energy"></div>
+          <div class="corridor-vignette"></div>
+        </div>
+
+        <div class="layer layer-rana" id="layer-rana">
+          <div class="rana-media">
+            <img class="media-fill rana-studio" id="rana-poster" src="../assets/work/rana/studio-poster.jpg" alt="" width="1920" height="960" decoding="async">
+            <video
+              class="media-fill rana-studio"
+              id="rana-studio-video"
+              data-video
+              src="../assets/work/rana/studio-banner.mp4"
+              poster="../assets/work/rana/studio-poster.jpg"
+              autoplay muted loop playsinline preload="metadata"
+              width="1920" height="960"></video>
+            <img class="rana-opening" src="../assets/work/rana/studio-opening.jpg" alt="" width="1920" height="960" decoding="async">
+            <div class="rana-ring-stage" id="rana-ring-stage">
+              <img class="media-fill" id="ring-poster" src="../assets/work/rana/ring-poster.jpg" alt="" width="1000" height="1000" decoding="async">
+              <video
+                class="media-fill"
+                id="rana-ring-video"
+                data-video
+                src="../assets/work/rana/ring-alexandrite.mp4"
+                poster="../assets/work/rana/ring-poster.jpg"
+                autoplay muted loop playsinline preload="metadata"
+                width="1000" height="1000"></video>
+            </div>
+            <div class="rana-bloom"></div>
+            <div class="rana-wash"></div>
+          </div>
+        </div>
+
+        <div class="layer layer-prorok" id="layer-prorok">
+          <div class="prorok-media">
+            <img class="media-fill prorok-ink" id="prorok-poster" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
+            <video
+              class="media-fill prorok-ink"
+              id="prorok-ink-video"
+              data-video
+              src="../demos/dylan-prorok/sakura-ink-bloom.mp4"
+              poster="../demos/dylan-prorok/dylan-portrait.jpg"
+              autoplay muted loop playsinline preload="metadata"
+              width="1280" height="720"></video>
+            <img class="prorok-portrait" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
+            <div class="prorok-wash"></div>
+          </div>
+        </div>
+
+        <div class="grain"></div>
+        <div class="enter-veil" id="enter-veil"></div>
+      </div>
+
+      <div class="ui">
+        <div class="progress-hairline" aria-hidden="true"><span id="progress-fill"></span></div>
+        <header class="site-header">
+          <a class="wordmark" href="../">Jarrett Wroten</a>
+          <div class="header-tools">
+            <a class="nav-link is-current" href="./" aria-current="page" data-role="work-label">Work</a>
+            <a class="nav-link" href="../" id="back-home">Back to Jarrett</a>
+            <button type="button" class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">Motion on</button>
+            <script>
+            (function () {
+              var on = document.documentElement.getAttribute("data-motion") === "on";
+              var b = document.getElementById("motion-toggle");
+              if (!b) return;
+              b.setAttribute("aria-pressed", on ? "true" : "false");
+              b.textContent = on ? "Motion on" : "Motion off";
+              b.setAttribute("aria-label", on ? "Motion is on. Activate to turn motion off." : "Motion is off. Activate to enable full motion.");
+            })();
+            </script>
+          </div>
+        </header>
+
+        <div class="scene-copy scene-copy--rana" id="copy-rana">
+          <h1 class="scene-name">Rana Levy</h1>
+          <p class="scene-line">Custom gems turn heads.</p>
+          <a class="scene-link" href="https://rana.jarrettwroten.com/" rel="noopener">Visit the live site</a>
+        </div>
+
+        <div class="scene-copy scene-copy--prorok" id="copy-prorok">
+          <h2 class="scene-name">Dylan Prorok</h2>
+          <p class="scene-line">Independent redesign concept</p>
+          <p class="scene-disclosure">Independent redesign concept—not commissioned or approved by Dylan Prorok.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+<script>
+(function () {
+  "use strict";
+
+  var TAU = 0.41;
+  var EPSILON = 0.0006;
+  var root = document.documentElement;
+  var passage = document.getElementById("passage");
+  var viewport = document.getElementById("viewport");
+  var motionToggle = document.getElementById("motion-toggle");
+  var copyRana = document.getElementById("copy-rana");
+  var copyProrok = document.getElementById("copy-prorok");
+
+  var studioVideo = document.getElementById("rana-studio-video");
+  var ringVideo = document.getElementById("rana-ring-video");
+  var inkVideo = document.getElementById("prorok-ink-video");
+
+  var motionOn = root.getAttribute("data-motion") !== "off";
+  var progressTarget = 0;
+  var progressCurrent = 0;
+  var renderRaf = 0;
+  var lastFrameTs = 0;
+  var videosArmed = false;
+
+  /* Scroll map — continuous depth with composed rests.
+     0.00–0.16 corridor entry
+     0.12–0.40 corridor opens into Rana
+     0.36–0.58 Rana rest
+     0.54–0.82 Rana erases into ProRok
+     0.78–1.00 ProRok threshold rest */
+  var MAP = {
+    corridorDark: { a: 0.08, b: 0.36 },
+    ranaOpen:     { a: 0.12, b: 0.40 },
+    ranaHold:     { a: 0.34, b: 0.48, c: 0.58, d: 0.78 },
+    ring:         { a: 0.38, b: 0.52, c: 0.60, d: 0.78 },
+    prorokOpen:   { a: 0.56, b: 0.82 },
+    prorokHold:   { a: 0.76, b: 0.90 }
+  };
+
+  var STILL = {
+    corridor: 0.04,
+    rana: 0.48,
+    prorok: 0.92
+  };
+
+  function clamp(v, a, b) {
+    return Math.max(a, Math.min(b, v));
+  }
+  function smoothstep(t) {
+    t = clamp(t, 0, 1);
+    return t * t * (3 - 2 * t);
+  }
+  function range(p, a, b) {
+    return smoothstep((p - a) / Math.max(0.0001, b - a));
+  }
+  function plateau(p, a, b, c, d) {
+    if (p < a) return 0;
+    if (p < b) return range(p, a, b);
+    if (p < c) return 1;
+    if (p < d) return 1 - range(p, c, d);
+    return 0;
+  }
+
+  function setMotionUI() {
+    if (!motionToggle) return;
+    motionToggle.setAttribute("aria-pressed", motionOn ? "true" : "false");
+    motionToggle.textContent = motionOn ? "Motion on" : "Motion off";
+    motionToggle.setAttribute(
+      "aria-label",
+      motionOn
+        ? "Motion is on. Activate to turn motion off."
+        : "Motion is off. Activate to enable full motion."
+    );
+  }
+
+  function applyMotionPreference(on, persist) {
+    motionOn = !!on;
+    root.setAttribute("data-motion", motionOn ? "on" : "off");
+    if (persist) {
+      try {
+        localStorage.setItem("jw-motion", motionOn ? "on" : "off");
+        root.setAttribute("data-motion-user", motionOn ? "on" : "off");
+      } catch (e) {}
+    }
+    setMotionUI();
+    if (!motionOn) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      syncVideos(progressCurrent);
+    } else {
+      startRenderLoop();
+      syncVideos(progressCurrent);
+    }
+  }
+
+  function computeProgress() {
+    if (!passage || !viewport) return 0;
+    var rect = passage.getBoundingClientRect();
+    var total = Math.max(1, passage.offsetHeight - viewport.offsetHeight);
+    var scrolled = clamp(-rect.top, 0, total);
+    return scrolled / total;
+  }
+
+  function paint(p) {
+    p = clamp(p, 0, 1);
+    root.style.setProperty("--progress", p.toFixed(5));
+
+    var corridorDark = range(p, MAP.corridorDark.a, MAP.corridorDark.b);
+    var ranaOpen = range(p, MAP.ranaOpen.a, MAP.ranaOpen.b);
+    var ranaHold = plateau(p, MAP.ranaHold.a, MAP.ranaHold.b, MAP.ranaHold.c, MAP.ranaHold.d);
+    var ring = plateau(p, MAP.ring.a, MAP.ring.b, MAP.ring.c, MAP.ring.d);
+    var prorokOpen = range(p, MAP.prorokOpen.a, MAP.prorokOpen.b);
+    var prorokHold = range(p, MAP.prorokHold.a, MAP.prorokHold.b);
+
+    /* Motion-off snaps to three composed rests */
+    if (!motionOn) {
+      if (p < 0.28) {
+        corridorDark = 0.08; ranaOpen = 0; ranaHold = 0; ring = 0; prorokOpen = 0; prorokHold = 0;
+      } else if (p < 0.68) {
+        corridorDark = 1; ranaOpen = 1; ranaHold = 1; ring = 1; prorokOpen = 0; prorokHold = 0;
+      } else {
+        corridorDark = 1; ranaOpen = 1; ranaHold = 0.15; ring = 0; prorokOpen = 1; prorokHold = 1;
+      }
+    }
+
+    root.style.setProperty("--corridor-dark", corridorDark.toFixed(4));
+    root.style.setProperty("--rana-open", ranaOpen.toFixed(4));
+    root.style.setProperty("--rana-hold", ranaHold.toFixed(4));
+    root.style.setProperty("--ring-presence", ring.toFixed(4));
+    root.style.setProperty("--prorok-open", prorokOpen.toFixed(4));
+    root.style.setProperty("--prorok-hold", prorokHold.toFixed(4));
+
+    if (copyRana) {
+      copyRana.style.pointerEvents = ranaHold > 0.55 && prorokOpen < 0.45 ? "auto" : "none";
+    }
+    if (copyProrok) {
+      copyProrok.style.pointerEvents = prorokHold > 0.55 ? "auto" : "none";
+    }
+  }
+
+  function startRenderLoop() {
+    if (renderRaf) return;
+    lastFrameTs = 0;
+    renderRaf = window.requestAnimationFrame(renderTick);
+  }
+
+  function renderTick(ts) {
+    renderRaf = 0;
+    var dt = lastFrameTs ? Math.min(0.048, (ts - lastFrameTs) / 1000) : 0.016;
+    lastFrameTs = ts;
+    if (!motionOn) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      return;
+    }
+    var alpha = 1 - Math.exp(-dt / Math.max(0.001, TAU));
+    progressCurrent += (progressTarget - progressCurrent) * alpha;
+    paint(progressCurrent);
+    if (Math.abs(progressTarget - progressCurrent) > EPSILON) {
+      renderRaf = window.requestAnimationFrame(renderTick);
+    } else {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      lastFrameTs = 0;
+    }
+  }
+
+  function sampleScroll() {
+    progressTarget = computeProgress();
+    if (!motionOn) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      syncVideos(progressCurrent);
+      return;
+    }
+    startRenderLoop();
+    syncVideos(progressTarget);
+  }
+
+  function armVideos() {
+    videosArmed = true;
+  }
+
+  function playSafe(video) {
+    if (!video) return;
+    var p = video.play();
+    if (p && typeof p.catch === "function") p.catch(function () {});
+  }
+  function pauseSafe(video) {
+    if (!video) return;
+    try { video.pause(); } catch (e) {}
+  }
+
+  function bindPosterFallback(video, posterEl) {
+    if (!video) return;
+    function fail() {
+      video.classList.remove("is-ready");
+      video.style.opacity = "0";
+      if (posterEl) posterEl.style.opacity = "1";
+    }
+    video.addEventListener("error", fail);
+    video.addEventListener("stalled", function () {
+      if (video.readyState < 2) fail();
+    });
+    video.addEventListener("loadeddata", function () {
+      video.classList.add("is-ready");
+      video.style.opacity = "";
+    });
+  }
+
+  function syncVideos(p) {
+    if (!motionOn) {
+      pauseSafe(studioVideo);
+      pauseSafe(ringVideo);
+      pauseSafe(inkVideo);
+      return;
+    }
+    armVideos();
+    if (p > 0.18 && p < 0.82) playSafe(studioVideo);
+    else pauseSafe(studioVideo);
+    if (p > 0.36 && p < 0.78) playSafe(ringVideo);
+    else pauseSafe(ringVideo);
+    if (p > 0.58) playSafe(inkVideo);
+    else pauseSafe(inkVideo);
+  }
+
+  /* Keyboard depth without trapping — page still scrolls freely */
+  document.addEventListener("keydown", function (e) {
+    if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable)) return;
+    if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "PageDown" && e.key !== "PageUp" && e.key !== "Home" && e.key !== "End") return;
+    if (!passage || !viewport) return;
+    var total = Math.max(1, passage.offsetHeight - viewport.offsetHeight);
+    var cur = window.scrollY || window.pageYOffset || 0;
+    var step = viewport.offsetHeight * (e.key === "PageDown" || e.key === "PageUp" ? 0.85 : 0.22);
+    var next = cur;
+    if (e.key === "Home") next = 0;
+    else if (e.key === "End") next = total;
+    else if (e.key === "ArrowDown" || e.key === "PageDown") next = Math.min(total, cur + step);
+    else next = Math.max(0, cur - step);
+    if (next !== cur) {
+      e.preventDefault();
+      window.scrollTo(0, next);
+      sampleScroll();
+    }
+  });
+
+  if (motionToggle) {
+    motionToggle.addEventListener("click", function () {
+      applyMotionPreference(!motionOn, true);
+    });
+  }
+
+  window.addEventListener("scroll", function () {
+    progressTarget = computeProgress();
+    if (!motionOn) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      syncVideos(progressCurrent);
+    } else {
+      startRenderLoop();
+      syncVideos(progressTarget);
+    }
+  }, { passive: true });
+
+  window.addEventListener("resize", function () {
+    sampleScroll();
+  });
+
+  window.addEventListener("pageshow", function () {
+    sampleScroll();
+  });
+
+  bindPosterFallback(studioVideo, document.getElementById("rana-poster"));
+  bindPosterFallback(ringVideo, document.getElementById("ring-poster"));
+  bindPosterFallback(inkVideo, document.getElementById("prorok-poster"));
+
+  /* Enter from homepage exit: brief void veil, then corridor present */
+  var enterFromHome = root.getAttribute("data-work-enter") === "1";
+  if (enterFromHome && motionOn) {
+    root.style.setProperty("--enter-veil", "1");
+    window.requestAnimationFrame(function () {
+      root.style.transition = "--enter-veil 0.01s linear";
+      var start = performance.now();
+      function fade(now) {
+        var t = clamp((now - start) / 480, 0, 1);
+        root.style.setProperty("--enter-veil", (1 - smoothstep(t)).toFixed(4));
+        if (t < 1) requestAnimationFrame(fade);
+        else root.style.setProperty("--enter-veil", "0");
+      }
+      requestAnimationFrame(fade);
+    });
+  } else {
+    root.style.setProperty("--enter-veil", "0");
+  }
+
+  var noJsRoute = document.getElementById("no-js-route");
+  if (noJsRoute && noJsRoute.parentNode) noJsRoute.parentNode.removeChild(noJsRoute);
+
+  applyMotionPreference(motionOn, false);
+  progressCurrent = progressTarget = computeProgress();
+  paint(progressCurrent);
+  if (motionOn) {
+    armVideos();
+    syncVideos(progressCurrent);
+  }
+
+  window.WORK_PASSAGE = {
+    get progress() { return progressCurrent; },
+    get target() { return progressTarget; },
+    get motion() { return motionOn; },
+    tau: TAU,
+    still: STILL,
+    map: MAP
+  };
+})();
+</script>
+</body>
+</html>
