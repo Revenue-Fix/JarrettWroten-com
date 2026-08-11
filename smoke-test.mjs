@@ -22,6 +22,7 @@
 import fs from 'fs';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { spawnSync } from 'child_process';
 
 const ROOT = path.dirname(fileURLToPath(import.meta.url));
 const failures = [];
@@ -284,6 +285,111 @@ ok(html.includes('presentGeneration') && html.includes('commitBuffer'), 'generat
 ok(html.includes('presentOnBuffer'), 'inactive-buffer present path');
 ok(html.includes('.world-frame.is-active'), 'active buffer stacking rule');
 ok(!html.includes('id="world-frame"'), 'no single world-frame id');
+
+// ——— Live Conduit (homepage doorway lightning) — structural tripwires ———
+// Consumer: visitor at opening with motion on; independent visual closer exercises pixels.
+// Not rendered-pixel proof. Does not couple to /work/ corridor-lightning selectors.
+{
+  const worldMatch = html.match(/id="world"[\s\S]*?(?=<div class="intro-veil"|id="intro-veil")/);
+  const worldMarkup = worldMatch ? worldMatch[0] : '';
+  ok(!!worldMarkup, 'world layer markup extractable for live-conduit checks');
+  // Overlay sits inside .world after both frame images
+  const frameAAt = worldMarkup.indexOf('id="world-frame-a"');
+  const frameBAt = worldMarkup.indexOf('id="world-frame-b"');
+  const lightningAt = worldMarkup.indexOf('id="arrival-lightning"');
+  ok(
+    frameAAt >= 0 && frameBAt >= 0 && lightningAt > frameAAt && lightningAt > frameBAt,
+    'aria-hidden lightning SVG exists inside .world after both frame images'
+  );
+  const lightningOpen = worldMarkup.match(
+    /<svg[\s\S]*?class="arrival-lightning"[\s\S]*?>/
+  );
+  ok(
+    !!lightningOpen &&
+      /aria-hidden="true"/.test(lightningOpen[0]) &&
+      /focusable="false"/.test(lightningOpen[0]),
+    'arrival-lightning is aria-hidden and focusable=false'
+  );
+  ok(
+    /class="bolt bolt--left"/.test(worldMarkup) && /class="bolt bolt--right"/.test(worldMarkup),
+    'both left and right bolt families exist'
+  );
+  ok(
+    (worldMarkup.match(/class="bolt-charge"/g) || []).length >= 2 &&
+      /@keyframes\s+arrivalBoltChargeTravel/.test(html) &&
+      /stroke-dashoffset/.test(html) &&
+      /stroke-dasharray/.test(html),
+    'charge travel mechanism exists (dash masks + keyframes)'
+  );
+  ok(
+    /attributeName=["']d["']/.test(worldMarkup) &&
+      (worldMarkup.match(/<animate\b[^>]*attributeName=["']d["']/g) || []).length >= 4,
+    'geometry morph mechanism exists (SVG path animate on both bolts)'
+  );
+  ok(
+    /viewBox=["']0 0 1280 720["']/.test(worldMarkup) &&
+      /preserveAspectRatio=["']xMidYMid slice["']/.test(worldMarkup),
+    'lightning overlay geometry-locked to 1280×720 cover crop'
+  );
+  // Named early-fade thresholds in SITE_TUNING, applied by paint lifecycle
+  ok(
+    /liveConduit\s*:\s*\{[\s\S]*?fullUntil\s*:[\s\S]*?fadeEnd\s*:/.test(html),
+    'SITE_TUNING.liveConduit named early-fade thresholds present'
+  );
+  ok(
+    /function liveConduitVisibility\s*\(/.test(html) &&
+      /function paintLiveConduit\s*\(/.test(html) &&
+      /SITE_TUNING\.liveConduit/.test(html) &&
+      /setProperty\s*\(\s*["']--live-conduit["']/.test(html) &&
+      /function paint\s*\([\s\S]*?paintLiveConduit\s*\(\s*p\s*\)/.test(html),
+    'paint lifecycle applies live-conduit visibility from named thresholds'
+  );
+  ok(
+    /html\[data-motion=["']off["']\]\s*\.arrival-lightning\s*\{[\s\S]*?display\s*:\s*none/.test(html) &&
+      /ga-000\.webp/.test(html),
+    'motion-off hides live overlay while baked frame remains'
+  );
+  // Whole-scene flicker falsifier: no lightning animation on .world-frame or .viewport
+  ok(
+    !/\.world-frame\s*\{[^}]*\banimation\s*:/.test(html) &&
+      !/\.viewport\s*\{[^}]*\banimation\s*:/.test(html) &&
+      !/@keyframes\s+[^{]*(?:world|viewport|frame)[^{]*\{[^}]*(opacity|brightness|contrast|filter)/i.test(html),
+    'no whole-scene lightning animation on .world-frame or viewport'
+  );
+  // Root-specific selectors: do not couple homepage to /work/ corridor-lightning
+  ok(
+    !/class="corridor-lightning"/.test(html) && html.includes('arrival-lightning'),
+    'homepage uses root-specific arrival-lightning (not work corridor-lightning)'
+  );
+}
+// Preserved approved /work/ blobs must remain untouched by this homepage lane
+{
+  const workBlob = spawnSync('git', ['rev-parse', 'HEAD:work/index.html'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  });
+  const workSmokeBlob = spawnSync('git', ['rev-parse', 'HEAD:work-smoke-test.mjs'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  });
+  // When uncommitted, HEAD still holds the preserved blobs; also reject working-tree dirty work files.
+  const workStatus = spawnSync('git', ['status', '--porcelain', '--', 'work/index.html', 'work-smoke-test.mjs'], {
+    cwd: ROOT,
+    encoding: 'utf8',
+  });
+  ok(
+    (workBlob.stdout || '').trim() === 'b9ff7b17f6c0abf7602c6cd2f0e24e0629ce614c',
+    'work/index.html HEAD blob preserved'
+  );
+  ok(
+    (workSmokeBlob.stdout || '').trim() === '03de3669319228e988bd2a9b5e3b7eebe4057feb',
+    'work-smoke-test.mjs HEAD blob preserved'
+  );
+  ok(
+    !(workStatus.stdout || '').trim(),
+    'work/index.html and work-smoke-test.mjs working tree unchanged'
+  );
+}
 ok(
   !/worldFrame\.src\s*=/.test(html) &&
     !/getAttribute\("src"\)\s*!==\s*url\s*\)\s*\{\s*worldFrame\.src/.test(html),

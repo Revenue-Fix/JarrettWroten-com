@@ -96,6 +96,7 @@
     --intro-veil:1;
     --proof-apparatus:0;
     --loader:0;
+    --live-conduit:1;
   }
 
   *{box-sizing:border-box}
@@ -235,6 +236,74 @@
   }
   .world-frame.is-active{
     z-index:1;
+  }
+  /* Live doorway lightning — geometry-locked to 1280×720 frame-zero corridor.
+     Charge travels each bolt; path topology morphs. Not a whole-frame flicker.
+     Full only at the opening; --live-conduit fades it before Method / frame drift. */
+  .arrival-lightning{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    z-index:2;
+    pointer-events:none;
+    overflow:hidden;
+    opacity:calc(var(--live-conduit) * .94);
+    mix-blend-mode:screen;
+  }
+  .arrival-lightning .bolt-halo,
+  .arrival-lightning .bolt-core,
+  .arrival-lightning .bolt-charge,
+  .arrival-lightning .bolt-charge-soft{
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
+  }
+  .arrival-lightning .bolt-halo{
+    stroke:rgba(94,231,240,.26);
+    stroke-width:6.5;
+  }
+  .arrival-lightning .bolt-core{
+    stroke:rgba(168,248,255,.4);
+    stroke-width:1.3;
+  }
+  .arrival-lightning .bolt-charge-soft{
+    stroke:rgba(94,231,240,.5);
+    stroke-width:4.2;
+    stroke-dasharray:18 82;
+    animation:arrivalBoltChargeTravel 2.4s linear infinite;
+  }
+  .arrival-lightning .bolt-charge{
+    stroke:#E8FFFF;
+    stroke-width:2.05;
+    stroke-dasharray:10 90;
+    animation:arrivalBoltChargeTravel 1.82s linear infinite;
+  }
+  /* Restrained left/right asymmetry — not a metronomic blink. */
+  .arrival-lightning .bolt--left .bolt-charge{
+    animation-duration:1.82s;
+    animation-delay:0s;
+  }
+  .arrival-lightning .bolt--left .bolt-charge-soft{
+    animation-duration:2.4s;
+    animation-delay:-.42s;
+  }
+  .arrival-lightning .bolt--right .bolt-charge{
+    animation-duration:2.18s;
+    animation-delay:-.92s;
+  }
+  .arrival-lightning .bolt--right .bolt-charge-soft{
+    animation-duration:2.76s;
+    animation-delay:-1.55s;
+  }
+  @keyframes arrivalBoltChargeTravel{
+    from{stroke-dashoffset:0}
+    to{stroke-dashoffset:-100}
+  }
+  /* Pause charge travel once paint retires the overlay (SMIL paused in JS). */
+  .arrival-lightning[data-retired="true"] .bolt-charge,
+  .arrival-lightning[data-retired="true"] .bolt-charge-soft{
+    animation:none;
   }
   .world-vignette{
     position:absolute;
@@ -1281,6 +1350,10 @@
   html[data-motion="off"] .world{opacity:1 !important}
   html[data-motion="off"] .loader-bar,
   html[data-motion="off"] .loader-label{display:none}
+  /* Motion-off keeps baked ga-000.webp electricity; hide only the live overlay. */
+  html[data-motion="off"] .arrival-lightning{
+    display:none;
+  }
 
   /*
    * COMPOUNDING — maintained asset
@@ -1932,6 +2005,94 @@
       <div class="world" id="world" aria-hidden="true">
         <img class="world-frame is-active" id="world-frame-a" alt="" width="1280" height="720" decoding="async" src="assets/golden-arrival/frames/ga-000.webp">
         <img class="world-frame" id="world-frame-b" alt="" width="1280" height="720" decoding="async">
+        <!-- Geometry-locked live lightning: charge travels + bolt paths morph. Motion-off hides this; baked ga-000.webp electricity remains. -->
+        <svg
+          class="arrival-lightning"
+          id="arrival-lightning"
+          viewBox="0 0 1280 720"
+          preserveAspectRatio="xMidYMid slice"
+          aria-hidden="true"
+          focusable="false">
+          <defs>
+            <filter id="arrivalBoltGlow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+              <feGaussianBlur in="SourceGraphic" stdDeviation="1.7" result="boltBlur"/>
+              <feMerge>
+                <feMergeNode in="boltBlur"/>
+                <feMergeNode in="SourceGraphic"/>
+              </feMerge>
+            </filter>
+          </defs>
+          <!-- Left bolt lineage ≈ (590,237) → upper-left diagonal → x≈545..560 @ y≈375 -->
+          <g class="bolt bolt--left" filter="url(#arrivalBoltGlow)">
+            <path class="bolt-halo" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+              <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+            </path>
+            <path class="bolt-core" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+              <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+            </path>
+            <path class="bolt-charge-soft" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+              <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+            </path>
+            <path class="bolt-charge" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+              <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+            </path>
+          </g>
+          <!-- Right bolt lineage ≈ (686,237) → upper-right diagonal → x≈720..735 @ y≈375 -->
+          <g class="bolt bolt--right" filter="url(#arrivalBoltGlow)">
+            <path class="bolt-halo" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+              <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+            </path>
+            <path class="bolt-core" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+              <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+            </path>
+            <path class="bolt-charge-soft" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+              <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+            </path>
+            <path class="bolt-charge" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+              <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+            </path>
+          </g>
+        </svg>
         <div class="console-spill" id="console-spill" aria-hidden="true"></div>
         <div class="console-mount" id="console-mount">
           <div class="console-housing">
@@ -2287,6 +2448,12 @@
       jarrett: 312,
       threshold: 360
     },
+    /* Live conduit: full only at true opening (frame-zero geometry).
+       Fades early so bolts never drift with camera travel; gone before Method. */
+    liveConduit: {
+      fullUntil: 0.02,
+      fadeEnd: 0.09
+    },
     consoleLit: { start: 0.44, full: 0.52 },
     proofApparatus: {
       approachStart: 0.40,
@@ -2351,6 +2518,7 @@
   var world = document.getElementById("world");
   var worldFrameA = document.getElementById("world-frame-a");
   var worldFrameB = document.getElementById("world-frame-b");
+  var arrivalLightning = document.getElementById("arrival-lightning");
   /* Atomic presentation: two stacked buffers; only the inactive buffer receives src. */
   var frameBuffers = [worldFrameA, worldFrameB];
   var activeBufferIndex = 0;
@@ -2358,6 +2526,7 @@
   /* In-flight present for one show/url/buffer. Same pending target reuses it
      instead of bumping generation (which starved decode/commit on direct routes). */
   var pendingPresent = null;
+  var liveConduitRetired = false;
   var consoleMount = document.getElementById("console-mount");
   var noteMount = document.getElementById("note-mount");
   var motionToggle = document.getElementById("motion-toggle");
@@ -3271,6 +3440,35 @@
     root.style.setProperty("--signal-core", sig.toFixed(4));
   }
 
+  /* Live conduit visibility from named SITE_TUNING thresholds only.
+     Does not animate bolt geometry — CSS dash travel + SMIL path morph own that. */
+  function liveConduitVisibility(p) {
+    var cfg = SITE_TUNING.liveConduit;
+    var fullUntil = cfg.fullUntil;
+    var fadeEnd = cfg.fadeEnd;
+    if (p <= fullUntil) return 1;
+    if (p >= fadeEnd) return 0;
+    return 1 - (p - fullUntil) / (fadeEnd - fullUntil);
+  }
+
+  function paintLiveConduit(p) {
+    var v = motionOn ? liveConduitVisibility(p) : 0;
+    root.style.setProperty("--live-conduit", v.toFixed(4));
+    if (!arrivalLightning) return;
+    var retired = v <= 0.001;
+    if (retired === liveConduitRetired) return;
+    liveConduitRetired = retired;
+    arrivalLightning.setAttribute("data-retired", retired ? "true" : "false");
+    /* Pause SMIL when fully invisible so retired overlay has no meaningful cost. */
+    try {
+      if (retired && typeof arrivalLightning.pauseAnimations === "function") {
+        arrivalLightning.pauseAnimations();
+      } else if (!retired && typeof arrivalLightning.unpauseAnimations === "function") {
+        arrivalLightning.unpauseAnimations();
+      }
+    } catch (e) {}
+  }
+
   function paint(p) {
     p = clamp(p, 0, 1);
     root.style.setProperty("--progress", p.toFixed(5));
@@ -3284,6 +3482,7 @@
       frame = isMobile() ? mobileProgressToFrame(p) : progressToFrame(p);
     }
     showFrame(frame);
+    paintLiveConduit(p);
     paintStations(p);
   }
 
