@@ -1064,20 +1064,21 @@ ok(
   // Source-structure guards for short-desktop middle-slot spacing.
   // These assert authored CSS shape only — they do not prove rendered geometry.
   {
-    const shortHead = html.match(
-      /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-height:\s*540px\s*\)\s*\{/
-    );
-    let shortBlock = '';
-    if (shortHead) {
+    function extractMediaBlock(re) {
+      const head = html.match(re);
+      if (!head) return '';
       let depth = 1;
-      let i = shortHead.index + shortHead[0].length;
+      let i = head.index + head[0].length;
       while (i < html.length && depth > 0) {
         if (html[i] === '{') depth += 1;
         else if (html[i] === '}') depth -= 1;
         i += 1;
       }
-      shortBlock = html.slice(shortHead.index, i);
+      return html.slice(head.index, i);
     }
+    const shortBlock = extractMediaBlock(
+      /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-height:\s*540px\s*\)\s*\{/
+    );
     ok(!!shortBlock, 'short-desktop Services media query is authored (min-width 721px, max-height 540px)');
     ok(
       shortBlock &&
@@ -1097,6 +1098,44 @@ ok(
     ok(
       !/@media\s*\(\s*max-width:\s*720px\s*\)[\s\S]{0,200}\.threshold-services/.test(html),
       'short-desktop Services correction does not rewrite the ≤720px mobile path'
+    );
+
+    /*
+     * FOCUSED TRIPWIRE — short-height spacing-only band (common desktops >540px).
+     * Canonical path: smoke-test.mjs short-desktop block below.
+     * Future consumer: maintainer fitting restored threshold type at 1280×720.
+     * Activation: execute — `node smoke-test.mjs`.
+     * Behavioral check: media query (min-width 721px, min-height 541px, max-height
+     *   800px) is spacing-only — top/bottom anchors, margins, service-row padding —
+     *   and does not override font-size for any non-email threshold element
+     *   (display, kicker, Services label/rows, work invite, diagnosis, booking).
+     *   Source-shape only; does not prove rendered y-geometry.
+     * Retirement: retire when short-height fit is handled by an equal consumer
+     *   check that still forbids non-email type shrink at laptop heights.
+     */
+    const shortFitBlock = extractMediaBlock(
+      /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*min-height:\s*541px\s*\)\s*and\s*\(\s*max-height:\s*800px\s*\)\s*\{/
+    );
+    ok(
+      !!shortFitBlock,
+      'short-height spacing band is authored (721px+, 541–800px tall)'
+    );
+    ok(
+      shortFitBlock &&
+        /\.station\[data-station="threshold"\] \.station-copy\s*\{[^}]*top\s*:/.test(shortFitBlock) &&
+        /\.station\[data-station="threshold"\] \.station-copy\s*\{[^}]*bottom\s*:/.test(shortFitBlock) &&
+        /\.threshold-services-list li\s*\{[^}]*padding\s*:/.test(shortFitBlock) &&
+        !/display\s*:\s*none/.test(shortFitBlock) &&
+        !/visibility\s*:\s*hidden/.test(shortFitBlock) &&
+        !/overflow\s*:\s*hidden/.test(shortFitBlock),
+      'short-height band uses vertical geometry/spacing only without hiding or clipping'
+    );
+    // No font-size in the spacing band at all — email size stays on the base rule;
+    // non-email restored type (headline, kicker, Services, rows, portfolio, diagnosis,
+    // booking) must not be overridden here.
+    ok(
+      shortFitBlock && !/font-size\s*:/.test(shortFitBlock),
+      'short-height correction is spacing-only and does not override type sizes for any non-email threshold element'
     );
   }
   ok(

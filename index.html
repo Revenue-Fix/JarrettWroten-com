@@ -1281,9 +1281,41 @@
     transition-delay:260ms;
   }
   /*
-   * Short desktop threshold — keep all five Services rows in the middle slot
-   * between the high invite/email pocket and low contact without collisions,
-   * rail overlap, or touching the ≤720px mobile path. Type/spacing only; no display:none.
+   * Short desktop threshold — common laptop heights above the ultra-short 540 band.
+   * Spacing-only: tighten top/bottom anchors, row padding, and margins so restored
+   * type (including "Want to talk first? Book a call.") fits at 1280×720.
+   * Does not override font-size for any non-email threshold element; email size
+   * stays on the base/email-only rule. No display:none; leaves ≤720 mobile alone.
+   */
+  @media (min-width:721px) and (min-height:541px) and (max-height:800px){
+    .station[data-station="threshold"] .station-copy{
+      top:clamp(3.6rem,7.5vh,4.8rem);
+      bottom:clamp(3.2rem,6.5vh,4.2rem);
+    }
+    .station[data-station="threshold"] .threshold-top .station-kicker{
+      margin-bottom:clamp(.4rem,.75vh,.55rem);
+    }
+    .station[data-station="threshold"] .invite-email{
+      margin-top:clamp(.28rem,.55vh,.42rem);
+    }
+    .station[data-station="threshold"] .invite-book{
+      margin-top:clamp(.28rem,.55vh,.42rem);
+    }
+    .threshold-services-label{
+      margin:0 0 .4rem;
+    }
+    .threshold-services-list li{
+      padding:.2rem 0;
+    }
+    .threshold-work-invite{
+      margin-top:clamp(.35rem,.7vh,.5rem);
+    }
+  }
+  /*
+   * Ultra-short desktop threshold (≤540px tall) — keep all five Services rows in
+   * the middle slot between the high invite/email pocket and low contact without
+   * collisions, rail overlap, or touching the ≤720px mobile path.
+   * Type/spacing only; no display:none.
    */
   @media (min-width:721px) and (max-height:540px){
     .station[data-station="threshold"] .station-copy{
