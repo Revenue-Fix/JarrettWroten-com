@@ -98,6 +98,7 @@
     --loader:0;
     --live-conduit:1;
     --entry-cue:1;
+    --arrival-motion:0;
   }
 
   *{box-sizing:border-box}
@@ -237,6 +238,34 @@
   }
   .world-frame.is-active{
     z-index:1;
+  }
+  /*
+   * COMPOUNDING — maintained asset
+   * Canonical path: index.html — #arrival-motion-video plus arrivalMotionVisibility/syncArrivalMotion
+   * Future consumer: normal root visitor with Motion On at the Arrival rest
+   * Activation: auto-load through this production entry document
+   * Behavioral check: node smoke-test.mjs living-Arrival block; Codex desktop/mobile visual exercise
+   * Retirement: only when Main Arrival no longer reuses the Work corridor living carrier
+   *
+   * Living Arrival carrier — exact Work corridor loop over frame-zero fallback.
+   * Below lightning/Scroll; above double-buffered frames. Opacity is readiness ×
+   * --arrival-motion (authored Arrival progress), never a whole-frame flicker.
+   */
+  .arrival-motion{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    width:100%;
+    height:100%;
+    object-fit:cover;
+    object-position:center center;
+    background:transparent;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .45s var(--ease-enter);
+  }
+  .arrival-motion.is-ready{
+    opacity:var(--arrival-motion);
   }
   /* Live doorway lightning — geometry-locked to 1280×720 frame-zero corridor.
      Charge travels each bolt; path topology morphs. Not a whole-frame flicker.
@@ -1450,8 +1479,11 @@
   html[data-motion="off"] .world{opacity:1 !important}
   html[data-motion="off"] .loader-bar,
   html[data-motion="off"] .loader-label{display:none}
-  /* Motion-off keeps baked ga-000.webp electricity; hide only the live overlay. */
+  /* Motion-off keeps baked ga-000.webp electricity; hide live overlay + motion carrier. */
   html[data-motion="off"] .arrival-lightning{
+    display:none;
+  }
+  html[data-motion="off"] .arrival-motion{
     display:none;
   }
 
@@ -1525,7 +1557,8 @@
       letter-spacing:0;
     }
 
-    .world-frame{
+    .world-frame,
+    .arrival-motion{
       object-position:50% 50%;
       filter:saturate(.96) contrast(1.04) brightness(.84);
     }
@@ -2183,6 +2216,19 @@
       <div class="world" id="world" aria-hidden="true">
         <img class="world-frame is-active" id="world-frame-a" alt="" width="1280" height="720" decoding="async" src="assets/golden-arrival/frames/ga-000.webp">
         <img class="world-frame" id="world-frame-b" alt="" width="1280" height="720" decoding="async">
+        <!-- Living Arrival carrier: exact Work corridor loop. Frame-zero poster underneath remains the composed fallback. -->
+        <video
+          class="arrival-motion"
+          id="arrival-motion-video"
+          data-video
+          src="assets/work/corridor-entry-loop.mp4"
+          poster="assets/golden-arrival/frames/ga-000.webp"
+          autoplay muted loop playsinline preload="auto"
+          width="1280" height="720"
+          aria-hidden="true"
+          disablepictureinpicture
+          disableremoteplayback
+          tabindex="-1"></video>
         <!-- Geometry-locked live lightning: charge travels + bolt paths morph. Motion-off hides this; baked ga-000.webp electricity remains. -->
         <svg
           class="arrival-lightning"
@@ -2711,6 +2757,7 @@
   var world = document.getElementById("world");
   var worldFrameA = document.getElementById("world-frame-a");
   var worldFrameB = document.getElementById("world-frame-b");
+  var arrivalMotionVideo = document.getElementById("arrival-motion-video");
   var arrivalLightning = document.getElementById("arrival-lightning");
   /* Atomic presentation: two stacked buffers; only the inactive buffer receives src. */
   var frameBuffers = [worldFrameA, worldFrameB];
@@ -2720,6 +2767,8 @@
      instead of bumping generation (which starved decode/commit on direct routes). */
   var pendingPresent = null;
   var liveConduitRetired = false;
+  /* Direct ?station= boot must not flash or start the Arrival carrier before bypass lands. */
+  var holdArrivalMotion = false;
   var consoleMount = document.getElementById("console-mount");
   var noteMount = document.getElementById("note-mount");
   var motionToggle = document.getElementById("motion-toggle");
@@ -2791,6 +2840,7 @@
   var lightboxReturnTop = null;
   var introDone = false;
   var forcedStation = stationParam;
+  holdArrivalMotion = !!forcedStation;
   var displayedFrame = -1;
   var desiredFrame = 0;
 
@@ -2884,6 +2934,62 @@
     if (p <= share * 0.12) return 1;
     if (p >= share) return 0;
     return 1 - (p - share * 0.12) / Math.max(0.0001, share * 0.88);
+  }
+
+  /* Living Arrival carrier visibility over the Arrival runway only.
+     Fully present at rest; retires with deliberate movement; gone before commercial copy. */
+  function arrivalMotionVisibility(p) {
+    p = clamp(p, 0, 1);
+    if (!motionOn || holdArrivalMotion) return 0;
+    var share = arrivalShare();
+    var fullUntil = share * 0.08;
+    if (p <= fullUntil) return 1;
+    if (p >= share) return 0;
+    return 1 - (p - fullUntil) / Math.max(0.0001, share - fullUntil);
+  }
+
+  function playArrivalMotion(video) {
+    if (!video) return;
+    var p = video.play();
+    if (p && typeof p.catch === "function") p.catch(function () {});
+  }
+
+  function pauseArrivalMotion(video) {
+    if (!video) return;
+    try { video.pause(); } catch (e) {}
+  }
+
+  function bindArrivalMotionFallback(video) {
+    if (!video) return;
+    function fail() {
+      video.classList.remove("is-ready");
+      video.style.opacity = "0";
+    }
+    video.addEventListener("error", fail);
+    video.addEventListener("stalled", function () {
+      if (video.readyState < 2) fail();
+    });
+    video.addEventListener("loadeddata", function () {
+      video.classList.add("is-ready");
+      video.style.opacity = "";
+      syncArrivalMotion(progressCurrent);
+    });
+    if (video.readyState >= 2) {
+      video.classList.add("is-ready");
+      video.style.opacity = "";
+    }
+  }
+
+  function syncArrivalMotion(p) {
+    var vis = arrivalMotionVisibility(p);
+    root.style.setProperty("--arrival-motion", vis.toFixed(4));
+    if (!arrivalMotionVideo) return;
+    /* Play only while the carrier is still visually contributing the Arrival scene. */
+    if (motionOn && !holdArrivalMotion && vis > 0.001) {
+      playArrivalMotion(arrivalMotionVideo);
+    } else {
+      pauseArrivalMotion(arrivalMotionVideo);
+    }
   }
 
   function stationSpec(id) {
@@ -3390,6 +3496,7 @@
     }
     sampleScroll();
     paint(progressCurrent, true);
+    syncArrivalMotion(progressCurrent);
   }
 
   function stationStateAt(c) {
@@ -3747,6 +3854,7 @@
     showFrame(frame);
     paintLiveConduit(c);
     paintStations(p);
+    syncArrivalMotion(p);
   }
 
   function computeProgress() {
@@ -3765,6 +3873,8 @@
       return;
     }
     startRenderLoop();
+    /* Keep play/pause aligned with the intended rest even while settle eases paint. */
+    syncArrivalMotion(progressTarget);
   }
 
   function startRenderLoop() {
@@ -4151,12 +4261,19 @@
       paint(progressCurrent);
     } else {
       startRenderLoop();
+      syncArrivalMotion(progressTarget);
     }
   }, { passive: true });
 
   window.addEventListener("resize", function () {
     cancelMobileGlide();
     sampleScroll();
+  });
+
+  /* bfcache restore and soft navigations must re-sync the carrier to true Arrival state. */
+  window.addEventListener("pageshow", function () {
+    sampleScroll();
+    syncArrivalMotion(progressCurrent);
   });
 
   if (typeof mobileMq.addEventListener === "function") {
@@ -4299,6 +4416,9 @@
   var noJsRoute = document.getElementById("no-js-route");
   if (noJsRoute && noJsRoute.parentNode) noJsRoute.parentNode.removeChild(noJsRoute);
 
+  bindArrivalMotionFallback(arrivalMotionVideo);
+  if (holdArrivalMotion) pauseArrivalMotion(arrivalMotionVideo);
+
   bootPreload();
   applyMotionPreference(motionOn, false);
   if (forcedEntryFrame >= 0) {
@@ -4313,9 +4433,12 @@
     root.style.setProperty("--world-opacity", "1");
     introDone = true;
     dismissLoader();
+    /* Keep carrier suppressed until the commercial rest is actually scrolled. */
+    syncArrivalMotion(1);
     window.requestAnimationFrame(function () {
       scrollToStation(forcedStation, "auto");
       progressCurrent = progressTarget = computeProgress();
+      holdArrivalMotion = false;
       paint(progressCurrent);
     });
   } else {
@@ -4336,6 +4459,7 @@
     get introDone() { return introDone; },
     get mobileStage() { return SITE_TUNING.mobileStageStops[mobileStageIndexAtProgress(progressCurrent)].id; },
     get mobileGliding() { return mobileGlideLocked; },
+    get arrivalMotion() { return arrivalMotionVisibility(progressCurrent); },
     go: scrollToStation,
     goMobileStage: scrollToMobileStageIndex,
     progressToFrame: progressToFrame,

@@ -99,6 +99,15 @@ for (const rel of [
 // Retirement: retire only when the corridor type system is intentionally replaced and an
 //   equivalent consumer-facing font/register regression check supersedes this block
 const crypto = await import('crypto');
+const corridorEntryPath = path.join(ROOT, 'assets/work/corridor-entry-loop.mp4');
+ok(fs.existsSync(corridorEntryPath), 'exists assets/work/corridor-entry-loop.mp4');
+if (fs.existsSync(corridorEntryPath)) {
+  const corridorHash = crypto.createHash('sha256').update(fs.readFileSync(corridorEntryPath)).digest('hex');
+  ok(
+    corridorHash === '9a73d9709618212846ffdee29fd20e541bf16767b3a79b829197ad00e2b963f3',
+    'Main reuses exact corridor-entry-loop.mp4 bytes (SHA-256)'
+  );
+}
 const plexSansPath = path.join(ROOT, 'assets/fonts/ibm-plex-sans-latin-variable.woff2');
 if (fs.existsSync(plexSansPath)) {
   const plexHash = crypto.createHash('sha256').update(fs.readFileSync(plexSansPath)).digest('hex').toUpperCase();
@@ -292,6 +301,117 @@ ok(html.includes('presentGeneration') && html.includes('commitBuffer'), 'generat
 ok(html.includes('presentOnBuffer'), 'inactive-buffer present path');
 ok(html.includes('.world-frame.is-active'), 'active buffer stacking rule');
 ok(!html.includes('id="world-frame"'), 'no single world-frame id');
+
+// ——— Living Arrival motion carrier (Work corridor loop on Main) — structural tripwires ———
+// COMPOUNDING — focused test or tripwire
+// Canonical path: smoke-test.mjs — living Arrival motion carrier block
+// Future consumer: next Main Arrival editor and independent visual closer
+// Activation: execute — node smoke-test.mjs
+// Behavioral check: fails if carrier path/attrs/layer-order/lifecycle/Motion-Off/bypass regress
+// Retirement: when Main no longer uses the Work corridor living Arrival carrier, or a stronger
+//   live-pixel harness supersedes these structural tripwires for the same failure class
+// Not rendered-pixel proof. Reuses exact Work asset; does not rewrite Work page bytes.
+{
+  const worldMatch = html.match(/id="world"[\s\S]*?(?=<div class="intro-veil"|id="intro-veil")/);
+  const worldMarkup = worldMatch ? worldMatch[0] : '';
+  ok(!!worldMarkup, 'world layer markup extractable for arrival-motion checks');
+  const videos = [...worldMarkup.matchAll(/<video\b[\s\S]*?<\/video>/gi)].map((m) => m[0]);
+  ok(videos.length === 1, 'Main Arrival has exactly one video carrier (got ' + videos.length + ')');
+  const videoTag = videos[0] || '';
+  ok(
+    /id="arrival-motion-video"/.test(videoTag) &&
+      /class="arrival-motion"/.test(videoTag) &&
+      /src="assets\/work\/corridor-entry-loop\.mp4"/.test(videoTag),
+    'Arrival video reuses exact assets/work/corridor-entry-loop.mp4 path'
+  );
+  ok(
+    /\bautoplay\b/.test(videoTag) &&
+      /\bmuted\b/.test(videoTag) &&
+      /\bloop\b/.test(videoTag) &&
+      /\bplaysinline\b/.test(videoTag) &&
+      /preload="auto"/.test(videoTag),
+    'Arrival video carries autoplay muted loop playsinline preload="auto"'
+  );
+  ok(
+    /poster="assets\/golden-arrival\/frames\/ga-000\.webp"/.test(videoTag) &&
+      /width="1280"/.test(videoTag) &&
+      /height="720"/.test(videoTag),
+    'Arrival video uses ga-000 poster and 1280×720 dimensions'
+  );
+  ok(
+    /aria-hidden="true"/.test(videoTag) &&
+      /tabindex="-1"/.test(videoTag) &&
+      /data-video/.test(videoTag) &&
+      !/\bcontrols\b/.test(videoTag),
+    'Arrival video is non-semantic (aria-hidden, no controls, not tabbable)'
+  );
+  const frameAAt = worldMarkup.indexOf('id="world-frame-a"');
+  const frameBAt = worldMarkup.indexOf('id="world-frame-b"');
+  const motionAt = worldMarkup.indexOf('id="arrival-motion-video"');
+  const lightningAt = worldMarkup.indexOf('id="arrival-lightning"');
+  ok(
+    frameAAt >= 0 &&
+      frameBAt >= 0 &&
+      motionAt > frameAAt &&
+      motionAt > frameBAt &&
+      lightningAt > motionAt,
+    'layer order: frame buffers → arrival motion video → lightning'
+  );
+  ok(
+    /\.arrival-motion\s*\{[\s\S]*?object-fit\s*:\s*cover/.test(html) &&
+      /\.arrival-motion\s*\{[\s\S]*?object-position\s*:\s*center/.test(html) &&
+      /\.arrival-motion\.is-ready\s*\{[\s\S]*?opacity\s*:\s*var\(--arrival-motion\)/.test(html) &&
+      /--arrival-motion\s*:/.test(html),
+    'Arrival motion CSS covers viewport and reveals via --arrival-motion when ready'
+  );
+  ok(
+    /html\[data-motion=["']off["']\]\s*\.arrival-motion\s*\{[\s\S]*?display\s*:\s*none/.test(html),
+    'Motion Off hides Arrival motion video'
+  );
+  ok(
+    /function arrivalMotionVisibility\s*\(/.test(html) &&
+      /function syncArrivalMotion\s*\(/.test(html) &&
+      /function bindArrivalMotionFallback\s*\(/.test(html) &&
+      /function playArrivalMotion\s*\(/.test(html) &&
+      /function pauseArrivalMotion\s*\(/.test(html),
+    'Arrival motion visibility, sync, fallback, play, and pause helpers exist'
+  );
+  ok(
+    /holdArrivalMotion/.test(html) &&
+      /holdArrivalMotion\s*=\s*!!forcedStation/.test(html) &&
+      /holdArrivalMotion\s*=\s*false/.test(html),
+    'forced ?station= holds Arrival motion until commercial rest lands'
+  );
+  ok(
+    /function paint\s*\([\s\S]*?syncArrivalMotion\s*\(\s*p\s*\)/.test(html) &&
+      /sampleScroll[\s\S]*?syncArrivalMotion\s*\(\s*progressTarget\s*\)/.test(html) &&
+      /applyMotionPreference[\s\S]*?syncArrivalMotion\s*\(\s*progressCurrent\s*\)/.test(html) &&
+      /addEventListener\s*\(\s*["']pageshow["'][\s\S]*?syncArrivalMotion/.test(html),
+    'paint, sampleScroll, motion toggle, and pageshow synchronize Arrival motion'
+  );
+  ok(
+    /vis\s*>\s*0\.001[\s\S]*?playArrivalMotion[\s\S]*?pauseArrivalMotion/.test(html) ||
+      /playArrivalMotion\(arrivalMotionVideo\)[\s\S]*?pauseArrivalMotion\(arrivalMotionVideo\)/.test(html),
+    'Arrival motion plays while contributing and pauses when retired/hidden'
+  );
+  ok(
+    /classList\.add\(["']is-ready["']\)/.test(html) &&
+      /addEventListener\(["']error["']/.test(html) &&
+      /addEventListener\(["']loadeddata["']/.test(html),
+    'Arrival video readiness/error fallback path exists'
+  );
+  ok(
+    !/corridor-entry-loop\.mp4/.test(html.replace(/assets\/work\/corridor-entry-loop\.mp4/g, '')),
+    'Main does not invent alternate corridor motion filenames'
+  );
+  // Work source remains the oracle; Main must not mutate Work page ownership of the carrier.
+  const workHtmlFrozen = fs.readFileSync(path.join(ROOT, 'work/index.html'));
+  ok(
+    workHtmlFrozen.toString('utf8').includes('id="corridor-motion-video"') &&
+      workHtmlFrozen.toString('utf8').includes('../assets/work/corridor-entry-loop.mp4'),
+    'Work oracle still owns corridor-motion-video with the shared asset'
+  );
+}
 
 // ——— Live Conduit (homepage doorway lightning) — structural tripwires ———
 // Consumer: visitor at opening with motion on; independent visual closer exercises pixels.
@@ -577,9 +697,16 @@ ok(
   ok(
     /html\[data-motion="off"\] \.scroll-invitation::after/.test(html) &&
       /html\[data-motion="off"\] \.arrival-lightning[\s\S]*?display:\s*none/.test(html) &&
+      /html\[data-motion="off"\] \.arrival-motion[\s\S]*?display:\s*none/.test(html) &&
       /entryCueAt\(p\)/.test(html) &&
       /!motionOn\) return isArrivalAt\(p\) \? 1 : 0/.test(html),
-    'Motion Off keeps centered Scroll at Arrival and disables live lightning'
+    'Motion Off keeps centered Scroll at Arrival and disables live lightning + motion video'
+  );
+  ok(
+    /arrivalMotionVisibility\(p\)/.test(html) &&
+      /share\s*\*\s*0\.08/.test(html) &&
+      /p\s*>=\s*share/.test(html),
+    'Arrival motion retires across Arrival share without compressing commercial runway'
   );
   // Public commercial station order unchanged (five-stage rail).
   const railOrder = [...html.matchAll(/class="station-rail-tick"[^>]*data-go="([^"]+)"/g)].map((m) => m[1]);
