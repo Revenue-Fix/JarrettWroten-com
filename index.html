@@ -1021,16 +1021,18 @@
   .station[data-station="jarrett"] .station-support{
     margin-top:clamp(1.6rem,4vh,2.8rem);
   }
-  /* THRESHOLD — three-row left column: high invite+email, middle Services, low contact;
-     face-safe right edge (≤~219px at 744 / ~344px at ≥1280; 29.5vw rail) so type stays
-     left of the owner-marked face edge (x=220 at 744×920) without shrinking restored type */
+  /* THRESHOLD — three-row left column: high invite+email, middle Services, low contact.
+     Full-desktop base: fluid left rail with a 30rem cap so restored display type can
+     render the complete two-line headline SEND ME / YOUR SITE. at useful scale without
+     encoding the tablet face edge (x=220@744) as a universal desktop width. Tablet
+     face-safe width lives only in the 721–900 query below. */
   .station[data-station="threshold"] .station-copy{
     position:absolute;
     isolation:isolate;
     left:var(--gutter);
     top:clamp(5.2rem,12vh,6.8rem);
     bottom:clamp(5.5rem,12vh,7rem);
-    max-width:min(18.75rem, calc(29.5vw - var(--gutter)));
+    max-width:min(30rem, 40vw);
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -1072,8 +1074,8 @@
     line-height:.96;
   }
   .station[data-station="threshold"] .station-support{max-width:34ch;margin-top:0}
-  /* Email-only face-safe shrink: one line under SEND ME / YOUR SITE., wholly left of x=220@744.
-     Restored hierarchy (kicker/display/services/diagnosis/booking) is not reduced. */
+  /* Email-only horizontal-fit shrink: one line under SEND ME / YOUR SITE.
+     Restored hierarchy (kicker/display/services/diagnosis/booking) is not reduced for width. */
   .invite-email{
     display:inline-block;
     width:fit-content;
@@ -1358,6 +1360,21 @@
       min-height:2.5rem;
       font-size:clamp(.8rem,.78rem + .08vw,.88rem);
       padding:.08em 0 .14em;
+    }
+  }
+  /*
+   * Tablet-width desktop threshold (721–900) — face crop sits farther left at
+   * 744×920. Keep the desktop DOM and restored type hierarchy; constrain only the
+   * column rail to the face-safe edge; shrink .invite-email alone for one-line
+   * horizontal fit. Does not alter widths above 900px or the ≤720 mobile passage.
+   */
+  @media (min-width:721px) and (max-width:900px){
+    .station[data-station="threshold"] .station-copy{
+      max-width:min(18.75rem, calc(29.5vw - var(--gutter)));
+    }
+    .station[data-station="threshold"] .invite-email{
+      font-size:clamp(.68rem,1.4vw,.95rem);
+      letter-spacing:-.015em;
     }
   }
 
