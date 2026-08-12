@@ -63,7 +63,7 @@ const requiredPhrases = [
   'Visit the live site',
   'Dylan Prorok',
   'A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.',
-  'Independent redesign concept—not commissioned or approved by Dylan Prorok.',
+  'Work in progress — currently being revised with Dylan Prorok.',
   'Visit the concept',
   'Your site should feel like your work.',
   'Send me your site. I’ll find the first place the path breaks and show you what I’d change.',
@@ -91,13 +91,34 @@ ok(
   !/Rana Levy[^.]{0,80}\b(redesign|concept)\b/i.test(workHtml),
   'Rana not labeled redesign/concept'
 );
-// ProRok honesty: no healed-work / approval / commission implication beyond the disclosure
+// ProRok honesty: current collaboration-in-revision truth; no stronger status claims.
+const DYLAN_TRUTH = 'Work in progress — currently being revised with Dylan Prorok.';
+const DYLAN_OLD = 'Independent redesign concept—not commissioned or approved by Dylan Prorok.';
+ok(workHtml.includes(DYLAN_TRUTH), 'rendered Work page carries exact Dylan revision truth');
+ok(!workHtml.includes(DYLAN_OLD), 'old Dylan independent-disclaimer is retired');
+{
+  const noJs = (workHtml.match(/id="no-js-route"[\s\S]*?<\/main>/i) || [''])[0];
+  ok(noJs.includes(DYLAN_TRUTH), 'no-JS Work consumer carries exact Dylan revision truth');
+  ok(!noJs.includes(DYLAN_OLD), 'no-JS Work consumer rejects old Dylan disclaimer');
+}
 ok(!/\bhealed[- ]work\b/i.test(workHtml), 'no healed-work claim');
+ok(!/\bcommissioned\b/i.test(workHtml), 'no commissioned claim');
+ok(!/\bapproved\b/i.test(workHtml), 'no approved claim');
+ok(!/\bclient work\b/i.test(workHtml), 'no client-work claim');
+// Stronger status claims as relationship language near Dylan/ProRok (not incidental CSS words).
 ok(
-  !/\b(Dylan Prorok|ProRok)\b[^.]{0,120}\b(approved|commissioned|hired|client)\b/i.test(
-    workHtml.replace(/Independent redesign concept—not commissioned or approved by Dylan Prorok\./g, '')
-  ),
-  'no ProRok approval/commission implication outside disclosure'
+  !/\b(Dylan Prorok|ProRok)\b[\s\S]{0,160}\b(finished|complete|deployed|commissioned|approved)\b/i.test(workHtml) &&
+    !/\b(finished|complete|deployed|commissioned|approved)\b[\s\S]{0,160}\b(Dylan Prorok|ProRok)\b/i.test(workHtml),
+  'no finished/complete/deployed/commissioned/approved claim attached to Dylan/ProRok'
+);
+ok(
+  !/\b(Dylan Prorok|ProRok)\b[^.]{0,120}\b(approved|commissioned|hired|client)\b/i.test(workHtml),
+  'no ProRok approval/commission/client implication'
+);
+ok(
+  /currently being revised with Dylan Prorok/.test(workHtml) &&
+    !/currently being revised by Dylan Prorok/.test(workHtml),
+  'Dylan revision truth uses with, not by'
 );
 
 // Links — four external actions + home
@@ -121,7 +142,7 @@ if (noJsMatch) {
     'https://rana.jarrettwroten.com/',
     'Dylan Prorok',
     'https://prorok.jarrettwroten.com/',
-    'Independent redesign concept—not commissioned or approved by Dylan Prorok.',
+    'Work in progress — currently being revised with Dylan Prorok.',
     '../assets/golden-arrival/frames/ga-360.webp',
     'Your site should feel like your work.',
     'mailto:Jarrett@JarrettWroten.com',

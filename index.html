@@ -97,6 +97,7 @@
     --proof-apparatus:0;
     --loader:0;
     --live-conduit:1;
+    --entry-cue:1;
   }
 
   *{box-sizing:border-box}
@@ -195,10 +196,10 @@
 
   .journey{
     position:relative;
-    height:600svh;
+    height:700svh;
     background:var(--void);
   }
-  html[data-motion="off"] .journey{height:500svh}
+  html[data-motion="off"] .journey{height:600svh}
 
   .viewport{
     position:sticky;
@@ -1316,23 +1317,59 @@
   .site-footer p{margin:0}
   .site-footer.is-on{opacity:1}
 
-  .scroll-cue{
+  /* Centered Scroll invitation — same human editorial italic register as Work opening. */
+  .scroll-invitation{
     position:absolute;
+    z-index:28;
     left:50%;
-    bottom:clamp(1.2rem,3vh,2rem);
-    transform:translateX(-50%);
-    z-index:30;
-    font-family:var(--reading);
-    font-weight:400;
+    top:52%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.8rem;
+    color:var(--ink);
+    font-family:var(--display);
+    font-size:clamp(1.35rem, 1.1rem + 1vw, 2rem);
     font-style:italic;
-    font-synthesis:none;
-    font-size:clamp(.95rem,.9rem + .2vw,1.08rem);
+    font-weight:450;
+    line-height:1;
     letter-spacing:0;
-    color:var(--ink-mute);
-    opacity:0;
-    transition:opacity .5s var(--ease-enter);
+    text-shadow:0 2px 18px rgba(4,10,12,.9), 0 0 30px rgba(4,10,12,.55);
+    opacity:var(--entry-cue);
+    transform:translate3d(-50%, calc(-50% + (1 - var(--entry-cue)) * -1rem), 0);
+    pointer-events:none;
+    will-change:opacity,transform;
   }
-  .scroll-cue.is-on{opacity:1}
+  .scroll-invitation::after{
+    content:"";
+    display:block;
+    width:1px;
+    height:clamp(2.7rem, 6vh, 4rem);
+    background:linear-gradient(180deg, rgba(232,244,244,.92), rgba(94,231,240,0));
+    transform-origin:50% 0;
+    animation:scrollInvitation 1.8s var(--ease-enter) infinite;
+  }
+  @keyframes scrollInvitation{
+    0%,18%{transform:scaleY(.14); opacity:.25}
+    58%{transform:scaleY(1); opacity:1}
+    100%{transform:translateY(.6rem) scaleY(.38); opacity:0}
+  }
+
+  /* Arrival prelude: hide commercial-stage chrome; corridor + header + Scroll remain. */
+  html[data-passage="arrival"] .station-rail,
+  html[data-passage="arrival"] .station,
+  html[data-passage="arrival"] .method-annots,
+  html[data-passage="arrival"] .distance-hud,
+  html[data-passage="arrival"] .site-footer{
+    opacity:0 !important;
+    visibility:hidden !important;
+    pointer-events:none !important;
+  }
+  html[data-passage="arrival"] .scroll-invitation{visibility:visible}
+  html[data-passage="journey"] .scroll-invitation,
+  html:not([data-passage]) .scroll-invitation{
+    /* entry-cue drives opacity; keep in tree for reverse-scroll restore */
+  }
 
   html[data-motion="off"] .method-annot[data-step="1"]{ left:10%; top:44%; }
   html[data-motion="off"] .method-annot[data-step="2"]{ left:30%; top:34%; }
@@ -1408,7 +1445,7 @@
     transform:none !important;
     transition:none !important;
   }
-  html[data-motion="off"] .scroll-cue{display:none}
+  html[data-motion="off"] .scroll-invitation::after{animation:none; opacity:.72}
   html[data-motion="off"] .intro-veil{opacity:0 !important}
   html[data-motion="off"] .world{opacity:1 !important}
   html[data-motion="off"] .loader-bar,
@@ -1425,7 +1462,7 @@
    * Activation: auto-load — @media (max-width:720px) and paintMobileExperience().
    * Behavioral check: node smoke-test.mjs plus short and long CUA swipes through
    * the rendered mobile journey; each physical swipe lands exactly one authored
-   * rest: Look, Find, Build, Result, Me, Start, then Services. Copy stays inside an
+   * rest: Arrival, Leak, Look, Find, Build, Result, Me, Start, then Services. Copy stays inside an
    * explicit safe region between header/safe-area top and nav/safe-area bottom;
    * every handoff keeps one active beat, decoded world pixels, and no stale class.
    * Retirement: retire when this site no longer uses the Golden Arrival buyer journey on mobile.
@@ -1441,8 +1478,8 @@
     html{scrollbar-width:none}
     html::-webkit-scrollbar{display:none}
     body{overscroll-behavior-y:none}
-    .journey{height:calc(100svh + 3920px)}
-    html[data-motion="off"] .journey{height:500svh}
+    .journey{height:calc(100svh + 4480px)}
+    html[data-motion="off"] .journey{height:600svh}
     .journey,
     .viewport{
       touch-action:pan-x pinch-zoom;
@@ -1451,8 +1488,22 @@
     .station,
     .station-rail,
     .distance-hud,
-    .site-footer,
-    .scroll-cue{display:none !important}
+    .site-footer{display:none !important}
+    .scroll-invitation{
+      top:50%;
+      font-size:clamp(1.35rem, 7vw, 1.7rem);
+    }
+    html[data-passage="arrival"] .mobile-station-nav,
+    html[data-passage="arrival"] .mobile-method-nav,
+    html[data-passage="arrival"] .mobile-swipe-cue,
+    html[data-passage="arrival"] .mobile-copy-stage{
+      opacity:0 !important;
+      visibility:hidden !important;
+      pointer-events:none !important;
+    }
+    html[data-passage="journey"] .scroll-invitation{
+      /* retired after first rest; entry-cue already 0 */
+    }
 
     .progress-bar{display:block}
     .site-header{
@@ -2266,7 +2317,10 @@
           <div class="mobile-story-wash" aria-hidden="true"></div>
 
           <div class="mobile-copy-stage" aria-live="polite">
-            <article class="mobile-beat is-active" data-mobile-beat="leak" data-mobile-station="leak">
+            <article class="mobile-beat is-active" data-mobile-beat="arrival" data-mobile-station="arrival" aria-label="Arrival">
+            </article>
+
+            <article class="mobile-beat" data-mobile-beat="leak" data-mobile-station="leak" aria-hidden="true">
               <p class="mobile-kicker">The Leak</p>
               <h1 class="mobile-title">I find where your business quietly loses customers.</h1>
               <p class="mobile-body">Then I build you the fix.</p>
@@ -2329,7 +2383,7 @@
           <p class="mobile-swipe-cue" id="mobile-swipe-cue">Swipe to follow</p>
 
           <nav class="mobile-nav mobile-station-nav" aria-label="Journey sections">
-            <button type="button" class="is-active" data-go="leak" aria-current="step">Leak</button>
+            <button type="button" data-go="leak">Leak</button>
             <button type="button" data-go="method">Method</button>
             <button type="button" data-go="proof">Result</button>
             <button type="button" data-go="jarrett">Me</button>
@@ -2346,7 +2400,7 @@
         <nav class="station-rail" id="station-rail" aria-label="Journey sections">
           <div class="station-rail-track" aria-hidden="true"></div>
           <div class="station-rail-marker" id="rail-marker" aria-hidden="true"></div>
-          <button type="button" class="station-rail-tick" data-go="leak" aria-current="true"><span>The Leak</span></button>
+          <button type="button" class="station-rail-tick" data-go="leak"><span>The Leak</span></button>
           <button type="button" class="station-rail-tick" data-go="method"><span>How I work</span></button>
           <button type="button" class="station-rail-tick" data-go="proof"><span>Real result</span></button>
           <button type="button" class="station-rail-tick" data-go="jarrett"><span>About me</span></button>
@@ -2456,7 +2510,7 @@
           </div>
         </section>
 
-        <p class="scroll-cue" id="scroll-cue">Scroll to follow the path</p>
+        <div class="scroll-invitation" id="scroll-invitation" aria-hidden="true"><span>Scroll</span></div>
         <div class="distance-hud" id="distance-hud" aria-live="polite">1 of 5 — The Leak</div>
         <footer class="site-footer" id="site-footer">
           <p>Jarrett Wroten · Las Vegas</p>
@@ -2487,31 +2541,41 @@
    * Future consumer: portrait visitors entering the Golden Arrival journey.
    * Activation: auto-load through this production entry document.
    * Behavioral check: node smoke-test.mjs plus short/long forward and reverse
-   * gestures through all seven authored section rests (eight stage stops).
+   * gestures through all eight authored section rests (nine stage stops).
    * Retirement: only when this scroll-depth mobile journey is replaced end to end.
    */
   var SITE_TUNING = {
     motionStorageKey: "jw-motion",
     mobileBreakpoint: 720,
-    runwayVh: 600,
+    /* Desktop runway extended by one Arrival rest so commercial Leak→Services
+       physical distance stays approximately the prior 500svh scrollable span. */
+    runwayVh: 700,
     mobileSectionPx: 560,
-    mobileSectionCount: 7,
-    mobileRunwayPx: 3920,
+    mobileSectionCount: 8,
+    mobileRunwayPx: 4480,
     mobileSwipeThresholdPx: 24,
     mobileWheelThresholdPx: 18,
     mobileWheelIdleMs: 180,
     mobileSectionGlideMs: 1200,
+    /* Nine ordered rests: Arrival prelude, then the prior eight commercial rests
+       at equal 560px intervals (eight intervals). */
     mobileStageStops: [
-      { id: "leak",         station: "leak",      progress: 0.000000000 },
-      { id: "method-look",  station: "method",    progress: 0.142857143 },
-      { id: "method-find",  station: "method",    progress: 0.285714286 },
-      { id: "method-build", station: "method",    progress: 0.428571429 },
-      { id: "proof",        station: "proof",     progress: 0.571428571 },
-      { id: "jarrett",      station: "jarrett",   progress: 0.714285714 },
-      { id: "threshold",    station: "threshold", progress: 0.857142857 },
+      { id: "arrival",      station: "arrival",   progress: 0.000000000 },
+      { id: "leak",         station: "leak",      progress: 0.125000000 },
+      { id: "method-look",  station: "method",    progress: 0.250000000 },
+      { id: "method-find",  station: "method",    progress: 0.375000000 },
+      { id: "method-build", station: "method",    progress: 0.500000000 },
+      { id: "proof",        station: "proof",     progress: 0.625000000 },
+      { id: "jarrett",      station: "jarrett",   progress: 0.750000000 },
+      { id: "threshold",    station: "threshold", progress: 0.875000000 },
       { id: "services",     station: "threshold", progress: 1.000000000 }
     ],
-    stillRunwayVh: 500,
+    stillRunwayVh: 600,
+    /* Desktop Arrival share of normalized progress. Commercial journey is remapped
+       through worldToCommercial so Leak→Services cadence is not compressed. */
+    arrival: {
+      shareDesktop: 0.166666667
+    },
     frameCount: 361,
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
     preloadBatch: 20,
@@ -2661,7 +2725,7 @@
   var motionToggle = document.getElementById("motion-toggle");
   var distanceHud = document.getElementById("distance-hud");
   var siteFooter = document.getElementById("site-footer");
-  var scrollCue = document.getElementById("scroll-cue");
+  var scrollInvitation = document.getElementById("scroll-invitation");
   var railTicks = document.querySelectorAll(".station-rail-tick");
   var stations = document.querySelectorAll(".station");
   var methodAnnots = document.querySelectorAll(".method-annot");
@@ -2707,8 +2771,8 @@
   var progressCurrent = 0;
   var renderRaf = 0;
   var lastFrameTs = 0;
-  var activeStationId = "leak";
-  var activeMobileBeatId = "leak";
+  var activeStationId = "arrival";
+  var activeMobileBeatId = "arrival";
   var mobileBeatCleanupTimer = 0;
   var mobileExperiencePrimed = false;
   var mobileScrollRaf = 0;
@@ -2781,6 +2845,46 @@
     return t * t * t * (t * (t * 6 - 15) + 10);
   }
   function isMobile() { return mobileMq.matches; }
+
+  function arrivalShare() {
+    /* Mobile Arrival is the first of nine equal rests (1/8 of normalized progress). */
+    if (isMobile()) return 0.125;
+    return SITE_TUNING.arrival.shareDesktop;
+  }
+
+  function worldToCommercial(p) {
+    p = clamp(p, 0, 1);
+    var a = arrivalShare();
+    if (p <= a) return 0;
+    return (p - a) / Math.max(0.0001, 1 - a);
+  }
+
+  function commercialToWorld(c) {
+    c = clamp(c, 0, 1);
+    var a = arrivalShare();
+    return a + c * (1 - a);
+  }
+
+  function isArrivalAt(p) {
+    p = clamp(p, 0, 1);
+    if (isMobile()) {
+      return mobileStageIndexAtProgress(p) === 0;
+    }
+    if (!motionOn) {
+      return p < (1 / (STATION_ORDER.length + 1));
+    }
+    return p < arrivalShare();
+  }
+
+  function entryCueAt(p) {
+    p = clamp(p, 0, 1);
+    if (!motionOn) return isArrivalAt(p) ? 1 : 0;
+    if (isMobile()) return isArrivalAt(p) ? 1 : 0;
+    var share = arrivalShare();
+    if (p <= share * 0.12) return 1;
+    if (p >= share) return 0;
+    return 1 - (p - share * 0.12) / Math.max(0.0001, share * 0.88);
+  }
 
   function stationSpec(id) {
     var map = isMobile() ? SITE_TUNING.mobileStations : SITE_TUNING.stations;
@@ -3288,16 +3392,17 @@
     paint(progressCurrent, true);
   }
 
-  function stationStateAt(p) {
+  function stationStateAt(c) {
+    /* c is commercial progress (Arrival stripped). */
     var result = {};
     for (var i = 0; i < STATION_ORDER.length; i++) {
       var s = stationSpec(STATION_ORDER[i]);
       var state = "idle";
-      if (p >= s.enter && p < s.hold) state = "entering";
-      else if (p >= s.hold && p < s.exit) state = "active";
-      else if (p >= s.exit && p < s.exit + 0.04) state = "exiting";
-      if (STATION_ORDER[i] === "threshold" && p >= s.enter) {
-        state = p >= s.hold ? "active" : "entering";
+      if (c >= s.enter && c < s.hold) state = "entering";
+      else if (c >= s.hold && c < s.exit) state = "active";
+      else if (c >= s.exit && c < s.exit + 0.04) state = "exiting";
+      if (STATION_ORDER[i] === "threshold" && c >= s.enter) {
+        state = c >= s.hold ? "active" : "entering";
       }
       result[STATION_ORDER[i]] = state;
     }
@@ -3305,21 +3410,25 @@
   }
 
   function dominantStation(p) {
+    /* p is world progress. Arrival is a prelude, not a commercial station. */
+    if (isArrivalAt(p)) return "arrival";
     if (!motionOn && !isMobile()) {
-      var band = 1 / STATION_ORDER.length;
-      var idx = clamp(Math.floor(p / band + 0.0001), 0, STATION_ORDER.length - 1);
-      if (p >= 0.999) idx = STATION_ORDER.length - 1;
-      return STATION_ORDER[idx];
+      var bands = STATION_ORDER.length + 1;
+      var idx = clamp(Math.floor(p * bands + 0.0001), 0, bands - 1);
+      if (p >= 0.999) idx = bands - 1;
+      if (idx === 0) return "arrival";
+      return STATION_ORDER[idx - 1];
     }
+    var c = worldToCommercial(p);
     var best = "leak", bestDist = 1;
     for (var i = 0; i < STATION_ORDER.length; i++) {
       var id = STATION_ORDER[i];
       var s = stationSpec(id);
-      if (p >= s.enter && p < s.exit) return id;
-      var d = Math.abs(p - s.center);
+      if (c >= s.enter && c < s.exit) return id;
+      var d = Math.abs(c - s.center);
       if (d < bestDist) { bestDist = d; best = id; }
     }
-    if (p >= stationSpec("threshold").enter) return "threshold";
+    if (c >= stationSpec("threshold").enter) return "threshold";
     return best;
   }
 
@@ -3327,7 +3436,10 @@
     var life = isMobile() ? SITE_TUNING.mobileProofApparatus : SITE_TUNING.proofApparatus;
     var opacity = 0;
     var interactive = false;
-    if (!motionOn) {
+    if (dom === "arrival" || p < 0) {
+      opacity = 0;
+      interactive = false;
+    } else if (!motionOn) {
       opacity = (dom === "proof") ? 1 : 0;
       interactive = opacity >= 1;
     } else {
@@ -3452,7 +3564,8 @@
 
     mobileExperience.setAttribute("aria-hidden", "false");
     var beatId = mobileBeatAt(p, dom);
-    root.setAttribute("data-mobile-station", dom);
+    var stationAttr = dom === "arrival" ? "arrival" : dom;
+    root.setAttribute("data-mobile-station", stationAttr);
     root.setAttribute("data-mobile-beat", beatId);
     renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn);
     mobileExperiencePrimed = true;
@@ -3462,9 +3575,9 @@
       var stationButton = mobileStationButtons[i];
       var buttonId = stationButton.getAttribute("data-go");
       var buttonIndex = STATION_ORDER.indexOf(buttonId);
-      var active = buttonId === dom;
+      var active = dom !== "arrival" && buttonId === dom;
       stationButton.classList.toggle("is-active", active);
-      stationButton.classList.toggle("is-past", buttonIndex >= 0 && buttonIndex < stationIndex);
+      stationButton.classList.toggle("is-past", dom !== "arrival" && buttonIndex >= 0 && buttonIndex < stationIndex);
       if (active) stationButton.setAttribute("aria-current", "step");
       else stationButton.removeAttribute("aria-current");
     }
@@ -3480,19 +3593,32 @@
     }
 
     if (mobileSwipeCue) {
-      mobileSwipeCue.classList.toggle("is-on", dom === "leak" && p < 0.035 && motionOn);
+      /* Swipe cue only after Arrival — never simultaneous with centered Scroll. */
+      var c = worldToCommercial(p);
+      mobileSwipeCue.classList.toggle("is-on", dom === "leak" && c < 0.035 && motionOn);
     }
   }
 
   function paintStations(p) {
+    var atArrival = isArrivalAt(p);
+    var c = worldToCommercial(p);
     var dom = dominantStation(p);
     activeStationId = dom;
-    var states = stationStateAt(p);
+    root.setAttribute("data-passage", atArrival ? "arrival" : "journey");
+
+    var entryCue = entryCueAt(p);
+    root.style.setProperty("--entry-cue", entryCue.toFixed(4));
+    if (scrollInvitation) {
+      scrollInvitation.setAttribute("aria-hidden", entryCue > 0.04 ? "false" : "true");
+    }
+
+    var states = atArrival ? {} : stationStateAt(c);
 
     for (var i = 0; i < stations.length; i++) {
       var el = stations[i];
       var id = el.getAttribute("data-station");
       el.classList.remove("is-active", "is-held", "is-exiting");
+      if (atArrival) continue;
       if (!motionOn) {
         if (id === dom) el.classList.add("is-held");
         continue;
@@ -3509,16 +3635,16 @@
     paintMobileExperience(p, dom);
 
     /* Method annotations accumulate as an arc (and unwind in reverse).
-       Thresholds come only from SITE_TUNING.methodSteps[*].at. */
+       Thresholds come only from SITE_TUNING.methodSteps[*].at (commercial progress). */
     for (var m = 0; m < methodAnnots.length; m++) {
       var annot = methodAnnots[m];
       var on = false;
-      if (!isMobile() && dom === "method") {
+      if (!atArrival && !isMobile() && dom === "method") {
         if (!motionOn) {
           on = true;
         } else {
           var range = SITE_TUNING.methodSteps[m];
-          on = !!(range && p >= range.at);
+          on = !!(range && c >= range.at);
         }
       }
       if (on) annot.classList.add("is-on");
@@ -3527,45 +3653,48 @@
 
     for (var r = 0; r < railTicks.length; r++) {
       var tick = railTicks[r];
-      tick.setAttribute("aria-current", tick.getAttribute("data-go") === dom ? "true" : "false");
+      tick.setAttribute("aria-current", !atArrival && tick.getAttribute("data-go") === dom ? "true" : "false");
     }
-    root.style.setProperty("--rail-marker", progressToRailMarker(p).toFixed(2) + "%");
+    root.style.setProperty("--rail-marker", progressToRailMarker(c).toFixed(2) + "%");
 
-    var idx = STATION_ORDER.indexOf(dom) + 1;
-    var label = SITE_TUNING.stations[dom].label;
     if (distanceHud) {
-      if (dom === "threshold" && p > 0.97) {
-        distanceHud.textContent = "Journey complete";
-        root.style.setProperty("--hud-opacity", "0.35");
+      if (atArrival) {
+        distanceHud.textContent = "";
+        root.style.setProperty("--hud-opacity", "0");
       } else {
-        distanceHud.textContent = idx + " of 5 — " + label;
-        root.style.setProperty("--hud-opacity", "1");
+        var idx = STATION_ORDER.indexOf(dom) + 1;
+        var label = SITE_TUNING.stations[dom].label;
+        if (dom === "threshold" && c > 0.97) {
+          distanceHud.textContent = "Journey complete";
+          root.style.setProperty("--hud-opacity", "0.35");
+        } else {
+          distanceHud.textContent = idx + " of 5 — " + label;
+          root.style.setProperty("--hud-opacity", "1");
+        }
       }
     }
     if (siteFooter) {
-      if (dom === "threshold") siteFooter.classList.add("is-on");
+      if (!atArrival && dom === "threshold") siteFooter.classList.add("is-on");
       else siteFooter.classList.remove("is-on");
-    }
-    if (scrollCue) {
-      if (dom === "leak" && p < 0.06 && motionOn) scrollCue.classList.add("is-on");
-      else scrollCue.classList.remove("is-on");
     }
 
     var lit = 0;
-    if (!motionOn) lit = (dom === "proof") ? 1 : 0;
+    if (atArrival) lit = 0;
+    else if (!motionOn) lit = (dom === "proof") ? 1 : 0;
     else {
       var cs = SITE_TUNING.consoleLit.start;
       var cf = SITE_TUNING.consoleLit.full;
-      lit = clamp((p - cs) / Math.max(0.0001, cf - cs), 0, 1);
+      lit = clamp((c - cs) / Math.max(0.0001, cf - cs), 0, 1);
       var life = isMobile() ? SITE_TUNING.mobileProofApparatus : SITE_TUNING.proofApparatus;
-      if (p >= life.fadeStart) {
-        lit *= clamp(1 - (p - life.fadeStart) / Math.max(0.0001, life.fullyGone - life.fadeStart), 0, 1);
+      if (c >= life.fadeStart) {
+        lit *= clamp(1 - (c - life.fadeStart) / Math.max(0.0001, life.fullyGone - life.fadeStart), 0, 1);
       }
     }
     root.style.setProperty("--console-lit", lit.toFixed(4));
-    applyProofApparatus(p, dom);
+    applyProofApparatus(atArrival ? -1 : c, atArrival ? "arrival" : dom);
 
-    var sig = motionOn ? clamp(0.25 + p * 0.7, 0.25, 0.95) : 0.55;
+    var sig = motionOn ? clamp(0.25 + c * 0.7, 0.25, 0.95) : 0.55;
+    if (atArrival) sig = motionOn ? 0.45 : 0.55;
     root.style.setProperty("--signal-core", sig.toFixed(4));
   }
 
@@ -3601,17 +3730,22 @@
   function paint(p) {
     p = clamp(p, 0, 1);
     root.style.setProperty("--progress", p.toFixed(5));
+    var c = worldToCommercial(p);
+    var atArrival = isArrivalAt(p);
 
     var frame;
     if (!motionOn) {
       var id = dominantStation(p);
-      frame = SITE_TUNING.stillFrames[id] || 0;
       activeStationId = id;
+      frame = (id === "arrival") ? 0 : (SITE_TUNING.stillFrames[id] || 0);
     } else {
-      frame = isMobile() ? mobileProgressToFrame(p) : progressToFrame(p);
+      /* Commercial progress drives the approved frame map so Arrival extends the
+         runway instead of compressing Leak→Services travel. */
+      frame = isMobile() ? mobileProgressToFrame(c) : progressToFrame(c);
+      if (atArrival) frame = 0;
     }
     showFrame(frame);
-    paintLiveConduit(p);
+    paintLiveConduit(c);
     paintStations(p);
   }
 
@@ -3838,6 +3972,13 @@
     if (!mobileGlideLocked) advanceMobileStage(mobileWheelDelta > 0 ? 1 : -1);
   }
 
+  function scrollToArrival(behavior) {
+    if (!journey || !viewport) return;
+    cancelMobileGlide();
+    window.scrollTo({ top: 0, left: 0, behavior: behavior || "auto" });
+    sampleScroll();
+  }
+
   function scrollToStation(id, behavior) {
     if (!validStations[id] || !journey || !viewport) return;
     var s = stationSpec(id);
@@ -3845,9 +3986,11 @@
     var top;
     if (!motionOn && !isMobile()) {
       var idx = STATION_ORDER.indexOf(id);
-      top = (idx / STATION_ORDER.length) * total + 1;
+      /* Motion-off: equal bands for Arrival + five commercial stations. */
+      top = ((idx + 1) / (STATION_ORDER.length + 1)) * total + 1;
     } else {
-      top = s.center * total;
+      /* Station centers are authored in commercial progress; map to world. */
+      top = commercialToWorld(s.center) * total;
     }
     if (isMobile() && motionOn && behavior !== "auto") glideScrollTo(top);
     else window.scrollTo({ top: top, left: 0, behavior: behavior || "auto" });
@@ -3858,7 +4001,7 @@
     var spec = SITE_TUNING.mobileMethodSteps[step - 1];
     if (!spec || !journey || !viewport) return;
     var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
-    var top = spec.center * total;
+    var top = commercialToWorld(spec.center) * total;
     if (motionOn) glideScrollTo(top);
     else {
       window.scrollTo({ top: top, left: 0, behavior: "auto" });
@@ -4130,8 +4273,16 @@
       advanceMobileStage(e.key === "ArrowDown" || e.key === "PageDown" ? 1 : -1);
       return;
     }
+    var down = e.key === "ArrowDown" || e.key === "PageDown";
+    if (activeStationId === "arrival" || isArrivalAt(progressCurrent)) {
+      if (down) {
+        e.preventDefault();
+        scrollToStation("leak", motionOn ? "smooth" : "auto");
+      }
+      return;
+    }
     var idx = STATION_ORDER.indexOf(activeStationId);
-    if (e.key === "ArrowDown" || e.key === "PageDown") {
+    if (down) {
       if (idx < STATION_ORDER.length - 1) {
         e.preventDefault();
         scrollToStation(STATION_ORDER[idx + 1], motionOn ? "smooth" : "auto");
@@ -4139,6 +4290,9 @@
     } else if (idx > 0) {
       e.preventDefault();
       scrollToStation(STATION_ORDER[idx - 1], motionOn ? "smooth" : "auto");
+    } else if (idx === 0) {
+      e.preventDefault();
+      scrollToArrival(motionOn ? "smooth" : "auto");
     }
   });
 

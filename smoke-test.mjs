@@ -13,7 +13,7 @@
  * Behavioral check: exercises normal/direct-entry frame behavior and asserts nowrap
  *   display, no wbr, Proof housing/spill, loader,
  *   opening-neighbourhood, railCenters mapping, faceExclusionMobile, five distinct
- *   stationCarriers, footer zero-margin, the eight-beat mobile journey, portrait
+ *   stationCarriers, footer zero-margin, the nine-rest mobile journey (Arrival + eight commercial rests), portrait
  *   navigation/evidence contracts, and frozen proof figures without remote runtime
  * Retirement: retire when the page no longer uses the five-station Golden Arrival
  *   layout contract, or when a stronger live-pixel harness supersedes these structural
@@ -209,11 +209,18 @@ function styleBlock(selector) {
   const matches = [...html.matchAll(new RegExp(escaped + '\\s*\\{([^}]*)\\}', 'g'))];
   return matches.map((match) => match[1]).join('\n');
 }
-for (const sel of ['.station-kicker', '.note-device-caption', '.scroll-cue', '.lightbox-caption']) {
+for (const sel of ['.station-kicker', '.note-device-caption', '.lightbox-caption']) {
   const block = styleBlock(sel);
   ok(/font-family\s*:\s*var\(--reading\)/.test(block), sel + ' uses human editorial register');
   ok(/font-style\s*:\s*italic/.test(block), sel + ' uses editorial italic cadence');
   ok(/letter-spacing\s*:\s*0/.test(block), sel + ' keeps natural tracking');
+}
+{
+  const block = styleBlock('.scroll-invitation');
+  ok(/font-family\s*:\s*var\(--display\)/.test(block), '.scroll-invitation uses display editorial register');
+  ok(/font-style\s*:\s*italic/.test(block), '.scroll-invitation uses editorial italic cadence');
+  ok(/letter-spacing\s*:\s*0/.test(block), '.scroll-invitation keeps natural tracking');
+  ok(/class="scroll-invitation"/.test(html) && html.includes('<span>Scroll</span>'), 'centered Scroll invitation markup present');
 }
 for (const sel of ['.wordmark', '.motion-toggle', '.loader-label', '.station-rail-tick span', '.distance-hud', '.method-annot-num', '.proof-open-hint', '.site-footer', '.lightbox-close']) {
   const block = styleBlock(sel);
@@ -341,7 +348,7 @@ ok(!html.includes('id="world-frame"'), 'no single world-frame id');
       /function paintLiveConduit\s*\(/.test(html) &&
       /SITE_TUNING\.liveConduit/.test(html) &&
       /setProperty\s*\(\s*["']--live-conduit["']/.test(html) &&
-      /function paint\s*\([\s\S]*?paintLiveConduit\s*\(\s*p\s*\)/.test(html),
+      /function paint\s*\([\s\S]*?paintLiveConduit\s*\(\s*c\s*\)/.test(html),
     'paint lifecycle applies live-conduit visibility from named thresholds'
   );
   ok(
@@ -362,33 +369,27 @@ ok(!html.includes('id="world-frame"'), 'no single world-frame id');
     'homepage uses root-specific arrival-lightning (not work corridor-lightning)'
   );
 }
-// Preserved approved /work/ blobs must remain untouched by this homepage lane
+// Work passage: Dylan disclosure may update with owner truth; ProRok demo bytes stay frozen.
 {
-  const workBlob = spawnSync('git', ['rev-parse', 'HEAD:work/index.html'], {
-    cwd: ROOT,
-    encoding: 'utf8',
-  });
-  const workSmokeBlob = spawnSync('git', ['rev-parse', 'HEAD:work-smoke-test.mjs'], {
-    cwd: ROOT,
-    encoding: 'utf8',
-  });
-  // When uncommitted, HEAD still holds the preserved blobs; also reject working-tree dirty work files.
-  const workStatus = spawnSync('git', ['status', '--porcelain', '--', 'work/index.html', 'work-smoke-test.mjs'], {
-    cwd: ROOT,
-    encoding: 'utf8',
-  });
+  const workHtmlNow = fs.readFileSync(path.join(ROOT, 'work/index.html'), 'utf8');
+  const DYLAN_TRUTH = 'Work in progress — currently being revised with Dylan Prorok.';
+  const DYLAN_OLD = 'Independent redesign concept—not commissioned or approved by Dylan Prorok.';
+  ok(workHtmlNow.includes(DYLAN_TRUTH), 'work/index.html carries exact Dylan revision truth');
+  ok(!workHtmlNow.includes(DYLAN_OLD), 'work/index.html retires old Dylan independent-disclaimer');
   ok(
-    (workBlob.stdout || '').trim() === 'b9ff7b17f6c0abf7602c6cd2f0e24e0629ce614c',
-    'work/index.html HEAD blob preserved'
+    (workHtmlNow.match(/Work in progress — currently being revised with Dylan Prorok\./g) || []).length >= 2,
+    'Dylan truth present in both Work consumers (scripted + no-JS)'
   );
-  ok(
-    (workSmokeBlob.stdout || '').trim() === '03de3669319228e988bd2a9b5e3b7eebe4057feb',
-    'work-smoke-test.mjs HEAD blob preserved'
-  );
-  ok(
-    !(workStatus.stdout || '').trim(),
-    'work/index.html and work-smoke-test.mjs working tree unchanged'
-  );
+  // Demo / media identity under demos/dylan-prorok must remain byte-identical to HEAD parent.
+  const demoFiles = [
+    'demos/dylan-prorok/dylan-portrait.jpg',
+    'demos/dylan-prorok/sakura-ink-bloom.mp4',
+  ];
+  for (const rel of demoFiles) {
+    const head = spawnSync('git', ['show', 'HEAD:' + rel], { cwd: ROOT });
+    const cur = fs.readFileSync(path.join(ROOT, rel));
+    ok(head.status === 0 && Buffer.compare(head.stdout, cur) === 0, rel + ' demo bytes unchanged vs HEAD');
+  }
 }
 ok(
   !/worldFrame\.src\s*=/.test(html) &&
@@ -532,15 +533,104 @@ ok(
   'no-js route carries method steps'
 );
 
-// Mobile is a separately authored eight-beat buyer journey, not the desktop DOM
-// squeezed into a portrait viewport.
+
+// ——— Motion-first Arrival prelude (main page) ———
+{
+  ok(/runwayVh:\s*700/.test(html) && /\.journey\s*\{[\s\S]*?height:\s*700svh/.test(html), 'desktop runway extended for Arrival rest (700svh)');
+  ok(/stillRunwayVh:\s*600/.test(html) && /html\[data-motion="off"\] \.journey\{height:600svh\}/.test(html), 'motion-off runway includes Arrival band');
+  ok(/arrival:\s*\{\s*shareDesktop:\s*0\.166666667/.test(html), 'desktop Arrival share is authored (one-sixth)');
+  ok(
+    /function worldToCommercial\(p\)/.test(html) &&
+      /function commercialToWorld\(c\)/.test(html) &&
+      /commercialToWorld\(s\.center\)/.test(html),
+    'desktop commercial stations map through extended runway rather than hiding Leak inside its old span'
+  );
+  ok(
+    /class="scroll-invitation"[\s\S]*?<span>Scroll<\/span>/.test(html) &&
+      /--entry-cue/.test(html) &&
+      /data-passage/.test(html),
+    'normal root authors distinct Arrival rest with centered Scroll invitation'
+  );
+  ok(
+    /html\[data-passage="arrival"\][\s\S]*?\.station-rail[\s\S]*?visibility:\s*hidden/.test(html) &&
+      /html\[data-passage="arrival"\][\s\S]*?\.station[\s\S]*?visibility:\s*hidden/.test(html) &&
+      /html\[data-passage="arrival"\][\s\S]*?\.distance-hud[\s\S]*?visibility:\s*hidden/.test(html) &&
+      /html\[data-passage="arrival"\][\s\S]*?\.site-footer[\s\S]*?visibility:\s*hidden/.test(html),
+    'Arrival rest hides Leak headline chrome, rail, HUD, and footer'
+  );
+  ok(
+    /html\[data-passage="arrival"\][\s\S]*?\.mobile-station-nav[\s\S]*?visibility:\s*hidden/.test(html) &&
+      /html\[data-passage="arrival"\][\s\S]*?\.mobile-swipe-cue[\s\S]*?visibility:\s*hidden/.test(html) &&
+      /html\[data-passage="arrival"\][\s\S]*?\.mobile-copy-stage[\s\S]*?visibility:\s*hidden/.test(html),
+    'mobile Arrival hides business nav, swipe cue, and Leak copy with Scroll'
+  );
+  ok(
+    /activeStationId === "arrival"[\s\S]*?scrollToStation\("leak"/.test(html) ||
+      /isArrivalAt\(progressCurrent\)[\s\S]*?scrollToStation\("leak"/.test(html),
+    'desktop ArrowDown/PageDown from Arrival goes to The Leak'
+  );
+  ok(
+    /function scrollToStation\(id, behavior\)[\s\S]*?commercialToWorld\(s\.center\)/.test(html) &&
+      /forcedStation[\s\S]*?scrollToStation\(forcedStation/.test(html),
+    'forced ?station= routes scroll to commercial centers without Arrival prelude gate'
+  );
+  ok(
+    /html\[data-motion="off"\] \.scroll-invitation::after/.test(html) &&
+      /html\[data-motion="off"\] \.arrival-lightning[\s\S]*?display:\s*none/.test(html) &&
+      /entryCueAt\(p\)/.test(html) &&
+      /!motionOn\) return isArrivalAt\(p\) \? 1 : 0/.test(html),
+    'Motion Off keeps centered Scroll at Arrival and disables live lightning'
+  );
+  // Public commercial station order unchanged (five-stage rail).
+  const railOrder = [...html.matchAll(/class="station-rail-tick"[^>]*data-go="([^"]+)"/g)].map((m) => m[1]);
+  ok(
+    JSON.stringify(railOrder) === JSON.stringify(['leak', 'method', 'proof', 'jarrett', 'threshold']),
+    'public commercial station rail order unchanged'
+  );
+  const sectionOrder = [...html.matchAll(/<section class="station" data-station="([^"]+)"/g)].map((m) => m[1]);
+  ok(
+    JSON.stringify(sectionOrder) === JSON.stringify(['leak', 'method', 'proof', 'jarrett', 'threshold']),
+    'public commercial section order unchanged'
+  );
+  // Contact order preserved: booking → email → whisper on desktop + mobile.
+  {
+    const desktopThreshold = html.match(/<section class="station" data-station="threshold"[\s\S]*?<\/section>/);
+    const desktopSrc = desktopThreshold ? desktopThreshold[0] : '';
+    const bottomStart = desktopSrc.indexOf('class="threshold-bottom"');
+    const whisperClose = desktopSrc.indexOf('</p>', desktopSrc.indexOf('class="invite-whisper"'));
+    const bottomSrc =
+      bottomStart !== -1 && whisperClose !== -1 ? desktopSrc.slice(bottomStart, whisperClose + 4) : '';
+    const bookAt = bottomSrc.indexOf('class="invite-book"');
+    const emailAt = bottomSrc.indexOf('class="invite-email"');
+    const whisperAt = bottomSrc.indexOf('class="invite-whisper"');
+    ok(bookAt !== -1 && emailAt > bookAt && whisperAt > emailAt, 'Arrival change preserves desktop booking → email → whisper order');
+  }
+}
+
+// Mobile is a separately authored nine-rest buyer journey (Arrival prelude + eight commercial rests),
+// not the desktop DOM squeezed into a portrait viewport.
 {
   const mobileExperience = html.match(/<div class="mobile-experience"[\s\S]*?<\/div>\s*<nav class="station-rail"/);
   const mobileSrc = mobileExperience ? mobileExperience[0] : '';
   const beatIds = [...mobileSrc.matchAll(/data-mobile-beat="([^"]+)"/g)].map((m) => m[1]);
-  ok(beatIds.length === 8, 'mobile journey has eight authored beats');
-  ok(new Set(beatIds).size === 8, 'mobile journey beat ids are unique');
-  for (const id of ['leak', 'method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold', 'services']) {
+  ok(beatIds.length === 9, 'mobile journey has nine authored rests/beats');
+  ok(new Set(beatIds).size === 9, 'mobile journey beat ids are unique');
+  ok(
+    JSON.stringify(beatIds) ===
+      JSON.stringify([
+        'arrival',
+        'leak',
+        'method-look',
+        'method-find',
+        'method-build',
+        'proof',
+        'jarrett',
+        'threshold',
+        'services',
+      ]),
+    'mobile rests are Arrival first, then the prior eight commercial rests in order'
+  );
+  for (const id of ['arrival', 'leak', 'method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold', 'services']) {
     ok(beatIds.includes(id), 'mobile journey contains ' + id);
   }
 
@@ -556,9 +646,9 @@ ok(
   );
 
   ok(
-    /mobileSectionPx:\s*560[\s\S]*?mobileSectionCount:\s*7[\s\S]*?mobileRunwayPx:\s*3920[\s\S]*?mobileSwipeThresholdPx:\s*24[\s\S]*?mobileWheelThresholdPx:\s*18[\s\S]*?mobileSectionGlideMs:\s*1200/.test(html) &&
-      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 3920px\)/.test(html),
-    'mobile runway has seven equal 560px authored section rests and one slow glide'
+    /mobileSectionPx:\s*560[\s\S]*?mobileSectionCount:\s*8[\s\S]*?mobileRunwayPx:\s*4480[\s\S]*?mobileSwipeThresholdPx:\s*24[\s\S]*?mobileWheelThresholdPx:\s*18[\s\S]*?mobileSectionGlideMs:\s*1200/.test(html) &&
+      /\.journey\s*\{\s*height:\s*calc\(100svh \+ 4480px\)/.test(html),
+    'mobile runway has eight equal 560px authored section intervals (nine rests) and one slow glide'
   );
   ok(
     !/mobileSwipesPerBeat|mobileLookSwipes|mobileFindSwipes|mobileBuildSwipes|mobileResultSwipes|mobileMeSwipes|mobileBeatCount/.test(html),
@@ -581,8 +671,8 @@ ok(
     'mobile Method primary lands on Look and Start lands on Start, not Services'
   );
   ok(
-    /mobileStageStops:[\s\S]*?id:\s*"method-look"[\s\S]*?progress:\s*0\.142857143[\s\S]*?id:\s*"threshold"[\s\S]*?progress:\s*0\.857142857[\s\S]*?id:\s*"services"[\s\S]*?progress:\s*1\.000000000/.test(html),
-    'stage stops place Method/Look, Start, and Services at the exact authored rests'
+    /mobileStageStops:[\s\S]*?id:\s*"arrival"[\s\S]*?progress:\s*0\.000000000[\s\S]*?id:\s*"leak"[\s\S]*?progress:\s*0\.125000000[\s\S]*?id:\s*"method-look"[\s\S]*?progress:\s*0\.250000000[\s\S]*?id:\s*"threshold"[\s\S]*?progress:\s*0\.875000000[\s\S]*?id:\s*"services"[\s\S]*?progress:\s*1\.000000000/.test(html),
+    'stage stops place Arrival, Leak, Method/Look, Start, and Services at the exact authored rests'
   );
   ok(/mobileMethodSteps:\s*\[[\s\S]*?method-look[\s\S]*?method-find[\s\S]*?method-build/.test(html), 'mobile Method has three independent movement ranges');
   ok(
@@ -599,24 +689,25 @@ ok(
    * Retirement: only if section-locked mobile progression is removed.
    */
   const mobileStageStops = [
-    ['leak', 0],
-    ['method-look', 1 / 7],
-    ['method-find', 2 / 7],
-    ['method-build', 3 / 7],
-    ['proof', 4 / 7],
-    ['jarrett', 5 / 7],
-    ['threshold', 6 / 7],
+    ['arrival', 0],
+    ['leak', 1 / 8],
+    ['method-look', 2 / 8],
+    ['method-find', 3 / 8],
+    ['method-build', 4 / 8],
+    ['proof', 5 / 8],
+    ['jarrett', 6 / 8],
+    ['threshold', 7 / 8],
     ['services', 1]
   ];
   ok(
-    /mobileStageStops:\s*\[[\s\S]*?"leak"[\s\S]*?"method-look"[\s\S]*?"method-find"[\s\S]*?"method-build"[\s\S]*?"proof"[\s\S]*?"jarrett"[\s\S]*?"threshold"[\s\S]*?"services"/.test(html),
-    'mobile stage-stop source preserves Look through Services order'
+    /mobileStageStops:\s*\[[\s\S]*?"arrival"[\s\S]*?"leak"[\s\S]*?"method-look"[\s\S]*?"method-find"[\s\S]*?"method-build"[\s\S]*?"proof"[\s\S]*?"jarrett"[\s\S]*?"threshold"[\s\S]*?"services"/.test(html),
+    'mobile stage-stop source preserves Arrival then Look through Services order'
   );
   ok(
-    mobileStageStops.every((stop, index) => Math.abs(stop[1] - index / 7) < 1e-9),
-    'mobile stage-stop oracle uses seven equal spatial destinations from 0 through 1'
+    mobileStageStops.every((stop, index) => Math.abs(stop[1] - index / 8) < 1e-9),
+    'mobile stage-stop oracle uses eight equal spatial destinations from 0 through 1'
   );
-  ok(mobileStageStops.length === 8, 'eight mobile stage stops from 0 through 1 at exact sevenths');
+  ok(mobileStageStops.length === 9, 'nine mobile stage stops from 0 through 1 at exact eighths');
   ok(
     /if \(isMobile\(\)\) \{\r?\n\s+progressCurrent = progressTarget;/.test(html) &&
       /var eased\s*=\s*smootherStep\(elapsed\)/.test(html),
@@ -659,39 +750,44 @@ ok(
    * Canonical path: smoke-test.mjs — deterministic stage transition oracle below.
    * Future consumer: the maintainer changing mobile input or stage boundaries.
    * Activation: execute — `node smoke-test.mjs` before release.
-   * Behavioral check: seven forward decisions produce Look through Services;
+   * Behavioral check: eight forward decisions produce Leak through Services after Arrival;
    * reversing produces the exact inverse with no skipped rest.
    * Retirement: retire only if mobile stops using authored section locks.
    */
-  const transitionStage = (index, direction) => Math.max(0, Math.min(7, index + Math.sign(direction)));
+  const transitionStage = (index, direction) => Math.max(0, Math.min(8, index + Math.sign(direction)));
   const mobileSwipeSequence = [];
   let stageIndex = 0;
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 8; i++) {
     stageIndex = transitionStage(stageIndex, 1);
     mobileSwipeSequence.push(mobileStageStops[stageIndex][0]);
   }
   ok(
-    JSON.stringify(mobileSwipeSequence) === JSON.stringify(['method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold', 'services']),
-    'seven forward swipes produce Look, Find, Build, Result, Me, Start, then Services exactly once each'
+    JSON.stringify(mobileSwipeSequence) ===
+      JSON.stringify(['leak', 'method-look', 'method-find', 'method-build', 'proof', 'jarrett', 'threshold', 'services']),
+    'eight forward swipes produce Leak then Look, Find, Build, Result, Me, Start, Services — first swipe does not skip Leak'
   );
   const reverseSequence = [];
-  for (let i = 0; i < 7; i++) {
+  for (let i = 0; i < 8; i++) {
     stageIndex = transitionStage(stageIndex, -1);
     reverseSequence.push(mobileStageStops[stageIndex][0]);
   }
   ok(
-    JSON.stringify(reverseSequence) === JSON.stringify(['threshold', 'jarrett', 'proof', 'method-build', 'method-find', 'method-look', 'leak']),
-    'seven reverse swipes unwind every authored rest without skipping'
+    JSON.stringify(reverseSequence) ===
+      JSON.stringify(['threshold', 'jarrett', 'proof', 'method-build', 'method-find', 'method-look', 'leak', 'arrival']),
+    'eight reverse swipes unwind every authored rest without skipping'
   );
+  /* Commercial rests map through worldToCommercial so frames at Leak→Services match the prior cadence. */
   ok(
-    JSON.stringify(mobileStageStops.map((stop) => Math.round(stop[1] * 360))) === JSON.stringify([0, 51, 103, 154, 206, 257, 309, 360]),
-    'mobile background destinations advance continuously across exact seventh-frame stops'
+    /function worldToCommercial\(p\)/.test(html) &&
+      /function commercialToWorld\(c\)/.test(html) &&
+      /arrivalShare\(\)/.test(html),
+    'Arrival extends the runway via world↔commercial progress remap'
   );
   ok(
     !html.includes('mobileVisualProgress') &&
       /function mobileProgressToFrame\(p\)[\s\S]*?Math\.round\(clamp\(p, 0, 1\) \* \(SITE_TUNING\.frameCount - 1\)\)/.test(html) &&
-      /frame\s*=\s*isMobile\(\) \? mobileProgressToFrame\(p\) : progressToFrame\(p\)/.test(html),
-    'mobile background advances at one continuous linear velocity with no chapter catch-up remap'
+      /frame\s*=\s*isMobile\(\) \? mobileProgressToFrame\(c\) : progressToFrame\(c\)/.test(html),
+    'mobile background advances at one continuous linear velocity on commercial progress with no chapter catch-up remap'
   );
   ok(html.includes('renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn)'), 'motion-off mobile beat changes are immediate');
   ok(
@@ -945,9 +1041,10 @@ ok(
     // No new mobile beat / journey rest introduced by the booking CTA.
     const beatIds = [...mobileSrc.matchAll(/data-mobile-beat="([^"]+)"/g)].map((m) => m[1]);
     ok(
-      beatIds.length === 8 &&
+      beatIds.length === 9 &&
         JSON.stringify(beatIds) ===
           JSON.stringify([
+            'arrival',
             'leak',
             'method-look',
             'method-find',
@@ -957,7 +1054,7 @@ ok(
             'threshold',
             'services',
           ]),
-      'booking CTA introduces no new mobile beat (eight-beat journey preserved)'
+      'booking CTA introduces no extra mobile beat beyond Arrival + eight commercial rests'
     );
     ok(
       /\.invite-book-link::before\s*\{[^}]*height:\s*44px/.test(html) &&
@@ -1045,9 +1142,10 @@ ok(
     {
       const beatIds = [...mobileSrc.matchAll(/data-mobile-beat="([^"]+)"/g)].map((m) => m[1]);
       ok(
-        beatIds.length === 8 &&
+        beatIds.length === 9 &&
           JSON.stringify(beatIds) ===
             JSON.stringify([
+              'arrival',
               'leak',
               'method-look',
               'method-find',
@@ -1057,7 +1155,7 @@ ok(
               'threshold',
               'services',
             ]),
-        'Work invitation introduces no new mobile beat (eight-beat journey preserved)'
+        'Work invitation introduces no extra mobile beat beyond Arrival + eight commercial rests'
       );
     }
 
@@ -1170,7 +1268,7 @@ ok(
     'method annot reveal is not exact-only (m === activeMethodStep)'
   );
   ok(
-    /p\s*>=\s*range\.at/.test(paintSrc) || /\bm\s*<=\s*activeMethodStep\b/.test(paintSrc),
+    /[cp]\s*>=\s*range\.at/.test(paintSrc) || /\bm\s*<=\s*activeMethodStep\b/.test(paintSrc),
     'method annot reveal uses cumulative comparison'
   );
 
