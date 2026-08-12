@@ -491,7 +491,34 @@ ok(html.includes('support-primary'), 'jarrett primary support marked');
 ok(html.includes('I BUILD') && html.includes('THE FIX') && html.includes('MYSELF.'), 'jarrett claim lines present');
 ok(html.includes('You work with me from the first look through the finished fix.'), 'jarrett support contract present');
 ok(html.includes('One real result'), 'proof kicker contract');
-ok(html.includes('Your first fix is free'), 'threshold free-fix kicker');
+ok(html.includes('Your first look is free'), 'threshold free-look kicker');
+ok(!html.includes('Your first fix is free'), 'retired free-fix kicker absent from active page');
+ok(!html.includes('I’ll build the first fix, and you keep it.'), 'retired free-fix keep-it promise absent from active page');
+ok(
+  html.includes(
+    'I follow the path from first click to sale, find where people drop out, and build the finished fix.'
+  ),
+  'desktop/no-js opening support exact free-diagnosis contract'
+);
+ok(
+  /data-mobile-beat="leak"[\s\S]*?<p class="mobile-body">Then I build you the fix\.<\/p>/.test(html),
+  'mobile opening body exact free-diagnosis contract'
+);
+ok(
+  html.includes(
+    'Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.'
+  ),
+  'threshold free-look body exact contract'
+);
+ok(
+  /name="description" content="I follow the path from first click to sale, find where people drop out, and build the fix\. Send me your site\. Your first look is free\."/.test(
+    html
+  ) &&
+    /property="og:description" content="I follow the path from first click to sale, find where people drop out, and build the fix\. Send me your site\. Your first look is free\."/.test(
+      html
+    ),
+  'standard and Open Graph descriptions carry free-look offer'
+);
 ok(html.includes('SEND ME') && html.includes('YOUR SITE.'), 'threshold claim lines present');
 ok(html.includes('If I find nothing worth fixing'), 'threshold no-leak truth line');
 ok(html.includes('subject=Take%20a%20look%20at%20my%20site'), 'mailto subject prefilled');
@@ -695,11 +722,16 @@ ok(
 {
   const serviceItems = [
     'Custom Website Design',
+    'AI Systems & Automation',
     'Revenue Pipeline Optimization',
-    'Lead Generation',
-    'Customer Journey Audits',
+    'Lead Generation & SEO',
     'Landing Pages & Follow-Up Systems'
   ];
+  const orderedServiceRe = new RegExp(
+    serviceItems
+      .map((item) => `<li>${item.replace(/&/g, '&amp;')}</li>`.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'))
+      .join('[\\s\\S]*?')
+  );
   const mobileExperience = html.match(/<div class="mobile-experience"[\s\S]*?<\/div>\s*<nav class="station-rail"/);
   const mobileSrc = mobileExperience ? mobileExperience[0] : '';
   const mobileServices = mobileSrc.match(/data-mobile-beat="services"[\s\S]*?<\/article>/);
@@ -707,8 +739,16 @@ ok(
   ok(
     mobileServices &&
       /<h2 class="mobile-title">Services<\/h2>/.test(mobileServices[0]) &&
-      serviceItems.every((item) => mobileServices[0].includes(item.replace('&', '&amp;')) || mobileServices[0].includes(item)),
+      orderedServiceRe.test(mobileServices[0]) &&
+      (mobileServices[0].match(/<li>/g) || []).length === 5,
     'mobile services beat carries the exact Services label and ordered list'
+  );
+  ok(
+    mobileServices &&
+      mobileServices[0].includes('AI Systems &amp; Automation') &&
+      mobileServices[0].includes('Lead Generation &amp; SEO') &&
+      !mobileServices[0].includes('Customer Journey Audits'),
+    'mobile Services includes AI/SEO rows and drops Customer Journey Audits'
   );
   ok(
     mobileServices &&
@@ -723,8 +763,32 @@ ok(
     /class="threshold-services"/.test(desktopSrc) &&
       /id="services-heading">Services</.test(desktopSrc) &&
       /threshold-services-list/.test(desktopSrc) &&
-      serviceItems.every((item) => desktopSrc.includes(item.replace('&', '&amp;')) || desktopSrc.includes(item)),
+      orderedServiceRe.test(desktopSrc) &&
+      (desktopSrc.match(/threshold-services-list[\s\S]*?<\/ol>/) || [''])[0].match(/<li>/g)?.length === 5,
     'desktop threshold carries Services label and ordered list'
+  );
+  ok(
+    desktopSrc.includes('AI Systems &amp; Automation') &&
+      desktopSrc.includes('Lead Generation &amp; SEO') &&
+      !desktopSrc.includes('Customer Journey Audits'),
+    'desktop Services includes AI/SEO rows and drops Customer Journey Audits'
+  );
+  // Free-look threshold kicker + body present for desktop and mobile consumers.
+  ok(
+    /class="station-kicker">Your first look is free</.test(desktopSrc) &&
+      desktopSrc.includes(
+        'Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.'
+      ),
+    'desktop threshold free-look kicker and body exact'
+  );
+  const mobileThreshold = mobileSrc.match(/data-mobile-beat="threshold"[\s\S]*?<\/article>/);
+  ok(
+    mobileThreshold &&
+      /class="mobile-kicker">Your first look is free</.test(mobileThreshold[0]) &&
+      mobileThreshold[0].includes(
+        'Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.'
+      ),
+    'mobile threshold free-look kicker and body exact'
   );
   // DOM/reading order: Services is the middle member of the left threshold column.
   // Source-structure only — does not prove rendered geometry.
@@ -1053,8 +1117,22 @@ ok(
   const noJsSrc = noJs ? noJs[0] : '';
   ok(
     noJsSrc.includes('>Services<') &&
-      serviceItems.every((item) => noJsSrc.includes(item.replace('&', '&amp;')) || noJsSrc.includes(item)),
+      orderedServiceRe.test(noJsSrc) &&
+      (noJsSrc.match(/<li>/g) || []).length === 5 &&
+      noJsSrc.includes('AI Systems &amp; Automation') &&
+      noJsSrc.includes('Lead Generation &amp; SEO') &&
+      !noJsSrc.includes('Customer Journey Audits'),
     'no-js fallback presents the service offering'
+  );
+  ok(
+    noJsSrc.includes(
+      'I follow the path from first click to sale, find where people drop out, and build the finished fix.'
+    ) &&
+      /class="station-kicker">Your first look is free</.test(noJsSrc) &&
+      noJsSrc.includes(
+        'Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.'
+      ),
+    'no-js free-look opening support, kicker, and body exact'
   );
   ok(
     function mobileBeatAt(p, dom) {
