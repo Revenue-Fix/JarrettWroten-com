@@ -641,7 +641,7 @@ ok(
   'standard and Open Graph descriptions carry free-look offer'
 );
 ok(html.includes('SEND ME') && html.includes('YOUR SITE.'), 'threshold claim lines present');
-ok(html.includes('If I find nothing worth fixing'), 'threshold no-leak truth line');
+ok(!html.includes('If I find nothing worth fixing'), 'retired no-leak truth line absent from all page surfaces');
 ok(html.includes('subject=Take%20a%20look%20at%20my%20site'), 'mailto subject prefilled');
 ok(html.includes('body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A'), 'mailto body prompts prefilled');
 ok(html.includes('01 — Look') && html.includes('02 — Find the break') && html.includes('03 — Build the fix'), 'method step labels present');
@@ -719,8 +719,8 @@ ok(
     JSON.stringify(sectionOrder) === JSON.stringify(['leak', 'method', 'proof', 'jarrett', 'threshold']),
     'public commercial section order unchanged'
   );
-  // Desktop threshold order: heading → email → Services (top/middle), diagnosis → booking → whisper (bottom).
-  // Mobile contact order remains booking → email → whisper (asserted in the booking tripwire).
+  // Desktop threshold order: heading → email → Services (top/middle), diagnosis → booking (bottom).
+  // Mobile contact order remains booking → email (asserted in the booking tripwire).
   {
     const desktopThreshold = html.match(/<section class="station" data-station="threshold"[\s\S]*?<\/section>/);
     const desktopSrc = desktopThreshold ? desktopThreshold[0] : '';
@@ -737,15 +737,17 @@ ok(
       'Arrival change places desktop email under heading before Services (not in bottom)'
     );
     const bottomStart = desktopSrc.indexOf('class="threshold-bottom"');
-    const whisperClose = desktopSrc.indexOf('</p>', desktopSrc.indexOf('class="invite-whisper"'));
+    const bookClose = desktopSrc.indexOf('</p>', desktopSrc.indexOf('class="invite-book"'));
     const bottomSrc =
-      bottomStart !== -1 && whisperClose !== -1 ? desktopSrc.slice(bottomStart, whisperClose + 4) : '';
+      bottomStart !== -1 && bookClose !== -1 ? desktopSrc.slice(bottomStart, bookClose + 4) : '';
     const diagnosisAt = bottomSrc.indexOf('class="station-support');
     const bookAt = bottomSrc.indexOf('class="invite-book"');
-    const whisperAt = bottomSrc.indexOf('class="invite-whisper"');
     ok(
-      diagnosisAt !== -1 && bookAt > diagnosisAt && whisperAt > bookAt && !/class="invite-email"/.test(bottomSrc),
-      'Arrival change preserves desktop bottom order diagnosis → booking → whisper'
+      diagnosisAt !== -1 &&
+        bookAt > diagnosisAt &&
+        !/class="invite-email"/.test(bottomSrc) &&
+        !/class="invite-whisper"/.test(bottomSrc),
+      'Arrival change preserves desktop bottom order diagnosis → booking (whisper retired)'
     );
   }
 }
@@ -1088,7 +1090,7 @@ ok(
     );
     ok(
       shortBlock &&
-        /padding:\s*\.1rem\s+0/.test(shortBlock) &&
+        /padding:\s*\.0?8rem\s+0/.test(shortBlock) &&
         ((desktopSrc.match(/threshold-services-list[\s\S]*?<\/ol>/) || [''])[0].match(/<li>/g) || []).length === 5,
       'short-desktop Services keeps all five service rows authored and visible in source'
     );
@@ -1121,13 +1123,13 @@ ok(
     const urlCount = (html.match(new RegExp(urlEsc, 'g')) || []).length;
     ok(urlCount === 2, 'booking URL appears exactly twice in rendered markup (got ' + urlCount + ')');
 
-    // Extract full threshold-bottom by start index through invite-whisper close.
+    // Extract full threshold-bottom by start index through invite-book close.
     // Source-structure only — does not prove rendered geometry.
     const bottomStart = desktopSrc.indexOf('class="threshold-bottom"');
-    const whisperClose = desktopSrc.indexOf('</p>', desktopSrc.indexOf('class="invite-whisper"'));
+    const bookClose = desktopSrc.indexOf('</p>', desktopSrc.indexOf('class="invite-book"'));
     const bottomSrc =
-      bottomStart !== -1 && whisperClose !== -1
-        ? desktopSrc.slice(bottomStart, whisperClose + 4)
+      bottomStart !== -1 && bookClose !== -1
+        ? desktopSrc.slice(bottomStart, bookClose + 4)
         : '';
     const desktopBookRe =
       /<p class="invite-book">Want to talk first\? <a class="invite-book-link" href="https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call\.<\/a><\/p>/;
@@ -1138,17 +1140,16 @@ ok(
           /class="invite-book-link"[^>]*rel="noopener noreferrer"[^>]*target="_blank"/.test(bottomSrc)),
       'desktop booking anchor uses _blank + noopener noreferrer inside threshold-bottom'
     );
-    // Desktop bottom order: diagnosis → booking → whisper (email relocated to threshold-top).
+    // Desktop bottom order: diagnosis → booking (email in threshold-top; whisper retired).
     {
       const diagnosisAt = bottomSrc.indexOf('class="station-support');
       const bookAt = bottomSrc.indexOf('class="invite-book"');
-      const whisperAt = bottomSrc.indexOf('class="invite-whisper"');
       ok(
         diagnosisAt !== -1 &&
           bookAt > diagnosisAt &&
-          whisperAt > bookAt &&
-          !/class="invite-email"/.test(bottomSrc),
-        'desktop threshold-bottom order is diagnosis → booking → whisper'
+          !/class="invite-email"/.test(bottomSrc) &&
+          !/class="invite-whisper"/.test(bottomSrc),
+        'desktop threshold-bottom order is diagnosis → booking'
       );
     }
     // Desktop top/middle order: heading → email → Services (source order only).
@@ -1186,10 +1187,11 @@ ok(
     {
       const emailAt = mobileThresholdSrc.indexOf('class="mobile-email"');
       const bookAt = mobileThresholdSrc.indexOf('class="mobile-book"');
-      const whisperAt = mobileThresholdSrc.indexOf('class="mobile-whisper"');
       ok(
-        bookAt !== -1 && emailAt > bookAt && whisperAt > emailAt,
-        'mobile threshold beat order is booking → email → whisper'
+        bookAt !== -1 &&
+          emailAt > bookAt &&
+          !/class="mobile-whisper"/.test(mobileThresholdSrc),
+        'mobile threshold beat order is booking → email (whisper retired)'
       );
     }
 
@@ -1482,6 +1484,46 @@ ok(
   'jarrett desktop claim column fits longest display line'
 );
 ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'threshold separated carrier groups');
+// Face-safe desktop threshold contract — source geometry + coordinated type only.
+// Does not prove live pixels; asserts authored column cap and compact hierarchy.
+{
+  const thrCopy = html.match(
+    /\.station\[data-station="threshold"\] \.station-copy\{[^}]*\}/
+  );
+  const thrCopyCss = thrCopy ? thrCopy[0] : '';
+  ok(
+    /max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*30vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss),
+    'desktop threshold column max-width is face-safe (≤~30vw right edge / 18.75rem cap)'
+  );
+  const thrDisplay = html.match(
+    /\.station\[data-station="threshold"\] \.display\{[^}]*\}/
+  );
+  const thrDisplayCss = thrDisplay ? thrDisplay[0] : '';
+  ok(
+    /font-size\s*:\s*clamp\(\s*1\.55rem\s*,\s*2\.55vw\s*,\s*2\.35rem\s*\)/.test(thrDisplayCss),
+    'desktop threshold display heading uses face-safe compact clamp'
+  );
+  const emailCssMatch = html.match(/\.invite-email\{[^}]*\}/);
+  const emailCss = emailCssMatch ? emailCssMatch[0] : '';
+  ok(
+    /font-size\s*:\s*clamp\(\s*\.82rem\s*,\s*1\.05vw\s*,\s*1\.02rem\s*\)/.test(emailCss) &&
+      /white-space\s*:\s*nowrap/.test(emailCss),
+    'threshold email uses compact nowrap size for one-line fit at tablet widths'
+  );
+  const desktopThreshold = html.match(/<section class="station" data-station="threshold"[\s\S]*?<\/section>/);
+  const desktopSrc = desktopThreshold ? desktopThreshold[0] : '';
+  const headingAt = desktopSrc.indexOf('id="threshold-heading"');
+  const emailAt = desktopSrc.indexOf('class="invite-email"');
+  const topClose = desktopSrc.indexOf('</div>', desktopSrc.indexOf('class="threshold-top"'));
+  ok(
+    headingAt !== -1 &&
+      emailAt > headingAt &&
+      emailAt < topClose &&
+      ((desktopSrc.match(/class="invite-email"/g) || []).length === 1) &&
+      !/class="threshold-bottom"[\s\S]*?class="invite-email"/.test(desktopSrc),
+    'live threshold has exactly one .invite-email directly under #threshold-heading'
+  );
+}
 ok(html.includes('stationCarriers'), 'distinct station carrier map');
 ok(html.includes('bottom:clamp(6rem,16vh,9rem)') || html.includes('bottom:clamp(6rem, 16vh, 9rem)'), 'method heading bottom-anchored desktop');
 ok(html.includes('left:10%; top:44%') || html.includes('left:10%;top:44%'), 'method annot 1 desktop depth position');
