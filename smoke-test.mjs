@@ -1625,16 +1625,47 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
   ok(
     /function fitThresholdEmailInk\s*\(/.test(html) &&
       /function scheduleThresholdEmailFit\s*\(/.test(html) &&
-      /function measureContentWidth\s*\(/.test(html) &&
-      /function ensureThresholdEmailFonts\s*\(/.test(html) &&
+      /function measureIntrinsicTextWidth\s*\(/.test(html) &&
       /invite-email-text/.test(html) &&
-      /document\.fonts\.load/.test(html) &&
       /document\.fonts\.ready/.test(html) &&
-      /loadingdone/.test(html) &&
-      /maxWidth\s*=\s*["']none["']/.test(html) &&
+      !/function measureContentWidth\s*\(/.test(html) &&
+      !/function ensureThresholdEmailFonts\s*\(/.test(html) &&
+      !/loadingdone/.test(html) &&
       !/scaleX\s*\(\s*[^)]*invite-email/.test(html),
-    'threshold email fits unconstrained ink to YOUR SITE. after IBM Plex/Bodoni load + stable recheck (no scaleX)'
+    'threshold email fits independent intrinsic ink to YOUR SITE. (no scaleX; no coupled fit-content measure)'
   );
+  /* FOCUSED TRIPWIRE — target/candidate measurement must be independent of the
+     live .threshold-top { width:fit-content } pocket. Growing the email must not
+     enlarge the YOUR SITE. target (the prior range/border-box coupling). */
+  {
+    const fitStart = html.indexOf('function measureIntrinsicTextWidth');
+    const fitEnd = html.indexOf('function scheduleThresholdEmailFit');
+    const probeSrc =
+      fitStart >= 0 && fitEnd > fitStart ? html.slice(fitStart, fitEnd) : '';
+    ok(
+      !!probeSrc &&
+        /createElement\s*\(\s*["']span["']\s*\)/.test(probeSrc) &&
+        /width\s*:\s*max-content/.test(probeSrc) &&
+        /max-width\s*:\s*none/.test(probeSrc) &&
+        /white-space\s*:\s*nowrap/.test(probeSrc) &&
+        /getComputedStyle\s*\(\s*sourceEl\s*\)/.test(probeSrc) &&
+        /textContent\s*=\s*sourceEl\.textContent/.test(probeSrc) &&
+        /fontSizePx/.test(probeSrc) &&
+        !/selectNodeContents/.test(probeSrc) &&
+        !/getBoundingClientRect\s*\(\s*\)\s*;[\s\S]*thresholdEmailMeasure/.test(
+          probeSrc
+        ) &&
+        !/thresholdEmailMeasure\.getBoundingClientRect/.test(html) &&
+        !/thresholdEmailInk\.getBoundingClientRect/.test(html),
+      'threshold email target/candidate use off-DOM max-content probe, not coupled fit-content descendant box/range'
+    );
+    ok(
+      /measureIntrinsicTextWidth\s*\(\s*thresholdEmailMeasure\s*\)/.test(html) &&
+        /measureIntrinsicTextWidth\s*\(\s*thresholdEmailInk\s*,\s*mid\s*\)/.test(html) &&
+        !/thresholdEmailInk\.style\.fontSize\s*=\s*mid/.test(html),
+      'fitter measures YOUR SITE. and email candidates independently without live mid-search mutation'
+    );
+  }
   const tabletBlock = extractMediaBlock(
     /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-width:\s*900px\s*\)\s*\{/
   );
