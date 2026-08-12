@@ -719,18 +719,34 @@ ok(
     JSON.stringify(sectionOrder) === JSON.stringify(['leak', 'method', 'proof', 'jarrett', 'threshold']),
     'public commercial section order unchanged'
   );
-  // Contact order preserved: booking → email → whisper on desktop + mobile.
+  // Desktop threshold order: heading → email → Services (top/middle), diagnosis → booking → whisper (bottom).
+  // Mobile contact order remains booking → email → whisper (asserted in the booking tripwire).
   {
     const desktopThreshold = html.match(/<section class="station" data-station="threshold"[\s\S]*?<\/section>/);
     const desktopSrc = desktopThreshold ? desktopThreshold[0] : '';
+    const headingAt = desktopSrc.indexOf('id="threshold-heading"');
+    const emailAt = desktopSrc.indexOf('class="invite-email"');
+    const servicesAt = desktopSrc.indexOf('class="threshold-services"');
+    const topClose = desktopSrc.indexOf('</div>', desktopSrc.indexOf('class="threshold-top"'));
+    ok(
+      headingAt !== -1 &&
+        emailAt > headingAt &&
+        emailAt < topClose &&
+        servicesAt > topClose &&
+        !/class="threshold-bottom"[\s\S]*?class="invite-email"/.test(desktopSrc),
+      'Arrival change places desktop email under heading before Services (not in bottom)'
+    );
     const bottomStart = desktopSrc.indexOf('class="threshold-bottom"');
     const whisperClose = desktopSrc.indexOf('</p>', desktopSrc.indexOf('class="invite-whisper"'));
     const bottomSrc =
       bottomStart !== -1 && whisperClose !== -1 ? desktopSrc.slice(bottomStart, whisperClose + 4) : '';
+    const diagnosisAt = bottomSrc.indexOf('class="station-support');
     const bookAt = bottomSrc.indexOf('class="invite-book"');
-    const emailAt = bottomSrc.indexOf('class="invite-email"');
     const whisperAt = bottomSrc.indexOf('class="invite-whisper"');
-    ok(bookAt !== -1 && emailAt > bookAt && whisperAt > emailAt, 'Arrival change preserves desktop booking → email → whisper order');
+    ok(
+      diagnosisAt !== -1 && bookAt > diagnosisAt && whisperAt > bookAt && !/class="invite-email"/.test(bottomSrc),
+      'Arrival change preserves desktop bottom order diagnosis → booking → whisper'
+    );
   }
 }
 
@@ -1122,14 +1138,33 @@ ok(
           /class="invite-book-link"[^>]*rel="noopener noreferrer"[^>]*target="_blank"/.test(bottomSrc)),
       'desktop booking anchor uses _blank + noopener noreferrer inside threshold-bottom'
     );
-    // Order: booking → email → whisper (source order only).
+    // Desktop bottom order: diagnosis → booking → whisper (email relocated to threshold-top).
     {
-      const emailAt = bottomSrc.indexOf('class="invite-email"');
+      const diagnosisAt = bottomSrc.indexOf('class="station-support');
       const bookAt = bottomSrc.indexOf('class="invite-book"');
       const whisperAt = bottomSrc.indexOf('class="invite-whisper"');
       ok(
-        bookAt !== -1 && emailAt > bookAt && whisperAt > emailAt,
-        'desktop threshold-bottom order is booking → email → whisper'
+        diagnosisAt !== -1 &&
+          bookAt > diagnosisAt &&
+          whisperAt > bookAt &&
+          !/class="invite-email"/.test(bottomSrc),
+        'desktop threshold-bottom order is diagnosis → booking → whisper'
+      );
+    }
+    // Desktop top/middle order: heading → email → Services (source order only).
+    {
+      const topStart = desktopSrc.indexOf('class="threshold-top"');
+      const topClose = desktopSrc.indexOf('</div>', topStart);
+      const topSrc = topStart !== -1 && topClose !== -1 ? desktopSrc.slice(topStart, topClose + 6) : '';
+      const headingAt = topSrc.indexOf('id="threshold-heading"');
+      const emailAt = topSrc.indexOf('class="invite-email"');
+      const servicesAt = desktopSrc.indexOf('class="threshold-services"');
+      ok(
+        headingAt !== -1 &&
+          emailAt > headingAt &&
+          servicesAt > topClose &&
+          ((desktopSrc.match(/class="invite-email"/g) || []).length === 1),
+        'desktop threshold order is heading → email → Services with email once'
       );
     }
 
