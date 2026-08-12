@@ -1090,7 +1090,7 @@ ok(
     );
     ok(
       shortBlock &&
-        /padding:\s*\.0?8rem\s+0/.test(shortBlock) &&
+        /padding:\s*\.1rem\s+0/.test(shortBlock) &&
         ((desktopSrc.match(/threshold-services-list[\s\S]*?<\/ol>/) || [''])[0].match(/<li>/g) || []).length === 5,
       'short-desktop Services keeps all five service rows authored and visible in source'
     );
@@ -1484,64 +1484,48 @@ ok(
   'jarrett desktop claim column fits longest display line'
 );
 ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'threshold separated carrier groups');
-// Face-safe desktop threshold contract — source geometry + coordinated type only.
-// Does not prove live pixels; asserts authored 24vw column cap and compact hierarchy.
+// Face-safe desktop threshold contract — source geometry + email-only shrink.
+// Does not prove live pixels. Restored readable hierarchy must not be globally reduced;
+// only .invite-email is allowed to shrink for one-line fit left of x=220@744.
 {
   const thrCopy = html.match(
     /\.station\[data-station="threshold"\] \.station-copy\{[^}]*\}/
   );
   const thrCopyCss = thrCopy ? thrCopy[0] : '';
   ok(
-    /max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*24vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss),
-    'desktop threshold column max-width is face-safe (≤~24vw right edge / 18.75rem cap; ~179px@744)'
+    /max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*29\.5vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss),
+    'desktop threshold column max-width is face-safe (29.5vw rail / 18.75rem cap; right edge <220@744)'
   );
   ok(
-    !/max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*30vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss),
-    'desktop threshold column no longer uses the looser 30vw face-safe rail'
+    !/max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*24vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss) &&
+      !/max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*30vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss),
+    'desktop threshold column no longer uses the retired 24vw or 30vw face-safe rails'
   );
   const thrDisplay = html.match(
     /\.station\[data-station="threshold"\] \.display\{[^}]*\}/
   );
   const thrDisplayCss = thrDisplay ? thrDisplay[0] : '';
   ok(
-    /font-size\s*:\s*clamp\(\s*1\.55rem\s*,\s*2\.55vw\s*,\s*2\.35rem\s*\)/.test(thrDisplayCss),
-    'desktop threshold display heading uses face-safe compact clamp'
+    /font-size\s*:\s*clamp\(\s*2\.5rem\s*,\s*4\.7vw\s*,\s*4\.5rem\s*\)/.test(thrDisplayCss),
+    'desktop threshold display heading restores readable pre-shrink clamp'
+  );
+  ok(
+    !/font-size\s*:\s*clamp\(\s*1\.55rem\s*,\s*2\.55vw\s*,\s*2\.35rem\s*\)/.test(thrDisplayCss) &&
+      !/font-size\s*:\s*clamp\(\s*1\.22rem\s*,\s*2\.05vw\s*,\s*1\.42rem\s*\)/.test(html),
+    'desktop threshold display is not globally reduced by retired compact clamps'
   );
   const emailCssMatch = html.match(/\.invite-email\{[^}]*\}/);
   const emailCss = emailCssMatch ? emailCssMatch[0] : '';
   ok(
-    /font-size\s*:\s*clamp\(\s*\.82rem\s*,\s*1\.05vw\s*,\s*1\.02rem\s*\)/.test(emailCss) &&
-      /white-space\s*:\s*nowrap/.test(emailCss),
-    'threshold email uses compact nowrap size for one-line fit at tablet widths'
-  );
-  // Focused 721–900 type rail — keeps email one line inside tightened geometry at 744×920.
-  const tabletHead = html.match(
-    /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-width:\s*900px\s*\)\s*\{/
-  );
-  let tabletBlock = '';
-  if (tabletHead) {
-    let depth = 1;
-    let i = tabletHead.index + tabletHead[0].length;
-    while (i < html.length && depth > 0) {
-      if (html[i] === '{') depth += 1;
-      else if (html[i] === '}') depth -= 1;
-      i += 1;
-    }
-    tabletBlock = html.slice(tabletHead.index, i);
-  }
-  ok(!!tabletBlock, 'narrow-desktop face-safe type media query is authored (721px–900px)');
-  ok(
-    tabletBlock &&
-      /\.station\[data-station="threshold"\] \.display\s*\{/.test(tabletBlock) &&
-      /font-size\s*:\s*clamp\(\s*1\.22rem\s*,\s*2\.05vw\s*,\s*1\.42rem\s*\)/.test(tabletBlock) &&
-      /\.station\[data-station="threshold"\] \.invite-email\s*\{/.test(tabletBlock) &&
-      /font-size\s*:\s*clamp\(\s*\.68rem\s*,\s*1\.4vw\s*,\s*\.76rem\s*\)/.test(tabletBlock) &&
+    /font-size\s*:\s*clamp\(\s*\.78rem\s*,\s*1\.9vw\s*,\s*1\.35rem\s*\)/.test(emailCss) &&
       /white-space\s*:\s*nowrap/.test(emailCss) &&
-      /\.threshold-services-list li\s*\{/.test(tabletBlock) &&
-      /\.threshold-work-invite\s*\{/.test(tabletBlock) &&
-      /\.station\[data-station="threshold"\] \.text\s*\{/.test(tabletBlock) &&
-      /\.station\[data-station="threshold"\] \.invite-book\s*\{/.test(tabletBlock),
-    '721–900 type treatment covers display, email, Services, work invite, diagnosis, booking'
+      !/font-size\s*:\s*clamp\(\s*1\.35rem\s*,\s*1\.9vw\s*,\s*1\.875rem\s*\)/.test(emailCss),
+    'threshold email is the only shrunk nowrap exception for one-line fit at tablet widths'
+  );
+  // Retired 721–900 page-wide type shrink must stay gone.
+  ok(
+    !/@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-width:\s*900px\s*\)/.test(html),
+    'retired 721–900 miniature type media block is absent'
   );
   const desktopThreshold = html.match(/<section class="station" data-station="threshold"[\s\S]*?<\/section>/);
   const desktopSrc = desktopThreshold ? desktopThreshold[0] : '';
