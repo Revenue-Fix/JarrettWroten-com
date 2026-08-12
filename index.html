@@ -1080,7 +1080,8 @@
      pocket (heading-sized via fit-content; rail-capped by station-copy max-width).
      Visible ink lives in .invite-email-text and is fitted in JS to the independent
      intrinsic YOUR SITE. measure (not the live fit-content pocket). CSS clamp is
-     the no-fit fallback. No scaleX / wide tracking. */
+     the no-fit fallback. No scaleX; residual width after font-size uses bounded
+     microtracking only (derived, never wide/arbitrary tracking). */
   .invite-email{
     display:block;
     width:100%;
@@ -2993,7 +2994,9 @@
      Measuring the live heading span (display:block) or email in that pocket couples
      target and candidate — growing the email grows the pocket, so the fitter chases
      a target it moves. Fix: measure both sides with an off-DOM intrinsic probe that
-     clones only computed typography under width:max-content. */
+     clones only computed typography under width:max-content. After the largest
+     under-target font size, residual shortfall from font-width quantization is
+     closed with derived bounded letter-spacing (never hard-coded wide tracking). */
   var thresholdEmailInk = null;
   var thresholdEmailMeasure = null;
   var thresholdEmailFitQueued = false;
@@ -3010,9 +3013,9 @@
   }
 
   /* Independent natural text width — never a descendant border-box/range inside a
-     fit-content ancestor. Optional fontSizePx overrides size for candidate search
+     fit-content ancestor. Optional fontSizePx / letterSpacingPx override candidates
      without mutating live layout (so the pocket cannot feed back into the measure). */
-  function measureIntrinsicTextWidth(sourceEl, fontSizePx) {
+  function measureIntrinsicTextWidth(sourceEl, fontSizePx, letterSpacingPx) {
     if (!sourceEl) return 0;
     var cs = window.getComputedStyle(sourceEl);
     var probe = document.createElement("span");
@@ -3020,6 +3023,10 @@
     probe.textContent = sourceEl.textContent || "";
     var size =
       fontSizePx != null && isFinite(fontSizePx) ? fontSizePx + "px" : cs.fontSize;
+    var spacing =
+      letterSpacingPx != null && isFinite(letterSpacingPx)
+        ? letterSpacingPx + "px"
+        : cs.letterSpacing;
     probe.style.cssText = [
       "position:absolute",
       "left:-99999px",
@@ -3040,7 +3047,7 @@
       "font-weight:" + cs.fontWeight,
       "font-style:" + cs.fontStyle,
       "font-stretch:" + cs.fontStretch,
-      "letter-spacing:" + cs.letterSpacing,
+      "letter-spacing:" + spacing,
       "word-spacing:" + cs.wordSpacing,
       "text-transform:" + cs.textTransform,
       "font-variant:" + cs.fontVariant,
@@ -3058,10 +3065,19 @@
     return w;
   }
 
+  /* IBM Plex (and peers) quantize advance widths so font-size alone can leave a
+     multi-pixel shortfall under the YOUR SITE. target. After the largest under-
+     target size, close residual with bounded letter-spacing derived from
+     (target - fitted) / gap-count — never a hard-coded tracking constant, never
+     wide tracking. Clamp to ±EMAIL_TRACK_MAX_PX; if the residual cannot be met
+     inside that bound, keep face-safe under-fit rather than overflow. */
+  var EMAIL_TRACK_MAX_PX = 0.25;
+
   function fitThresholdEmailInk() {
     if (!ensureThresholdEmailFitNodes()) return;
     if (isMobile()) {
       thresholdEmailInk.style.fontSize = "";
+      thresholdEmailInk.style.letterSpacing = "";
       thresholdEmailFitLastTarget = -1;
       return;
     }
@@ -3072,7 +3088,12 @@
       thresholdEmailFitLastTarget = -1;
       return;
     }
-    if (Math.abs(target - thresholdEmailFitLastTarget) < 0.5 && thresholdEmailInk.style.fontSize) {
+    /* Skip when target is stable and the applied size+tracking still match. */
+    if (
+      Math.abs(target - thresholdEmailFitLastTarget) < 0.5 &&
+      thresholdEmailInk.style.fontSize &&
+      thresholdEmailInk.style.letterSpacing
+    ) {
       var curW = measureIntrinsicTextWidth(thresholdEmailInk);
       if (Math.abs(curW - target) <= 2) return;
     }
@@ -3084,11 +3105,21 @@
     var i;
     var mid;
     var w;
+    var fitted;
+    var residual;
+    var gaps;
+    var tracking;
+    var tLo;
+    var tHi;
+    var tBest;
+    var tMid;
+    var text = thresholdEmailInk.textContent || "";
 
-    /* Search candidates off-DOM so live email size never expands the fit-content pocket. */
+    /* Size search at letter-spacing:0 so residual is independent of prior inline
+       tracking and of the authored em-based CSS tracking on the anchor. */
     for (i = 0; i < 18; i++) {
       mid = (lo + hi) * 0.5;
-      w = measureIntrinsicTextWidth(thresholdEmailInk, mid);
+      w = measureIntrinsicTextWidth(thresholdEmailInk, mid, 0);
       if (w <= target) {
         best = mid;
         lo = mid;
@@ -3096,7 +3127,37 @@
         hi = mid;
       }
     }
+
+    fitted = measureIntrinsicTextWidth(thresholdEmailInk, best, 0);
+    residual = target - fitted;
+    gaps = Math.max(1, text.length - 1);
+    tracking = 0;
+    if (residual > 0.25) {
+      tracking = residual / gaps;
+      if (tracking > EMAIL_TRACK_MAX_PX) tracking = EMAIL_TRACK_MAX_PX;
+      if (tracking < -EMAIL_TRACK_MAX_PX) tracking = -EMAIL_TRACK_MAX_PX;
+      /* Verify off-DOM; if overshoot (quantization / trailing spacing), binary-
+         search the largest safe tracking under target. */
+      if (measureIntrinsicTextWidth(thresholdEmailInk, best, tracking) > target) {
+        tLo = 0;
+        tHi = tracking;
+        tBest = 0;
+        for (i = 0; i < 12; i++) {
+          tMid = (tLo + tHi) * 0.5;
+          if (measureIntrinsicTextWidth(thresholdEmailInk, best, tMid) <= target) {
+            tBest = tMid;
+            tLo = tMid;
+          } else {
+            tHi = tMid;
+          }
+        }
+        tracking = tBest;
+      }
+    }
+
+    /* Apply size + derived tracking once — no mid-search live mutation. */
     thresholdEmailInk.style.fontSize = best + "px";
+    thresholdEmailInk.style.letterSpacing = tracking + "px";
     thresholdEmailFitLastTarget = target;
   }
 

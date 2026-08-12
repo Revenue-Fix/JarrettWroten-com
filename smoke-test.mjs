@@ -1636,7 +1636,9 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
   );
   /* FOCUSED TRIPWIRE — target/candidate measurement must be independent of the
      live .threshold-top { width:fit-content } pocket. Growing the email must not
-     enlarge the YOUR SITE. target (the prior range/border-box coupling). */
+     enlarge the YOUR SITE. target (the prior range/border-box coupling).
+     Font-size quantization leaves residual width; close it with derived bounded
+     microtracking, not a hard-coded tracking constant or wide tracking. */
   {
     const fitStart = html.indexOf('function measureIntrinsicTextWidth');
     const fitEnd = html.indexOf('function scheduleThresholdEmailFit');
@@ -1651,6 +1653,7 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
         /getComputedStyle\s*\(\s*sourceEl\s*\)/.test(probeSrc) &&
         /textContent\s*=\s*sourceEl\.textContent/.test(probeSrc) &&
         /fontSizePx/.test(probeSrc) &&
+        /letterSpacingPx/.test(probeSrc) &&
         !/selectNodeContents/.test(probeSrc) &&
         !/getBoundingClientRect\s*\(\s*\)\s*;[\s\S]*thresholdEmailMeasure/.test(
           probeSrc
@@ -1661,9 +1664,45 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
     );
     ok(
       /measureIntrinsicTextWidth\s*\(\s*thresholdEmailMeasure\s*\)/.test(html) &&
-        /measureIntrinsicTextWidth\s*\(\s*thresholdEmailInk\s*,\s*mid\s*\)/.test(html) &&
-        !/thresholdEmailInk\.style\.fontSize\s*=\s*mid/.test(html),
+        /measureIntrinsicTextWidth\s*\(\s*thresholdEmailInk\s*,\s*mid\s*,\s*0\s*\)/.test(
+          html
+        ) &&
+        /measureIntrinsicTextWidth\s*\(\s*thresholdEmailInk\s*,\s*best\s*,\s*0\s*\)/.test(
+          html
+        ) &&
+        !/thresholdEmailInk\.style\.fontSize\s*=\s*mid/.test(html) &&
+        !/thresholdEmailInk\.style\.letterSpacing\s*=\s*tMid/.test(html),
       'fitter measures YOUR SITE. and email candidates independently without live mid-search mutation'
+    );
+    ok(
+      /EMAIL_TRACK_MAX_PX\s*=\s*0\.25/.test(probeSrc) &&
+        /residual\s*=\s*target\s*-\s*fitted/.test(probeSrc) &&
+        /gaps\s*=\s*Math\.max\s*\(\s*1\s*,\s*text\.length\s*-\s*1\s*\)/.test(
+          probeSrc
+        ) &&
+        /tracking\s*=\s*residual\s*\/\s*gaps/.test(probeSrc) &&
+        /EMAIL_TRACK_MAX_PX/.test(probeSrc) &&
+        /thresholdEmailInk\.style\.fontSize\s*=\s*best\s*\+\s*["']px["']/.test(
+          probeSrc
+        ) &&
+        /thresholdEmailInk\.style\.letterSpacing\s*=\s*tracking\s*\+\s*["']px["']/.test(
+          probeSrc
+        ) &&
+        !/letterSpacing\s*=\s*["']0\.12px["']/.test(probeSrc) &&
+        !/0\.12\s*\*\s*gaps/.test(probeSrc) &&
+        !/letter-spacing:\s*0\.12px/.test(probeSrc),
+      'residual microtracking is derived from (target-fitted)/gaps and clamped — not a hard-coded 0.12px'
+    );
+    ok(
+      /if\s*\(\s*isMobile\s*\(\s*\)\s*\)\s*\{[\s\S]*?thresholdEmailInk\.style\.fontSize\s*=\s*["']["'][\s\S]*?thresholdEmailInk\.style\.letterSpacing\s*=\s*["']["']/.test(
+        probeSrc
+      ),
+      'mobile clears both inline font-size and letter-spacing so CSS owns mobile email type'
+    );
+    ok(
+      /style\.fontSize\s*&&[\s\S]*?style\.letterSpacing/.test(probeSrc) &&
+        /Math\.abs\s*\(\s*curW\s*-\s*target\s*\)\s*<=\s*2/.test(probeSrc),
+      'skip/refit validates intrinsic width under the applied size+tracking pair'
     );
   }
   const tabletBlock = extractMediaBlock(
