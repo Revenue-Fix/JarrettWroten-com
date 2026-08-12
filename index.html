@@ -2986,11 +2986,19 @@
   }
 
   /* Fit visible email ink to the YOUR SITE. line measure (not the full-width anchor).
-     Copper rule stays on the anchor; left edges already share the threshold-top rail. */
+     Copper rule stays on the anchor; left edges already share the threshold-top rail.
+
+     Causal failure of the prior fitter: binary search + single fonts.ready re-fit could
+     freeze a size under pre-swap / pre-layout font metrics. At 1280×720 that landed
+     ~25.5px (≈319px ink) while the stable YOUR SITE. period edge is 326px — a ~7px
+     shortfall with no later recheck. Fix: load both faces, measure unconstrained ink,
+     and re-verify the stable rendered width after layout reflects the real fonts. */
   var thresholdEmailInk = null;
   var thresholdEmailMeasure = null;
   var thresholdEmailFitQueued = false;
   var thresholdEmailFitLastTarget = -1;
+  var thresholdEmailFontsReady = false;
+  var thresholdEmailFontWait = null;
 
   function ensureThresholdEmailFitNodes() {
     if (!thresholdEmailInk) {
@@ -3002,6 +3010,78 @@
     return !!(thresholdEmailInk && thresholdEmailMeasure);
   }
 
+  /* True content ink width — not a max-width-clamped border box (which made the
+     binary search treat overflow as "fits" and/or freeze a short stable size). */
+  function measureContentWidth(el) {
+    if (!el) return 0;
+    var prevMax = el.style.maxWidth;
+    el.style.maxWidth = "none";
+    var w = 0;
+    try {
+      if (typeof document.createRange === "function") {
+        var range = document.createRange();
+        range.selectNodeContents(el);
+        var rect = range.getBoundingClientRect();
+        w = rect && rect.width ? rect.width : 0;
+      }
+    } catch (err) {
+      w = 0;
+    }
+    if (!(w > 0)) {
+      w = el.getBoundingClientRect().width;
+    }
+    el.style.maxWidth = prevMax;
+    return w;
+  }
+
+  function thresholdEmailFacesReady() {
+    if (!document.fonts || typeof document.fonts.check !== "function") return true;
+    try {
+      return (
+        document.fonts.check('600 24px "IBM Plex Sans"') &&
+        document.fonts.check('400 64px "Bodoni Moda"')
+      );
+    } catch (err) {
+      return true;
+    }
+  }
+
+  function ensureThresholdEmailFonts(done) {
+    if (thresholdEmailFontsReady && thresholdEmailFacesReady()) {
+      done();
+      return;
+    }
+    if (thresholdEmailFontWait) {
+      thresholdEmailFontWait.then(done).catch(done);
+      return;
+    }
+    var finish = function () {
+      thresholdEmailFontsReady = thresholdEmailFacesReady();
+      /* Two frames so swapped faces have been laid out before measure. */
+      window.requestAnimationFrame(function () {
+        window.requestAnimationFrame(function () {
+          done();
+        });
+      });
+    };
+    if (!document.fonts || typeof document.fonts.load !== "function") {
+      thresholdEmailFontsReady = true;
+      finish();
+      return;
+    }
+    thresholdEmailFontWait = Promise.all([
+      document.fonts.load('600 24px "IBM Plex Sans"'),
+      document.fonts.load('400 64px "Bodoni Moda"'),
+      document.fonts.ready
+    ]).then(function () {
+      thresholdEmailFontWait = null;
+      finish();
+    }).catch(function () {
+      thresholdEmailFontWait = null;
+      finish();
+    });
+  }
+
   function fitThresholdEmailInk() {
     if (!ensureThresholdEmailFitNodes()) return;
     if (isMobile()) {
@@ -3009,25 +3089,31 @@
       thresholdEmailFitLastTarget = -1;
       return;
     }
-    var target = thresholdEmailMeasure.getBoundingClientRect().width;
-    if (!(target > 1)) return;
-    /* Skip no-op refits when the headline measure has not moved. */
+    var target = measureContentWidth(thresholdEmailMeasure);
+    if (!(target > 1)) {
+      /* Headline may still be mid-swap; try again once fonts/layout settle. */
+      thresholdEmailFitLastTarget = -1;
+      return;
+    }
+    /* Skip only when target and stable ink already agree within 2px. */
     if (Math.abs(target - thresholdEmailFitLastTarget) < 0.5 && thresholdEmailInk.style.fontSize) {
-      var curW = thresholdEmailInk.getBoundingClientRect().width;
+      var curW = measureContentWidth(thresholdEmailInk);
       if (Math.abs(curW - target) <= 2) return;
     }
-    thresholdEmailFitLastTarget = target;
 
-    /* Binary search font-size so the visible text span reaches the headline period edge. */
-    var lo = 10;
     var ceiling = Math.max(12, Math.min(44, target * 0.55));
+    var lo = 10;
     var hi = ceiling;
     var best = lo;
     var i;
-    for (i = 0; i < 16; i++) {
-      var mid = (lo + hi) * 0.5;
+    var mid;
+    var w;
+
+    /* Binary search against unconstrained ink width so overflow cannot report as fit. */
+    for (i = 0; i < 18; i++) {
+      mid = (lo + hi) * 0.5;
       thresholdEmailInk.style.fontSize = mid + "px";
-      var w = thresholdEmailInk.getBoundingClientRect().width;
+      w = measureContentWidth(thresholdEmailInk);
       if (w <= target) {
         best = mid;
         lo = mid;
@@ -3036,23 +3122,67 @@
       }
     }
     thresholdEmailInk.style.fontSize = best + "px";
-    /* One-step proportional nudge if still more than ~2px short. */
-    var fitted = thresholdEmailInk.getBoundingClientRect().width;
-    if (fitted > 0 && target - fitted > 2) {
-      var nudged = Math.min(ceiling, best * (target / fitted));
-      thresholdEmailInk.style.fontSize = nudged + "px";
-      if (thresholdEmailInk.getBoundingClientRect().width > target + 2) {
-        thresholdEmailInk.style.fontSize = best + "px";
+
+    /* Proportional recheck loop: correct residual shortfall after real metrics settle.
+       Not a magic +7px — scale by measured target/fitted until within 2px or cap. */
+    for (i = 0; i < 6; i++) {
+      var fitted = measureContentWidth(thresholdEmailInk);
+      if (!(fitted > 0)) break;
+      var delta = target - fitted;
+      if (Math.abs(delta) <= 2) break;
+      var currentSize = parseFloat(thresholdEmailInk.style.fontSize) || best;
+      if (!(currentSize > 0)) break;
+      var next = currentSize * (target / fitted);
+      if (next < 10) next = 10;
+      if (next > ceiling) next = ceiling;
+      if (Math.abs(next - currentSize) < 0.01) break;
+      thresholdEmailInk.style.fontSize = next + "px";
+      var check = measureContentWidth(thresholdEmailInk);
+      if (check > target + 2) {
+        /* Overshoot: binary-search the gap between last under-target and next. */
+        var blo = currentSize;
+        var bhi = next;
+        var bbest = currentSize;
+        var j;
+        for (j = 0; j < 12; j++) {
+          var bmid = (blo + bhi) * 0.5;
+          thresholdEmailInk.style.fontSize = bmid + "px";
+          var bw = measureContentWidth(thresholdEmailInk);
+          if (bw <= target) {
+            bbest = bmid;
+            blo = bmid;
+          } else {
+            bhi = bmid;
+          }
+        }
+        thresholdEmailInk.style.fontSize = bbest + "px";
+        best = bbest;
+        break;
       }
+      best = next;
     }
+
+    thresholdEmailFitLastTarget = target;
   }
 
   function scheduleThresholdEmailFit() {
     if (thresholdEmailFitQueued) return;
     thresholdEmailFitQueued = true;
-    window.requestAnimationFrame(function () {
-      thresholdEmailFitQueued = false;
-      fitThresholdEmailInk();
+    ensureThresholdEmailFonts(function () {
+      window.requestAnimationFrame(function () {
+        thresholdEmailFitQueued = false;
+        fitThresholdEmailInk();
+        /* If faces were still mid-apply, ink can remain short — one deferred recheck. */
+        if (!ensureThresholdEmailFitNodes() || isMobile()) return;
+        var target = measureContentWidth(thresholdEmailMeasure);
+        var ink = measureContentWidth(thresholdEmailInk);
+        if (target > 1 && Math.abs(ink - target) > 2) {
+          thresholdEmailFitLastTarget = -1;
+          window.requestAnimationFrame(function () {
+            fitThresholdEmailInk();
+          });
+        }
+      });
     });
   }
 
@@ -4570,13 +4700,24 @@
     showFrame(0);
   }
 
-  /* Fit threshold email ink after layout; re-run once fonts settle for accurate measure. */
+  /* Fit threshold email ink after layout; re-run when faces load/settle so a stale
+     pre-swap binary search cannot freeze a short size (the ~25.5px / −7px miss). */
   scheduleThresholdEmailFit();
-  if (document.fonts && document.fonts.ready) {
-    document.fonts.ready.then(function () {
-      thresholdEmailFitLastTarget = -1;
-      scheduleThresholdEmailFit();
-    }).catch(function () {});
+  if (document.fonts) {
+    if (document.fonts.ready && typeof document.fonts.ready.then === "function") {
+      document.fonts.ready.then(function () {
+        thresholdEmailFontsReady = thresholdEmailFacesReady();
+        thresholdEmailFitLastTarget = -1;
+        scheduleThresholdEmailFit();
+      }).catch(function () {});
+    }
+    if (typeof document.fonts.addEventListener === "function") {
+      document.fonts.addEventListener("loadingdone", function () {
+        thresholdEmailFontsReady = thresholdEmailFacesReady();
+        thresholdEmailFitLastTarget = -1;
+        scheduleThresholdEmailFit();
+      });
+    }
   }
 
   if (forcedStation) {

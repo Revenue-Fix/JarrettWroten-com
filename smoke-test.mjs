@@ -1625,11 +1625,15 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
   ok(
     /function fitThresholdEmailInk\s*\(/.test(html) &&
       /function scheduleThresholdEmailFit\s*\(/.test(html) &&
+      /function measureContentWidth\s*\(/.test(html) &&
+      /function ensureThresholdEmailFonts\s*\(/.test(html) &&
       /invite-email-text/.test(html) &&
-      /getBoundingClientRect\(\)\.width/.test(html) &&
+      /document\.fonts\.load/.test(html) &&
       /document\.fonts\.ready/.test(html) &&
+      /loadingdone/.test(html) &&
+      /maxWidth\s*=\s*["']none["']/.test(html) &&
       !/scaleX\s*\(\s*[^)]*invite-email/.test(html),
-    'threshold email fits visible ink span to YOUR SITE. measure after fonts/resize (no scaleX)'
+    'threshold email fits unconstrained ink to YOUR SITE. after IBM Plex/Bodoni load + stable recheck (no scaleX)'
   );
   const tabletBlock = extractMediaBlock(
     /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-width:\s*900px\s*\)\s*\{/
