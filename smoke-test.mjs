@@ -899,14 +899,14 @@ ok(
           /class="invite-book-link"[^>]*rel="noopener noreferrer"[^>]*target="_blank"/.test(bottomSrc)),
       'desktop booking anchor uses _blank + noopener noreferrer inside threshold-bottom'
     );
-    // Order: email → booking → whisper (source order only).
+    // Order: booking → email → whisper (source order only).
     {
       const emailAt = bottomSrc.indexOf('class="invite-email"');
       const bookAt = bottomSrc.indexOf('class="invite-book"');
       const whisperAt = bottomSrc.indexOf('class="invite-whisper"');
       ok(
-        emailAt !== -1 && bookAt > emailAt && whisperAt > bookAt,
-        'desktop booking line sits after email and before whisper in threshold-bottom'
+        bookAt !== -1 && emailAt > bookAt && whisperAt > emailAt,
+        'desktop threshold-bottom order is booking → email → whisper'
       );
     }
 
@@ -930,8 +930,8 @@ ok(
       const bookAt = mobileThresholdSrc.indexOf('class="mobile-book"');
       const whisperAt = mobileThresholdSrc.indexOf('class="mobile-whisper"');
       ok(
-        emailAt !== -1 && bookAt > emailAt && whisperAt > bookAt,
-        'mobile booking line sits after email and before whisper in threshold beat'
+        bookAt !== -1 && emailAt > bookAt && whisperAt > emailAt,
+        'mobile threshold beat order is booking → email → whisper'
       );
     }
 
