@@ -1022,14 +1022,14 @@
     margin-top:clamp(1.6rem,4vh,2.8rem);
   }
   /* THRESHOLD — three-row left column: high invite+email, middle Services, low contact;
-     face-safe right edge (≤~360px / ~30vw at desktop) so type never meets Jarrett's face */
+     face-safe right edge (≤~179px at 744 / ~307px at 1280 / ~344px at 1920; 24vw rail) */
   .station[data-station="threshold"] .station-copy{
     position:absolute;
     isolation:isolate;
     left:var(--gutter);
     top:clamp(5.2rem,12vh,6.8rem);
     bottom:clamp(5.5rem,12vh,7rem);
-    max-width:min(18.75rem, calc(30vw - var(--gutter)));
+    max-width:min(18.75rem, calc(24vw - var(--gutter)));
     display:flex;
     flex-direction:column;
     justify-content:space-between;
@@ -1335,6 +1335,50 @@
       min-height:2.5rem;
       font-size:clamp(.72rem,.7rem + .06vw,.8rem);
       padding:.06em 0 .12em;
+    }
+  }
+  /*
+   * Narrow desktop/tablet threshold (721–900) — face crop sits farther left at
+   * 744×920; keep email one-line and every word inside the tightened 24vw rail.
+   * Type/spacing only; does not touch the ≤720px mobile passage.
+   */
+  @media (min-width:721px) and (max-width:900px){
+    .station[data-station="threshold"] .threshold-top .station-kicker{
+      margin-bottom:clamp(.28rem,.55vh,.42rem);
+      font-size:clamp(.78rem,.76rem + .05vw,.88rem);
+    }
+    .station[data-station="threshold"] .display{
+      font-size:clamp(1.22rem,2.05vw,1.42rem);
+      line-height:.94;
+    }
+    .station[data-station="threshold"] .text{
+      font-size:clamp(.74rem,.72rem + .05vw,.84rem);
+      line-height:1.32;
+    }
+    .station[data-station="threshold"] .invite-email{
+      font-size:clamp(.68rem,1.4vw,.76rem);
+      letter-spacing:-.015em;
+      margin-top:clamp(.16rem,.35vh,.28rem);
+    }
+    .station[data-station="threshold"] .invite-book{
+      margin-top:clamp(.16rem,.35vh,.28rem);
+      font-size:clamp(.7rem,.68rem + .04vw,.8rem);
+      line-height:1.28;
+      max-width:100%;
+    }
+    .threshold-services-label{
+      margin:0 0 .22rem;
+      font-size:clamp(.74rem,.72rem + .04vw,.84rem);
+    }
+    .threshold-services-list li{
+      padding:.14rem 0;
+      font-size:clamp(.7rem,.68rem + .06vw,.8rem);
+      line-height:1.22;
+    }
+    .threshold-work-invite{
+      margin-top:clamp(.28rem,.55vh,.42rem);
+      font-size:clamp(.7rem,.68rem + .05vw,.8rem);
+      line-height:1.25;
     }
   }
 

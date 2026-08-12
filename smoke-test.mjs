@@ -1485,15 +1485,19 @@ ok(
 );
 ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'threshold separated carrier groups');
 // Face-safe desktop threshold contract — source geometry + coordinated type only.
-// Does not prove live pixels; asserts authored column cap and compact hierarchy.
+// Does not prove live pixels; asserts authored 24vw column cap and compact hierarchy.
 {
   const thrCopy = html.match(
     /\.station\[data-station="threshold"\] \.station-copy\{[^}]*\}/
   );
   const thrCopyCss = thrCopy ? thrCopy[0] : '';
   ok(
-    /max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*30vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss),
-    'desktop threshold column max-width is face-safe (≤~30vw right edge / 18.75rem cap)'
+    /max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*24vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss),
+    'desktop threshold column max-width is face-safe (≤~24vw right edge / 18.75rem cap; ~179px@744)'
+  );
+  ok(
+    !/max-width\s*:\s*min\(\s*18\.75rem\s*,\s*calc\(\s*30vw\s*-\s*var\(--gutter\)\s*\)\s*\)/.test(thrCopyCss),
+    'desktop threshold column no longer uses the looser 30vw face-safe rail'
   );
   const thrDisplay = html.match(
     /\.station\[data-station="threshold"\] \.display\{[^}]*\}/
@@ -1509,6 +1513,35 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
     /font-size\s*:\s*clamp\(\s*\.82rem\s*,\s*1\.05vw\s*,\s*1\.02rem\s*\)/.test(emailCss) &&
       /white-space\s*:\s*nowrap/.test(emailCss),
     'threshold email uses compact nowrap size for one-line fit at tablet widths'
+  );
+  // Focused 721–900 type rail — keeps email one line inside tightened geometry at 744×920.
+  const tabletHead = html.match(
+    /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-width:\s*900px\s*\)\s*\{/
+  );
+  let tabletBlock = '';
+  if (tabletHead) {
+    let depth = 1;
+    let i = tabletHead.index + tabletHead[0].length;
+    while (i < html.length && depth > 0) {
+      if (html[i] === '{') depth += 1;
+      else if (html[i] === '}') depth -= 1;
+      i += 1;
+    }
+    tabletBlock = html.slice(tabletHead.index, i);
+  }
+  ok(!!tabletBlock, 'narrow-desktop face-safe type media query is authored (721px–900px)');
+  ok(
+    tabletBlock &&
+      /\.station\[data-station="threshold"\] \.display\s*\{/.test(tabletBlock) &&
+      /font-size\s*:\s*clamp\(\s*1\.22rem\s*,\s*2\.05vw\s*,\s*1\.42rem\s*\)/.test(tabletBlock) &&
+      /\.station\[data-station="threshold"\] \.invite-email\s*\{/.test(tabletBlock) &&
+      /font-size\s*:\s*clamp\(\s*\.68rem\s*,\s*1\.4vw\s*,\s*\.76rem\s*\)/.test(tabletBlock) &&
+      /white-space\s*:\s*nowrap/.test(emailCss) &&
+      /\.threshold-services-list li\s*\{/.test(tabletBlock) &&
+      /\.threshold-work-invite\s*\{/.test(tabletBlock) &&
+      /\.station\[data-station="threshold"\] \.text\s*\{/.test(tabletBlock) &&
+      /\.station\[data-station="threshold"\] \.invite-book\s*\{/.test(tabletBlock),
+    '721–900 type treatment covers display, email, Services, work invite, diagnosis, booking'
   );
   const desktopThreshold = html.match(/<section class="station" data-station="threshold"[\s\S]*?<\/section>/);
   const desktopSrc = desktopThreshold ? desktopThreshold[0] : '';
