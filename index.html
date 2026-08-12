@@ -1364,13 +1364,19 @@
   }
   /*
    * Tablet-width desktop threshold (721–900) — face crop sits farther left at
-   * 744×920. Keep the desktop DOM and restored type hierarchy; constrain only the
-   * column rail to the face-safe edge; shrink .invite-email alone for one-line
-   * horizontal fit. Does not alter widths above 900px or the ≤720 mobile passage.
+   * 744×920. Keep the desktop DOM and restored type hierarchy; constrain the
+   * column rail to the face-safe edge (x≈220@744). The inherited 2.5rem display
+   * floor (~40px) cannot fit YOUR SITE. inside that ~193px rail, so apply one
+   * bounded tablet-only display-size reduction — smallest useful cut to show the
+   * complete two-line headline — plus the existing email-only one-line shrink.
+   * Does not alter widths above 900px or the ≤720 mobile passage.
    */
   @media (min-width:721px) and (max-width:900px){
     .station[data-station="threshold"] .station-copy{
       max-width:min(18.75rem, calc(29.5vw - var(--gutter)));
+    }
+    .station[data-station="threshold"] .display{
+      font-size:clamp(1.95rem,4.2vw,2.35rem);
     }
     .station[data-station="threshold"] .invite-email{
       font-size:clamp(.68rem,1.4vw,.95rem);

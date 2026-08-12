@@ -1524,8 +1524,8 @@ ok(
 );
 ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'threshold separated carrier groups');
 // Desktop threshold width contract — full-desktop base + bounded 721–900 tablet band.
-// Does not prove live pixels. Restored readable hierarchy must not be globally reduced;
-// only .invite-email may shrink specifically for one-line horizontal fit.
+// Does not prove live pixels. Full-desktop restored hierarchy stays; tablet band may
+// apply one bounded .display size rule plus .invite-email one-line shrink only.
 {
   function extractMediaBlock(re) {
     const head = html.match(re);
@@ -1596,9 +1596,12 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
   );
   ok(
     tabletBlock &&
+      /\.station\[data-station="threshold"\] \.display\s*\{[^}]*font-size\s*:\s*clamp\(\s*1\.95rem\s*,\s*4\.2vw\s*,\s*2\.35rem\s*\)/.test(
+        tabletBlock
+      ) &&
+      (tabletBlock.match(/\.display\s*\{[^}]*font-size\s*:/g) || []).length === 1 &&
       /\.invite-email\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       /white-space\s*:\s*nowrap/.test(emailCss) &&
-      !/\.display\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       !/\.station-kicker\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       !/\.threshold-services-label\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       !/\.threshold-services-list li\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
@@ -1606,7 +1609,7 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
       !/\.invite-book\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       !/\.invite-whisper\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       !/\.text\s*\{[^}]*font-size\s*:/.test(tabletBlock),
-    'tablet band: email is the only horizontal-fit type shrink; headline and other type stay full'
+    'tablet band: one bounded display-size rule plus email shrink; all other type stays full'
   );
   const mobileBlock = extractMediaBlock(/@media\s*\(\s*max-width:\s*720px\s*\)\s*\{/);
   ok(
