@@ -1043,6 +1043,8 @@
   }
   .station[data-station="threshold"] .threshold-top{
     position:relative;
+    /* Size the invite pocket to the complete YOUR SITE. line; email/rule stretch to that measure. */
+    width:fit-content;
     max-width:100%;
     flex:0 0 auto;
   }
@@ -1074,11 +1076,13 @@
     line-height:.96;
   }
   .station[data-station="threshold"] .station-support{max-width:34ch;margin-top:0}
-  /* Email-only horizontal-fit shrink: one line under SEND ME / YOUR SITE.
+  /* Email under SEND ME / YOUR SITE.: full horizontal measure of the threshold-top
+     pocket (heading-sized via fit-content; rail-capped by station-copy max-width).
+     Glyph size stays readable; element + copper rule provide the shared measure.
      Restored hierarchy (kicker/display/services/diagnosis/booking) is not reduced for width. */
   .invite-email{
-    display:inline-block;
-    width:fit-content;
+    display:block;
+    width:100%;
     max-width:100%;
     margin-top:clamp(.4rem,.95vh,.65rem);
     font-family:var(--text);
@@ -1800,15 +1804,16 @@
       letter-spacing:0;
       color:var(--ink-mute);
     }
+    /* Directly under the mobile threshold heading; keep touch line box, tighten top only. */
     .mobile-email{
       align-self:flex-start;
       min-height:2.75rem;
-      margin-top:.6rem;
+      margin-top:.45rem;
       border-bottom:2px solid var(--amber);
       font-family:var(--text);
       font-size:clamp(1.05rem,4.55vw,1.2rem);
       font-weight:650;
-      line-height:2.65rem;
+      line-height:2.55rem;
       letter-spacing:0;
       color:var(--ink);
       white-space:nowrap;
@@ -2062,9 +2067,9 @@
         font-size:clamp(.84rem,3.5vw,.92rem);
       }
       .mobile-email{
-        margin-top:.4rem;
+        margin-top:.32rem;
         font-size:clamp(.98rem,4.1vw,1.1rem);
-        line-height:2.4rem;
+        line-height:2.35rem;
       }
       .mobile-services-list{
         margin-top:.45rem;
@@ -2085,7 +2090,7 @@
       .mobile-beat[data-mobile-beat="method-find"] .mobile-title{font-size:clamp(1.9rem,9.2vw,2.25rem)}
       .mobile-body{margin-top:.4rem;font-size:.94rem;line-height:1.32;max-width:34ch}
       .mobile-proof-figure{font-size:clamp(2.15rem,10.5vw,2.55rem)}
-      .mobile-email{margin-top:.28rem;font-size:.95rem;line-height:2.15rem}
+      .mobile-email{margin-top:.22rem;font-size:.95rem;line-height:2.1rem}
       .mobile-book{margin-top:.2rem;font-size:.82rem}
       .mobile-qualifier,
       .mobile-whisper{font-size:.82rem}
@@ -2465,9 +2470,9 @@
             <article class="mobile-beat" data-mobile-beat="threshold" data-mobile-station="threshold" aria-hidden="true">
               <p class="mobile-kicker">Your first look is free</p>
               <h2 class="mobile-title">Send me your site.</h2>
+              <a class="mobile-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
               <p class="mobile-body">Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.</p>
               <p class="mobile-book">Want to talk first? <a class="mobile-book-link" href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call.</a></p>
-              <a class="mobile-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
             </article>
 
             <article class="mobile-beat" data-mobile-beat="services" data-mobile-station="threshold" aria-hidden="true">

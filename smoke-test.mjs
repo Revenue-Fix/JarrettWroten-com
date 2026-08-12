@@ -720,7 +720,7 @@ ok(
     'public commercial section order unchanged'
   );
   // Desktop threshold order: heading → email → Services (top/middle), diagnosis → booking (bottom).
-  // Mobile contact order remains booking → email (asserted in the booking tripwire).
+  // Mobile threshold order is heading → email → diagnosis → booking (asserted in the booking tripwire).
   {
     const desktopThreshold = html.match(/<section class="station" data-station="threshold"[\s\S]*?<\/section>/);
     const desktopSrc = desktopThreshold ? desktopThreshold[0] : '';
@@ -1224,13 +1224,17 @@ ok(
       'mobile booking anchor uses _blank + noopener noreferrer inside threshold beat'
     );
     {
+      const headingAt = mobileThresholdSrc.indexOf('class="mobile-title"');
       const emailAt = mobileThresholdSrc.indexOf('class="mobile-email"');
+      const bodyAt = mobileThresholdSrc.indexOf('class="mobile-body"');
       const bookAt = mobileThresholdSrc.indexOf('class="mobile-book"');
       ok(
-        bookAt !== -1 &&
-          emailAt > bookAt &&
+        headingAt !== -1 &&
+          emailAt > headingAt &&
+          bodyAt > emailAt &&
+          bookAt > bodyAt &&
           !/class="mobile-whisper"/.test(mobileThresholdSrc),
-        'mobile threshold beat order is booking → email (whisper retired)'
+        'mobile threshold source order is heading → email → diagnosis body → booking'
       );
     }
 
@@ -1577,11 +1581,21 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
   );
   const emailCssMatch = html.match(/\.invite-email\{[^}]*\}/);
   const emailCss = emailCssMatch ? emailCssMatch[0] : '';
+  const thrTopCssMatch = html.match(
+    /\.station\[data-station="threshold"\] \.threshold-top\{[^}]*\}/
+  );
+  const thrTopCss = thrTopCssMatch ? thrTopCssMatch[0] : '';
   ok(
-    /font-size\s*:\s*clamp\(\s*\.78rem\s*,\s*1\.9vw\s*,\s*1\.35rem\s*\)/.test(emailCss) &&
+    /width\s*:\s*fit-content/.test(thrTopCss) && /max-width\s*:\s*100%/.test(thrTopCss),
+    'threshold-top sizes to the complete YOUR SITE. measure inside the fluid rail'
+  );
+  ok(
+    /width\s*:\s*100%/.test(emailCss) &&
       /white-space\s*:\s*nowrap/.test(emailCss) &&
+      !/width\s*:\s*fit-content/.test(emailCss) &&
+      /font-size\s*:\s*clamp\(\s*\.78rem\s*,\s*1\.9vw\s*,\s*1\.35rem\s*\)/.test(emailCss) &&
       !/font-size\s*:\s*clamp\(\s*1\.35rem\s*,\s*1\.9vw\s*,\s*1\.875rem\s*\)/.test(emailCss),
-    'threshold email remains nowrap and is the only base horizontal-fit type shrink'
+    'base desktop email uses the threshold rail full horizontal measure, remains nowrap, keeps readable type'
   );
   const tabletBlock = extractMediaBlock(
     /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-width:\s*900px\s*\)\s*\{/
