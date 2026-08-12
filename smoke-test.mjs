@@ -656,9 +656,26 @@ ok(
 
 // ——— Motion-first Arrival prelude (main page) ———
 {
-  ok(/runwayVh:\s*700/.test(html) && /\.journey\s*\{[\s\S]*?height:\s*700svh/.test(html), 'desktop runway extended for Arrival rest (700svh)');
+  ok(/runwayVh:\s*640/.test(html) && /\.journey\s*\{[\s\S]*?height:\s*640svh/.test(html), 'desktop runway is 640svh (matches SITE_TUNING.runwayVh)');
   ok(/stillRunwayVh:\s*600/.test(html) && /html\[data-motion="off"\] \.journey\{height:600svh\}/.test(html), 'motion-off runway includes Arrival band');
-  ok(/arrival:\s*\{\s*shareDesktop:\s*0\.166666667/.test(html), 'desktop Arrival share is authored (one-sixth)');
+  ok(/arrival:\s*\{\s*shareDesktop:\s*0\.074074074/.test(html), 'desktop Arrival share is authored (40/540 of scrollable runway)');
+  /* Causal remap proof: scrollable = runwayVh - 100 = 540; Arrival = share×540 ≈ 40vh; commercial ≈ 500vh. */
+  {
+    const runwayMatch = html.match(/runwayVh:\s*(\d+)/);
+    const shareMatch = html.match(/shareDesktop:\s*(0\.\d+)/);
+    const runwayVh = runwayMatch ? Number(runwayMatch[1]) : NaN;
+    const shareDesktop = shareMatch ? Number(shareMatch[1]) : NaN;
+    const scrollableVh = runwayVh - 100;
+    const arrivalVh = shareDesktop * scrollableVh;
+    const commercialVh = (1 - shareDesktop) * scrollableVh;
+    ok(runwayVh === 640 && scrollableVh === 540, 'desktop scrollable distance is 540vh from 640svh runway');
+    ok(Math.abs(arrivalVh - 40) < 0.01, 'desktop Arrival physical distance is ~40vh (got ' + arrivalVh + ')');
+    ok(Math.abs(commercialVh - 500) < 0.01, 'desktop commercial Leak→Services physical distance remains ~500vh (got ' + commercialVh + ')');
+    ok(
+      Math.abs(shareDesktop - 40 / 540) < 1e-9,
+      'shareDesktop equals exact causal 40/540 (got ' + shareDesktop + ')'
+    );
+  }
   ok(
     /function worldToCommercial\(p\)/.test(html) &&
       /function commercialToWorld\(c\)/.test(html) &&
@@ -1399,13 +1416,13 @@ ok(
       'header Work + data-work-exit invitations share one Work-exit binding with jw-work-enter'
     );
     ok(
-      /class="work-link"[^>]*href="work\/"[^>]*>Work</.test(html) ||
-        /id="work-link"[^>]*href="work\/"[^>]*>Work</.test(html),
-      'header Work route preserved (id=work-link, href=work/)'
+      /class="work-link"[^>]*href="work\/"[^>]*>My Work</.test(html) ||
+        /id="work-link"[^>]*href="work\/"[^>]*>My Work</.test(html),
+      'header My Work route preserved (id=work-link, href=work/)'
     );
     ok(
-      /class="no-js-route"[\s\S]*?<a class="work-link" href="work\/">Work<\/a>/.test(html),
-      'no-JS Work route preserved'
+      /class="no-js-route"[\s\S]*?<a class="work-link" href="work\/">My Work<\/a>/.test(html),
+      'no-JS My Work route preserved'
     );
     // Modified-click passthrough preserved in shared binding.
     ok(
@@ -1581,6 +1598,8 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
   );
   const emailCssMatch = html.match(/\.invite-email\{[^}]*\}/);
   const emailCss = emailCssMatch ? emailCssMatch[0] : '';
+  const emailTextCssMatch = html.match(/\.invite-email-text\{[^}]*\}/);
+  const emailTextCss = emailTextCssMatch ? emailTextCssMatch[0] : '';
   const thrTopCssMatch = html.match(
     /\.station\[data-station="threshold"\] \.threshold-top\{[^}]*\}/
   );
@@ -1593,9 +1612,24 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
     /width\s*:\s*100%/.test(emailCss) &&
       /white-space\s*:\s*nowrap/.test(emailCss) &&
       !/width\s*:\s*fit-content/.test(emailCss) &&
-      /font-size\s*:\s*clamp\(\s*\.78rem\s*,\s*1\.9vw\s*,\s*1\.35rem\s*\)/.test(emailCss) &&
-      !/font-size\s*:\s*clamp\(\s*1\.35rem\s*,\s*1\.9vw\s*,\s*1\.875rem\s*\)/.test(emailCss),
-    'base desktop email uses the threshold rail full horizontal measure, remains nowrap, keeps readable type'
+      !/scaleX\s*\(/.test(emailCss) &&
+      !/letter-spacing\s*:\s*[0-9]/.test(emailCss),
+    'base desktop email anchor uses full threshold measure, remains nowrap, no scaleX / wide tracking'
+  );
+  ok(
+    /font-size\s*:\s*clamp\(\s*\.78rem\s*,\s*1\.9vw\s*,\s*1\.35rem\s*\)/.test(emailTextCss) &&
+      !/font-size\s*:\s*clamp\(\s*1\.35rem\s*,\s*1\.9vw\s*,\s*1\.875rem\s*\)/.test(emailTextCss) &&
+      /display\s*:\s*inline-block/.test(emailTextCss),
+    'visible email ink has dedicated span with readable CSS fallback clamp'
+  );
+  ok(
+    /function fitThresholdEmailInk\s*\(/.test(html) &&
+      /function scheduleThresholdEmailFit\s*\(/.test(html) &&
+      /invite-email-text/.test(html) &&
+      /getBoundingClientRect\(\)\.width/.test(html) &&
+      /document\.fonts\.ready/.test(html) &&
+      !/scaleX\s*\(\s*[^)]*invite-email/.test(html),
+    'threshold email fits visible ink span to YOUR SITE. measure after fonts/resize (no scaleX)'
   );
   const tabletBlock = extractMediaBlock(
     /@media\s*\(\s*min-width:\s*721px\s*\)\s*and\s*\(\s*max-width:\s*900px\s*\)\s*\{/
@@ -1614,7 +1648,7 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
         tabletBlock
       ) &&
       (tabletBlock.match(/\.display\s*\{[^}]*font-size\s*:/g) || []).length === 1 &&
-      /\.invite-email\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
+      /\.invite-email-text\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       /white-space\s*:\s*nowrap/.test(emailCss) &&
       !/\.station-kicker\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       !/\.threshold-services-label\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
@@ -1623,7 +1657,7 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
       !/\.invite-book\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       !/\.invite-whisper\s*\{[^}]*font-size\s*:/.test(tabletBlock) &&
       !/\.text\s*\{[^}]*font-size\s*:/.test(tabletBlock),
-    'tablet band: one bounded display-size rule plus email shrink; all other type stays full'
+    'tablet band: one bounded display-size rule plus email-ink shrink; all other type stays full'
   );
   const mobileBlock = extractMediaBlock(/@media\s*\(\s*max-width:\s*720px\s*\)\s*\{/);
   ok(
@@ -1646,8 +1680,20 @@ ok(html.includes('threshold-top') && html.includes('threshold-bottom'), 'thresho
     'live threshold has exactly one .invite-email directly under #threshold-heading'
   );
   ok(
+    /class="invite-email"[^>]*>\s*<span class="invite-email-text">Jarrett@JarrettWroten\.com<\/span>\s*<\/a>/.test(
+      desktopSrc
+    ),
+    'desktop email wraps visible ink in .invite-email-text for measure-based fitting'
+  );
+  ok(
     /id="threshold-heading"[\s\S]*?<span>SEND ME<\/span>[\s\S]*?<span>YOUR SITE\.<\/span>/.test(desktopSrc),
     'threshold keeps exact two-line headline spans SEND ME / YOUR SITE.'
+  );
+  ok(
+    /mailto:Jarrett@JarrettWroten\.com\?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A/.test(
+      desktopSrc
+    ),
+    'threshold mailto destination, subject, and body remain unchanged'
   );
 }
 ok(html.includes('stationCarriers'), 'distinct station carrier map');

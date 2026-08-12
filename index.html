@@ -197,7 +197,7 @@
 
   .journey{
     position:relative;
-    height:700svh;
+    height:640svh;
     background:var(--void);
   }
   html[data-motion="off"] .journey{height:600svh}
@@ -1076,10 +1076,10 @@
     line-height:.96;
   }
   .station[data-station="threshold"] .station-support{max-width:34ch;margin-top:0}
-  /* Email under SEND ME / YOUR SITE.: full horizontal measure of the threshold-top
+  /* Email under SEND ME / YOUR SITE.: anchor + copper rule share the threshold-top
      pocket (heading-sized via fit-content; rail-capped by station-copy max-width).
-     Glyph size stays readable; element + copper rule provide the shared measure.
-     Restored hierarchy (kicker/display/services/diagnosis/booking) is not reduced for width. */
+     Visible ink lives in .invite-email-text and is fitted to that measure in JS
+     after fonts resolve; CSS clamp is the no-fit fallback. No scaleX / wide tracking. */
   .invite-email{
     display:block;
     width:100%;
@@ -1087,7 +1087,6 @@
     margin-top:clamp(.4rem,.95vh,.65rem);
     font-family:var(--text);
     font-weight:600;
-    font-size:clamp(.78rem,1.9vw,1.35rem);
     line-height:1.2;
     letter-spacing:-.01em;
     color:var(--ink);
@@ -1097,6 +1096,11 @@
     white-space:nowrap;
     opacity:0;
     transform:translateY(14px);
+  }
+  .invite-email-text{
+    display:inline-block;
+    max-width:100%;
+    font-size:clamp(.78rem,1.9vw,1.35rem);
   }
   .invite-email::after{
     content:"";
@@ -1336,9 +1340,11 @@
       line-height:1.38;
     }
     .station[data-station="threshold"] .invite-email{
-      font-size:clamp(.72rem,1.55vw,.95rem);
       min-height:2.5rem;
       margin-top:clamp(.22rem,.45vh,.35rem);
+    }
+    .station[data-station="threshold"] .invite-email-text{
+      font-size:clamp(.72rem,1.55vw,.95rem);
     }
     .station[data-station="threshold"] .invite-book{
       margin-top:clamp(.22rem,.45vh,.35rem);
@@ -1383,8 +1389,10 @@
       font-size:clamp(1.95rem,4.2vw,2.35rem);
     }
     .station[data-station="threshold"] .invite-email{
-      font-size:clamp(.68rem,1.4vw,.95rem);
       letter-spacing:-.015em;
+    }
+    .station[data-station="threshold"] .invite-email-text{
+      font-size:clamp(.68rem,1.4vw,.95rem);
     }
   }
 
@@ -2229,7 +2237,7 @@
     <div class="no-js-wash" aria-hidden="true"></div>
     <div class="no-js-stack">
       <p class="wordmark">Jarrett Wroten</p>
-      <a class="work-link" href="work/">Work</a>
+      <a class="work-link" href="work/">My Work</a>
       <p class="station-kicker">The Leak</p>
       <h1 class="display">I find where your business quietly loses customers. Then I build you the fix.</h1>
       <div class="text">
@@ -2407,7 +2415,7 @@
         <header class="site-header">
           <div class="wordmark">Jarrett Wroten</div>
           <div class="header-tools">
-            <a class="work-link" id="work-link" href="work/">Work</a>
+            <a class="work-link" id="work-link" href="work/">My Work</a>
             <button type="button" class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">Motion on</button>
             <script>
             (function () {
@@ -2595,7 +2603,7 @@
                 <span class="line"><span>SEND ME</span></span>
                 <span class="line"><span>YOUR SITE.</span></span>
               </h2>
-              <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
+              <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A"><span class="invite-email-text">Jarrett@JarrettWroten.com</span></a>
             </div>
             <aside class="threshold-services" aria-labelledby="services-heading">
               <h3 class="threshold-services-label" id="services-heading">Services</h3>
@@ -2654,9 +2662,9 @@
   var SITE_TUNING = {
     motionStorageKey: "jw-motion",
     mobileBreakpoint: 720,
-    /* Desktop runway extended by one Arrival rest so commercial Leak→Services
-       physical distance stays approximately the prior 500svh scrollable span. */
-    runwayVh: 700,
+    /* Desktop motion-on runway: 640svh total → 540vh scrollable.
+       Arrival share 40/540 keeps commercial Leak→Services at ~500vh. */
+    runwayVh: 640,
     mobileSectionPx: 560,
     mobileSectionCount: 8,
     mobileRunwayPx: 4480,
@@ -2678,10 +2686,11 @@
       { id: "services",     station: "threshold", progress: 1.000000000 }
     ],
     stillRunwayVh: 600,
-    /* Desktop Arrival share of normalized progress. Commercial journey is remapped
-       through worldToCommercial so Leak→Services cadence is not compressed. */
+    /* Desktop Arrival share of normalized progress (40vh of 540vh scrollable).
+       Commercial journey is remapped through worldToCommercial so Leak→Services
+       physical distance stays ~500vh. */
     arrival: {
-      shareDesktop: 0.166666667
+      shareDesktop: 0.074074074
     },
     frameCount: 361,
     framePattern: "assets/golden-arrival/frames/ga-%03d.webp",
@@ -2974,6 +2983,77 @@
     c = clamp(c, 0, 1);
     var a = arrivalShare();
     return a + c * (1 - a);
+  }
+
+  /* Fit visible email ink to the YOUR SITE. line measure (not the full-width anchor).
+     Copper rule stays on the anchor; left edges already share the threshold-top rail. */
+  var thresholdEmailInk = null;
+  var thresholdEmailMeasure = null;
+  var thresholdEmailFitQueued = false;
+  var thresholdEmailFitLastTarget = -1;
+
+  function ensureThresholdEmailFitNodes() {
+    if (!thresholdEmailInk) {
+      thresholdEmailInk = document.querySelector("#station-threshold .invite-email-text");
+    }
+    if (!thresholdEmailMeasure) {
+      thresholdEmailMeasure = document.querySelector("#threshold-heading .line:last-child > span");
+    }
+    return !!(thresholdEmailInk && thresholdEmailMeasure);
+  }
+
+  function fitThresholdEmailInk() {
+    if (!ensureThresholdEmailFitNodes()) return;
+    if (isMobile()) {
+      thresholdEmailInk.style.fontSize = "";
+      thresholdEmailFitLastTarget = -1;
+      return;
+    }
+    var target = thresholdEmailMeasure.getBoundingClientRect().width;
+    if (!(target > 1)) return;
+    /* Skip no-op refits when the headline measure has not moved. */
+    if (Math.abs(target - thresholdEmailFitLastTarget) < 0.5 && thresholdEmailInk.style.fontSize) {
+      var curW = thresholdEmailInk.getBoundingClientRect().width;
+      if (Math.abs(curW - target) <= 2) return;
+    }
+    thresholdEmailFitLastTarget = target;
+
+    /* Binary search font-size so the visible text span reaches the headline period edge. */
+    var lo = 10;
+    var ceiling = Math.max(12, Math.min(44, target * 0.55));
+    var hi = ceiling;
+    var best = lo;
+    var i;
+    for (i = 0; i < 16; i++) {
+      var mid = (lo + hi) * 0.5;
+      thresholdEmailInk.style.fontSize = mid + "px";
+      var w = thresholdEmailInk.getBoundingClientRect().width;
+      if (w <= target) {
+        best = mid;
+        lo = mid;
+      } else {
+        hi = mid;
+      }
+    }
+    thresholdEmailInk.style.fontSize = best + "px";
+    /* One-step proportional nudge if still more than ~2px short. */
+    var fitted = thresholdEmailInk.getBoundingClientRect().width;
+    if (fitted > 0 && target - fitted > 2) {
+      var nudged = Math.min(ceiling, best * (target / fitted));
+      thresholdEmailInk.style.fontSize = nudged + "px";
+      if (thresholdEmailInk.getBoundingClientRect().width > target + 2) {
+        thresholdEmailInk.style.fontSize = best + "px";
+      }
+    }
+  }
+
+  function scheduleThresholdEmailFit() {
+    if (thresholdEmailFitQueued) return;
+    thresholdEmailFitQueued = true;
+    window.requestAnimationFrame(function () {
+      thresholdEmailFitQueued = false;
+      fitThresholdEmailInk();
+    });
   }
 
   function isArrivalAt(p) {
@@ -4329,6 +4409,7 @@
   window.addEventListener("resize", function () {
     cancelMobileGlide();
     sampleScroll();
+    scheduleThresholdEmailFit();
   });
 
   /* bfcache restore and soft navigations must re-sync the carrier to true Arrival state. */
@@ -4489,6 +4570,15 @@
     showFrame(0);
   }
 
+  /* Fit threshold email ink after layout; re-run once fonts settle for accurate measure. */
+  scheduleThresholdEmailFit();
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () {
+      thresholdEmailFitLastTarget = -1;
+      scheduleThresholdEmailFit();
+    }).catch(function () {});
+  }
+
   if (forcedStation) {
     root.style.setProperty("--intro-veil", "0");
     root.style.setProperty("--world-opacity", "1");
@@ -4501,6 +4591,7 @@
       progressCurrent = progressTarget = computeProgress();
       holdArrivalMotion = false;
       paint(progressCurrent);
+      scheduleThresholdEmailFit();
     });
   } else {
     progressCurrent = progressTarget = 0;
