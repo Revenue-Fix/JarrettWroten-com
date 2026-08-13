@@ -555,16 +555,17 @@ ok(
 }
 
 /*
- * Focused tripwire — mobile My Work section lock.
+ * Focused tripwire — mobile My Work full-interval transitions.
  * Canonical path: work-smoke-test.mjs
  * Future consumer: Codex closer + every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
- * Behavioral check: four STILL rests, one-gesture lock, 2400ms cinematic
- * glide on one cubic-smoothstep clock; progress has departed by 25% time,
- * midpoint stays centered, 75% is approaching not frozen; quintic endpoint
- * dwell is rejected; destination prewarm in both directions, bounded
- * non-blocking fallback, Motion Off auto landing, no desktop lock,
- * no scroll-snap, TAU = 0.41.
+ * Behavioral check: four STILL rests; one-gesture / 2400ms / one-clock lock;
+ * Motion On glide carries fromIndex/toIndex/local t and paints from the mobile
+ * pair renderer rather than narrow global MAP bands; t=0/1 match rests; mid
+ * samples are off both endpoints; no blank world; Rana/Dylan and Dylan/terminal
+ * copy do not overlap; reverse equals forward(1-t); landing clears transition
+ * state after 2400ms; destination prewarm; Motion Off immediate; TAU = 0.41.
+ * Easing the global scroll clock alone does not fix the real-phone failure.
  * Retirement: only when the four-rest mobile passage is replaced.
  */
 {
@@ -688,8 +689,9 @@ ok(
     'touch/wheel that begins on controls or an open overlay is not hijacked'
   );
   ok(
-    /window\.WORK_PASSAGE = \{[\s\S]*?mobileStopIndex[\s\S]*?mobileGliding[\s\S]*?goMobileStop:\s*scrollToMobileStopIndex/.test(workHtml),
-    'WORK_PASSAGE exposes read-only stop/glide state and the real navigation function'
+    /window\.WORK_PASSAGE = \{[\s\S]*?mobileStopIndex[\s\S]*?mobileGliding[\s\S]*?goMobileStop:\s*scrollToMobileStopIndex/.test(workHtml) &&
+      /get mobileTransition\(\) \{[\s\S]*?fromIndex[\s\S]*?toIndex[\s\S]*?t:/.test(workHtml),
+    'WORK_PASSAGE exposes read-only stop/glide/transition state and the real navigation function'
   );
   ok(
     /mobile section-lock/.test(workHtml) &&
@@ -706,8 +708,8 @@ ok(
     'mobile cinematic travel is authored at 2400ms, not the 1200ms jump'
   );
   ok(
-    /function glideScrollTo\(top\)[\s\S]*?var duration = MOBILE_SECTION_GLIDE_MS[\s\S]*?prepareMobileDestination\(mobileStopIndexAtProgress\(top \/ passageScrollTotal\(\)\)\)[\s\S]*?mobileGlideLocked = true/.test(workHtml),
-    'accepting a rest prepares that destination, then locks the one authored clock'
+    /function glideScrollTo\(top\)[\s\S]*?var duration = MOBILE_SECTION_GLIDE_MS[\s\S]*?prepareMobileDestination\(toIndex\)[\s\S]*?mobileGlideLocked = true[\s\S]*?mobileTransition = \{ fromIndex: fromIndex, toIndex: toIndex, t: 0 \}/.test(workHtml),
+    'accepting a rest prepares that destination, then locks the one authored clock with local pair state'
   );
   ok(
     /function glideScrollTo\(top\)[\s\S]*?if \(!motionOn \|\| Math\.abs\(distance\) < 0\.5\)[\s\S]*?return;[\s\S]*?prepareMobileDestination/.test(workHtml),
@@ -777,8 +779,8 @@ ok(
     'destination load/play is eager and never gates the glide on readiness'
   );
   ok(
-    /if \(elapsed < 1\) mobileScrollRaf = window\.requestAnimationFrame\(glide\);\s*else \{\s*window\.scrollTo\(0, top\);\s*mobileScrollRaf = 0;\s*mobileGlideLocked = false;\s*clearMobileDestination\(\);\s*sampleScroll\(\);/.test(workHtml),
-    'glide lock stays closed through the whole 2400ms journey and opens only at rest'
+    /if \(elapsed < 1\) mobileScrollRaf = window\.requestAnimationFrame\(glide\);\s*else \{\s*window\.scrollTo\(0, top\);\s*mobileScrollRaf = 0;\s*mobileTransition = null;\s*mobileGlideLocked = false;\s*clearMobileDestination\(\);\s*sampleScroll\(\);/.test(workHtml),
+    'landing clears transition state, synchronizes exact rest scroll, and unlocks only after the 2400ms clock'
   );
   ok(
     /function cancelMobileGlide\(\)[\s\S]*?clearMobileDestination\(\)/.test(workHtml) &&
@@ -792,10 +794,6 @@ ok(
 
   {
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-    function quinticSmootherStep(t) {
-      t = clamp(t, 0, 1);
-      return t * t * t * (t * (t * 6 - 15) + 10);
-    }
     const duration = Number((workHtml.match(/var MOBILE_SECTION_GLIDE_MS = ([0-9]+)/) || [])[1]);
     ok(duration === 2400, 'parsed mobile glide duration is 2400');
 
@@ -813,7 +811,7 @@ ok(
     ok(
       /t \* t \* \(3 - 2 \* t\)/.test(easeSrc) &&
         !/\(t \* \(t \* 6 - 15\) \+ 10\)/.test(easeSrc),
-      'the old quintic endpoint-dwell curve is rejected'
+      'the glide clock stays cubic; quintic endpoint dwell stays retired'
     );
 
     const from = 0.04;
@@ -823,21 +821,6 @@ ok(
     ok(Math.abs(pAt(0) - from) < 1e-9, 'one clock departs from the current rest');
     ok(Math.abs(pAt(2400) - to) < 1e-9, 'one clock arrives at the destination rest at 2400ms');
     ok(pAt(1200) < to - 0.02, 'the old 1200ms mark is still mid-passage, not a landing');
-
-    const early = uAt(0.25);
-    const mid = uAt(0.5);
-    const late = uAt(0.75);
-    ok(early >= 0.14, 'progress has materially departed by 25% of wall-clock time');
-    ok(Math.abs(mid - 0.5) < 1e-9, 'the midpoint remains centered');
-    ok(
-      late >= 0.80 && late <= 0.87,
-      'progress is materially approaching but not effectively frozen at 75%'
-    );
-    ok(
-      early - quinticSmootherStep(0.25) > 0.03 &&
-        quinticSmootherStep(0.75) - late > 0.03,
-      'cubic shoulders leave the quintic endpoint dwell'
-    );
 
     let monotonic = true;
     let prev = -1;
@@ -863,6 +846,132 @@ ok(
       2399 / duration < 1 && 2400 / duration >= 1,
       'glide lock follows the 2400ms clock to the rest, not visual proximity'
     );
+
+    ok(
+      /function paint\(p\)[\s\S]*?isMobile\(\) && motionOn && mobileTransition[\s\S]*?paintMobileTransition/.test(workHtml) &&
+        /function paint\(p\)[\s\S]*?isMobile\(\) && motionOn[\s\S]*?paintMobileRest/.test(workHtml) &&
+        /function paint\(p\)[\s\S]*?range\(p, MAP\.corridorDark/.test(workHtml),
+      'Motion On mobile glide paints from the local renderer; desktop still uses global MAP'
+    );
+    ok(
+      /mobileTransition = \{ fromIndex: fromIndex, toIndex: toIndex, t: eased \}/.test(workHtml) &&
+        /function cancelMobileGlide\(\)[\s\S]*?mobileTransition = null/.test(workHtml),
+      'mobile glides carry explicit fromIndex, toIndex, and local t, and cancel clears them'
+    );
+    ok(
+      !/easing distribution alone fixes|cubic shoulders leave the quintic endpoint dwell/.test(workHtml),
+      'the old easing-distribution-as-fix premise is retired from the Work passage'
+    );
+  }
+
+  {
+    function extractFunction(name) {
+      const m = workHtml.match(new RegExp('function ' + name + '\\([^)]*\\) \\{[\\s\\S]*?\\n  \\}'));
+      return m ? m[0] : '';
+    }
+    const mapMatch = workHtml.match(/var MAP = \{[\s\S]*?\n  \};/);
+    const stillMatch = workHtml.match(/var STILL = \{[\s\S]*?\n  \};/);
+    const stopsMatch = workHtml.match(/var MOBILE_STOPS = \[[\s\S]*?\];/);
+    const parts = [
+      extractFunction('clamp'),
+      extractFunction('smoothstep'),
+      extractFunction('range'),
+      extractFunction('plateau'),
+      mapMatch ? mapMatch[0] : '',
+      stillMatch ? stillMatch[0] : '',
+      stopsMatch ? stopsMatch[0] : '',
+      extractFunction('sceneValuesFromMap'),
+      extractFunction('mobileSceneValuesForRest'),
+      extractFunction('mobileSceneValuesForTransition'),
+    ];
+    ok(parts.every((part) => part.length > 0), 'mobile rest/transition renderer is extractable');
+
+    let sceneValuesFromMap;
+    let mobileSceneValuesForRest;
+    let mobileSceneValuesForTransition;
+    try {
+      ({ sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition } = new Function(
+        parts.join('\n') +
+          '; return { sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition };'
+      )());
+    } catch (e) {
+      failures.push('mobile transition renderer parse: ' + e.message);
+    }
+    ok(
+      typeof sceneValuesFromMap === 'function' &&
+        typeof mobileSceneValuesForRest === 'function' &&
+        typeof mobileSceneValuesForTransition === 'function',
+      'mobile transition renderer runs as functions'
+    );
+
+    const keys = [
+      'corridorDark',
+      'ranaOpen',
+      'ranaHold',
+      'ring',
+      'prorokOpen',
+      'prorokHold',
+      'terminalHold',
+      'entryCue',
+    ];
+    const copyRana = (v) => v.ranaHold * (1 - v.prorokOpen * 1.15);
+    const copyProrok = (v) => v.prorokHold * Math.max(0, 1 - v.terminalHold * 2);
+    const copyTerminal = (v) => v.terminalHold;
+    const dist = (a, b) => Math.sqrt(keys.reduce((sum, key) => sum + (a[key] - b[key]) ** 2, 0));
+    const sameValues = (a, b) => keys.every((key) => Math.abs(a[key] - b[key]) <= 1e-9);
+    const hasWorld = (v) =>
+      (v.ranaOpen < 0.97 && v.prorokOpen < 0.97 && v.terminalHold < 0.97) ||
+      v.ranaOpen > 0.02 ||
+      v.prorokOpen > 0.02 ||
+      v.terminalHold > 0.02;
+
+    const pairs = [
+      [0, 1],
+      [1, 2],
+      [2, 3],
+    ];
+    if (typeof mobileSceneValuesForTransition === 'function') {
+      const mapAtMidFirst = sceneValuesFromMap(0.04 + (0.38 - 0.04) * 0.5);
+      const localAtMidFirst = mobileSceneValuesForTransition(0, 1, 0.5);
+      ok(
+        mapAtMidFirst.ring < 0.02 && localAtMidFirst.ring > 0.35,
+        'during Motion On glide, visible Rana world is authored by local t, not the global MAP ring window'
+      );
+
+      let endpointsMatch = true;
+      let midpointsMoved = true;
+      let reverseMatches = true;
+      let worldsPresent = true;
+      let copySeparated = true;
+      let doublePlate = false;
+      for (const [fromIndex, toIndex] of pairs) {
+        const fromRest = mobileSceneValuesForRest(fromIndex);
+        const toRest = mobileSceneValuesForRest(toIndex);
+        if (!sameValues(mobileSceneValuesForTransition(fromIndex, toIndex, 0), fromRest)) endpointsMatch = false;
+        if (!sameValues(mobileSceneValuesForTransition(fromIndex, toIndex, 1), toRest)) endpointsMatch = false;
+        for (const t of [0.25, 0.5, 0.75]) {
+          const mid = mobileSceneValuesForTransition(fromIndex, toIndex, t);
+          if (dist(mid, fromRest) < 0.12 || dist(mid, toRest) < 0.12) midpointsMoved = false;
+          if (!hasWorld(mid)) worldsPresent = false;
+        }
+        for (let i = 0; i <= 80; i++) {
+          const t = i / 80;
+          const forward = mobileSceneValuesForTransition(fromIndex, toIndex, t);
+          const reverse = mobileSceneValuesForTransition(toIndex, fromIndex, 1 - t);
+          if (!sameValues(forward, reverse)) reverseMatches = false;
+          if (!hasWorld(forward) || !hasWorld(reverse)) worldsPresent = false;
+          const copies = [copyRana(forward), copyProrok(forward), copyTerminal(forward)].filter((value) => value > 0.06);
+          if (copies.length > 1) copySeparated = false;
+          if (forward.ring > 0.45 && forward.prorokOpen > 0.45) doublePlate = true;
+        }
+      }
+      ok(endpointsMatch, 'local t=0 matches the source rest and t=1 matches the destination rest');
+      ok(midpointsMoved, 'at t=.25, .50, and .75 every transition has a materially changed visible state');
+      ok(worldsPresent, 'no forward or reverse sample leaves all authoritative world layers absent');
+      ok(copySeparated, 'Rana/Dylan and Dylan/terminal copy never overlap above the 0.06 legibility threshold');
+      ok(!doublePlate, 'Rana and Dylan full-frame plates do not sit at comparable authority');
+      ok(reverseMatches, 'reverse samples equal the forward transition evaluated in reverse');
+    }
   }
 
   const syncMatch = workHtml.match(/function syncVideos\(p\) \{[\s\S]*?\n  \}/);

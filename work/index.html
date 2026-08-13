@@ -1452,9 +1452,10 @@
 <!-- Maintained asset — canonical: work/index.html Work passage script;
      consumer/activation: /work/ auto-loads the mobile section-lock (max-width 720px)
      so one vertical gesture lands on exactly one STILL rest over a 2400ms
-     cinematic glide with the destination world requested at accept; check:
-     node work-smoke-test.mjs; recurrence: a real-phone recording of wait-then-cut
-     cadence; retire when the four-rest mobile passage is replaced. -->
+     cinematic glide; Motion On paints that glide from a local pair + t, not
+     from narrow global MAP bands; destination world requested at accept; check:
+     node work-smoke-test.mjs; recurrence: a real-phone recording of wait-then-cut,
+     late burst, double exposure, or snap; retire when the four-rest mobile passage is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1534,6 +1535,7 @@
   var mobileWheelDelta = 0;
   var mobileWheelIdleTimer = 0;
   var mobileDestinationId = "";
+  var mobileTransition = null;
 
   function clamp(v, a, b) {
     return Math.max(a, Math.min(b, v));
@@ -1597,9 +1599,127 @@
     return scrolled / total;
   }
 
+  function sceneValuesFromMap(p) {
+    p = clamp(p, 0, 1);
+    return {
+      corridorDark: range(p, MAP.corridorDark.a, MAP.corridorDark.b),
+      ranaOpen: range(p, MAP.ranaOpen.a, MAP.ranaOpen.b),
+      ranaHold: plateau(p, MAP.ranaHold.a, MAP.ranaHold.b, MAP.ranaHold.c, MAP.ranaHold.d),
+      ring: plateau(p, MAP.ring.a, MAP.ring.b, MAP.ring.c, MAP.ring.d),
+      prorokOpen: range(p, MAP.prorokOpen.a, MAP.prorokOpen.b),
+      prorokHold: plateau(p, MAP.prorokHold.a, MAP.prorokHold.b, MAP.prorokHold.c, MAP.prorokHold.d),
+      terminalHold: range(p, MAP.terminalHold.a, MAP.terminalHold.b),
+      entryCue: 1 - range(p, 0.015, 0.11)
+    };
+  }
+
+  function mobileSceneValuesForRest(index) {
+    var stop = MOBILE_STOPS[clamp(index, 0, MOBILE_STOPS.length - 1)];
+    return sceneValuesFromMap(stop.progress);
+  }
+
+  function mobileSceneValuesForTransition(fromIndex, toIndex, t) {
+    t = clamp(t, 0, 1);
+    fromIndex = clamp(fromIndex, 0, MOBILE_STOPS.length - 1);
+    toIndex = clamp(toIndex, 0, MOBILE_STOPS.length - 1);
+    if (fromIndex === toIndex) return mobileSceneValuesForRest(fromIndex);
+    if (fromIndex > toIndex) return mobileSceneValuesForTransition(toIndex, fromIndex, 1 - t);
+    if (fromIndex === 0 && toIndex === 1) {
+      return {
+        corridorDark: range(t, 0.00, 0.80),
+        ranaOpen: range(t, 0.04, 0.86),
+        ranaHold: range(t, 0.58, 0.92),
+        ring: range(t, 0.08, 0.86),
+        prorokOpen: 0,
+        prorokHold: 0,
+        terminalHold: 0,
+        entryCue: mobileSceneValuesForRest(0).entryCue * (1 - range(t, 0.00, 0.34))
+      };
+    }
+    if (fromIndex === 1 && toIndex === 2) {
+      return {
+        corridorDark: 1,
+        ranaOpen: 1,
+        ranaHold: 1 - range(t, 0.02, 0.24),
+        ring: 1 - range(t, 0.10, 0.58),
+        prorokOpen: range(t, 0.08, 0.82),
+        prorokHold: range(t, 0.54, 0.92),
+        terminalHold: 0,
+        entryCue: 0
+      };
+    }
+    if (fromIndex === 2 && toIndex === 3) {
+      return {
+        corridorDark: 1,
+        ranaOpen: 1,
+        ranaHold: 0,
+        ring: 0,
+        prorokOpen: 1,
+        prorokHold: 1 - range(t, 0.02, 0.22),
+        terminalHold: range(t, 0.12, 0.96),
+        entryCue: 0
+      };
+    }
+    return mobileSceneValuesForRest(toIndex);
+  }
+
+  function applySceneValues(values) {
+    var corridorDark = values.corridorDark;
+    var ranaOpen = values.ranaOpen;
+    var ranaHold = values.ranaHold;
+    var ring = values.ring;
+    var prorokOpen = values.prorokOpen;
+    var prorokHold = values.prorokHold;
+    var terminalHold = values.terminalHold;
+    var entryCue = values.entryCue;
+
+    root.style.setProperty("--corridor-dark", corridorDark.toFixed(4));
+    root.style.setProperty("--rana-open", ranaOpen.toFixed(4));
+    root.style.setProperty("--rana-hold", ranaHold.toFixed(4));
+    root.style.setProperty("--ring-presence", ring.toFixed(4));
+    root.style.setProperty("--prorok-open", prorokOpen.toFixed(4));
+    root.style.setProperty("--prorok-hold", prorokHold.toFixed(4));
+    root.style.setProperty("--terminal-hold", terminalHold.toFixed(4));
+    root.style.setProperty("--entry-cue", entryCue.toFixed(4));
+
+    /* Hard reveal gate: layers stay fully absent at open === 0 (visibility),
+       then spatially unmask once progress actually begins. No crossfade. */
+    if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
+    if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
+    if (layerTerminal) {
+      layerTerminal.classList.toggle("is-revealing", terminalHold > 0);
+      layerTerminal.classList.toggle("is-settled", terminalHold >= 1);
+    }
+
+    /* Focusability tracks authored visibility — hidden copy must not take Tab. */
+    setCopyAccess(copyRana, ranaHold > 0.55 && prorokOpen < 0.45);
+    setCopyAccess(copyProrok, prorokHold > 0.55 && terminalHold < 0.35);
+    setCopyAccess(copyTerminal, terminalHold > 0.55);
+  }
+
+  function paintMobileRest(index) {
+    applySceneValues(mobileSceneValuesForRest(index));
+  }
+
+  function paintMobileTransition(fromIndex, toIndex, t) {
+    applySceneValues(mobileSceneValuesForTransition(fromIndex, toIndex, t));
+  }
+
   function paint(p) {
     p = clamp(p, 0, 1);
     root.style.setProperty("--progress", p.toFixed(5));
+
+    /* Mobile Motion On: visible scene comes from the local rest/pair renderer.
+       Global MAP windows stay the desktop path. Scroll may still travel
+       underneath for rest ownership. */
+    if (isMobile() && motionOn && mobileTransition) {
+      paintMobileTransition(mobileTransition.fromIndex, mobileTransition.toIndex, mobileTransition.t);
+      return;
+    }
+    if (isMobile() && motionOn) {
+      paintMobileRest(mobileStopIndexAtProgress(p));
+      return;
+    }
 
     var corridorDark = range(p, MAP.corridorDark.a, MAP.corridorDark.b);
     var ranaOpen = range(p, MAP.ranaOpen.a, MAP.ranaOpen.b);
@@ -1627,28 +1747,16 @@
       }
     }
 
-    root.style.setProperty("--corridor-dark", corridorDark.toFixed(4));
-    root.style.setProperty("--rana-open", ranaOpen.toFixed(4));
-    root.style.setProperty("--rana-hold", ranaHold.toFixed(4));
-    root.style.setProperty("--ring-presence", ring.toFixed(4));
-    root.style.setProperty("--prorok-open", prorokOpen.toFixed(4));
-    root.style.setProperty("--prorok-hold", prorokHold.toFixed(4));
-    root.style.setProperty("--terminal-hold", terminalHold.toFixed(4));
-    root.style.setProperty("--entry-cue", entryCue.toFixed(4));
-
-    /* Hard reveal gate: layers stay fully absent at open === 0 (visibility),
-       then spatially unmask once progress actually begins. No crossfade. */
-    if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
-    if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
-    if (layerTerminal) {
-      layerTerminal.classList.toggle("is-revealing", terminalHold > 0);
-      layerTerminal.classList.toggle("is-settled", terminalHold >= 1);
-    }
-
-    /* Focusability tracks authored visibility — hidden copy must not take Tab. */
-    setCopyAccess(copyRana, ranaHold > 0.55 && prorokOpen < 0.45);
-    setCopyAccess(copyProrok, prorokHold > 0.55 && terminalHold < 0.35);
-    setCopyAccess(copyTerminal, terminalHold > 0.55);
+    applySceneValues({
+      corridorDark: corridorDark,
+      ranaOpen: ranaOpen,
+      ranaHold: ranaHold,
+      ring: ring,
+      prorokOpen: prorokOpen,
+      prorokHold: prorokHold,
+      terminalHold: terminalHold,
+      entryCue: entryCue
+    });
   }
 
   function setCopyAccess(el, active) {
@@ -1817,6 +1925,7 @@
     if (mobileScrollRaf) window.cancelAnimationFrame(mobileScrollRaf);
     mobileScrollRaf = 0;
     mobileGlideLocked = false;
+    mobileTransition = null;
     clearMobileDestination();
   }
 
@@ -1851,20 +1960,27 @@
     }
     var started = performance.now();
     var duration = MOBILE_SECTION_GLIDE_MS;
-    prepareMobileDestination(mobileStopIndexAtProgress(top / passageScrollTotal()));
+    var fromIndex = mobileStopIndexAtProgress(start / passageScrollTotal());
+    var toIndex = mobileStopIndexAtProgress(top / passageScrollTotal());
+    prepareMobileDestination(toIndex);
     mobileGlideLocked = true;
+    mobileTransition = { fromIndex: fromIndex, toIndex: toIndex, t: 0 };
+    paintMobileTransition(fromIndex, toIndex, 0);
 
     function glide(now) {
       var elapsed = clamp((now - started) / duration, 0, 1);
       /* One authored clock: cubic smoothstep — zero-velocity departure, continuous
-         travel, and a zero-velocity landing, with less endpoint dwell than quintic
-         smootherstep. The input chooses the rest; it never scrubs it. */
+         travel, and a zero-velocity landing. Local t from this clock drives the
+         visible pair; global MAP bands do not author the mobile glide. */
       var eased = smoothstep(elapsed);
+      mobileTransition = { fromIndex: fromIndex, toIndex: toIndex, t: eased };
       window.scrollTo(0, start + distance * eased);
+      paint(computeProgress());
       if (elapsed < 1) mobileScrollRaf = window.requestAnimationFrame(glide);
       else {
         window.scrollTo(0, top);
         mobileScrollRaf = 0;
+        mobileTransition = null;
         mobileGlideLocked = false;
         clearMobileDestination();
         sampleScroll();
@@ -2097,11 +2213,18 @@
     get mobileStop() { return MOBILE_STOPS[mobileStopIndexAtProgress(progressCurrent)].id; },
     get mobileGliding() { return mobileGlideLocked; },
     get mobileDestination() { return mobileDestinationId; },
+    get mobileTransition() {
+      return mobileTransition
+        ? { fromIndex: mobileTransition.fromIndex, toIndex: mobileTransition.toIndex, t: mobileTransition.t }
+        : null;
+    },
     tau: TAU,
     still: STILL,
     map: MAP,
     stops: MOBILE_STOPS,
     goMobileStop: scrollToMobileStopIndex,
+    sceneValuesForRest: mobileSceneValuesForRest,
+    sceneValuesForTransition: mobileSceneValuesForTransition,
     tuning: {
       mobileBreakpointPx: MOBILE_BREAKPOINT_PX,
       swipeThresholdPx: MOBILE_SWIPE_THRESHOLD_PX,
