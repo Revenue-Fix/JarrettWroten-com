@@ -984,6 +984,13 @@
     /* Mobile is a separately composed full-bleed passage, not scaled desktop. */
     .passage{height:520svh}
     html[data-motion="off"] .passage{height:460svh}
+    html,body{overscroll-behavior-y:none}
+    .passage,
+    .viewport{
+      /* Vertical travel is authored one rest at a time; keep pinch and horizontal free. */
+      touch-action:pan-x pinch-zoom;
+      overscroll-behavior-y:contain;
+    }
 
     .site-header{
       min-height:3.6rem;
@@ -1432,6 +1439,11 @@
     </div>
   </div>
 
+<!-- Maintained asset — canonical: work/index.html Work passage script;
+     consumer/activation: /work/ auto-loads the mobile section-lock (max-width 720px)
+     so one vertical gesture lands on exactly one STILL rest; check: node work-smoke-test.mjs
+     plus Codex rendered short/long gestures at phone viewports; retire when the
+     four-rest mobile lock is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1486,12 +1498,44 @@
     terminal: 0.94
   };
 
+  var MOBILE_BREAKPOINT_PX = 720;
+  var MOBILE_SWIPE_THRESHOLD_PX = 24;
+  var MOBILE_WHEEL_THRESHOLD_PX = 18;
+  var MOBILE_WHEEL_IDLE_MS = 180;
+  var MOBILE_SECTION_GLIDE_MS = 1200;
+  var MOBILE_STOPS = [
+    { id: "corridor", progress: STILL.corridor },
+    { id: "rana", progress: STILL.rana },
+    { id: "prorok", progress: STILL.prorok },
+    { id: "invitation", progress: STILL.terminal }
+  ];
+  var mobileMq = window.matchMedia("(max-width:" + MOBILE_BREAKPOINT_PX + "px)");
+  var mobileGlideLocked = false;
+  var mobileScrollRaf = 0;
+  var mobileTouchActive = false;
+  var mobileTouchVertical = false;
+  var mobileTouchStartX = 0;
+  var mobileTouchStartY = 0;
+  var mobileTouchLastX = 0;
+  var mobileTouchLastY = 0;
+  var mobileWheelActive = false;
+  var mobileWheelTriggered = false;
+  var mobileWheelDelta = 0;
+  var mobileWheelIdleTimer = 0;
+
   function clamp(v, a, b) {
     return Math.max(a, Math.min(b, v));
   }
   function smoothstep(t) {
     t = clamp(t, 0, 1);
     return t * t * (3 - 2 * t);
+  }
+  function smootherStep(t) {
+    t = clamp(t, 0, 1);
+    return t * t * t * (t * (t * 6 - 15) + 10);
+  }
+  function isMobile() {
+    return !!(mobileMq && mobileMq.matches);
   }
   function range(p, a, b) {
     return smoothstep((p - a) / Math.max(0.0001, b - a));
@@ -1517,6 +1561,7 @@
   }
 
   function applyMotionPreference(on, persist) {
+    cancelMobileGlide();
     motionOn = !!on;
     root.setAttribute("data-motion", motionOn ? "on" : "off");
     if (persist) {
@@ -1615,9 +1660,10 @@
     renderRaf = 0;
     var dt = lastFrameTs ? Math.min(0.048, (ts - lastFrameTs) / 1000) : 0.016;
     lastFrameTs = ts;
-    if (!motionOn) {
+    if (!motionOn || isMobile()) {
       progressCurrent = progressTarget;
       paint(progressCurrent);
+      lastFrameTs = 0;
       return;
     }
     var alpha = 1 - Math.exp(-dt / Math.max(0.001, TAU));
@@ -1634,7 +1680,7 @@
 
   function sampleScroll() {
     progressTarget = computeProgress();
-    if (!motionOn) {
+    if (!motionOn || isMobile()) {
       progressCurrent = progressTarget;
       paint(progressCurrent);
       syncVideos(progressCurrent);
@@ -1698,6 +1744,207 @@
     else pauseSafe(inkVideo);
   }
 
+  function isInteractiveOrigin(e) {
+    var t = e && e.target;
+    if (!t) return false;
+    if (t.nodeType !== 1) t = t.parentElement;
+    if (!t || !t.closest) return false;
+    return !!t.closest("a, button, input, select, textarea, [contenteditable], [contenteditable=\"true\"]");
+  }
+
+  function isOpenOverlay() {
+    return !!document.querySelector(".lightbox.is-open, .modal.is-open, [aria-modal=\"true\"]:not([hidden])");
+  }
+
+  function mobileGestureAvailable() {
+    return isMobile() && !!passage && !!viewport && !isOpenOverlay();
+  }
+
+  function cancelMobileGlide() {
+    if (mobileScrollRaf) window.cancelAnimationFrame(mobileScrollRaf);
+    mobileScrollRaf = 0;
+    mobileGlideLocked = false;
+  }
+
+  function resetMobileTouch() {
+    mobileTouchActive = false;
+    mobileTouchVertical = false;
+    mobileTouchStartX = mobileTouchStartY = 0;
+    mobileTouchLastX = mobileTouchLastY = 0;
+  }
+
+  function resetMobileWheel() {
+    if (mobileWheelIdleTimer) window.clearTimeout(mobileWheelIdleTimer);
+    mobileWheelIdleTimer = 0;
+    mobileWheelActive = false;
+    mobileWheelTriggered = false;
+    mobileWheelDelta = 0;
+  }
+
+  function passageScrollTotal() {
+    if (!passage || !viewport) return 1;
+    return Math.max(1, passage.offsetHeight - viewport.offsetHeight);
+  }
+
+  function glideScrollTo(top) {
+    cancelMobileGlide();
+    var start = window.scrollY || window.pageYOffset || 0;
+    var distance = top - start;
+    if (!motionOn || Math.abs(distance) < 0.5) {
+      window.scrollTo(0, top);
+      sampleScroll();
+      return;
+    }
+    var started = performance.now();
+    var duration = MOBILE_SECTION_GLIDE_MS;
+    mobileGlideLocked = true;
+
+    function glide(now) {
+      var elapsed = clamp((now - started) / duration, 0, 1);
+      /* One authored clock: zero-velocity departure, continuous travel, and a
+         zero-velocity landing. The input chooses the rest; it never scrubs it. */
+      var eased = smootherStep(elapsed);
+      window.scrollTo(0, start + distance * eased);
+      if (elapsed < 1) mobileScrollRaf = window.requestAnimationFrame(glide);
+      else {
+        window.scrollTo(0, top);
+        mobileScrollRaf = 0;
+        mobileGlideLocked = false;
+        sampleScroll();
+      }
+    }
+
+    mobileScrollRaf = window.requestAnimationFrame(glide);
+  }
+
+  function mobileStopIndexAtProgress(p) {
+    var best = 0;
+    var bestDistance = Infinity;
+    for (var i = 0; i < MOBILE_STOPS.length; i++) {
+      var distance = Math.abs(p - MOBILE_STOPS[i].progress);
+      if (distance < bestDistance) {
+        bestDistance = distance;
+        best = i;
+      }
+    }
+    return best;
+  }
+
+  function scrollToMobileStopIndex(index) {
+    if (!passage || !viewport) return false;
+    var bounded = clamp(index, 0, MOBILE_STOPS.length - 1);
+    var top = MOBILE_STOPS[bounded].progress * passageScrollTotal();
+    if (motionOn) glideScrollTo(top);
+    else {
+      cancelMobileGlide();
+      window.scrollTo({ top: top, left: 0, behavior: "auto" });
+      sampleScroll();
+    }
+    return true;
+  }
+
+  function advanceMobileStop(direction) {
+    if (!isMobile() || mobileGlideLocked || !direction) return false;
+    if (isOpenOverlay()) return false;
+    var current = mobileStopIndexAtProgress(computeProgress());
+    var next = clamp(current + (direction > 0 ? 1 : -1), 0, MOBILE_STOPS.length - 1);
+    if (next === current) return false;
+    return scrollToMobileStopIndex(next);
+  }
+
+  function onMobileTouchStart(e) {
+    resetMobileTouch();
+    if (!mobileGestureAvailable() || mobileGlideLocked || !e.touches || e.touches.length !== 1) return;
+    if (isInteractiveOrigin(e)) return;
+    var touch = e.touches[0];
+    mobileTouchActive = true;
+    mobileTouchStartX = mobileTouchLastX = touch.clientX;
+    mobileTouchStartY = mobileTouchLastY = touch.clientY;
+  }
+
+  function onMobileTouchMove(e) {
+    if (mobileGlideLocked && mobileGestureAvailable()) {
+      e.preventDefault();
+      return;
+    }
+    if (!mobileTouchActive || !mobileGestureAvailable()) return;
+    if (!e.touches || e.touches.length !== 1) {
+      resetMobileTouch();
+      return;
+    }
+    var touch = e.touches[0];
+    mobileTouchLastX = touch.clientX;
+    mobileTouchLastY = touch.clientY;
+    var dx = mobileTouchLastX - mobileTouchStartX;
+    var dy = mobileTouchLastY - mobileTouchStartY;
+    var absX = Math.abs(dx);
+    var absY = Math.abs(dy);
+
+    if (!mobileTouchVertical) {
+      if (absX < 7 && absY < 7) return;
+      if (absX > absY) {
+        resetMobileTouch();
+        return;
+      }
+      mobileTouchVertical = true;
+    }
+    e.preventDefault();
+  }
+
+  function onMobileTouchEnd(e) {
+    if (!mobileTouchActive) return;
+    if (e.touches && e.touches.length) {
+      resetMobileTouch();
+      return;
+    }
+    if (e.changedTouches && e.changedTouches.length) {
+      mobileTouchLastX = e.changedTouches[0].clientX;
+      mobileTouchLastY = e.changedTouches[0].clientY;
+    }
+    var dy = mobileTouchLastY - mobileTouchStartY;
+    var qualifies = mobileTouchVertical && Math.abs(dy) >= MOBILE_SWIPE_THRESHOLD_PX;
+    resetMobileTouch();
+    if (qualifies) advanceMobileStop(dy < 0 ? 1 : -1);
+  }
+
+  function onMobileTouchCancel() {
+    resetMobileTouch();
+  }
+
+  function closeMobileWheelGestureSoon() {
+    if (mobileWheelIdleTimer) window.clearTimeout(mobileWheelIdleTimer);
+    mobileWheelIdleTimer = window.setTimeout(function () {
+      mobileWheelActive = false;
+      mobileWheelTriggered = false;
+      mobileWheelDelta = 0;
+      mobileWheelIdleTimer = 0;
+    }, MOBILE_WHEEL_IDLE_MS);
+  }
+
+  function onMobileWheel(e) {
+    if (!mobileGestureAvailable()) return;
+    if (isInteractiveOrigin(e)) return;
+    if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
+    e.preventDefault();
+    if (!mobileWheelActive) {
+      mobileWheelActive = true;
+      mobileWheelTriggered = false;
+      mobileWheelDelta = 0;
+    }
+    mobileWheelDelta += e.deltaY;
+    closeMobileWheelGestureSoon();
+    if (mobileWheelTriggered || Math.abs(mobileWheelDelta) < MOBILE_WHEEL_THRESHOLD_PX) return;
+    mobileWheelTriggered = true;
+    if (!mobileGlideLocked) advanceMobileStop(mobileWheelDelta > 0 ? 1 : -1);
+  }
+
+  function onMobileViewportChange() {
+    cancelMobileGlide();
+    resetMobileTouch();
+    resetMobileWheel();
+    sampleScroll();
+  }
+
   /* Keyboard depth without trapping — page still scrolls freely */
   document.addEventListener("keydown", function (e) {
     if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable)) return;
@@ -1725,24 +1972,29 @@
   }
 
   window.addEventListener("scroll", function () {
-    progressTarget = computeProgress();
-    if (!motionOn) {
-      progressCurrent = progressTarget;
-      paint(progressCurrent);
-      syncVideos(progressCurrent);
-    } else {
-      startRenderLoop();
-      syncVideos(progressTarget);
-    }
+    sampleScroll();
   }, { passive: true });
 
-  window.addEventListener("resize", function () {
+  window.addEventListener("resize", onMobileViewportChange);
+
+  window.addEventListener("pageshow", function () {
+    cancelMobileGlide();
+    resetMobileTouch();
+    resetMobileWheel();
     sampleScroll();
   });
 
-  window.addEventListener("pageshow", function () {
-    sampleScroll();
-  });
+  if (typeof mobileMq.addEventListener === "function") {
+    mobileMq.addEventListener("change", onMobileViewportChange);
+  } else if (typeof mobileMq.addListener === "function") {
+    mobileMq.addListener(onMobileViewportChange);
+  }
+
+  window.addEventListener("touchstart", onMobileTouchStart, { passive: true });
+  window.addEventListener("touchmove", onMobileTouchMove, { passive: false });
+  window.addEventListener("touchend", onMobileTouchEnd, { passive: true });
+  window.addEventListener("touchcancel", onMobileTouchCancel, { passive: true });
+  window.addEventListener("wheel", onMobileWheel, { passive: false });
 
   bindPosterFallback(corridorVideo, document.getElementById("corridor-poster"));
   bindPosterFallback(studioVideo, document.getElementById("rana-poster"));
@@ -1783,9 +2035,22 @@
     get progress() { return progressCurrent; },
     get target() { return progressTarget; },
     get motion() { return motionOn; },
+    get mobile() { return isMobile(); },
+    get mobileStopIndex() { return mobileStopIndexAtProgress(progressCurrent); },
+    get mobileStop() { return MOBILE_STOPS[mobileStopIndexAtProgress(progressCurrent)].id; },
+    get mobileGliding() { return mobileGlideLocked; },
     tau: TAU,
     still: STILL,
-    map: MAP
+    map: MAP,
+    stops: MOBILE_STOPS,
+    goMobileStop: scrollToMobileStopIndex,
+    tuning: {
+      mobileBreakpointPx: MOBILE_BREAKPOINT_PX,
+      swipeThresholdPx: MOBILE_SWIPE_THRESHOLD_PX,
+      wheelThresholdPx: MOBILE_WHEEL_THRESHOLD_PX,
+      wheelIdleMs: MOBILE_WHEEL_IDLE_MS,
+      glideMs: MOBILE_SECTION_GLIDE_MS
+    }
   };
 })();
 </script>

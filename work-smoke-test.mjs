@@ -492,6 +492,144 @@ ok(
   );
 }
 
+/*
+ * Focused tripwire — mobile My Work section lock.
+ * Canonical path: work-smoke-test.mjs
+ * Future consumer: Codex closer + every local Work-route revision before adoption.
+ * Activation: execute `node work-smoke-test.mjs`
+ * Behavioral check: four STILL rests, one-gesture lock, mobile-only gating,
+ * Motion Off auto landing, no desktop lock, no scroll-snap, TAU = 0.41.
+ * Retirement: only when the four-rest mobile lock is replaced.
+ */
+{
+  ok(
+    /corridor:\s*0\.04/.test(workHtml) &&
+      /rana:\s*0\.38/.test(workHtml) &&
+      /prorok:\s*0\.70/.test(workHtml) &&
+      /terminal:\s*0\.94/.test(workHtml),
+    'STILL rests remain corridor 0.04, rana 0.38, prorok 0.70, terminal 0.94'
+  );
+  ok(
+    /MOBILE_STOPS\s*=\s*\[[\s\S]*?id:\s*"corridor"[\s\S]*?STILL\.corridor[\s\S]*?id:\s*"rana"[\s\S]*?STILL\.rana[\s\S]*?id:\s*"prorok"[\s\S]*?STILL\.prorok[\s\S]*?id:\s*"invitation"[\s\S]*?STILL\.terminal/.test(workHtml),
+    'mobile stops derive from STILL in Corridor → Rana → ProRok → Invitation order'
+  );
+  const workStops = [
+    ['corridor', 0.04],
+    ['rana', 0.38],
+    ['prorok', 0.70],
+    ['invitation', 0.94],
+  ];
+  ok(workStops.length === 4, 'exactly four authored mobile rests');
+  const nextWorkStop = (index, direction) => Math.max(0, Math.min(workStops.length - 1, index + Math.sign(direction)));
+  const forward = [];
+  let stopIndex = 0;
+  for (let i = 0; i < 5; i++) {
+    stopIndex = nextWorkStop(stopIndex, 1);
+    forward.push(workStops[stopIndex][0]);
+  }
+  ok(
+    JSON.stringify(forward) === JSON.stringify(['rana', 'prorok', 'invitation', 'invitation', 'invitation']),
+    'three forward gestures reach Invitation; further forward stays at Invitation'
+  );
+  const reverse = [];
+  for (let i = 0; i < 5; i++) {
+    stopIndex = nextWorkStop(stopIndex, -1);
+    reverse.push(workStops[stopIndex][0]);
+  }
+  ok(
+    JSON.stringify(reverse) === JSON.stringify(['prorok', 'rana', 'corridor', 'corridor', 'corridor']),
+    'reverse gestures unwind one rest at a time and stay at Corridor'
+  );
+
+  ok(
+    workHtml.includes('window.addEventListener("touchstart", onMobileTouchStart, { passive: true })') &&
+      workHtml.includes('window.addEventListener("touchmove", onMobileTouchMove, { passive: false })') &&
+      workHtml.includes('window.addEventListener("touchend", onMobileTouchEnd, { passive: true })') &&
+      workHtml.includes('window.addEventListener("touchcancel", onMobileTouchCancel, { passive: true })') &&
+      workHtml.includes('window.addEventListener("wheel", onMobileWheel, { passive: false })'),
+    'mobile touch and wheel listeners are registered'
+  );
+  ok(
+    /function onMobileTouchEnd\(e\)[\s\S]*?Math\.abs\(dy\) >= MOBILE_SWIPE_THRESHOLD_PX[\s\S]*?advanceMobileStop\(dy < 0 \? 1 : -1\)/.test(workHtml) &&
+      /function onMobileWheel\(e\)[\s\S]*?mobileWheelTriggered[\s\S]*?advanceMobileStop\(mobileWheelDelta > 0 \? 1 : -1\)/.test(workHtml),
+    'touch and wheel choose direction once and discard travel magnitude'
+  );
+  ok(
+    /function onMobileTouchMove\(e\)[\s\S]*?absX > absY[\s\S]*?resetMobileTouch\(\)/.test(workHtml) &&
+      /function onMobileWheel\(e\)[\s\S]*?Math\.abs\(e\.deltaX\) > Math\.abs\(e\.deltaY\)[\s\S]*?return;/.test(workHtml),
+    'horizontal gestures do not navigate'
+  );
+
+  ok(
+    workHtml.includes('mobileGlideLocked') &&
+      /function advanceMobileStop\(direction\)[\s\S]*?if \(!isMobile\(\) \|\| mobileGlideLocked/.test(workHtml) &&
+      /function onMobileTouchStart\(e\)[\s\S]*?mobileGlideLocked/.test(workHtml) &&
+      /function onMobileWheel\(e\)[\s\S]*?if \(!mobileGlideLocked\) advanceMobileStop/.test(workHtml),
+    'one authored glide lock blocks further stop-skipping fragments'
+  );
+
+  ok(
+    /var MOBILE_BREAKPOINT_PX = 720/.test(workHtml) &&
+      workHtml.includes('matchMedia("(max-width:" + MOBILE_BREAKPOINT_PX + "px)")') &&
+      /function mobileGestureAvailable\(\)[\s\S]*?return isMobile\(\) && !!passage && !!viewport/.test(workHtml) &&
+      /function onMobileWheel\(e\)[\s\S]*?if \(!mobileGestureAvailable\(\)\) return;[\s\S]*?e\.preventDefault\(\)/.test(workHtml),
+    'section lock is gated to the 720px mobile query before any wheel trap'
+  );
+  ok(
+    /function onMobileViewportChange\(\)[\s\S]*?cancelMobileGlide\(\)/.test(workHtml) &&
+      /mobileMq\.addEventListener\("change", onMobileViewportChange\)/.test(workHtml),
+    'leaving mobile cancels the authored glide and restores ordinary scroll ownership'
+  );
+
+  ok(
+    /function scrollToMobileStopIndex\(index\)[\s\S]*?behavior:\s*"auto"/.test(workHtml) &&
+      /function glideScrollTo\(top\)[\s\S]*?if \(!motionOn \|\| Math\.abs\(distance\) < 0\.5\)[\s\S]*?window\.scrollTo\(0, top\)/.test(workHtml),
+    'Motion Off lands on the same four stops immediately without an animated glide'
+  );
+
+  const desktopCss = workHtml.split(/@media\s*\(\s*max-width\s*:\s*720px\s*\)/)[0];
+  ok(!/scroll-snap(?:-type|-align|-stop)?\s*:/.test(workHtml), 'no CSS scroll-snap');
+  ok(!/touch-action\s*:/.test(desktopCss), 'desktop CSS does not lock touch-action');
+  ok(
+    /@media\s*\(\s*max-width\s*:\s*720px\s*\)[\s\S]*?touch-action\s*:\s*pan-x pinch-zoom/.test(workHtml),
+    'mobile-only touch-action owns vertical travel while leaving pinch and horizontal free'
+  );
+  ok(
+    /Keyboard depth without trapping/.test(workHtml) &&
+      /viewport\.offsetHeight \* \(e\.key === "PageDown" \|\| e\.key === "PageUp" \? 0\.85 : 0\.22\)/.test(workHtml) &&
+      !/function \(e\) \{\s*if \(e\.target && \(e\.target\.tagName === "INPUT"[\s\S]*?advanceMobileStop/.test(workHtml),
+    'keyboard depth remains free-step and is not remapped onto the mobile lock'
+  );
+
+  ok(/var TAU = 0\.41/.test(workHtml), 'work route TAU remains 0.41 after section lock');
+  ok((workHtml.match(/Math\.exp\(-dt/g) || []).length === 1, 'exactly one exponential smoothing clock remains');
+  ok(
+    /if \(!motionOn \|\| isMobile\(\)\) \{\s*progressCurrent = progressTarget;/.test(workHtml) &&
+      /var eased\s*=\s*smootherStep\(elapsed\)/.test(workHtml) &&
+      /function smootherStep\(t\)/.test(workHtml) &&
+      workHtml.includes('zero-velocity departure') &&
+      workHtml.includes('zero-velocity landing'),
+    'the authored section glide is the only mobile smoothing clock'
+  );
+
+  ok(
+    /function isInteractiveOrigin\(e\)[\s\S]*?closest\("a, button, input, select, textarea, \[contenteditable\]/.test(workHtml) &&
+      /function onMobileTouchStart\(e\)[\s\S]*?isInteractiveOrigin\(e\)/.test(workHtml) &&
+      /function onMobileWheel\(e\)[\s\S]*?isInteractiveOrigin\(e\)/.test(workHtml) &&
+      /function isOpenOverlay\(\)[\s\S]*?aria-modal/.test(workHtml),
+    'touch/wheel that begins on controls or an open overlay is not hijacked'
+  );
+  ok(
+    /window\.WORK_PASSAGE = \{[\s\S]*?mobileStopIndex[\s\S]*?mobileGliding[\s\S]*?goMobileStop:\s*scrollToMobileStopIndex/.test(workHtml),
+    'WORK_PASSAGE exposes read-only stop/glide state and the real navigation function'
+  );
+  ok(
+    /mobile section-lock/.test(workHtml) &&
+      /node work-smoke-test\.mjs/.test(workHtml),
+    'maintained-asset comment names the mobile section-lock consumer and focused test'
+  );
+}
+
 // node --check on this test file and smoke-test remain runnable
 const selfCheck = spawnSync(process.execPath, ['--check', path.join(ROOT, 'work-smoke-test.mjs')], { encoding: 'utf8' });
 ok(selfCheck.status === 0, 'work-smoke-test.mjs syntax');
