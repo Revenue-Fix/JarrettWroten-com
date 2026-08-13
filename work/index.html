@@ -543,6 +543,16 @@
     will-change:mask-image,-webkit-mask-image;
   }
   .layer-terminal.is-revealing{visibility:visible}
+  /* Settled Invitation rest: drop the tear mask so the portrait composition
+     paints the full viewport at every aspect ratio. Reveal keeps the mask.
+     Consumer: /work/ Invitation rest including Motion Off; check: node work-smoke-test.mjs;
+     retire when the terminal rest no longer uses a reveal mask. */
+  .layer-terminal.is-settled{
+    -webkit-mask-image:none;
+    mask-image:none;
+    -webkit-mask:none;
+    mask:none;
+  }
   /* Maintained asset — canonical: work/index.html; consumer/activation: /work/ auto-loads
      this earned human arrival; check: rendered terminal rests at wide + mobile viewports;
      retire when the terminal portrait or its full-bleed carrier is replaced. */
@@ -1632,7 +1642,10 @@
        then spatially unmask once progress actually begins. No crossfade. */
     if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
     if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
-    if (layerTerminal) layerTerminal.classList.toggle("is-revealing", terminalHold > 0);
+    if (layerTerminal) {
+      layerTerminal.classList.toggle("is-revealing", terminalHold > 0);
+      layerTerminal.classList.toggle("is-settled", terminalHold >= 1);
+    }
 
     /* Focusability tracks authored visibility — hidden copy must not take Tab. */
     setCopyAccess(copyRana, ranaHold > 0.55 && prorokOpen < 0.45);

@@ -440,6 +440,68 @@ ok(
   'terminal mask rebuilt as connected vertical tear'
 );
 
+/*
+ * Focused tripwire — settled Invitation full-viewport coverage.
+ * Canonical path: work-smoke-test.mjs
+ * Future consumer: every local Work-route revision before adoption.
+ * Activation: execute `node work-smoke-test.mjs`
+ * Behavioral check: reveal still uses the spatial tear mask; authored rest
+ * (terminalHold >= 1, including Motion Off) removes that mask.
+ * Retirement: only when the terminal rest no longer uses a reveal mask.
+ */
+{
+  const terminalReveal = workHtml.match(/\.layer-terminal\s*\{[\s\S]*?\n  \.layer-terminal\.is-revealing/);
+  const revealCss = terminalReveal ? terminalReveal[0] : '';
+  ok(!!revealCss, 'terminal reveal CSS block extractable');
+  ok(
+    /--mask-open\s*:\s*max\s*\(\s*0\.001\s*,\s*var\(--terminal-hold\)\s*\)/.test(revealCss) &&
+      /radial-gradient\(ellipse calc\(var\(--mask-open\) \* 28% \+ 4%\)/.test(revealCss) &&
+      /mask-image\s*:/.test(revealCss) &&
+      !/(?:-webkit-)?mask(?:-image)?\s*:\s*none/.test(revealCss),
+    'terminal reveal still uses the spatial tear mask'
+  );
+  ok(
+    !/\.layer-terminal\s*\{[^}]*opacity\s*:\s*var\(--terminal-hold\)/.test(revealCss),
+    'terminal reveal is not an opacity crossfade'
+  );
+
+  const settledCssMatch = workHtml.match(/\.layer-terminal\.is-settled\s*\{[\s\S]*?\n  \}/);
+  const settledCss = settledCssMatch ? settledCssMatch[0] : '';
+  ok(!!settledCss, 'settled terminal CSS block extractable');
+  ok(
+    /(?:-webkit-)?mask(?:-image)?\s*:\s*none/.test(settledCss) &&
+      /(?<!-webkit-)mask(?:-image)?\s*:\s*none/.test(settledCss) &&
+      /(?:-webkit-mask-image| -webkit-mask)\s*:\s*none/.test(settledCss),
+    'settled terminal explicitly removes/bypasses the reveal mask'
+  );
+
+  ok(
+    /layerTerminal\.classList\.toggle\s*\(\s*["']is-revealing["']\s*,\s*terminalHold\s*>\s*0\s*\)/.test(workHtml),
+    'terminal reveal class still tracks terminalHold > 0'
+  );
+  ok(
+    /layerTerminal\.classList\.toggle\s*\(\s*["']is-settled["']\s*,\s*terminalHold\s*>=\s*1\s*\)/.test(workHtml),
+    'settled class is driven by terminalHold >= 1'
+  );
+
+  const motionOffPaint = workHtml.match(
+    /\/\* Motion-off snaps to four composed rests[\s\S]*?terminalHold\s*=\s*1;[\s\S]*?\n    \}/
+  );
+  const motionOffSrc = motionOffPaint ? motionOffPaint[0] : '';
+  ok(!!motionOffSrc, 'Motion Off composed-rest paint extractable');
+  ok(
+    /else if\s*\(\s*p\s*<\s*0\.74\s*\)[\s\S]*?else\s*\{[\s\S]*?terminalHold\s*=\s*1/.test(motionOffSrc) &&
+      /terminalHold\s*=\s*1/.test(motionOffSrc) &&
+      /terminalHold\s*=\s*0/.test(motionOffSrc),
+    'Motion Off last rest still assigns terminalHold = 1'
+  );
+  ok(
+    /layerTerminal\.classList\.toggle\s*\(\s*["']is-settled["']\s*,\s*terminalHold\s*>=\s*1\s*\)/.test(workHtml) &&
+      /terminalHold\s*=\s*1/.test(motionOffSrc),
+    'Motion Off terminal rest shares the same terminalHold >= 1 unmask hinge'
+  );
+}
+
 // Live doorway lightning — structural tripwires (not rendered-pixel proof).
 // Consumer: visitor at /work/ opening with motion on; Codex exercises rendered motion separately.
 {
