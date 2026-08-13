@@ -113,6 +113,10 @@
     --terminal-hold:0;
     --entry-cue:1;
     --enter-veil:0;
+    --copy-rana:0;
+    --copy-prorok:0;
+    --copy-terminal:0;
+    --carrier-erase:0;
   }
 
   *{box-sizing:border-box}
@@ -934,6 +938,11 @@
   html[data-motion="off"] .scene-copy{
     transform:none;
   }
+  html[data-motion="off"] .handoff-seam{display:none}
+  html[data-motion="off"] .layer{
+    -webkit-clip-path:none !important;
+    clip-path:none !important;
+  }
 
   /* No-JS readable path */
   .no-js-route{
@@ -1029,28 +1038,64 @@
       top:50%;
       font-size:clamp(1.35rem, 7vw, 1.7rem);
     }
-    /* Opaque spatial baton: at every pixel the outgoing world, the
-       carrier, or the incoming world owns the pixel. Feathers are a
-       narrow seam, not a viewport-scale translucent overlay. */
-    .layer-rana{
-      -webkit-mask-image:radial-gradient(ellipse calc(var(--mask-open) * 145% + 8%) calc(var(--mask-open) * 125% + 8%) at 50% 46%, #000 0%, #000 86%, transparent 97%);
-      mask-image:radial-gradient(ellipse calc(var(--mask-open) * 145% + 8%) calc(var(--mask-open) * 125% + 8%) at 50% 46%, #000 0%, #000 86%, transparent 97%);
-    }
-    .layer-prorok{
-      /* Opaque spatial baton from the ink origin — narrow seam. */
-      -webkit-mask-image:
-        linear-gradient(to top, #000 0%, #000 calc(var(--mask-open) * 108% - 3%), transparent calc(var(--mask-open) * 108% + 4%)),
-        radial-gradient(ellipse calc(var(--mask-open) * 88% + 6%) calc(var(--mask-open) * 42% + 4%) at 22% calc(100% - var(--mask-open) * 72%), #000 0%, #000 84%, transparent 96%),
-        radial-gradient(ellipse calc(var(--mask-open) * 160% + 10%) calc(var(--mask-open) * 140% + 8%) at 40% 100%, #000 0%, #000 86%, transparent 97%);
-      mask-image:
-        linear-gradient(to top, #000 0%, #000 calc(var(--mask-open) * 108% - 3%), transparent calc(var(--mask-open) * 108% + 4%)),
-        radial-gradient(ellipse calc(var(--mask-open) * 88% + 6%) calc(var(--mask-open) * 42% + 4%) at 22% calc(100% - var(--mask-open) * 72%), #000 0%, #000 84%, transparent 96%),
-        radial-gradient(ellipse calc(var(--mask-open) * 160% + 10%) calc(var(--mask-open) * 140% + 8%) at 40% 100%, #000 0%, #000 86%, transparent 97%);
-    }
+    /* Mobile handoff: incoming layers are full-bleed plates, already
+       composed behind the outgoing carrier. Desktop keep their own
+       reveal masks; these overrides remove the rejected mobile silhouettes
+       (expanding gem, bottom-up stack, vertical tear). */
+    .layer-rana,
+    .layer-prorok,
     .layer-terminal{
-      /* Opaque spatial baton: vertical tear with a narrow seam. */
-      -webkit-mask-image:linear-gradient(to right, transparent calc(50% - var(--mask-open) * 58%), #000 calc(50% - var(--mask-open) * 58% + 4%), #000 calc(50% + var(--mask-open) * 58% - 4%), transparent calc(50% + var(--mask-open) * 58%));
-      mask-image:linear-gradient(to right, transparent calc(50% - var(--mask-open) * 58%), #000 calc(50% - var(--mask-open) * 58% + 4%), #000 calc(50% + var(--mask-open) * 58% - 4%), transparent calc(50% + var(--mask-open) * 58%));
+      -webkit-mask-image:none;
+      mask-image:none;
+      -webkit-mask:none;
+      mask:none;
+    }
+    .layer.is-carrier{
+      z-index:8;
+      will-change:clip-path;
+    }
+    html[data-handoff="forward"] .layer.is-carrier{
+      -webkit-clip-path:inset(0 0 calc(var(--carrier-erase) * 100%) 0);
+      clip-path:inset(0 0 calc(var(--carrier-erase) * 100%) 0);
+    }
+    html[data-handoff="reverse"] .layer.is-carrier{
+      -webkit-clip-path:inset(calc(var(--carrier-erase) * 100%) 0 0 0);
+      clip-path:inset(calc(var(--carrier-erase) * 100%) 0 0 0);
+    }
+    .handoff-seam{
+      position:absolute;
+      left:0;
+      right:0;
+      z-index:9;
+      height:2px;
+      pointer-events:none;
+      opacity:0;
+      background:linear-gradient(90deg, rgba(94,231,240,0), rgba(94,231,240,.7) 36%, rgba(217,122,58,.5) 68%, rgba(94,231,240,0));
+      box-shadow:0 0 10px rgba(94,231,240,.32), 0 0 16px rgba(217,122,58,.18);
+    }
+    html.is-handing-off .handoff-seam{
+      opacity:calc(min(var(--carrier-erase), 1 - var(--carrier-erase)) * 3.2);
+    }
+    html[data-handoff="forward"] .handoff-seam{
+      top:calc((1 - var(--carrier-erase)) * 100%);
+    }
+    html[data-handoff="reverse"] .handoff-seam{
+      top:calc(var(--carrier-erase) * 100%);
+    }
+    .scene-copy--rana{
+      opacity:var(--copy-rana);
+      transform:translate3d(0, calc((1 - var(--copy-rana)) * 1.4rem), 0);
+      filter:blur(calc((1 - var(--copy-rana)) * 4px));
+    }
+    .scene-copy--prorok{
+      opacity:var(--copy-prorok);
+      transform:translate3d(0, calc((1 - var(--copy-prorok)) * 1.5rem), 0);
+      filter:blur(calc((1 - var(--copy-prorok)) * 4px));
+    }
+    .scene-copy--terminal{
+      opacity:var(--copy-terminal);
+      transform:translate3d(0, calc((1 - var(--copy-terminal)) * 1.2rem), 0);
+      filter:blur(calc((1 - var(--copy-terminal)) * 3px));
     }
     /* Live mobile Rana: landscape studio cover crops can lose the gem into dark
        material fields on the narrow strip. Square ring film is the subject carrier
@@ -1416,6 +1461,7 @@
         </div>
 
         <div class="grain"></div>
+        <div class="handoff-seam" id="handoff-seam" aria-hidden="true"></div>
         <div class="enter-veil" id="enter-veil"></div>
       </div>
 
@@ -1475,10 +1521,12 @@
 <!-- Maintained asset — canonical: work/index.html Work passage script;
      consumer/activation: /work/ auto-loads the mobile section-lock (max-width 720px)
      so one vertical gesture lands on exactly one STILL rest over a 2400ms
-     cinematic glide; Motion On paints that glide from a local pair + t, not
-     from narrow global MAP bands; destination world requested at accept; check:
-     node work-smoke-test.mjs; recurrence: a real-phone recording of wait-then-cut,
-     late burst, double exposure, or snap; retire when the four-rest mobile passage is replaced. -->
+     cinematic glide; Motion On paints that glide from a local pair + t by
+     erasing one opaque outgoing carrier to reveal the already composed
+     incoming world — not incoming-layer gem/stack/tear masks; destination
+     world requested at accept; check: node work-smoke-test.mjs; recurrence:
+     a real-phone recording of a giant oval, mixed-world band, tear, or
+     black dead interval; retire when the four-rest mobile passage is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1497,9 +1545,11 @@
   var studioVideo = document.getElementById("rana-studio-video");
   var ringVideo = document.getElementById("rana-ring-video");
   var inkVideo = document.getElementById("prorok-ink-video");
+  var layerCorridor = document.getElementById("layer-corridor");
   var layerRana = document.getElementById("layer-rana");
   var layerProrok = document.getElementById("layer-prorok");
   var layerTerminal = document.getElementById("layer-terminal");
+  var passageLayers = [layerCorridor, layerRana, layerProrok, layerTerminal];
 
   var motionOn = root.getAttribute("data-motion") !== "off";
   var progressTarget = 0;
@@ -1643,9 +1693,26 @@
     };
   }
 
+  function copyValuesFromWorld(v) {
+    return {
+      copyRana: Math.max(0, v.ranaHold * (1 - v.prorokOpen * 1.15)),
+      copyProrok: v.prorokHold * Math.max(0, 1 - v.terminalHold * 2),
+      copyTerminal: v.terminalHold
+    };
+  }
+
+  function withCopyAndCarrier(values, copy, erase) {
+    values.copyRana = copy.copyRana;
+    values.copyProrok = copy.copyProrok;
+    values.copyTerminal = copy.copyTerminal;
+    values.carrierErase = erase;
+    return values;
+  }
+
   function mobileSceneValuesForRest(index) {
     var stop = MOBILE_STOPS[clamp(index, 0, MOBILE_STOPS.length - 1)];
-    return sceneValuesFromMap(stop.progress);
+    var values = sceneValuesFromMap(stop.progress);
+    return withCopyAndCarrier(values, copyValuesFromWorld(values), 0);
   }
 
   function mobileSceneValuesForTransition(fromIndex, toIndex, t) {
@@ -1653,59 +1720,31 @@
     fromIndex = clamp(fromIndex, 0, MOBILE_STOPS.length - 1);
     toIndex = clamp(toIndex, 0, MOBILE_STOPS.length - 1);
     if (fromIndex === toIndex) return mobileSceneValuesForRest(fromIndex);
-    if (fromIndex > toIndex) return mobileSceneValuesForTransition(toIndex, fromIndex, 1 - t);
     var from = mobileSceneValuesForRest(fromIndex);
     var to = mobileSceneValuesForRest(toIndex);
-    /* Opaque spatial baton on local pair time. Incoming mask owns pixels;
-       outgoing world stays solid underneath. Copy follows world authority.
+    if (t <= 0) return from;
+    if (t >= 1) return to;
+    /* Same grammar both ways. Incoming world is already composed behind
+       one opaque outgoing carrier. Copy leaves with the outgoing world
+       and enters only after the incoming world owns the frame.
        Local t is already the pair clock — do not pass it through range(). */
-    if (fromIndex === 0 && toIndex === 1) {
-      var open = span(t, 0.00, 0.88);
-      var hold = span(t, 0.34, 1.00);
-      var dark = span(t, 0.00, 0.80);
-      var cue = span(t, 0.00, 0.28);
-      return {
-        corridorDark: from.corridorDark + (to.corridorDark - from.corridorDark) * dark,
-        ranaOpen: from.ranaOpen + (to.ranaOpen - from.ranaOpen) * open,
-        ranaHold: from.ranaHold + (to.ranaHold - from.ranaHold) * hold,
-        ring: from.ring + (to.ring - from.ring) * open,
-        prorokOpen: from.prorokOpen,
-        prorokHold: from.prorokHold,
-        terminalHold: from.terminalHold,
-        entryCue: from.entryCue + (to.entryCue - from.entryCue) * cue
-      };
-    }
-    if (fromIndex === 1 && toIndex === 2) {
-      var wipe = span(t, 0.00, 0.86);
-      var outCopy = span(t, 0.00, 0.22);
-      var inCopy = span(t, 0.36, 0.90);
-      var ringDown = span(t, 0.72, 1.00);
-      return {
-        corridorDark: to.corridorDark,
-        ranaOpen: from.ranaOpen + (to.ranaOpen - from.ranaOpen) * wipe,
-        ranaHold: from.ranaHold + (to.ranaHold - from.ranaHold) * outCopy,
-        ring: from.ring + (to.ring - from.ring) * ringDown,
-        prorokOpen: from.prorokOpen + (to.prorokOpen - from.prorokOpen) * wipe,
-        prorokHold: from.prorokHold + (to.prorokHold - from.prorokHold) * inCopy,
-        terminalHold: to.terminalHold,
-        entryCue: to.entryCue
-      };
-    }
-    if (fromIndex === 2 && toIndex === 3) {
-      var tear = span(t, 0.26, 1.00);
-      var outHold = span(t, 0.00, 0.20);
-      return {
-        corridorDark: to.corridorDark,
-        ranaOpen: to.ranaOpen,
-        ranaHold: to.ranaHold,
-        ring: to.ring,
-        prorokOpen: from.prorokOpen,
-        prorokHold: from.prorokHold + (to.prorokHold - from.prorokHold) * outHold,
-        terminalHold: from.terminalHold + (to.terminalHold - from.terminalHold) * tear,
-        entryCue: to.entryCue
-      };
-    }
-    return to;
+    var erase = span(t, 0.14, 0.46);
+    var outCopy = 1 - span(t, 0.00, 0.16);
+    var inCopy = span(t, 0.50, 1.00);
+    return {
+      corridorDark: fromIndex === 0 ? from.corridorDark : to.corridorDark,
+      ranaOpen: Math.max(from.ranaOpen, to.ranaOpen),
+      ranaHold: Math.max(from.ranaHold, to.ranaHold),
+      ring: Math.max(from.ring, to.ring),
+      prorokOpen: Math.max(from.prorokOpen, to.prorokOpen),
+      prorokHold: Math.max(from.prorokHold, to.prorokHold),
+      terminalHold: Math.max(from.terminalHold, to.terminalHold),
+      entryCue: from.entryCue * outCopy + to.entryCue * inCopy,
+      copyRana: from.copyRana * outCopy + to.copyRana * inCopy,
+      copyProrok: from.copyProrok * outCopy + to.copyProrok * inCopy,
+      copyTerminal: from.copyTerminal * outCopy + to.copyTerminal * inCopy,
+      carrierErase: erase
+    };
   }
 
   function applySceneValues(values) {
@@ -1727,6 +1766,17 @@
     root.style.setProperty("--terminal-hold", terminalHold.toFixed(4));
     root.style.setProperty("--entry-cue", entryCue.toFixed(4));
 
+    var copyRanaValue = values.copyRana;
+    var copyProrokValue = values.copyProrok;
+    var copyTerminalValue = values.copyTerminal;
+    if (copyRanaValue == null) copyRanaValue = Math.max(0, ranaHold * (1 - prorokOpen * 1.15));
+    if (copyProrokValue == null) copyProrokValue = prorokHold * Math.max(0, 1 - terminalHold * 2);
+    if (copyTerminalValue == null) copyTerminalValue = terminalHold;
+    root.style.setProperty("--copy-rana", Number(copyRanaValue).toFixed(4));
+    root.style.setProperty("--copy-prorok", Number(copyProrokValue).toFixed(4));
+    root.style.setProperty("--copy-terminal", Number(copyTerminalValue).toFixed(4));
+    root.style.setProperty("--carrier-erase", Number(values.carrierErase || 0).toFixed(4));
+
     /* Hard reveal gate: layers stay fully absent at open === 0 (visibility),
        then spatially unmask once progress actually begins. No crossfade. */
     if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
@@ -1737,16 +1787,41 @@
     }
 
     /* Focusability tracks authored visibility — hidden copy must not take Tab. */
-    setCopyAccess(copyRana, ranaHold > 0.55 && prorokOpen < 0.45);
-    setCopyAccess(copyProrok, prorokHold > 0.55 && terminalHold < 0.35);
-    setCopyAccess(copyTerminal, terminalHold > 0.55);
+    setCopyAccess(copyRana, copyRanaValue > 0.55);
+    setCopyAccess(copyProrok, copyProrokValue > 0.55);
+    setCopyAccess(copyTerminal, copyTerminalValue > 0.55);
+  }
+
+  function clearMobileCarrier() {
+    root.classList.remove("is-handing-off");
+    root.removeAttribute("data-handoff");
+    root.style.setProperty("--carrier-erase", "0");
+    var i;
+    for (i = 0; i < passageLayers.length; i++) {
+      if (passageLayers[i]) passageLayers[i].classList.remove("is-carrier");
+    }
+  }
+
+  function applyMobileCarrier(fromIndex, toIndex, t) {
+    clearMobileCarrier();
+    if (!isMobile() || !motionOn) return;
+    if (!(t > 0 && t < 1) || fromIndex === toIndex) return;
+    var outgoing = passageLayers[fromIndex];
+    if (!outgoing) return;
+    var erase = mobileSceneValuesForTransition(fromIndex, toIndex, t).carrierErase;
+    outgoing.classList.add("is-carrier");
+    root.style.setProperty("--carrier-erase", Number(erase).toFixed(4));
+    root.setAttribute("data-handoff", toIndex > fromIndex ? "forward" : "reverse");
+    root.classList.add("is-handing-off");
   }
 
   function paintMobileRest(index) {
+    clearMobileCarrier();
     applySceneValues(mobileSceneValuesForRest(index));
   }
 
   function paintMobileTransition(fromIndex, toIndex, t) {
+    applyMobileCarrier(fromIndex, toIndex, t);
     applySceneValues(mobileSceneValuesForTransition(fromIndex, toIndex, t));
   }
 
@@ -1765,6 +1840,8 @@
       paintMobileRest(mobileStopIndexAtProgress(p));
       return;
     }
+
+    clearMobileCarrier();
 
     var corridorDark = range(p, MAP.corridorDark.a, MAP.corridorDark.b);
     var ranaOpen = range(p, MAP.ranaOpen.a, MAP.ranaOpen.b);
@@ -1971,6 +2048,7 @@
     mobileScrollRaf = 0;
     mobileGlideLocked = false;
     mobileTransition = null;
+    clearMobileCarrier();
     clearMobileDestination();
   }
 

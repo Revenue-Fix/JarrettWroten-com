@@ -226,11 +226,9 @@ ok(
   'motion-off includes terminal composed rest'
 );
 ok(
-  workHtml.includes('clip-path') ||
-    workHtml.includes('-webkit-clip-path') ||
-    workHtml.includes('mask-image') ||
-    workHtml.includes('-webkit-mask-image'),
-  'spatial clip/mask reveal'
+  /html\[data-handoff="forward"\] \.layer\.is-carrier\s*\{[\s\S]*?clip-path\s*:\s*inset\(0 0 calc\(var\(--carrier-erase\) \* 100%\) 0\)/.test(workHtml) &&
+    /html\[data-handoff="reverse"\] \.layer\.is-carrier\s*\{[\s\S]*?clip-path\s*:\s*inset\(calc\(var\(--carrier-erase\) \* 100%\) 0 0 0\)/.test(workHtml),
+  'mobile outgoing carrier uses directional clip-path inset, not an incoming mask'
 );
 // Zero-state reveal gate + nonzero mask floor (structural; not pixel proof).
 // Prevents Chromium multi-mask radial-gradient(0% 0% ...) covering the corridor.
@@ -433,46 +431,31 @@ ok(
     /prorok-portrait\{[\s\S]*?opacity:calc\(\.62 \+ var\(--prorok-hold\)/.test(workHtml),
   'mobile ProRok portrait opacity strengthened'
 );
-// Terminal mask uses connected additive floors (not detached horizontal-only lobes)
-ok(
-  /Vertical threshold tear from center/.test(workHtml) ||
-    /layer-terminal[\s\S]*?mask-open\) \* 28% \+ 4%/.test(workHtml),
-  'terminal mask rebuilt as connected vertical tear'
-);
-
 /*
  * Focused tripwire — settled Invitation full-viewport coverage.
  * Canonical path: work-smoke-test.mjs
  * Future consumer: every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
- * Behavioral check: reveal still uses the spatial tear mask; authored rest
- * (terminalHold >= 1, including Motion Off) removes that mask.
- * Retirement: only when the terminal rest no longer uses a reveal mask.
+ * Behavioral check: mobile Invitation is a full-bleed plate, not a tear
+ * mask; authored rest (terminalHold >= 1, including Motion Off) does not
+ * depend on an animated reveal mask.
+ * Retirement: only when the terminal rest no longer uses a full-bleed plate.
  */
 {
-  const terminalReveal = workHtml.match(/\.layer-terminal\s*\{[\s\S]*?\n  \.layer-terminal\.is-revealing/);
-  const revealCss = terminalReveal ? terminalReveal[0] : '';
-  ok(!!revealCss, 'terminal reveal CSS block extractable');
+  const desktopCss = workHtml.split(/@media\s*\(\s*max-width\s*:\s*720px\s*\)/)[0];
+  const mobileSheet = workHtml.split(/@media\s*\(\s*max-width\s*:\s*720px\s*\)/).slice(1).join('\n');
   ok(
-    /--mask-open\s*:\s*max\s*\(\s*0\.001\s*,\s*var\(--terminal-hold\)\s*\)/.test(revealCss) &&
-      /radial-gradient\(ellipse calc\(var\(--mask-open\) \* 28% \+ 4%\)/.test(revealCss) &&
-      /mask-image\s*:/.test(revealCss) &&
-      !/(?:-webkit-)?mask(?:-image)?\s*:\s*none/.test(revealCss),
-    'terminal reveal still uses the spatial tear mask'
+    /\.layer-terminal\s*\{[\s\S]*?--mask-open\s*:\s*max\s*\(\s*0\.001\s*,\s*var\(--terminal-hold\)\s*\)/.test(desktopCss),
+    'desktop terminal reveal family remains a spatial aperture, not an opacity crossfade'
   );
   ok(
-    !/\.layer-terminal\s*\{[^}]*opacity\s*:\s*var\(--terminal-hold\)/.test(revealCss),
-    'terminal reveal is not an opacity crossfade'
+    /\.layer-rana,\s*\.layer-prorok,\s*\.layer-terminal\s*\{[\s\S]*?(?:-webkit-)?mask(?:-image)?\s*:\s*none/.test(mobileSheet),
+    'mobile terminal rest is a full-bleed plate with no animated mask'
   );
-
-  const settledCssMatch = workHtml.match(/\.layer-terminal\.is-settled\s*\{[\s\S]*?\n  \}/);
-  const settledCss = settledCssMatch ? settledCssMatch[0] : '';
-  ok(!!settledCss, 'settled terminal CSS block extractable');
   ok(
-    /(?:-webkit-)?mask(?:-image)?\s*:\s*none/.test(settledCss) &&
-      /(?<!-webkit-)mask(?:-image)?\s*:\s*none/.test(settledCss) &&
-      /(?:-webkit-mask-image| -webkit-mask)\s*:\s*none/.test(settledCss),
-    'settled terminal explicitly removes/bypasses the reveal mask'
+    !/linear-gradient\(to right, transparent calc\(50% - var\(--mask-open\)/.test(mobileSheet) &&
+      !/Vertical threshold tear from center/.test(mobileSheet),
+    'rejected mobile vertical tear silhouette is gone'
   );
 
   ok(
@@ -496,9 +479,9 @@ ok(
     'Motion Off last rest still assigns terminalHold = 1'
   );
   ok(
-    /layerTerminal\.classList\.toggle\s*\(\s*["']is-settled["']\s*,\s*terminalHold\s*>=\s*1\s*\)/.test(workHtml) &&
-      /terminalHold\s*=\s*1/.test(motionOffSrc),
-    'Motion Off terminal rest shares the same terminalHold >= 1 unmask hinge'
+    /html\[data-motion="off"\] \.layer\s*\{[\s\S]*?clip-path\s*:\s*none/.test(workHtml) &&
+      /html\[data-motion="off"\] \.handoff-seam\s*\{\s*display\s*:\s*none/.test(workHtml),
+    'Motion Off does not depend on the animated outgoing carrier'
   );
 }
 
@@ -565,11 +548,11 @@ ok(
  * glide carries fromIndex/toIndex/local pair t and paints from the mobile
  * pair renderer rather than narrow global MAP bands; t=0/1 match rests; mid
  * samples are off both endpoints; no blank world; Rana/Dylan and Dylan/terminal
- * copy do not overlap; reverse equals forward(1-t); landing clears transition
- * state after 2400ms; destination prewarm; Motion Off immediate; TAU = 0.41.
- * Opaque spatial baton: no comparable Rana/Dylan full-frame plates, no
- * comparable Dylan/Jarrett face authority. Easing the global scroll clock
- * alone does not fix the real-phone failure.
+ * copy do not overlap; reverse uses the same outgoing-carrier grammar;
+ * landing clears transition state after 2400ms; destination prewarm; Motion
+ * Off immediate; TAU = 0.41. Rejected silhouettes (expanding gem, bottom-up
+ * stack, vertical tear) stay gone. Incoming world is composed behind one
+ * opaque outgoing carrier; copy enters only after that carrier has left.
  * Retirement: only when the four-rest mobile passage is replaced.
  */
 {
@@ -871,17 +854,31 @@ ok(
 
   {
     const mobileSheet = workHtml.split(/@media\s*\(\s*max-width\s*:\s*720px\s*\)/).slice(1).join('\n');
+    const desktopCss = workHtml.split(/@media\s*\(\s*max-width\s*:\s*720px\s*\)/)[0];
     ok(
-      /\.layer-prorok\s*\{/.test(mobileSheet) &&
-        /\.layer-prorok\s*\{[\s\S]*?opaque spatial baton/i.test(mobileSheet) &&
-        /\.layer-prorok\s*\{[\s\S]*?narrow seam/.test(mobileSheet),
-      'mobile Rana/Dylan incoming world is an opaque spatial baton with a narrow seam'
+      /\.layer-rana\s*\{[\s\S]*?radial-gradient\(ellipse calc\(var\(--mask-open\) \* 118%\)/.test(desktopCss),
+      'desktop Rana reveal family is unchanged'
     );
     ok(
-      /\.layer-terminal\s*\{/.test(mobileSheet) &&
-        /\.layer-terminal\s*\{[\s\S]*?opaque spatial baton/i.test(mobileSheet) &&
-        /\.layer-terminal\s*\{[\s\S]*?narrow seam/.test(mobileSheet),
-      'mobile Dylan/Jarrett incoming world is an opaque spatial baton with a narrow seam'
+      !/\.layer-rana\s*\{[\s\S]*?radial-gradient\(ellipse calc\(var\(--mask-open\) \* 145% \+ 8%\)/.test(mobileSheet) &&
+        !/ellipse calc\(var\(--mask-open\) \* 145% \+ 8%\)/.test(mobileSheet),
+      'rejected mobile expanding gem/oval silhouette is gone'
+    );
+    ok(
+      !/linear-gradient\(to top, #000 0%, #000 calc\(var\(--mask-open\) \* 108%/.test(mobileSheet),
+      'rejected mobile bottom-up linear/radial stack is gone'
+    );
+    ok(
+      /html\[data-handoff="forward"\] \.layer\.is-carrier/.test(mobileSheet) &&
+        /html\[data-handoff="reverse"\] \.layer\.is-carrier/.test(mobileSheet) &&
+        /\.handoff-seam/.test(mobileSheet),
+      'mobile handoff is one outgoing carrier plus a narrow authored seam'
+    );
+    ok(
+      /\.scene-copy--rana\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-rana\)/.test(mobileSheet) &&
+        /\.scene-copy--prorok\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-prorok\)/.test(mobileSheet) &&
+        /\.scene-copy--terminal\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-terminal\)/.test(mobileSheet),
+      'mobile copy is gated independently of world composition'
     );
     ok(
       !/\.prorok-portrait\s*\{[\s\S]*?opacity:calc\(\.62 \+ var\(--prorok-hold\)/.test(mobileSheet) &&
@@ -898,6 +895,15 @@ ok(
       /function span\(t, a, b\)/.test(workHtml) &&
         !/function mobileSceneValuesForTransition\([\s\S]*?range\(t,/.test(workHtml),
       'pair renderer uses a linear local span and does not re-smoothstep through range()'
+    );
+    ok(
+      /function paintMobileTransition\(fromIndex, toIndex, t\) \{\s*applyMobileCarrier\(fromIndex, toIndex, t\);\s*applySceneValues/.test(workHtml),
+      'outgoing carrier is promoted before incoming world values become visible'
+    );
+    ok(
+      /function paintMobileRest\(index\) \{\s*clearMobileCarrier\(\);/.test(workHtml) &&
+        /function cancelMobileGlide\(\)[\s\S]*?clearMobileCarrier\(\)/.test(workHtml),
+      'landing and cancel clear the outgoing carrier'
     );
   }
 
@@ -916,6 +922,8 @@ ok(
       extractFunction('plateau'),
       extractFunction('span'),
       extractFunction('mobilePairClock'),
+      extractFunction('copyValuesFromWorld'),
+      extractFunction('withCopyAndCarrier'),
       mapMatch ? mapMatch[0] : '',
       stillMatch ? stillMatch[0] : '',
       stopsMatch ? stopsMatch[0] : '',
@@ -954,10 +962,11 @@ ok(
       'prorokHold',
       'terminalHold',
       'entryCue',
+      'copyRana',
+      'copyProrok',
+      'copyTerminal',
+      'carrierErase',
     ];
-    const copyRana = (v) => v.ranaHold * (1 - v.prorokOpen * 1.15);
-    const copyProrok = (v) => v.prorokHold * Math.max(0, 1 - v.terminalHold * 2);
-    const copyTerminal = (v) => v.terminalHold;
     const dist = (a, b) => Math.sqrt(keys.reduce((sum, key) => sum + (a[key] - b[key]) ** 2, 0));
     const sameValues = (a, b) => keys.every((key) => Math.abs(a[key] - b[key]) <= 1e-9);
     const hasWorld = (v) =>
@@ -965,6 +974,16 @@ ok(
       v.ranaOpen > 0.02 ||
       v.prorokOpen > 0.02 ||
       v.terminalHold > 0.02;
+    const incomingCopy = (fromIndex, toIndex, v) => {
+      if (toIndex === 1 || fromIndex === 1 && toIndex === 0) return v.copyRana;
+      if (toIndex === 2 || fromIndex === 2 && toIndex === 1) return v.copyProrok;
+      return v.copyTerminal;
+    };
+    const outgoingCopy = (fromIndex, toIndex, v) => {
+      if (fromIndex === 1 || toIndex === 1 && fromIndex === 0) return v.copyRana;
+      if (fromIndex === 2 || toIndex === 2 && fromIndex === 1) return v.copyProrok;
+      return v.copyTerminal;
+    };
 
     const pairs = [
       [0, 1],
@@ -981,12 +1000,11 @@ ok(
 
       let endpointsMatch = true;
       let midpointsMoved = true;
-      let reverseMatches = true;
+      let reverseGrammar = true;
       let worldsPresent = true;
       let copySeparated = true;
-      let doublePlate = false;
-      let faceMerge = false;
-      const portraitAlpha = (hold) => hold;
+      let incomingPrepared = true;
+      let copyAfterAuthority = true;
       for (const [fromIndex, toIndex] of pairs) {
         const fromRest = mobileSceneValuesForRest(fromIndex);
         const toRest = mobileSceneValuesForRest(toIndex);
@@ -997,29 +1015,34 @@ ok(
           if (dist(mid, fromRest) < 0.12 || dist(mid, toRest) < 0.12) midpointsMoved = false;
           if (!hasWorld(mid)) worldsPresent = false;
         }
+        const midWipe = mobileSceneValuesForTransition(fromIndex, toIndex, 0.3);
+        if (midWipe.carrierErase < 0.3 || midWipe.carrierErase > 0.8) incomingPrepared = false;
+        if (toIndex === 1 && midWipe.ring < 0.9) incomingPrepared = false;
+        if (toIndex === 2 && midWipe.prorokHold < 0.9) incomingPrepared = false;
+        if (toIndex === 3 && midWipe.terminalHold < 0.9) incomingPrepared = false;
+        if (incomingCopy(fromIndex, toIndex, midWipe) > 0.06) copyAfterAuthority = false;
+        if (fromIndex > 0 && outgoingCopy(fromIndex, toIndex, midWipe) > 0.06) copyAfterAuthority = false;
         for (let i = 0; i <= 80; i++) {
           const t = i / 80;
           const forward = mobileSceneValuesForTransition(fromIndex, toIndex, t);
-          const reverse = mobileSceneValuesForTransition(toIndex, fromIndex, 1 - t);
-          if (!sameValues(forward, reverse)) reverseMatches = false;
+          const reverse = mobileSceneValuesForTransition(toIndex, fromIndex, t);
+          if (Math.abs(forward.carrierErase - reverse.carrierErase) > 1e-9) reverseGrammar = false;
           if (!hasWorld(forward) || !hasWorld(reverse)) worldsPresent = false;
-          const copies = [copyRana(forward), copyProrok(forward), copyTerminal(forward)].filter((value) => value > 0.06);
+          const copies = [forward.copyRana, forward.copyProrok, forward.copyTerminal].filter((value) => value > 0.06);
           if (copies.length > 1) copySeparated = false;
-          const ranaAuth = forward.ring * (1 - forward.prorokOpen);
-          const dylanAuth = forward.prorokOpen * portraitAlpha(forward.prorokHold);
-          if (ranaAuth > 0.42 && dylanAuth > 0.42) doublePlate = true;
-          const dylanFace = portraitAlpha(forward.prorokHold) * (1 - forward.terminalHold);
-          const jarrettFace = forward.terminalHold;
-          if (dylanFace > 0.34 && jarrettFace > 0.34) faceMerge = true;
+          const reverseCopies = [reverse.copyRana, reverse.copyProrok, reverse.copyTerminal].filter((value) => value > 0.06);
+          if (reverseCopies.length > 1) copySeparated = false;
+          if (t > 0 && t < 0.14 && forward.carrierErase !== 0) reverseGrammar = false;
+          if (t >= 0.46 && t < 1 && forward.carrierErase !== 1) reverseGrammar = false;
         }
       }
       ok(endpointsMatch, 'local t=0 matches the source rest and t=1 matches the destination rest');
       ok(midpointsMoved, 'at t=.25, .50, and .75 every transition has a materially changed visible state');
       ok(worldsPresent, 'no forward or reverse sample leaves all authoritative world layers absent');
       ok(copySeparated, 'Rana/Dylan and Dylan/terminal copy never overlap above the 0.06 legibility threshold');
-      ok(!doublePlate, 'Rana and Dylan do not share comparable full-frame carrier authority');
-      ok(!faceMerge, 'Dylan and Jarrett do not share comparable face authority');
-      ok(reverseMatches, 'reverse samples equal the forward transition evaluated in reverse');
+      ok(incomingPrepared, 'incoming world is fully composed behind the outgoing carrier mid-wipe');
+      ok(copyAfterAuthority, 'incoming copy stays retired until the outgoing carrier has begun to leave');
+      ok(reverseGrammar, 'reverse uses the same outgoing-carrier erase envelope as forward');
 
       ok(typeof mobilePairClock === 'function', 'pair renderer has a local wall-time clock');
       if (typeof mobilePairClock === 'function') {
