@@ -1029,6 +1029,29 @@
       top:50%;
       font-size:clamp(1.35rem, 7vw, 1.7rem);
     }
+    /* Opaque spatial baton: at every pixel the outgoing world, the
+       carrier, or the incoming world owns the pixel. Feathers are a
+       narrow seam, not a viewport-scale translucent overlay. */
+    .layer-rana{
+      -webkit-mask-image:radial-gradient(ellipse calc(var(--mask-open) * 145% + 8%) calc(var(--mask-open) * 125% + 8%) at 50% 46%, #000 0%, #000 86%, transparent 97%);
+      mask-image:radial-gradient(ellipse calc(var(--mask-open) * 145% + 8%) calc(var(--mask-open) * 125% + 8%) at 50% 46%, #000 0%, #000 86%, transparent 97%);
+    }
+    .layer-prorok{
+      /* Opaque spatial baton from the ink origin — narrow seam. */
+      -webkit-mask-image:
+        linear-gradient(to top, #000 0%, #000 calc(var(--mask-open) * 108% - 3%), transparent calc(var(--mask-open) * 108% + 4%)),
+        radial-gradient(ellipse calc(var(--mask-open) * 88% + 6%) calc(var(--mask-open) * 42% + 4%) at 22% calc(100% - var(--mask-open) * 72%), #000 0%, #000 84%, transparent 96%),
+        radial-gradient(ellipse calc(var(--mask-open) * 160% + 10%) calc(var(--mask-open) * 140% + 8%) at 40% 100%, #000 0%, #000 86%, transparent 97%);
+      mask-image:
+        linear-gradient(to top, #000 0%, #000 calc(var(--mask-open) * 108% - 3%), transparent calc(var(--mask-open) * 108% + 4%)),
+        radial-gradient(ellipse calc(var(--mask-open) * 88% + 6%) calc(var(--mask-open) * 42% + 4%) at 22% calc(100% - var(--mask-open) * 72%), #000 0%, #000 84%, transparent 96%),
+        radial-gradient(ellipse calc(var(--mask-open) * 160% + 10%) calc(var(--mask-open) * 140% + 8%) at 40% 100%, #000 0%, #000 86%, transparent 97%);
+    }
+    .layer-terminal{
+      /* Opaque spatial baton: vertical tear with a narrow seam. */
+      -webkit-mask-image:linear-gradient(to right, transparent calc(50% - var(--mask-open) * 58%), #000 calc(50% - var(--mask-open) * 58% + 4%), #000 calc(50% + var(--mask-open) * 58% - 4%), transparent calc(50% + var(--mask-open) * 58%));
+      mask-image:linear-gradient(to right, transparent calc(50% - var(--mask-open) * 58%), #000 calc(50% - var(--mask-open) * 58% + 4%), #000 calc(50% + var(--mask-open) * 58% - 4%), transparent calc(50% + var(--mask-open) * 58%));
+    }
     /* Live mobile Rana: landscape studio cover crops can lose the gem into dark
        material fields on the narrow strip. Square ring film is the subject carrier
        (same pattern as ProRok portrait) — full-bleed material world, not a badge. */
@@ -1081,7 +1104,7 @@
       width:100%;
       height:100%;
       object-position:50% 14%;
-      opacity:calc(.62 + var(--prorok-hold) * .42);
+      opacity:calc(var(--prorok-hold));
       filter:saturate(.94) contrast(1.14) brightness(1.06);
       /* Two soft masks only — three-way intersect was over-erasing the subject on portrait viewports. */
       mask-image:
@@ -1557,6 +1580,13 @@
     if (p < d) return 1 - range(p, c, d);
     return 0;
   }
+  function span(t, a, b) {
+    return clamp((t - a) / Math.max(0.0001, b - a), 0, 1);
+  }
+  function mobilePairClock(elapsed) {
+    elapsed = clamp(elapsed, 0, 1);
+    return elapsed;
+  }
 
   function setMotionUI() {
     if (!motionToggle) return;
@@ -1624,43 +1654,58 @@
     toIndex = clamp(toIndex, 0, MOBILE_STOPS.length - 1);
     if (fromIndex === toIndex) return mobileSceneValuesForRest(fromIndex);
     if (fromIndex > toIndex) return mobileSceneValuesForTransition(toIndex, fromIndex, 1 - t);
+    var from = mobileSceneValuesForRest(fromIndex);
+    var to = mobileSceneValuesForRest(toIndex);
+    /* Opaque spatial baton on local pair time. Incoming mask owns pixels;
+       outgoing world stays solid underneath. Copy follows world authority.
+       Local t is already the pair clock — do not pass it through range(). */
     if (fromIndex === 0 && toIndex === 1) {
+      var open = span(t, 0.00, 0.88);
+      var hold = span(t, 0.34, 1.00);
+      var dark = span(t, 0.00, 0.80);
+      var cue = span(t, 0.00, 0.28);
       return {
-        corridorDark: range(t, 0.00, 0.80),
-        ranaOpen: range(t, 0.04, 0.86),
-        ranaHold: range(t, 0.58, 0.92),
-        ring: range(t, 0.08, 0.86),
-        prorokOpen: 0,
-        prorokHold: 0,
-        terminalHold: 0,
-        entryCue: mobileSceneValuesForRest(0).entryCue * (1 - range(t, 0.00, 0.34))
+        corridorDark: from.corridorDark + (to.corridorDark - from.corridorDark) * dark,
+        ranaOpen: from.ranaOpen + (to.ranaOpen - from.ranaOpen) * open,
+        ranaHold: from.ranaHold + (to.ranaHold - from.ranaHold) * hold,
+        ring: from.ring + (to.ring - from.ring) * open,
+        prorokOpen: from.prorokOpen,
+        prorokHold: from.prorokHold,
+        terminalHold: from.terminalHold,
+        entryCue: from.entryCue + (to.entryCue - from.entryCue) * cue
       };
     }
     if (fromIndex === 1 && toIndex === 2) {
+      var wipe = span(t, 0.00, 0.86);
+      var outCopy = span(t, 0.00, 0.22);
+      var inCopy = span(t, 0.36, 0.90);
+      var ringDown = span(t, 0.72, 1.00);
       return {
-        corridorDark: 1,
-        ranaOpen: 1,
-        ranaHold: 1 - range(t, 0.02, 0.24),
-        ring: 1 - range(t, 0.10, 0.58),
-        prorokOpen: range(t, 0.08, 0.82),
-        prorokHold: range(t, 0.54, 0.92),
-        terminalHold: 0,
-        entryCue: 0
+        corridorDark: to.corridorDark,
+        ranaOpen: from.ranaOpen + (to.ranaOpen - from.ranaOpen) * wipe,
+        ranaHold: from.ranaHold + (to.ranaHold - from.ranaHold) * outCopy,
+        ring: from.ring + (to.ring - from.ring) * ringDown,
+        prorokOpen: from.prorokOpen + (to.prorokOpen - from.prorokOpen) * wipe,
+        prorokHold: from.prorokHold + (to.prorokHold - from.prorokHold) * inCopy,
+        terminalHold: to.terminalHold,
+        entryCue: to.entryCue
       };
     }
     if (fromIndex === 2 && toIndex === 3) {
+      var tear = span(t, 0.26, 1.00);
+      var outHold = span(t, 0.00, 0.20);
       return {
-        corridorDark: 1,
-        ranaOpen: 1,
-        ranaHold: 0,
-        ring: 0,
-        prorokOpen: 1,
-        prorokHold: 1 - range(t, 0.02, 0.22),
-        terminalHold: range(t, 0.12, 0.96),
-        entryCue: 0
+        corridorDark: to.corridorDark,
+        ranaOpen: to.ranaOpen,
+        ranaHold: to.ranaHold,
+        ring: to.ring,
+        prorokOpen: from.prorokOpen,
+        prorokHold: from.prorokHold + (to.prorokHold - from.prorokHold) * outHold,
+        terminalHold: from.terminalHold + (to.terminalHold - from.terminalHold) * tear,
+        entryCue: to.entryCue
       };
     }
-    return mobileSceneValuesForRest(toIndex);
+    return to;
   }
 
   function applySceneValues(values) {
@@ -1969,11 +2014,14 @@
 
     function glide(now) {
       var elapsed = clamp((now - started) / duration, 0, 1);
-      /* One authored clock: cubic smoothstep — zero-velocity departure, continuous
-         travel, and a zero-velocity landing. Local t from this clock drives the
-         visible pair; global MAP bands do not author the mobile glide. */
+      /* Scroll travel keeps cubic smoothstep — zero-velocity departure,
+         continuous travel, and a zero-velocity landing. The pair renderer
+         uses a local linear clock so authored change is visible by 250ms
+         and is not smoothstepped twice. Global MAP bands do not author
+         the mobile glide. */
       var eased = smoothstep(elapsed);
-      mobileTransition = { fromIndex: fromIndex, toIndex: toIndex, t: eased };
+      var pairT = mobilePairClock(elapsed);
+      mobileTransition = { fromIndex: fromIndex, toIndex: toIndex, t: pairT };
       window.scrollTo(0, start + distance * eased);
       paint(computeProgress());
       if (elapsed < 1) mobileScrollRaf = window.requestAnimationFrame(glide);

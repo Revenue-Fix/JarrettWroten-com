@@ -559,13 +559,17 @@ ok(
  * Canonical path: work-smoke-test.mjs
  * Future consumer: Codex closer + every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
- * Behavioral check: four STILL rests; one-gesture / 2400ms / one-clock lock;
- * Motion On glide carries fromIndex/toIndex/local t and paints from the mobile
+ * Behavioral check: four STILL rests; one-gesture / 2400ms / lock;
+ * scroll travel stays cubic smoothstep; pair renderer uses a local clock
+ * with visible change by 250ms and no dead run over 350ms; Motion On
+ * glide carries fromIndex/toIndex/local pair t and paints from the mobile
  * pair renderer rather than narrow global MAP bands; t=0/1 match rests; mid
  * samples are off both endpoints; no blank world; Rana/Dylan and Dylan/terminal
  * copy do not overlap; reverse equals forward(1-t); landing clears transition
  * state after 2400ms; destination prewarm; Motion Off immediate; TAU = 0.41.
- * Easing the global scroll clock alone does not fix the real-phone failure.
+ * Opaque spatial baton: no comparable Rana/Dylan full-frame plates, no
+ * comparable Dylan/Jarrett face authority. Easing the global scroll clock
+ * alone does not fix the real-phone failure.
  * Retirement: only when the four-rest mobile passage is replaced.
  */
 {
@@ -854,13 +858,46 @@ ok(
       'Motion On mobile glide paints from the local renderer; desktop still uses global MAP'
     );
     ok(
-      /mobileTransition = \{ fromIndex: fromIndex, toIndex: toIndex, t: eased \}/.test(workHtml) &&
+      /mobileTransition = \{ fromIndex: fromIndex, toIndex: toIndex, t: pairT \}/.test(workHtml) &&
+        /var pairT\s*=\s*mobilePairClock\(elapsed\)/.test(workHtml) &&
         /function cancelMobileGlide\(\)[\s\S]*?mobileTransition = null/.test(workHtml),
       'mobile glides carry explicit fromIndex, toIndex, and local t, and cancel clears them'
     );
     ok(
       !/easing distribution alone fixes|cubic shoulders leave the quintic endpoint dwell/.test(workHtml),
       'the old easing-distribution-as-fix premise is retired from the Work passage'
+    );
+  }
+
+  {
+    const mobileSheet = workHtml.split(/@media\s*\(\s*max-width\s*:\s*720px\s*\)/).slice(1).join('\n');
+    ok(
+      /\.layer-prorok\s*\{/.test(mobileSheet) &&
+        /\.layer-prorok\s*\{[\s\S]*?opaque spatial baton/i.test(mobileSheet) &&
+        /\.layer-prorok\s*\{[\s\S]*?narrow seam/.test(mobileSheet),
+      'mobile Rana/Dylan incoming world is an opaque spatial baton with a narrow seam'
+    );
+    ok(
+      /\.layer-terminal\s*\{/.test(mobileSheet) &&
+        /\.layer-terminal\s*\{[\s\S]*?opaque spatial baton/i.test(mobileSheet) &&
+        /\.layer-terminal\s*\{[\s\S]*?narrow seam/.test(mobileSheet),
+      'mobile Dylan/Jarrett incoming world is an opaque spatial baton with a narrow seam'
+    );
+    ok(
+      !/\.prorok-portrait\s*\{[\s\S]*?opacity:calc\(\.62 \+ var\(--prorok-hold\)/.test(mobileSheet) &&
+        /\.prorok-portrait\s*\{[\s\S]*?opacity:calc\(var\(--prorok-hold\)\)/.test(mobileSheet),
+      'mobile Dylan portrait opacity follows hold with no translucent floor'
+    );
+    ok(
+      /function mobilePairClock\(elapsed\)/.test(workHtml) &&
+        /window\.scrollTo\(0, start \+ distance \* eased\)/.test(workHtml) &&
+        !/mobileTransition = \{ fromIndex: fromIndex, toIndex: toIndex, t: eased \}/.test(workHtml),
+      'eased scroll travel is preserved; pair t uses the local pair clock'
+    );
+    ok(
+      /function span\(t, a, b\)/.test(workHtml) &&
+        !/function mobileSceneValuesForTransition\([\s\S]*?range\(t,/.test(workHtml),
+      'pair renderer uses a linear local span and does not re-smoothstep through range()'
     );
   }
 
@@ -877,6 +914,8 @@ ok(
       extractFunction('smoothstep'),
       extractFunction('range'),
       extractFunction('plateau'),
+      extractFunction('span'),
+      extractFunction('mobilePairClock'),
       mapMatch ? mapMatch[0] : '',
       stillMatch ? stillMatch[0] : '',
       stopsMatch ? stopsMatch[0] : '',
@@ -889,10 +928,11 @@ ok(
     let sceneValuesFromMap;
     let mobileSceneValuesForRest;
     let mobileSceneValuesForTransition;
+    let mobilePairClock;
     try {
-      ({ sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition } = new Function(
+      ({ sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition, mobilePairClock } = new Function(
         parts.join('\n') +
-          '; return { sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition };'
+          '; return { sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition, mobilePairClock };'
       )());
     } catch (e) {
       failures.push('mobile transition renderer parse: ' + e.message);
@@ -900,7 +940,8 @@ ok(
     ok(
       typeof sceneValuesFromMap === 'function' &&
         typeof mobileSceneValuesForRest === 'function' &&
-        typeof mobileSceneValuesForTransition === 'function',
+        typeof mobileSceneValuesForTransition === 'function' &&
+        typeof mobilePairClock === 'function',
       'mobile transition renderer runs as functions'
     );
 
@@ -944,6 +985,8 @@ ok(
       let worldsPresent = true;
       let copySeparated = true;
       let doublePlate = false;
+      let faceMerge = false;
+      const portraitAlpha = (hold) => hold;
       for (const [fromIndex, toIndex] of pairs) {
         const fromRest = mobileSceneValuesForRest(fromIndex);
         const toRest = mobileSceneValuesForRest(toIndex);
@@ -962,15 +1005,45 @@ ok(
           if (!hasWorld(forward) || !hasWorld(reverse)) worldsPresent = false;
           const copies = [copyRana(forward), copyProrok(forward), copyTerminal(forward)].filter((value) => value > 0.06);
           if (copies.length > 1) copySeparated = false;
-          if (forward.ring > 0.45 && forward.prorokOpen > 0.45) doublePlate = true;
+          const ranaAuth = forward.ring * (1 - forward.prorokOpen);
+          const dylanAuth = forward.prorokOpen * portraitAlpha(forward.prorokHold);
+          if (ranaAuth > 0.42 && dylanAuth > 0.42) doublePlate = true;
+          const dylanFace = portraitAlpha(forward.prorokHold) * (1 - forward.terminalHold);
+          const jarrettFace = forward.terminalHold;
+          if (dylanFace > 0.34 && jarrettFace > 0.34) faceMerge = true;
         }
       }
       ok(endpointsMatch, 'local t=0 matches the source rest and t=1 matches the destination rest');
       ok(midpointsMoved, 'at t=.25, .50, and .75 every transition has a materially changed visible state');
       ok(worldsPresent, 'no forward or reverse sample leaves all authoritative world layers absent');
       ok(copySeparated, 'Rana/Dylan and Dylan/terminal copy never overlap above the 0.06 legibility threshold');
-      ok(!doublePlate, 'Rana and Dylan full-frame plates do not sit at comparable authority');
+      ok(!doublePlate, 'Rana and Dylan do not share comparable full-frame carrier authority');
+      ok(!faceMerge, 'Dylan and Jarrett do not share comparable face authority');
       ok(reverseMatches, 'reverse samples equal the forward transition evaluated in reverse');
+
+      ok(typeof mobilePairClock === 'function', 'pair renderer has a local wall-time clock');
+      if (typeof mobilePairClock === 'function') {
+        ok(
+          Math.abs(mobilePairClock(0)) < 1e-12 && Math.abs(mobilePairClock(1) - 1) < 1e-12,
+          'pair clock endpoints are 0 and 1'
+        );
+        const t250 = mobilePairClock(250 / 2400);
+        ok(t250 >= 250 / 2400 - 1e-12, 'pair clock is not slower than linear wall time at 250ms');
+        let early = true;
+        let dead = false;
+        for (const [fromIndex, toIndex] of pairs) {
+          const origin = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock(0));
+          const at250 = mobileSceneValuesForTransition(fromIndex, toIndex, t250);
+          if (dist(at250, origin) < 0.12) early = false;
+          for (let ms = 350; ms <= 2400; ms += 25) {
+            const a = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock((ms - 350) / 2400));
+            const b = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock(ms / 2400));
+            if (dist(a, b) < 0.045) dead = true;
+          }
+        }
+        ok(early, 'every adjacent pair shows authored change by 250ms');
+        ok(!dead, 'no authored dead interval lasts more than 350ms');
+      }
     }
   }
 
