@@ -1152,6 +1152,27 @@ ok(
   }
 }
 
+/*
+ * Mobile functional labels stay at the 16 CSS pixel / 1rem floor.
+ * Limited to visitor-facing controls inside the 720px sheet.
+ */
+{
+  const mobileSheet = workHtml.split(/@media\s*\(\s*max-width\s*:\s*720px\s*\)/).slice(1).join('\n');
+  const ruleBody = (selector) => {
+    const match = mobileSheet.match(new RegExp(selector + '\\s*\\{([^}]*)\\}'));
+    return match ? match[1] : '';
+  };
+  const isOneRem = (body) => /font-size\s*:\s*1rem(?![.\d])/.test(body);
+  const wordmark = ruleBody('\\.wordmark');
+  const nav = ruleBody('\\.nav-link\\s*,\\s*\\.motion-toggle');
+  const sceneLink = ruleBody('\\.scene-link');
+  const sceneAction = ruleBody('\\.scene-action');
+  ok(isOneRem(wordmark), 'mobile .wordmark stays at 1rem');
+  ok(isOneRem(nav), 'mobile .nav-link, .motion-toggle stay at 1rem');
+  ok(isOneRem(sceneLink), 'mobile .scene-link stays at 1rem');
+  ok(isOneRem(sceneAction), 'mobile .scene-action stays at 1rem');
+}
+
 // node --check on this test file and smoke-test remain runnable
 const selfCheck = spawnSync(process.execPath, ['--check', path.join(ROOT, 'work-smoke-test.mjs')], { encoding: 'utf8' });
 ok(selfCheck.status === 0, 'work-smoke-test.mjs syntax');
