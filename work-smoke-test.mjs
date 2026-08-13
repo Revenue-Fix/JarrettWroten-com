@@ -226,9 +226,19 @@ ok(
   'motion-off includes terminal composed rest'
 );
 ok(
-  /html\[data-handoff="forward"\] \.layer\.is-carrier\s*\{[\s\S]*?clip-path\s*:\s*inset\(0 0 calc\(var\(--carrier-erase\) \* 100%\) 0\)/.test(workHtml) &&
-    /html\[data-handoff="reverse"\] \.layer\.is-carrier\s*\{[\s\S]*?clip-path\s*:\s*inset\(calc\(var\(--carrier-erase\) \* 100%\) 0 0 0\)/.test(workHtml),
-  'mobile outgoing carrier uses directional clip-path inset, not an incoming mask'
+  !/clip-path\s*:\s*inset\(/.test(workHtml) &&
+    !/-webkit-clip-path\s*:\s*inset\(/.test(workHtml) &&
+    !/class="handoff-seam"/.test(workHtml) &&
+    !/--carrier-erase/.test(workHtml),
+  'rejected straight clip-path inset split-screen grammar is gone'
+);
+ok(
+  /id="passage-veil"/.test(workHtml) &&
+    /--passage-veil/.test(workHtml) &&
+    /\.passage-veil\s*\{[\s\S]*?linear-gradient\(168deg, #0a1a20/.test(workHtml) &&
+    /\.passage-veil\s*\{[\s\S]*?rgba\(94,231,240/.test(workHtml) &&
+    /\.passage-veil\s*\{[\s\S]*?rgba\(217,122,58/.test(workHtml),
+  'mobile handoff uses a full-frame authored cyan/copper veil plate'
 );
 // Zero-state reveal gate + nonzero mask floor (structural; not pixel proof).
 // Prevents Chromium multi-mask radial-gradient(0% 0% ...) covering the corridor.
@@ -479,9 +489,9 @@ ok(
     'Motion Off last rest still assigns terminalHold = 1'
   );
   ok(
-    /html\[data-motion="off"\] \.layer\s*\{[\s\S]*?clip-path\s*:\s*none/.test(workHtml) &&
-      /html\[data-motion="off"\] \.handoff-seam\s*\{\s*display\s*:\s*none/.test(workHtml),
-    'Motion Off does not depend on the animated outgoing carrier'
+    /html\[data-motion="off"\] \.passage-veil\s*\{[\s\S]*?display\s*:\s*none/.test(workHtml) &&
+      /html\[data-motion="off"\] \.passage-veil\s*\{[\s\S]*?opacity\s*:\s*0/.test(workHtml),
+    'Motion Off does not depend on the animated passage veil'
   );
 }
 
@@ -548,11 +558,12 @@ ok(
  * glide carries fromIndex/toIndex/local pair t and paints from the mobile
  * pair renderer rather than narrow global MAP bands; t=0/1 match rests; mid
  * samples are off both endpoints; no blank world; Rana/Dylan and Dylan/terminal
- * copy do not overlap; reverse uses the same outgoing-carrier grammar;
+ * copy do not overlap; reverse uses the same full-frame veil grammar;
  * landing clears transition state after 2400ms; destination prewarm; Motion
  * Off immediate; TAU = 0.41. Rejected silhouettes (expanding gem, bottom-up
- * stack, vertical tear) stay gone. Incoming world is composed behind one
- * opaque outgoing carrier; copy enters only after that carrier has left.
+ * stack, vertical tear, clip-path inset split) stay gone. One veil covers
+ * the viewport before world identity changes; copy enters only after the
+ * incoming world owns the frame.
  * Retirement: only when the four-rest mobile passage is replaced.
  */
 {
@@ -869,10 +880,12 @@ ok(
       'rejected mobile bottom-up linear/radial stack is gone'
     );
     ok(
-      /html\[data-handoff="forward"\] \.layer\.is-carrier/.test(mobileSheet) &&
-        /html\[data-handoff="reverse"\] \.layer\.is-carrier/.test(mobileSheet) &&
-        /\.handoff-seam/.test(mobileSheet),
-      'mobile handoff is one outgoing carrier plus a narrow authored seam'
+      !/clip-path\s*:\s*inset\(/.test(mobileSheet) &&
+        !/\.handoff-seam/.test(mobileSheet) &&
+        !/\.layer\.is-carrier/.test(mobileSheet) &&
+        /\.passage-veil\s*\{[\s\S]*?opacity\s*:\s*var\(--passage-veil\)/.test(mobileSheet) &&
+        /\.passage-veil\s*\{[\s\S]*?#040A0C/.test(mobileSheet),
+      'mobile handoff is a full-frame opaque veil, not a split-screen clip'
     );
     ok(
       /\.scene-copy--rana\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-rana\)/.test(mobileSheet) &&
@@ -897,13 +910,9 @@ ok(
       'pair renderer uses a linear local span and does not re-smoothstep through range()'
     );
     ok(
-      /function paintMobileTransition\(fromIndex, toIndex, t\) \{\s*applyMobileCarrier\(fromIndex, toIndex, t\);\s*applySceneValues/.test(workHtml),
-      'outgoing carrier is promoted before incoming world values become visible'
-    );
-    ok(
-      /function paintMobileRest\(index\) \{\s*clearMobileCarrier\(\);/.test(workHtml) &&
-        /function cancelMobileGlide\(\)[\s\S]*?clearMobileCarrier\(\)/.test(workHtml),
-      'landing and cancel clear the outgoing carrier'
+      /function paintMobileRest\(index\) \{\s*clearPassageVeil\(\);/.test(workHtml) &&
+        /function cancelMobileGlide\(\)[\s\S]*?clearPassageVeil\(\)/.test(workHtml),
+      'landing and cancel clear the passage veil'
     );
   }
 
@@ -923,7 +932,7 @@ ok(
       extractFunction('span'),
       extractFunction('mobilePairClock'),
       extractFunction('copyValuesFromWorld'),
-      extractFunction('withCopyAndCarrier'),
+      extractFunction('withCopyAndVeil'),
       mapMatch ? mapMatch[0] : '',
       stillMatch ? stillMatch[0] : '',
       stopsMatch ? stopsMatch[0] : '',
@@ -965,10 +974,12 @@ ok(
       'copyRana',
       'copyProrok',
       'copyTerminal',
-      'carrierErase',
+      'passageVeil',
     ];
+    const worldKeys = ['corridorDark', 'ranaOpen', 'ranaHold', 'ring', 'prorokOpen', 'prorokHold', 'terminalHold'];
     const dist = (a, b) => Math.sqrt(keys.reduce((sum, key) => sum + (a[key] - b[key]) ** 2, 0));
     const sameValues = (a, b) => keys.every((key) => Math.abs(a[key] - b[key]) <= 1e-9);
+    const sameWorld = (a, b) => worldKeys.every((key) => Math.abs(a[key] - b[key]) <= 1e-9);
     const hasWorld = (v) =>
       (v.ranaOpen < 0.97 && v.prorokOpen < 0.97 && v.terminalHold < 0.97) ||
       v.ranaOpen > 0.02 ||
@@ -1003,46 +1014,59 @@ ok(
       let reverseGrammar = true;
       let worldsPresent = true;
       let copySeparated = true;
-      let incomingPrepared = true;
+      let veilCoversFirst = true;
+      let veilStartsEarly = true;
+      let singleWorld = true;
       let copyAfterAuthority = true;
       for (const [fromIndex, toIndex] of pairs) {
         const fromRest = mobileSceneValuesForRest(fromIndex);
         const toRest = mobileSceneValuesForRest(toIndex);
         if (!sameValues(mobileSceneValuesForTransition(fromIndex, toIndex, 0), fromRest)) endpointsMatch = false;
         if (!sameValues(mobileSceneValuesForTransition(fromIndex, toIndex, 1), toRest)) endpointsMatch = false;
+        const early = mobileSceneValuesForTransition(fromIndex, toIndex, 0.12);
+        if (!(early.passageVeil > 0.15) || !sameWorld(early, fromRest)) veilStartsEarly = false;
         for (const t of [0.25, 0.5, 0.75]) {
           const mid = mobileSceneValuesForTransition(fromIndex, toIndex, t);
           if (dist(mid, fromRest) < 0.12 || dist(mid, toRest) < 0.12) midpointsMoved = false;
           if (!hasWorld(mid)) worldsPresent = false;
         }
-        const midWipe = mobileSceneValuesForTransition(fromIndex, toIndex, 0.3);
-        if (midWipe.carrierErase < 0.3 || midWipe.carrierErase > 0.8) incomingPrepared = false;
-        if (toIndex === 1 && midWipe.ring < 0.9) incomingPrepared = false;
-        if (toIndex === 2 && midWipe.prorokHold < 0.9) incomingPrepared = false;
-        if (toIndex === 3 && midWipe.terminalHold < 0.9) incomingPrepared = false;
-        if (incomingCopy(fromIndex, toIndex, midWipe) > 0.06) copyAfterAuthority = false;
-        if (fromIndex > 0 && outgoingCopy(fromIndex, toIndex, midWipe) > 0.06) copyAfterAuthority = false;
+        let sawDest = false;
         for (let i = 0; i <= 80; i++) {
           const t = i / 80;
           const forward = mobileSceneValuesForTransition(fromIndex, toIndex, t);
           const reverse = mobileSceneValuesForTransition(toIndex, fromIndex, t);
-          if (Math.abs(forward.carrierErase - reverse.carrierErase) > 1e-9) reverseGrammar = false;
+          if (Math.abs(forward.passageVeil - reverse.passageVeil) > 1e-9) reverseGrammar = false;
           if (!hasWorld(forward) || !hasWorld(reverse)) worldsPresent = false;
+          if (!sameWorld(forward, fromRest) && !sameWorld(forward, toRest)) singleWorld = false;
+          if (!sameWorld(reverse, mobileSceneValuesForRest(toIndex)) && !sameWorld(reverse, mobileSceneValuesForRest(fromIndex))) {
+            singleWorld = false;
+          }
           const copies = [forward.copyRana, forward.copyProrok, forward.copyTerminal].filter((value) => value > 0.06);
           if (copies.length > 1) copySeparated = false;
           const reverseCopies = [reverse.copyRana, reverse.copyProrok, reverse.copyTerminal].filter((value) => value > 0.06);
           if (reverseCopies.length > 1) copySeparated = false;
-          if (t > 0 && t < 0.14 && forward.carrierErase !== 0) reverseGrammar = false;
-          if (t >= 0.46 && t < 1 && forward.carrierErase !== 1) reverseGrammar = false;
+          if (!sameWorld(forward, fromRest)) {
+            if (!sawDest && forward.passageVeil < 0.97) veilCoversFirst = false;
+            sawDest = true;
+          }
+          if (fromIndex > 0 && outgoingCopy(fromIndex, toIndex, forward) > 0.06 && forward.passageVeil >= 0.97) {
+            copyAfterAuthority = false;
+          }
+          if (incomingCopy(fromIndex, toIndex, forward) > 0.06 && (forward.passageVeil > 0.2 || !sameWorld(forward, toRest))) {
+            copyAfterAuthority = false;
+          }
         }
+        if (!sawDest) veilCoversFirst = false;
       }
       ok(endpointsMatch, 'local t=0 matches the source rest and t=1 matches the destination rest');
       ok(midpointsMoved, 'at t=.25, .50, and .75 every transition has a materially changed visible state');
       ok(worldsPresent, 'no forward or reverse sample leaves all authoritative world layers absent');
       ok(copySeparated, 'Rana/Dylan and Dylan/terminal copy never overlap above the 0.06 legibility threshold');
-      ok(incomingPrepared, 'incoming world is fully composed behind the outgoing carrier mid-wipe');
-      ok(copyAfterAuthority, 'incoming copy stays retired until the outgoing carrier has begun to leave');
-      ok(reverseGrammar, 'reverse uses the same outgoing-carrier erase envelope as forward');
+      ok(veilStartsEarly, 'the full-frame veil is already visible in the first quarter while the outgoing world still owns the plate');
+      ok(veilCoversFirst, 'world identity changes only after the veil fully covers the viewport');
+      ok(singleWorld, 'every sample is exactly the outgoing rest or the incoming rest — never a mixed-world blend');
+      ok(copyAfterAuthority, 'outgoing copy retires before full occlusion; incoming copy enters only after the incoming world owns a lifted veil');
+      ok(reverseGrammar, 'reverse uses the same full-frame veil envelope as forward');
 
       ok(typeof mobilePairClock === 'function', 'pair renderer has a local wall-time clock');
       if (typeof mobilePairClock === 'function') {

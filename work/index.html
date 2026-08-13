@@ -116,7 +116,7 @@
     --copy-rana:0;
     --copy-prorok:0;
     --copy-terminal:0;
-    --carrier-erase:0;
+    --passage-veil:0;
   }
 
   *{box-sizing:border-box}
@@ -938,11 +938,11 @@
   html[data-motion="off"] .scene-copy{
     transform:none;
   }
-  html[data-motion="off"] .handoff-seam{display:none}
-  html[data-motion="off"] .layer{
-    -webkit-clip-path:none !important;
-    clip-path:none !important;
+  html[data-motion="off"] .passage-veil{
+    display:none;
+    opacity:0;
   }
+  .passage-veil{display:none}
 
   /* No-JS readable path */
   .no-js-route{
@@ -1038,10 +1038,10 @@
       top:50%;
       font-size:clamp(1.35rem, 7vw, 1.7rem);
     }
-    /* Mobile handoff: incoming layers are full-bleed plates, already
-       composed behind the outgoing carrier. Desktop keep their own
-       reveal masks; these overrides remove the rejected mobile silhouettes
-       (expanding gem, bottom-up stack, vertical tear). */
+    /* Mobile handoff: worlds stay full-bleed plates. A full-frame corridor
+       energy veil occludes the viewport, the destination world takes the
+       plate underneath, then the same veil lifts. No incoming-layer gem,
+       stack, tear, or clip-path inset split-screen. */
     .layer-rana,
     .layer-prorok,
     .layer-terminal{
@@ -1050,37 +1050,37 @@
       -webkit-mask:none;
       mask:none;
     }
-    .layer.is-carrier{
-      z-index:8;
-      will-change:clip-path;
-    }
-    html[data-handoff="forward"] .layer.is-carrier{
-      -webkit-clip-path:inset(0 0 calc(var(--carrier-erase) * 100%) 0);
-      clip-path:inset(0 0 calc(var(--carrier-erase) * 100%) 0);
-    }
-    html[data-handoff="reverse"] .layer.is-carrier{
-      -webkit-clip-path:inset(calc(var(--carrier-erase) * 100%) 0 0 0);
-      clip-path:inset(calc(var(--carrier-erase) * 100%) 0 0 0);
-    }
-    .handoff-seam{
+    .passage-veil{
+      display:block;
       position:absolute;
-      left:0;
-      right:0;
-      z-index:9;
-      height:2px;
+      inset:0;
+      z-index:26;
       pointer-events:none;
+      opacity:var(--passage-veil);
+      /* Opaque authored field: doorway cyan + threshold copper over void.
+         The last stop is an opaque hex so the plate never holes through. */
+      background-image:
+        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E"),
+        radial-gradient(ellipse 38% 30% at 50% 46%, rgba(232,255,255,.58) 0%, transparent 54%),
+        radial-gradient(ellipse 56% 46% at 50% 60%, rgba(217,122,58,.46) 0%, transparent 64%),
+        radial-gradient(ellipse 90% 74% at 50% 40%, rgba(94,231,240,.24) 0%, transparent 70%),
+        linear-gradient(168deg, #0a1a20 0%, #081318 26%, #16110d 58%, #040A0C 100%);
+      background-size:220px 220px, auto, auto, auto, auto;
+      box-shadow:inset 0 0 80px rgba(94,231,240,.18), inset 0 -40px 70px rgba(217,122,58,.16);
+    }
+    .passage-veil::before{
+      content:"";
+      position:absolute;
+      inset:-14%;
+      background:
+        radial-gradient(ellipse 30% 20% at 50% calc(38% + var(--passage-veil) * 18%), rgba(94,231,240,.42), transparent 58%),
+        radial-gradient(ellipse 20% 16% at 46% 64%, rgba(217,122,58,.3), transparent 62%);
+      mix-blend-mode:screen;
+      pointer-events:none;
+    }
+    html[data-motion="off"] .passage-veil{
+      display:none;
       opacity:0;
-      background:linear-gradient(90deg, rgba(94,231,240,0), rgba(94,231,240,.7) 36%, rgba(217,122,58,.5) 68%, rgba(94,231,240,0));
-      box-shadow:0 0 10px rgba(94,231,240,.32), 0 0 16px rgba(217,122,58,.18);
-    }
-    html.is-handing-off .handoff-seam{
-      opacity:calc(min(var(--carrier-erase), 1 - var(--carrier-erase)) * 3.2);
-    }
-    html[data-handoff="forward"] .handoff-seam{
-      top:calc((1 - var(--carrier-erase)) * 100%);
-    }
-    html[data-handoff="reverse"] .handoff-seam{
-      top:calc(var(--carrier-erase) * 100%);
     }
     .scene-copy--rana{
       opacity:var(--copy-rana);
@@ -1461,12 +1461,12 @@
         </div>
 
         <div class="grain"></div>
-        <div class="handoff-seam" id="handoff-seam" aria-hidden="true"></div>
         <div class="enter-veil" id="enter-veil"></div>
       </div>
 
       <div class="ui">
         <div class="progress-hairline" aria-hidden="true"><span id="progress-fill"></span></div>
+        <div class="passage-veil" id="passage-veil" aria-hidden="true"></div>
         <header class="site-header">
           <a class="wordmark" href="../" aria-label="Back to Jarrett">Jarrett Wroten</a>
           <div class="header-tools">
@@ -1522,11 +1522,12 @@
      consumer/activation: /work/ auto-loads the mobile section-lock (max-width 720px)
      so one vertical gesture lands on exactly one STILL rest over a 2400ms
      cinematic glide; Motion On paints that glide from a local pair + t by
-     erasing one opaque outgoing carrier to reveal the already composed
-     incoming world — not incoming-layer gem/stack/tear masks; destination
-     world requested at accept; check: node work-smoke-test.mjs; recurrence:
-     a real-phone recording of a giant oval, mixed-world band, tear, or
-     black dead interval; retire when the four-rest mobile passage is replaced. -->
+     covering the viewport with one authored corridor-energy veil, swapping
+     the destination plate underneath, then lifting the same veil — not a
+     clip-path inset split, gem, stack, or tear; destination world requested
+     at accept; check: node work-smoke-test.mjs; recurrence: a real-phone recording
+     of split-screen halves, a giant oval, mixed-world band, tear, or black dead
+     interval; retire when the four-rest mobile passage is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1545,11 +1546,9 @@
   var studioVideo = document.getElementById("rana-studio-video");
   var ringVideo = document.getElementById("rana-ring-video");
   var inkVideo = document.getElementById("prorok-ink-video");
-  var layerCorridor = document.getElementById("layer-corridor");
   var layerRana = document.getElementById("layer-rana");
   var layerProrok = document.getElementById("layer-prorok");
   var layerTerminal = document.getElementById("layer-terminal");
-  var passageLayers = [layerCorridor, layerRana, layerProrok, layerTerminal];
 
   var motionOn = root.getAttribute("data-motion") !== "off";
   var progressTarget = 0;
@@ -1701,18 +1700,18 @@
     };
   }
 
-  function withCopyAndCarrier(values, copy, erase) {
+  function withCopyAndVeil(values, copy, veil) {
     values.copyRana = copy.copyRana;
     values.copyProrok = copy.copyProrok;
     values.copyTerminal = copy.copyTerminal;
-    values.carrierErase = erase;
+    values.passageVeil = veil;
     return values;
   }
 
   function mobileSceneValuesForRest(index) {
     var stop = MOBILE_STOPS[clamp(index, 0, MOBILE_STOPS.length - 1)];
     var values = sceneValuesFromMap(stop.progress);
-    return withCopyAndCarrier(values, copyValuesFromWorld(values), 0);
+    return withCopyAndVeil(values, copyValuesFromWorld(values), 0);
   }
 
   function mobileSceneValuesForTransition(fromIndex, toIndex, t) {
@@ -1724,26 +1723,30 @@
     var to = mobileSceneValuesForRest(toIndex);
     if (t <= 0) return from;
     if (t >= 1) return to;
-    /* Same grammar both ways. Incoming world is already composed behind
-       one opaque outgoing carrier. Copy leaves with the outgoing world
-       and enters only after the incoming world owns the frame.
-       Local t is already the pair clock — do not pass it through range(). */
-    var erase = span(t, 0.14, 0.46);
-    var outCopy = 1 - span(t, 0.00, 0.16);
-    var inCopy = span(t, 0.50, 1.00);
+    /* Same grammar both ways. One full-frame veil covers, the destination
+       plate replaces the source underneath, then the same veil lifts.
+       Worlds are never both exposed. Local t is already the pair clock —
+       do not pass it through range(). */
+    var veilCover = span(t, 0.00, 0.18);
+    var veilLift = span(t, 0.26, 0.70);
+    var veil = veilCover < 1 ? veilCover : 1 - veilLift;
+    var swapped = t >= 0.22;
+    var world = swapped ? to : from;
+    var outCopy = 1 - span(t, 0.00, 0.14);
+    var inCopy = span(t, 0.74, 1.00);
     return {
-      corridorDark: fromIndex === 0 ? from.corridorDark : to.corridorDark,
-      ranaOpen: Math.max(from.ranaOpen, to.ranaOpen),
-      ranaHold: Math.max(from.ranaHold, to.ranaHold),
-      ring: Math.max(from.ring, to.ring),
-      prorokOpen: Math.max(from.prorokOpen, to.prorokOpen),
-      prorokHold: Math.max(from.prorokHold, to.prorokHold),
-      terminalHold: Math.max(from.terminalHold, to.terminalHold),
+      corridorDark: world.corridorDark,
+      ranaOpen: world.ranaOpen,
+      ranaHold: world.ranaHold,
+      ring: world.ring,
+      prorokOpen: world.prorokOpen,
+      prorokHold: world.prorokHold,
+      terminalHold: world.terminalHold,
       entryCue: from.entryCue * outCopy + to.entryCue * inCopy,
       copyRana: from.copyRana * outCopy + to.copyRana * inCopy,
       copyProrok: from.copyProrok * outCopy + to.copyProrok * inCopy,
       copyTerminal: from.copyTerminal * outCopy + to.copyTerminal * inCopy,
-      carrierErase: erase
+      passageVeil: veil
     };
   }
 
@@ -1775,7 +1778,7 @@
     root.style.setProperty("--copy-rana", Number(copyRanaValue).toFixed(4));
     root.style.setProperty("--copy-prorok", Number(copyProrokValue).toFixed(4));
     root.style.setProperty("--copy-terminal", Number(copyTerminalValue).toFixed(4));
-    root.style.setProperty("--carrier-erase", Number(values.carrierErase || 0).toFixed(4));
+    root.style.setProperty("--passage-veil", Number(values.passageVeil || 0).toFixed(4));
 
     /* Hard reveal gate: layers stay fully absent at open === 0 (visibility),
        then spatially unmask once progress actually begins. No crossfade. */
@@ -1792,36 +1795,16 @@
     setCopyAccess(copyTerminal, copyTerminalValue > 0.55);
   }
 
-  function clearMobileCarrier() {
-    root.classList.remove("is-handing-off");
-    root.removeAttribute("data-handoff");
-    root.style.setProperty("--carrier-erase", "0");
-    var i;
-    for (i = 0; i < passageLayers.length; i++) {
-      if (passageLayers[i]) passageLayers[i].classList.remove("is-carrier");
-    }
-  }
-
-  function applyMobileCarrier(fromIndex, toIndex, t) {
-    clearMobileCarrier();
-    if (!isMobile() || !motionOn) return;
-    if (!(t > 0 && t < 1) || fromIndex === toIndex) return;
-    var outgoing = passageLayers[fromIndex];
-    if (!outgoing) return;
-    var erase = mobileSceneValuesForTransition(fromIndex, toIndex, t).carrierErase;
-    outgoing.classList.add("is-carrier");
-    root.style.setProperty("--carrier-erase", Number(erase).toFixed(4));
-    root.setAttribute("data-handoff", toIndex > fromIndex ? "forward" : "reverse");
-    root.classList.add("is-handing-off");
+  function clearPassageVeil() {
+    root.style.setProperty("--passage-veil", "0");
   }
 
   function paintMobileRest(index) {
-    clearMobileCarrier();
+    clearPassageVeil();
     applySceneValues(mobileSceneValuesForRest(index));
   }
 
   function paintMobileTransition(fromIndex, toIndex, t) {
-    applyMobileCarrier(fromIndex, toIndex, t);
     applySceneValues(mobileSceneValuesForTransition(fromIndex, toIndex, t));
   }
 
@@ -1841,7 +1824,7 @@
       return;
     }
 
-    clearMobileCarrier();
+    clearPassageVeil();
 
     var corridorDark = range(p, MAP.corridorDark.a, MAP.corridorDark.b);
     var ranaOpen = range(p, MAP.ranaOpen.a, MAP.ranaOpen.b);
@@ -2048,7 +2031,7 @@
     mobileScrollRaf = 0;
     mobileGlideLocked = false;
     mobileTransition = null;
-    clearMobileCarrier();
+    clearPassageVeil();
     clearMobileDestination();
   }
 
