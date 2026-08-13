@@ -1453,8 +1453,8 @@
      consumer/activation: /work/ auto-loads the mobile section-lock (max-width 720px)
      so one vertical gesture lands on exactly one STILL rest over a 2400ms
      cinematic glide with the destination world requested at accept; check:
-     node work-smoke-test.mjs plus Codex rendered short/long gestures at phone
-     viewports; retire when the four-rest mobile lock is replaced. -->
+     node work-smoke-test.mjs; recurrence: a real-phone recording of wait-then-cut
+     cadence; retire when the four-rest mobile passage is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1541,10 +1541,6 @@
   function smoothstep(t) {
     t = clamp(t, 0, 1);
     return t * t * (3 - 2 * t);
-  }
-  function smootherStep(t) {
-    t = clamp(t, 0, 1);
-    return t * t * t * (t * (t * 6 - 15) + 10);
   }
   function isMobile() {
     return !!(mobileMq && mobileMq.matches);
@@ -1860,9 +1856,10 @@
 
     function glide(now) {
       var elapsed = clamp((now - started) / duration, 0, 1);
-      /* One authored clock: zero-velocity departure, continuous travel, and a
-         zero-velocity landing. The input chooses the rest; it never scrubs it. */
-      var eased = smootherStep(elapsed);
+      /* One authored clock: cubic smoothstep — zero-velocity departure, continuous
+         travel, and a zero-velocity landing, with less endpoint dwell than quintic
+         smootherstep. The input chooses the rest; it never scrubs it. */
+      var eased = smoothstep(elapsed);
       window.scrollTo(0, start + distance * eased);
       if (elapsed < 1) mobileScrollRaf = window.requestAnimationFrame(glide);
       else {

@@ -560,10 +560,12 @@ ok(
  * Future consumer: Codex closer + every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
  * Behavioral check: four STILL rests, one-gesture lock, 2400ms cinematic
- * glide on one clock, destination prewarm in both directions, bounded
+ * glide on one cubic-smoothstep clock; progress has departed by 25% time,
+ * midpoint stays centered, 75% is approaching not frozen; quintic endpoint
+ * dwell is rejected; destination prewarm in both directions, bounded
  * non-blocking fallback, Motion Off auto landing, no desktop lock,
  * no scroll-snap, TAU = 0.41.
- * Retirement: only when the four-rest mobile lock is replaced.
+ * Retirement: only when the four-rest mobile passage is replaced.
  */
 {
   ok(
@@ -669,8 +671,10 @@ ok(
   ok((workHtml.match(/Math\.exp\(-dt/g) || []).length === 1, 'exactly one exponential smoothing clock remains');
   ok(
     /if \(!motionOn \|\| isMobile\(\)\) \{\s*progressCurrent = progressTarget;/.test(workHtml) &&
-      /var eased\s*=\s*smootherStep\(elapsed\)/.test(workHtml) &&
-      /function smootherStep\(t\)/.test(workHtml) &&
+      /var eased\s*=\s*smoothstep\(elapsed\)/.test(workHtml) &&
+      /function smoothstep\(t\)/.test(workHtml) &&
+      !/var eased\s*=\s*smootherStep\(elapsed\)/.test(workHtml) &&
+      !/function smootherStep\(t\)/.test(workHtml) &&
       workHtml.includes('zero-velocity departure') &&
       workHtml.includes('zero-velocity landing'),
     'the authored section glide is the only mobile smoothing clock'
@@ -689,8 +693,10 @@ ok(
   );
   ok(
     /mobile section-lock/.test(workHtml) &&
-      /node work-smoke-test\.mjs/.test(workHtml),
-    'maintained-asset comment names the mobile section-lock consumer and focused test'
+      /node work-smoke-test\.mjs/.test(workHtml) &&
+      /real-phone recording/.test(workHtml) &&
+      /four-rest mobile passage/.test(workHtml),
+    'maintained-asset comment names the mobile section-lock consumer, focused test, and real-phone recurrence'
   );
 
   ok(
@@ -786,18 +792,73 @@ ok(
 
   {
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
-    function smootherStep(t) {
+    function quinticSmootherStep(t) {
       t = clamp(t, 0, 1);
       return t * t * t * (t * (t * 6 - 15) + 10);
     }
     const duration = Number((workHtml.match(/var MOBILE_SECTION_GLIDE_MS = ([0-9]+)/) || [])[1]);
     ok(duration === 2400, 'parsed mobile glide duration is 2400');
+
+    const easeName = (glideSrc.match(/var eased\s*=\s*([A-Za-z_][A-Za-z0-9_]*)\(elapsed\)/) || [])[1] || '';
+    const easeSrc = easeName
+      ? (workHtml.match(new RegExp('function ' + easeName + '\\(t\\) \\{[\\s\\S]*?\\n  \\}')) || [''])[0]
+      : '';
+    let authoredEase = null;
+    try {
+      authoredEase = new Function('clamp', easeSrc + '; return ' + easeName + ';')(clamp);
+    } catch (e) {
+      authoredEase = null;
+    }
+    ok(easeName === 'smoothstep' && typeof authoredEase === 'function', 'one clock is extractable cubic smoothstep');
+    ok(
+      /t \* t \* \(3 - 2 \* t\)/.test(easeSrc) &&
+        !/\(t \* \(t \* 6 - 15\) \+ 10\)/.test(easeSrc),
+      'the old quintic endpoint-dwell curve is rejected'
+    );
+
     const from = 0.04;
     const to = 0.38;
-    const pAt = (ms) => from + (to - from) * smootherStep(clamp(ms / duration, 0, 1));
+    const uAt = (frac) => authoredEase(clamp(frac, 0, 1));
+    const pAt = (ms) => from + (to - from) * uAt(ms / duration);
     ok(Math.abs(pAt(0) - from) < 1e-9, 'one clock departs from the current rest');
     ok(Math.abs(pAt(2400) - to) < 1e-9, 'one clock arrives at the destination rest at 2400ms');
     ok(pAt(1200) < to - 0.02, 'the old 1200ms mark is still mid-passage, not a landing');
+
+    const early = uAt(0.25);
+    const mid = uAt(0.5);
+    const late = uAt(0.75);
+    ok(early >= 0.14, 'progress has materially departed by 25% of wall-clock time');
+    ok(Math.abs(mid - 0.5) < 1e-9, 'the midpoint remains centered');
+    ok(
+      late >= 0.80 && late <= 0.87,
+      'progress is materially approaching but not effectively frozen at 75%'
+    );
+    ok(
+      early - quinticSmootherStep(0.25) > 0.03 &&
+        quinticSmootherStep(0.75) - late > 0.03,
+      'cubic shoulders leave the quintic endpoint dwell'
+    );
+
+    let monotonic = true;
+    let prev = -1;
+    for (let i = 0; i <= 96; i++) {
+      const u = uAt(i / 96);
+      if (u + 1e-12 < prev) monotonic = false;
+      prev = u;
+    }
+    ok(monotonic && uAt(0) === 0 && uAt(1) === 1, 'one clock is monotonic and lands exactly');
+
+    let symmetric = true;
+    for (let i = 0; i <= 24; i++) {
+      const t = i / 24;
+      if (Math.abs(uAt(t) + uAt(1 - t) - 1) > 1e-9) symmetric = false;
+    }
+    ok(symmetric, 'forward and reverse share the same centered clock');
+
+    const dt = 1e-4;
+    ok(Math.abs(uAt(dt) / dt) < 0.02, 'departure velocity is zero or near-zero');
+    ok(Math.abs((1 - uAt(1 - dt)) / dt) < 0.02, 'landing velocity is zero or near-zero');
+
     ok(
       2399 / duration < 1 && 2400 / duration >= 1,
       'glide lock follows the 2400ms clock to the rest, not visual proximity'
