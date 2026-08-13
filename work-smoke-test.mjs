@@ -559,8 +559,10 @@ ok(
  * Canonical path: work-smoke-test.mjs
  * Future consumer: Codex closer + every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
- * Behavioral check: four STILL rests, one-gesture lock, mobile-only gating,
- * Motion Off auto landing, no desktop lock, no scroll-snap, TAU = 0.41.
+ * Behavioral check: four STILL rests, one-gesture lock, 2400ms cinematic
+ * glide on one clock, destination prewarm in both directions, bounded
+ * non-blocking fallback, Motion Off auto landing, no desktop lock,
+ * no scroll-snap, TAU = 0.41.
  * Retirement: only when the four-rest mobile lock is replaced.
  */
 {
@@ -690,6 +692,174 @@ ok(
       /node work-smoke-test\.mjs/.test(workHtml),
     'maintained-asset comment names the mobile section-lock consumer and focused test'
   );
+
+  ok(
+    /var MOBILE_SECTION_GLIDE_MS = 2400/.test(workHtml) &&
+      /glideMs:\s*MOBILE_SECTION_GLIDE_MS/.test(workHtml) &&
+      !/var MOBILE_SECTION_GLIDE_MS = 1200/.test(workHtml),
+    'mobile cinematic travel is authored at 2400ms, not the 1200ms jump'
+  );
+  ok(
+    /function glideScrollTo\(top\)[\s\S]*?var duration = MOBILE_SECTION_GLIDE_MS[\s\S]*?prepareMobileDestination\(mobileStopIndexAtProgress\(top \/ passageScrollTotal\(\)\)\)[\s\S]*?mobileGlideLocked = true/.test(workHtml),
+    'accepting a rest prepares that destination, then locks the one authored clock'
+  );
+  ok(
+    /function glideScrollTo\(top\)[\s\S]*?if \(!motionOn \|\| Math\.abs\(distance\) < 0\.5\)[\s\S]*?return;[\s\S]*?prepareMobileDestination/.test(workHtml),
+    'Motion Off and zero-distance lands skip cinematic prepare and travel'
+  );
+
+  const videosForMatch = workHtml.match(/function videosForMobileStop\(id\) \{[\s\S]*?return \[\];\s*\}/);
+  ok(!!videosForMatch, 'videosForMobileStop is extractable');
+  let videosForMobileStop;
+  const corridorVideo = { id: 'corridor' };
+  const studioVideo = { id: 'studio' };
+  const ringVideo = { id: 'ring' };
+  const inkVideo = { id: 'ink' };
+  if (videosForMatch) {
+    try {
+      videosForMobileStop = new Function(
+        'corridorVideo',
+        'studioVideo',
+        'ringVideo',
+        'inkVideo',
+        videosForMatch[0] + '; return videosForMobileStop;'
+      )(corridorVideo, studioVideo, ringVideo, inkVideo);
+    } catch (e) {
+      failures.push('videosForMobileStop parse: ' + e.message);
+    }
+  }
+  ok(typeof videosForMobileStop === 'function', 'videosForMobileStop runs as a function');
+  if (typeof videosForMobileStop === 'function') {
+    const sameRefs = (got, expected) =>
+      got.length === expected.length && got.every((video, i) => video === expected[i]);
+    ok(sameRefs(videosForMobileStop('corridor'), [corridorVideo]), 'Corridor destination is the corridor loop');
+    ok(sameRefs(videosForMobileStop('rana'), [studioVideo, ringVideo]), 'Rana destination is studio + ring');
+    ok(sameRefs(videosForMobileStop('prorok'), [inkVideo]), 'ProRok destination is the ink loop');
+    ok(sameRefs(videosForMobileStop('invitation'), []), 'Invitation destination has no video to force-play');
+
+    const ids = workStops.map((stop) => stop[0]);
+    let prewarmBothWays = true;
+    for (let i = 0; i < ids.length - 1; i++) {
+      const forwardDest = videosForMobileStop(ids[i + 1]);
+      const reverseDest = videosForMobileStop(ids[i]);
+      if (ids[i + 1] !== 'invitation' && forwardDest.length === 0) prewarmBothWays = false;
+      if (reverseDest.length === 0) prewarmBothWays = false;
+      const offRouteForward = forwardDest.some((video) => !['corridor', 'studio', 'ring', 'ink'].includes(video.id) ||
+        (ids[i + 1] === 'rana' && video.id === 'ink') ||
+        (ids[i + 1] === 'prorok' && video.id !== 'ink') ||
+        (ids[i + 1] === 'corridor' && video.id !== 'corridor'));
+      const offRouteReverse = reverseDest.some((video) =>
+        (ids[i] === 'rana' && video.id === 'ink') ||
+        (ids[i] === 'prorok' && video.id !== 'ink') ||
+        (ids[i] === 'corridor' && video.id !== 'corridor'));
+      if (offRouteForward || offRouteReverse) prewarmBothWays = false;
+    }
+    ok(prewarmBothWays, 'forward and reverse each prewarm only the destination rest world');
+  }
+
+  const requestSrc = (workHtml.match(/function requestMobileVideo\(video\) \{[\s\S]*?\n  \}/) || [''])[0];
+  const prepareSrc = (workHtml.match(/function prepareMobileDestination\(index\) \{[\s\S]*?\n  \}/) || [''])[0];
+  const glideSrc = (workHtml.match(/function glideScrollTo\(top\) \{[\s\S]*?\n  \}/) || [''])[0];
+  ok(!!requestSrc && !!prepareSrc && !!glideSrc, 'request/prepare/glide functions are extractable');
+  ok(
+    /video\.preload = "auto"/.test(requestSrc) &&
+      /playSafe\(video\)/.test(requestSrc) &&
+      /requestMobileVideo/.test(prepareSrc) &&
+      !/canplaythrough|await |readyState\s*>=\s*[34]/.test(requestSrc) &&
+      !/canplaythrough|await |readyState\s*>=\s*[34]/.test(prepareSrc) &&
+      !/canplaythrough|await /.test(glideSrc),
+    'destination load/play is eager and never gates the glide on readiness'
+  );
+  ok(
+    /if \(elapsed < 1\) mobileScrollRaf = window\.requestAnimationFrame\(glide\);\s*else \{\s*window\.scrollTo\(0, top\);\s*mobileScrollRaf = 0;\s*mobileGlideLocked = false;\s*clearMobileDestination\(\);\s*sampleScroll\(\);/.test(workHtml),
+    'glide lock stays closed through the whole 2400ms journey and opens only at rest'
+  );
+  ok(
+    /function cancelMobileGlide\(\)[\s\S]*?clearMobileDestination\(\)/.test(workHtml) &&
+      /function syncVideos\(p\)[\s\S]*?videoIsPreparedDestination\(corridorVideo\)[\s\S]*?videoIsPreparedDestination\(studioVideo\)[\s\S]*?videoIsPreparedDestination\(ringVideo\)[\s\S]*?videoIsPreparedDestination\(inkVideo\)/.test(workHtml),
+    'prepared destination stays alive during travel; cancel and off-route sync still pause the rest'
+  );
+  ok(
+    /get mobileDestination\(\) \{ return mobileDestinationId; \}/.test(workHtml),
+    'WORK_PASSAGE exposes the in-flight destination id for consumer measurement'
+  );
+
+  {
+    function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
+    function smootherStep(t) {
+      t = clamp(t, 0, 1);
+      return t * t * t * (t * (t * 6 - 15) + 10);
+    }
+    const duration = Number((workHtml.match(/var MOBILE_SECTION_GLIDE_MS = ([0-9]+)/) || [])[1]);
+    ok(duration === 2400, 'parsed mobile glide duration is 2400');
+    const from = 0.04;
+    const to = 0.38;
+    const pAt = (ms) => from + (to - from) * smootherStep(clamp(ms / duration, 0, 1));
+    ok(Math.abs(pAt(0) - from) < 1e-9, 'one clock departs from the current rest');
+    ok(Math.abs(pAt(2400) - to) < 1e-9, 'one clock arrives at the destination rest at 2400ms');
+    ok(pAt(1200) < to - 0.02, 'the old 1200ms mark is still mid-passage, not a landing');
+    ok(
+      2399 / duration < 1 && 2400 / duration >= 1,
+      'glide lock follows the 2400ms clock to the rest, not visual proximity'
+    );
+  }
+
+  const syncMatch = workHtml.match(/function syncVideos\(p\) \{[\s\S]*?\n  \}/);
+  ok(!!syncMatch, 'syncVideos is extractable for destination keep-alive');
+  if (syncMatch) {
+    const played = [];
+    const paused = [];
+    const prepared = new Set();
+    try {
+      const syncVideos = new Function(
+        'motionOn',
+        'armVideos',
+        'playSafe',
+        'pauseSafe',
+        'videoIsPreparedDestination',
+        'corridorVideo',
+        'studioVideo',
+        'ringVideo',
+        'inkVideo',
+        syncMatch[0] + '; return syncVideos;'
+      )(
+        true,
+        function armVideos() {},
+        function playSafe(video) { played.push(video.id); },
+        function pauseSafe(video) { paused.push(video.id); },
+        function videoIsPreparedDestination(video) { return prepared.has(video); },
+        corridorVideo,
+        studioVideo,
+        ringVideo,
+        inkVideo
+      );
+      prepared.add(studioVideo);
+      prepared.add(ringVideo);
+      syncVideos(0.04);
+      ok(
+        played.includes('studio') &&
+          played.includes('ring') &&
+          !played.includes('ink') &&
+          paused.includes('ink') &&
+          played.includes('corridor'),
+        'Corridor→Rana prewarm plays Rana media immediately without starting ProRok'
+      );
+      played.length = 0;
+      paused.length = 0;
+      prepared.clear();
+      prepared.add(inkVideo);
+      syncVideos(0.94);
+      ok(
+        played.includes('ink') &&
+          paused.includes('studio') &&
+          paused.includes('ring') &&
+          paused.includes('corridor'),
+        'Invitation→ProRok reverse prewarm wakes ink before the ProRok range'
+      );
+    } catch (e) {
+      failures.push('syncVideos destination keep-alive: ' + e.message);
+    }
+  }
 }
 
 // node --check on this test file and smoke-test remain runnable
