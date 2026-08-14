@@ -425,6 +425,10 @@ ok(
   'tabindex -1/remove toggled for scene links'
 );
 ok(
+  /nodes\[i\]\.style\.pointerEvents\s*=\s*active\s*\?\s*["']auto["']\s*:\s*["']none["']/.test(workHtml),
+  'hidden scene actions cannot override their parent pointer-event gate'
+);
+ok(
   /setCopyAccess\(\s*copyRana/.test(workHtml) &&
     /setCopyAccess\(\s*copyProrok/.test(workHtml) &&
     /setCopyAccess\(\s*copyTerminal/.test(workHtml),

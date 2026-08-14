@@ -2175,6 +2175,11 @@
     el.style.pointerEvents = active ? "auto" : "none";
     var nodes = el.querySelectorAll("a, button");
     for (var i = 0; i < nodes.length; i++) {
+      /* Descendants have explicit pointer-events:auto in the authored CSS, so
+         disabling only their parent still leaves invisible later-scene actions
+         on top of the visible link. Gate each interactive node at the same
+         visibility threshold as keyboard access. */
+      nodes[i].style.pointerEvents = active ? "auto" : "none";
       if (active) nodes[i].removeAttribute("tabindex");
       else nodes[i].setAttribute("tabindex", "-1");
     }
