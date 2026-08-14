@@ -1354,8 +1354,10 @@ ok(
     ok(!videoHasRenderableFrame(metadataOnly), 'loadedmetadata / HAVE_METADATA alone is not a decoded frame');
     ok(videoHasRenderableFrame(haveCurrent), 'HAVE_CURRENT_DATA without RVFC is a renderable frame');
     ok(!videoHasRenderableFrame(errored), 'a media error is not a renderable frame');
-    ok(!videoHasRenderableFrame(rvfcCold), 'RVFC-exposed video still needs a data event or decoded frame');
-    ok(videoHasRenderableFrame(rvfcData), 'loadeddata/canplay plus HAVE_CURRENT_DATA readies an RVFC video');
+    ok(!videoHasRenderableFrame(rvfcCold), 'RVFC-exposed video is not ready before a presented frame');
+    ok(!videoHasRenderableFrame(rvfcData), 'a data event alone does not ready an RVFC-capable video');
+    rvfcData.jwDecodedFrame = true;
+    ok(videoHasRenderableFrame(rvfcData), 'an RVFC-capable video is ready only after the presented-frame callback');
     ok(videoHasRenderableFrame(rvfcFrame), 'requestVideoFrameCallback can prove a decoded frame');
 
     studioVideo.readyState = 2;
@@ -1372,6 +1374,23 @@ ok(
     ok(mobileDestinationReady('invitation'), 'Invitation has no video and is immediately ready');
     ringVideo.readyState = 2;
     ok(mobileDestinationReady('rana'), 'Rana becomes ready only after both studio and ring have frames');
+    studioVideo.requestVideoFrameCallback = function () {};
+    ringVideo.requestVideoFrameCallback = function () {};
+    studioVideo.jwSawDataEvent = true;
+    ringVideo.jwSawDataEvent = true;
+    delete studioVideo.jwDecodedFrame;
+    delete ringVideo.jwDecodedFrame;
+    ok(!mobileDestinationReady('rana'), 'Rana stays pending on RVFC videos after data events only');
+    studioVideo.jwDecodedFrame = true;
+    ok(!mobileDestinationReady('rana'), 'one presented Rana frame is still insufficient');
+    ringVideo.jwDecodedFrame = true;
+    ok(mobileDestinationReady('rana'), 'Rana is ready only after both presented-frame callbacks');
+    delete studioVideo.requestVideoFrameCallback;
+    delete ringVideo.requestVideoFrameCallback;
+    delete studioVideo.jwSawDataEvent;
+    delete ringVideo.jwSawDataEvent;
+    delete studioVideo.jwDecodedFrame;
+    delete ringVideo.jwDecodedFrame;
     corridorVideo.readyState = 2;
     ok(mobileDestinationReady('corridor'), 'reverse corridor uses the same decoded-frame rule');
     studioVideo.error = { code: 4 };

@@ -1942,7 +1942,7 @@
     if (!video || video.error) return false;
     if (video.readyState < 2) return false;
     if (typeof video.requestVideoFrameCallback === "function") {
-      return video.jwDecodedFrame === true || video.jwSawDataEvent === true;
+      return video.jwDecodedFrame === true;
     }
     return true;
   }
