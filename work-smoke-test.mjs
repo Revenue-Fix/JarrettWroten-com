@@ -1400,7 +1400,21 @@ ok(
         paused: true,
         currentTime: 0,
         src: '../assets/work/rana/' + (id === 'ring' ? 'ring-alexandrite.mp4' : 'studio-banner.mp4'),
-        requestVideoFrameCallback: function (cb) { this._heldCallback = cb; },
+        requestVideoFrameCallback: function (cb) {
+          this._heldCallbacks = this._heldCallbacks || [];
+          this._heldCallbacks.push(cb);
+          this._heldCallback = cb;
+          var handle = this._nextHandle || 1;
+          this._nextHandle = handle + 1;
+          this._handles = this._handles || {};
+          this._handles[handle] = cb;
+          return handle;
+        },
+        cancelVideoFrameCallback: function (handle) {
+          this._cancelled = this._cancelled || [];
+          this._cancelled.push(handle);
+          if (this._handles) delete this._handles[handle];
+        },
         addEventListener: function (type, fn) {
           (listeners[type] || (listeners[type] = [])).push(fn);
         },
@@ -1430,6 +1444,10 @@ ok(
           hiddenStudio.jwFrameCallbackArmed === false &&
           hiddenStudio.jwPlayBaseline == null,
         'emptied clears stale readiness, baseline, and armed state'
+      );
+      ok(
+        Array.isArray(hiddenStudio._cancelled) && hiddenStudio._cancelled.length > 0,
+        'reset cancels the scheduled rVFC handle when the API exists'
       );
       ok(!videoHasRenderableFrame(hiddenStudio), 'a reset video is not ready');
       hiddenStudio.readyState = 2;
@@ -1484,6 +1502,39 @@ ok(
         failed.jwDecodedFrame === false && failed.jwFrameCallbackArmed === false,
         'error clears stale decoded and armed state'
       );
+
+      const generations = makeFakeVideo('studio');
+      bindVideoReadiness(generations);
+      generations.readyState = 2;
+      generations.dispatch('loadeddata');
+      const oldCallback = generations._heldCallback;
+      const oldGeneration = generations.jwCallbackGeneration || 0;
+      generations.dispatch('emptied');
+      generations.readyState = 2;
+      generations.paused = true;
+      generations.currentTime = 0;
+      generations.dispatch('loadeddata');
+      const newCallback = generations._heldCallback;
+      ok(oldCallback !== newCallback, 'reset arms a new rVFC callback');
+      ok(generations.jwFrameCallbackArmed === true, 'the new generation is armed');
+      oldCallback();
+      ok(!videoHasRenderableFrame(generations), 'a stale rVFC callback does not certify readiness');
+      ok(generations.jwFrameCallbackArmed === true, 'a stale callback does not clear the new generation arm');
+      ok((generations.jwCallbackGeneration || 0) !== oldGeneration, 'reset increments the callback generation');
+      generations.readyState = 2;
+      newCallback();
+      ok(videoHasRenderableFrame(generations), 'the current-generation callback at readyState>=2 succeeds');
+
+      const thrown = makeFakeVideo('studio');
+      thrown.requestVideoFrameCallback = function () { throw new Error('rvfc'); };
+      bindVideoReadiness(thrown);
+      thrown.readyState = 2;
+      thrown.paused = true;
+      thrown.currentTime = 0;
+      thrown.dispatch('loadeddata');
+      ok(!videoHasRenderableFrame(thrown), 'thrown rVFC plus no drawable/playback proof stays unready');
+      ok(thrown.jwDecodedFrame !== true, 'a thrown request does not set the decoded-frame flag');
+      ok(thrown.jwFrameCallbackArmed === false, 'a thrown request clears only its own armed state');
     }
 
     const rvfcAdvanced = {

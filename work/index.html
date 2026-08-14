@@ -1945,10 +1945,16 @@
 
   function resetVideoReadinessState(video) {
     if (!video) return;
+    video.jwCallbackGeneration = (video.jwCallbackGeneration || 0) + 1;
+    var handle = video.jwFrameCallbackHandle;
+    video.jwFrameCallbackHandle = null;
     video.jwDecodedFrame = false;
     video.jwSawDataEvent = false;
     video.jwFrameCallbackArmed = false;
     video.jwPlayBaseline = null;
+    if (handle != null && typeof video.cancelVideoFrameCallback === "function") {
+      try { video.cancelVideoFrameCallback(handle); } catch (err) {}
+    }
   }
 
   function videoIsSameOrigin(video) {
@@ -2035,15 +2041,22 @@
   function armVideoFrameCallback(video) {
     if (!video || typeof video.requestVideoFrameCallback !== "function") return;
     if (video.jwFrameCallbackArmed) return;
+    var generation = video.jwCallbackGeneration || 0;
     video.jwFrameCallbackArmed = true;
     try {
-      video.requestVideoFrameCallback(function () {
+      var handle = video.requestVideoFrameCallback(function () {
+        if ((video.jwCallbackGeneration || 0) !== generation) return;
         video.jwFrameCallbackArmed = false;
+        video.jwFrameCallbackHandle = null;
         noteDecodedVideoFrame(video);
       });
+      if ((video.jwCallbackGeneration || 0) !== generation) return;
+      video.jwFrameCallbackHandle = handle;
     } catch (err) {
+      if ((video.jwCallbackGeneration || 0) !== generation) return;
       video.jwFrameCallbackArmed = false;
-      noteDecodedVideoFrame(video);
+      video.jwFrameCallbackHandle = null;
+      proveHiddenVideoFrame(video);
     }
   }
 
