@@ -116,6 +116,8 @@
     --copy-rana:0;
     --copy-prorok:0;
     --copy-terminal:0;
+    --plate-scale:1;
+    --plate-shift:0;
   }
 
   *{box-sizing:border-box}
@@ -1032,9 +1034,19 @@
       top:50%;
       font-size:clamp(1.35rem, 7vw, 1.7rem);
     }
-    /* Mobile handoff: worlds stay full-bleed plates. Adjacent rests dissolve
-       directly into each other. No corridor-energy veil, blur plate, gem,
-       stack, tear, or clip-path inset split-screen. */
+    /* Mobile handoff: one full-bleed plate is authoritative. Adjacent rests
+       cut on MOBILE_CUT_PHASE. Camera push/shift rides the single visible
+       stack. No dissolve, corridor-energy veil, blur plate, gem, stack,
+       tear, or clip-path inset split-screen. */
+    .world-stack{
+      transform:translate3d(0, calc(var(--plate-shift) * 1%), 0) scale(var(--plate-scale));
+      transform-origin:50% 50%;
+      will-change:transform;
+    }
+    html[data-motion="off"] .world-stack{
+      transform:none;
+      will-change:auto;
+    }
     .layer-rana,
     .layer-prorok,
     .layer-terminal{
@@ -1049,17 +1061,17 @@
     .scene-copy--rana{
       opacity:var(--copy-rana);
       transform:translate3d(0, calc((1 - var(--copy-rana)) * 1.4rem), 0);
-      filter:blur(calc((1 - var(--copy-rana)) * 4px));
+      filter:none;
     }
     .scene-copy--prorok{
       opacity:var(--copy-prorok);
       transform:translate3d(0, calc((1 - var(--copy-prorok)) * 1.5rem), 0);
-      filter:blur(calc((1 - var(--copy-prorok)) * 4px));
+      filter:none;
     }
     .scene-copy--terminal{
       opacity:var(--copy-terminal);
       transform:translate3d(0, calc((1 - var(--copy-terminal)) * 1.2rem), 0);
-      filter:blur(calc((1 - var(--copy-terminal)) * 3px));
+      filter:none;
     }
     /* Live mobile Rana: landscape studio cover crops can lose the gem into dark
        material fields on the narrow strip. Square ring film is the subject carrier
@@ -1493,13 +1505,15 @@
      draw or a 0.05s playback-advance on same-origin hidden media), with a
      24000ms hidden ceiling;
      Invitation is synchronously ready (portrait already in the document).
-     Only then does one 2400ms direct handoff run: local pair + t dissolves the
-     actual outgoing full-frame world into the actual incoming one. No
-     passage-veil, blur plate, energy wash, gem, stack, tear, split, or poster
-     waiting state. Check: node work-smoke-test.mjs; recurrence: a real-phone recording
-     of a full-frame blurred wash, intermediary field, split-screen halves, a giant
-     oval, mixed-world band, tear, or black dead interval; retire when the
-     four-rest mobile passage is replaced. -->
+     Only then does one 2400ms single-plate handoff run: local pair + t keeps
+     the outgoing rest fully formed until MOBILE_CUT_PHASE, then the incoming
+     rest. Copy exits before the cut and enters after. Camera push/shift
+     continues across the cut. No passage-veil, blur plate, energy wash, gem,
+     stack, tear, split, dissolve, or poster waiting state. Check: node
+     work-smoke-test.mjs; recurrence: a real-phone recording of two worlds or
+     two copy systems at once, a blurred wash, intermediary field, split-screen
+     halves, a giant oval, mixed-world band, tear, or black dead interval;
+     retire when the four-rest mobile passage is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1561,6 +1575,11 @@
   var MOBILE_SECTION_GLIDE_MS = 2400;
   var MOBILE_READINESS_MS = 24000;
   var MOBILE_FRAME_ADVANCE_S = 0.05;
+  var MOBILE_CUT_PHASE = 0.5;
+  var MOBILE_COPY_OUT_END = 0.32;
+  var MOBILE_COPY_IN_START = 0.68;
+  var MOBILE_PLATE_PUSH = 0.06;
+  var MOBILE_PLATE_SHIFT = 1.6;
   var MOBILE_STOPS = [
     { id: "corridor", progress: STILL.corridor },
     { id: "rana", progress: STILL.rana },
@@ -1693,7 +1712,35 @@
   function mobileSceneValuesForRest(index) {
     var stop = MOBILE_STOPS[clamp(index, 0, MOBILE_STOPS.length - 1)];
     var values = sceneValuesFromMap(stop.progress);
+    values.plateScale = 1;
+    values.plateShift = 0;
     return withCopy(values, copyValuesFromWorld(values));
+  }
+
+  function mobileCopyWeights(t) {
+    t = clamp(t, 0, 1);
+    return {
+      outgoing: 1 - smoothstep(span(t, 0, MOBILE_COPY_OUT_END)),
+      incoming: smoothstep(span(t, MOBILE_COPY_IN_START, 1))
+    };
+  }
+
+  function mobilePlateCamera(t, direction) {
+    t = clamp(t, 0, 1);
+    var energy = 0;
+    if (t > 0 && t < 1) {
+      if (t < MOBILE_CUT_PHASE) energy = smoothstep(t / MOBILE_CUT_PHASE);
+      else energy = 1 - smoothstep((t - MOBILE_CUT_PHASE) / (1 - MOBILE_CUT_PHASE));
+    }
+    var sign = direction < 0 ? -1 : 1;
+    return {
+      plateScale: 1 + MOBILE_PLATE_PUSH * energy,
+      plateShift: -sign * MOBILE_PLATE_SHIFT * energy
+    };
+  }
+
+  function mobileAuthoritativeIndex(fromIndex, toIndex, t) {
+    return clamp(t, 0, 1) < MOBILE_CUT_PHASE ? fromIndex : toIndex;
   }
 
   function mobileSceneValuesForTransition(fromIndex, toIndex, t) {
@@ -1705,22 +1752,28 @@
     var to = mobileSceneValuesForRest(toIndex);
     if (t <= 0) return from;
     if (t >= 1) return to;
-    /* Direct handoff both ways. Local t mixes only the two authored full-frame
-       rests — world and copy in synchrony. No third plate, veil, or blank.
-       Do not pass t through range(). */
-    function mix(a, b) { return a + (b - a) * t; }
+    /* Single-plate match cut. One authored rest is authoritative: source
+       before MOBILE_CUT_PHASE, destination at and after it. Copy leaves
+       before the cut and enters after. Camera push/shift is the only
+       continuous plate motion. Do not mix complete rest objects. Do not
+       pass t through range(). */
+    var world = t < MOBILE_CUT_PHASE ? from : to;
+    var copy = mobileCopyWeights(t);
+    var camera = mobilePlateCamera(t, toIndex - fromIndex);
     return {
-      corridorDark: mix(from.corridorDark, to.corridorDark),
-      ranaOpen: mix(from.ranaOpen, to.ranaOpen),
-      ranaHold: mix(from.ranaHold, to.ranaHold),
-      ring: mix(from.ring, to.ring),
-      prorokOpen: mix(from.prorokOpen, to.prorokOpen),
-      prorokHold: mix(from.prorokHold, to.prorokHold),
-      terminalHold: mix(from.terminalHold, to.terminalHold),
-      entryCue: mix(from.entryCue, to.entryCue),
-      copyRana: mix(from.copyRana, to.copyRana),
-      copyProrok: mix(from.copyProrok, to.copyProrok),
-      copyTerminal: mix(from.copyTerminal, to.copyTerminal)
+      corridorDark: world.corridorDark,
+      ranaOpen: world.ranaOpen,
+      ranaHold: world.ranaHold,
+      ring: world.ring,
+      prorokOpen: world.prorokOpen,
+      prorokHold: world.prorokHold,
+      terminalHold: world.terminalHold,
+      entryCue: world.entryCue,
+      copyRana: from.copyRana * copy.outgoing + to.copyRana * copy.incoming,
+      copyProrok: from.copyProrok * copy.outgoing + to.copyProrok * copy.incoming,
+      copyTerminal: from.copyTerminal * copy.outgoing + to.copyTerminal * copy.incoming,
+      plateScale: camera.plateScale,
+      plateShift: camera.plateShift
     };
   }
 
@@ -1752,9 +1805,13 @@
     root.style.setProperty("--copy-rana", Number(copyRanaValue).toFixed(4));
     root.style.setProperty("--copy-prorok", Number(copyProrokValue).toFixed(4));
     root.style.setProperty("--copy-terminal", Number(copyTerminalValue).toFixed(4));
+    var plateScale = values.plateScale == null ? 1 : values.plateScale;
+    var plateShift = values.plateShift == null ? 0 : values.plateShift;
+    root.style.setProperty("--plate-scale", Number(plateScale).toFixed(4));
+    root.style.setProperty("--plate-shift", Number(plateShift).toFixed(4));
 
     /* Hard reveal gate: layers stay fully absent at open === 0 (visibility).
-       Desktop unmasks spatially; mobile dissolves full-bleed plates. */
+       Desktop unmasks spatially; mobile paints one rest plate at a time. */
     if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
     if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
     if (layerTerminal) {
@@ -2326,9 +2383,9 @@
       var elapsed = clamp((now - started) / duration, 0, 1);
       /* Scroll travel keeps cubic smoothstep — zero-velocity departure,
          continuous travel, and a zero-velocity landing. The pair renderer
-         uses a local linear clock so authored change is visible by 250ms
-         and is not smoothstepped twice. Global MAP bands do not author
-         the mobile glide. */
+         uses a local linear clock so the named cut and copy windows stay
+         on wall time and are not smoothstepped twice. Global MAP bands
+         do not author the mobile glide. */
       var eased = smoothstep(elapsed);
       var pairT = mobilePairClock(elapsed);
       mobileTransition = { fromIndex: fromIndex, toIndex: toIndex, t: pairT };
@@ -2638,13 +2695,17 @@
     goMobileStop: scrollToMobileStopIndex,
     sceneValuesForRest: mobileSceneValuesForRest,
     sceneValuesForTransition: mobileSceneValuesForTransition,
+    authoritativeIndex: mobileAuthoritativeIndex,
     tuning: {
       mobileBreakpointPx: MOBILE_BREAKPOINT_PX,
       swipeThresholdPx: MOBILE_SWIPE_THRESHOLD_PX,
       wheelThresholdPx: MOBILE_WHEEL_THRESHOLD_PX,
       wheelIdleMs: MOBILE_WHEEL_IDLE_MS,
       glideMs: MOBILE_SECTION_GLIDE_MS,
-      readinessMs: MOBILE_READINESS_MS
+      readinessMs: MOBILE_READINESS_MS,
+      cutPhase: MOBILE_CUT_PHASE,
+      copyOutEnd: MOBILE_COPY_OUT_END,
+      copyInStart: MOBILE_COPY_IN_START
     }
   };
 })();

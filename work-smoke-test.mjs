@@ -556,16 +556,16 @@ ok(
  * Future consumer: Codex closer + every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
  * Behavioral check: four STILL rests; one-gesture / hidden 24000ms readiness
- * ceiling / 2400ms visible direct handoff / lock; cold-load warms every beat
- * video; a destination is ready only after each required video has a decoded
- * frame; outgoing rest stays painted until that promise resolves; timeout/error/
- * stale tokens cancel without advancing; the visible handoff mixes only the two
- * authored full-frame rests — no passage-veil, blur plate, or third visual;
- * copy leaves and enters in synchrony with no dead interval; reverse uses the
- * same readiness rule and dissolve grammar; landing clears transition state
- * after 2400ms; Motion Off immediate; TAU = 0.41. Rejected silhouettes
- * (expanding gem, bottom-up stack, vertical tear, clip-path inset split,
- * cyan/copper veil) stay gone.
+ * ceiling / 2400ms visible single-plate handoff / lock; cold-load warms every
+ * beat video; a destination is ready only after each required video has a
+ * decoded frame; outgoing rest stays painted until that promise resolves;
+ * timeout/error/stale tokens cancel without advancing; the visible handoff
+ * keeps exactly one authored rest authoritative and cuts on a named phase —
+ * no passage-veil, blur plate, dissolve, or third visual; copy exits before
+ * the cut and enters after; reverse uses the same readiness rule and cut
+ * grammar; landing clears transition state after 2400ms; Motion Off
+ * immediate; TAU = 0.41. Rejected silhouettes (expanding gem, bottom-up
+ * stack, vertical tear, clip-path inset split, cyan/copper veil) stay gone.
  * Retirement: only when the four-rest mobile passage is replaced.
  */
 {
@@ -919,13 +919,28 @@ ok(
         /\.layer-rana\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--rana-open\)/.test(mobileSheet) &&
         /\.layer-prorok\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--prorok-open\)/.test(mobileSheet) &&
         /\.layer-terminal\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--terminal-hold\)/.test(mobileSheet),
-      'mobile handoff dissolves full-bleed plates and has no veil or split-screen clip'
+      'mobile handoff keeps full-bleed plates with no veil or split-screen clip'
+    );
+    ok(
+      /\.world-stack\s*\{[\s\S]*?scale\(var\(--plate-scale\)\)/.test(mobileSheet) &&
+        /\.world-stack\s*\{[\s\S]*?var\(--plate-shift\)/.test(mobileSheet) &&
+        /html\[data-motion="off"\]\s*\.world-stack\s*\{[\s\S]*?transform\s*:\s*none/.test(mobileSheet),
+      'mobile plate camera rides world-stack and is identity under Motion Off'
     );
     ok(
       /\.scene-copy--rana\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-rana\)/.test(mobileSheet) &&
         /\.scene-copy--prorok\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-prorok\)/.test(mobileSheet) &&
         /\.scene-copy--terminal\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-terminal\)/.test(mobileSheet),
       'mobile copy is gated independently of world composition'
+    );
+    ok(
+      !/\.scene-copy--rana\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
+        !/\.scene-copy--prorok\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
+        !/\.scene-copy--terminal\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
+        /\.scene-copy--rana\s*\{[\s\S]*?filter\s*:\s*none/.test(mobileSheet) &&
+        /\.scene-copy--prorok\s*\{[\s\S]*?filter\s*:\s*none/.test(mobileSheet) &&
+        /\.scene-copy--terminal\s*\{[\s\S]*?filter\s*:\s*none/.test(mobileSheet),
+      'no mobile copy transition uses filter: blur(...)'
     );
     ok(
       !/\.prorok-portrait\s*\{[\s\S]*?opacity:calc\(\.62 \+ var\(--prorok-hold\)/.test(mobileSheet) &&
@@ -939,10 +954,13 @@ ok(
       'eased scroll travel is preserved; pair t uses the local pair clock'
     );
     ok(
-      /function mobileSceneValuesForTransition\([\s\S]*?function mix\(a, b\)/.test(workHtml) &&
+      /var MOBILE_CUT_PHASE = 0\.[0-9]+/.test(workHtml) &&
+        /function mobileAuthoritativeIndex\(/.test(workHtml) &&
+        /function mobileSceneValuesForTransition\([\s\S]*?MOBILE_CUT_PHASE/.test(workHtml) &&
+        !/function mobileSceneValuesForTransition\([\s\S]*?function mix\(a, b\)/.test(workHtml) &&
         !/function mobileSceneValuesForTransition\([\s\S]*?range\(t,/.test(workHtml) &&
         !/function mobileSceneValuesForTransition\([\s\S]*?passageVeil/.test(workHtml),
-      'pair renderer mixes the two rests along local t and has no veil channel'
+      'pair renderer names a cut phase and does not mix complete rests or add a veil'
     );
     ok(
       /function paintMobileRest\(index\) \{\s*applySceneValues\(mobileSceneValuesForRest/.test(workHtml) &&
@@ -960,6 +978,11 @@ ok(
     const mapMatch = workHtml.match(/var MAP = \{[\s\S]*?\n  \};/);
     const stillMatch = workHtml.match(/var STILL = \{[\s\S]*?\n  \};/);
     const stopsMatch = workHtml.match(/var MOBILE_STOPS = \[[\s\S]*?\];/);
+    const cutDecl = (workHtml.match(/var MOBILE_CUT_PHASE = [0-9.]+;/) || [''])[0];
+    const copyOutDecl = (workHtml.match(/var MOBILE_COPY_OUT_END = [0-9.]+;/) || [''])[0];
+    const copyInDecl = (workHtml.match(/var MOBILE_COPY_IN_START = [0-9.]+;/) || [''])[0];
+    const platePushDecl = (workHtml.match(/var MOBILE_PLATE_PUSH = [0-9.]+;/) || [''])[0];
+    const plateShiftDecl = (workHtml.match(/var MOBILE_PLATE_SHIFT = [0-9.]+;/) || [''])[0];
     const parts = [
       extractFunction('clamp'),
       extractFunction('smoothstep'),
@@ -972,8 +995,16 @@ ok(
       mapMatch ? mapMatch[0] : '',
       stillMatch ? stillMatch[0] : '',
       stopsMatch ? stopsMatch[0] : '',
+      cutDecl,
+      copyOutDecl,
+      copyInDecl,
+      platePushDecl,
+      plateShiftDecl,
       extractFunction('sceneValuesFromMap'),
       extractFunction('mobileSceneValuesForRest'),
+      extractFunction('mobileCopyWeights'),
+      extractFunction('mobilePlateCamera'),
+      extractFunction('mobileAuthoritativeIndex'),
       extractFunction('mobileSceneValuesForTransition'),
     ];
     ok(parts.every((part) => part.length > 0), 'mobile rest/transition renderer is extractable');
@@ -982,10 +1013,27 @@ ok(
     let mobileSceneValuesForRest;
     let mobileSceneValuesForTransition;
     let mobilePairClock;
+    let mobileAuthoritativeIndex;
+    let mobileCopyWeights;
+    let mobilePlateCamera;
+    let MOBILE_CUT_PHASE;
+    let MOBILE_COPY_OUT_END;
+    let MOBILE_COPY_IN_START;
     try {
-      ({ sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition, mobilePairClock } = new Function(
+      ({
+        sceneValuesFromMap,
+        mobileSceneValuesForRest,
+        mobileSceneValuesForTransition,
+        mobilePairClock,
+        mobileAuthoritativeIndex,
+        mobileCopyWeights,
+        mobilePlateCamera,
+        MOBILE_CUT_PHASE,
+        MOBILE_COPY_OUT_END,
+        MOBILE_COPY_IN_START,
+      } = new Function(
         parts.join('\n') +
-          '; return { sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition, mobilePairClock };'
+          '; return { sceneValuesFromMap, mobileSceneValuesForRest, mobileSceneValuesForTransition, mobilePairClock, mobileAuthoritativeIndex, mobileCopyWeights, mobilePlateCamera, MOBILE_CUT_PHASE, MOBILE_COPY_OUT_END, MOBILE_COPY_IN_START };'
       )());
     } catch (e) {
       failures.push('mobile transition renderer parse: ' + e.message);
@@ -994,7 +1042,10 @@ ok(
       typeof sceneValuesFromMap === 'function' &&
         typeof mobileSceneValuesForRest === 'function' &&
         typeof mobileSceneValuesForTransition === 'function' &&
-        typeof mobilePairClock === 'function',
+        typeof mobilePairClock === 'function' &&
+        typeof mobileAuthoritativeIndex === 'function' &&
+        typeof mobileCopyWeights === 'function' &&
+        typeof mobilePlateCamera === 'function',
       'mobile transition renderer runs as functions'
     );
 
@@ -1010,36 +1061,58 @@ ok(
       'copyRana',
       'copyProrok',
       'copyTerminal',
+      'plateScale',
+      'plateShift',
     ];
-    const worldKeys = ['corridorDark', 'ranaOpen', 'ranaHold', 'ring', 'prorokOpen', 'prorokHold', 'terminalHold'];
-    const dist = (a, b) => Math.sqrt(keys.reduce((sum, key) => sum + (a[key] - b[key]) ** 2, 0));
+    const worldKeys = [
+      'corridorDark',
+      'ranaOpen',
+      'ranaHold',
+      'ring',
+      'prorokOpen',
+      'prorokHold',
+      'terminalHold',
+      'entryCue',
+    ];
+    const opacityKeys = ['ranaOpen', 'prorokOpen', 'terminalHold'];
+    const copyKeys = ['copyRana', 'copyProrok', 'copyTerminal'];
+    const COPY_EPS = 1e-4;
+    const dist = (a, b) => Math.sqrt(keys.reduce((sum, key) => sum + ((a[key] || 0) - (b[key] || 0)) ** 2, 0));
     const sameValues = (a, b) => keys.every((key) => Math.abs((a[key] || 0) - (b[key] || 0)) <= 1e-9);
-    const mixValues = (from, to, t) => {
-      const out = {};
-      for (const key of keys) out[key] = from[key] + (to[key] - from[key]) * t;
-      return out;
-    };
-    const betweenRests = (v, from, to) =>
-      keys.every((key) => {
-        const lo = Math.min(from[key], to[key]);
-        const hi = Math.max(from[key], to[key]);
-        return v[key] + 1e-9 >= lo && v[key] - 1e-9 <= hi;
-      });
+    const sameWorld = (a, b) => worldKeys.every((key) => Math.abs((a[key] || 0) - (b[key] || 0)) <= 1e-9);
     const hasWorld = (v) =>
       v.entryCue > 0.02 ||
       v.ranaOpen > 0.02 ||
       v.prorokOpen > 0.02 ||
       v.terminalHold > 0.02;
-    const incomingCopy = (fromIndex, toIndex, v) => {
-      if (toIndex === 1 || fromIndex === 1 && toIndex === 0) return v.copyRana;
-      if (toIndex === 2 || fromIndex === 2 && toIndex === 1) return v.copyProrok;
-      return v.copyTerminal;
+    const copyKeyForStop = (index) => {
+      if (index === 1) return 'copyRana';
+      if (index === 2) return 'copyProrok';
+      if (index === 3) return 'copyTerminal';
+      return null;
     };
-    const outgoingCopy = (fromIndex, toIndex, v) => {
-      if (fromIndex === 1 || toIndex === 1 && fromIndex === 0) return v.copyRana;
-      if (fromIndex === 2 || toIndex === 2 && fromIndex === 1) return v.copyProrok;
-      return v.copyTerminal;
+    const copyValue = (v, index) => {
+      const key = copyKeyForStop(index);
+      return key ? (v[key] || 0) : 0;
     };
+    const liveCopyCount = (v) => copyKeys.filter((key) => (v[key] || 0) > COPY_EPS).length;
+    const topWorld = (v) => {
+      if (v.terminalHold > 0.5) return 3;
+      if (v.prorokOpen > 0.5) return 2;
+      if (v.ranaOpen > 0.5) return 1;
+      return 0;
+    };
+    const hasFractionalWorldOpacity = (from, to, v) =>
+      opacityKeys.some((key) => {
+        const lo = Math.min(from[key], to[key]);
+        const hi = Math.max(from[key], to[key]);
+        return hi - lo > 1e-9 && v[key] > lo + 1e-9 && v[key] < hi - 1e-9;
+      });
+    const cameraNeutral = (v) =>
+      Math.abs((v.plateScale || 1) - 1) <= 1e-9 && Math.abs(v.plateShift || 0) <= 1e-9;
+    const cameraCovered = (v) =>
+      (v.plateScale || 1) + 1e-12 >= 1 &&
+      Math.abs(v.plateShift || 0) <= ((v.plateScale || 1) - 1) * 50 + 0.05;
     const hasInterstitial = (v) =>
       Object.prototype.hasOwnProperty.call(v, 'passageVeil') ||
       Object.prototype.hasOwnProperty.call(v, 'veil') ||
@@ -1050,6 +1123,17 @@ ok(
       [1, 2],
       [2, 3],
     ];
+    ok(
+      typeof MOBILE_CUT_PHASE === 'number' && MOBILE_CUT_PHASE > 0 && MOBILE_CUT_PHASE < 1,
+      'an explicit cut phase is named in source and lies strictly inside (0,1)'
+    );
+    ok(
+      typeof MOBILE_COPY_OUT_END === 'number' &&
+        typeof MOBILE_COPY_IN_START === 'number' &&
+        MOBILE_COPY_OUT_END < MOBILE_CUT_PHASE &&
+        MOBILE_COPY_IN_START > MOBILE_CUT_PHASE,
+      'copy exits before the named cut and enters after it'
+    );
     if (typeof mobileSceneValuesForTransition === 'function') {
       const mapAtMidFirst = sceneValuesFromMap(0.04 + (0.38 - 0.04) * 0.5);
       const localAtMidFirst = mobileSceneValuesForTransition(0, 1, 0.5);
@@ -1063,9 +1147,20 @@ ok(
       let reverseGrammar = true;
       let worldsPresent = true;
       let noInterstitial = true;
-      let directHandoff = true;
-      let copyAlive = true;
-      let sourceLegible = true;
+      let singleAuthority = true;
+      let binaryWorld = true;
+      let noFractionalBlend = true;
+      let oneCopy = true;
+      let copyTiming = true;
+      let cameraContract = true;
+      let sourceBeforeCut = true;
+      const dense = [];
+      for (let i = 0; i <= 120; i++) dense.push(i / 120);
+      for (const extra of [0, MOBILE_COPY_OUT_END, MOBILE_CUT_PHASE - 1e-6, MOBILE_CUT_PHASE, MOBILE_COPY_IN_START, 1]) {
+        if (!dense.some((t) => Math.abs(t - extra) < 1e-12)) dense.push(extra);
+      }
+      dense.sort((a, b) => a - b);
+
       for (const [fromIndex, toIndex] of pairs) {
         const fromRest = mobileSceneValuesForRest(fromIndex);
         const toRest = mobileSceneValuesForRest(toIndex);
@@ -1073,38 +1168,45 @@ ok(
         if (!sameValues(mobileSceneValuesForTransition(fromIndex, toIndex, 1), toRest)) endpointsMatch = false;
         if (!sameValues(mobileSceneValuesForTransition(toIndex, fromIndex, 0), toRest)) endpointsMatch = false;
         if (!sameValues(mobileSceneValuesForTransition(toIndex, fromIndex, 1), fromRest)) endpointsMatch = false;
+        if (!cameraNeutral(fromRest) || !cameraNeutral(toRest)) cameraContract = false;
         const early = mobileSceneValuesForTransition(fromIndex, toIndex, 0.12);
-        if (dist(early, fromRest) >= dist(early, toRest)) sourceLegible = false;
-        if (!betweenRests(early, fromRest, toRest)) directHandoff = false;
+        if (topWorld(early) !== fromIndex || !sameWorld(early, fromRest)) sourceBeforeCut = false;
         for (const t of [0.25, 0.5, 0.75]) {
           const mid = mobileSceneValuesForTransition(fromIndex, toIndex, t);
           if (dist(mid, fromRest) < 0.12 || dist(mid, toRest) < 0.12) midpointsMoved = false;
           if (!hasWorld(mid)) worldsPresent = false;
-          if (hasInterstitial(mid) || !betweenRests(mid, fromRest, toRest)) directHandoff = false;
-          if (!sameValues(mid, mixValues(fromRest, toRest, t))) directHandoff = false;
         }
-        const midpoint = mobileSceneValuesForTransition(fromIndex, toIndex, 0.5);
-        if (hasInterstitial(midpoint) || !hasWorld(midpoint) || sameValues(midpoint, fromRest) || sameValues(midpoint, toRest)) {
-          directHandoff = false;
-        }
-        if (worldKeys.every((key) => midpoint[key] < 0.02)) directHandoff = false;
-        for (let i = 0; i <= 80; i++) {
-          const t = i / 80;
+        for (const t of dense) {
           const forward = mobileSceneValuesForTransition(fromIndex, toIndex, t);
           const reverse = mobileSceneValuesForTransition(toIndex, fromIndex, t);
-          if (!sameValues(forward, mixValues(fromRest, toRest, t))) reverseGrammar = false;
-          if (!sameValues(reverse, mixValues(toRest, fromRest, t))) reverseGrammar = false;
+          const forwardAuth = mobileAuthoritativeIndex(fromIndex, toIndex, t);
+          const reverseAuth = mobileAuthoritativeIndex(toIndex, fromIndex, t);
+          const expectedForward = t < MOBILE_CUT_PHASE ? fromRest : toRest;
+          const expectedReverse = t < MOBILE_CUT_PHASE ? toRest : fromRest;
+          if (forwardAuth !== (t < MOBILE_CUT_PHASE ? fromIndex : toIndex)) singleAuthority = false;
+          if (reverseAuth !== (t < MOBILE_CUT_PHASE ? toIndex : fromIndex)) singleAuthority = false;
+          if (topWorld(forward) !== forwardAuth || topWorld(reverse) !== reverseAuth) singleAuthority = false;
+          if (!sameWorld(forward, expectedForward) || !sameWorld(reverse, expectedReverse)) binaryWorld = false;
+          if (hasFractionalWorldOpacity(fromRest, toRest, forward)) noFractionalBlend = false;
+          if (hasFractionalWorldOpacity(toRest, fromRest, reverse)) noFractionalBlend = false;
+          if (liveCopyCount(forward) > 1 || liveCopyCount(reverse) > 1) oneCopy = false;
+          if (t < MOBILE_CUT_PHASE && copyValue(forward, toIndex) > COPY_EPS) copyTiming = false;
+          if (t >= MOBILE_CUT_PHASE && copyValue(forward, fromIndex) > COPY_EPS) copyTiming = false;
+          if (t < MOBILE_CUT_PHASE && copyValue(reverse, fromIndex) > COPY_EPS) copyTiming = false;
+          if (t >= MOBILE_CUT_PHASE && copyValue(reverse, toIndex) > COPY_EPS) copyTiming = false;
           if (hasInterstitial(forward) || hasInterstitial(reverse)) noInterstitial = false;
           if (!hasWorld(forward) || !hasWorld(reverse)) worldsPresent = false;
-          if (!betweenRests(forward, fromRest, toRest) || !betweenRests(reverse, fromRest, toRest)) {
-            directHandoff = false;
+          if (!cameraCovered(forward) || !cameraCovered(reverse)) cameraContract = false;
+          if (t === 0 || t === 1) {
+            if (!cameraNeutral(forward) || !cameraNeutral(reverse)) cameraContract = false;
+          } else if (t >= 0.2 && t <= 0.8) {
+            if ((forward.plateScale || 1) < 1.012 || Math.abs(forward.plateShift || 0) < 0.25) cameraContract = false;
+            if ((reverse.plateScale || 1) < 1.012 || Math.abs(reverse.plateShift || 0) < 0.25) cameraContract = false;
           }
-          const outCopy = outgoingCopy(fromIndex, toIndex, fromRest);
-          const inCopy = incomingCopy(fromIndex, toIndex, toRest);
-          if (outCopy > 0.06 && inCopy > 0.06) {
-            const live = outgoingCopy(fromIndex, toIndex, forward) + incomingCopy(fromIndex, toIndex, forward);
-            if (live < 0.06) copyAlive = false;
-          }
+          if (Math.abs((forward.plateScale || 1) - (reverse.plateScale || 1)) > 1e-9) reverseGrammar = false;
+          if (Math.abs((forward.plateShift || 0) + (reverse.plateShift || 0)) > 1e-9) reverseGrammar = false;
+          const weights = mobileCopyWeights(t);
+          if (t > 0 && t < 1 && (weights.outgoing > COPY_EPS && weights.incoming > COPY_EPS)) copyTiming = false;
         }
       }
       ok(endpointsMatch, 'local t=0 matches the source rest and t=1 matches the destination rest');
@@ -1114,16 +1216,19 @@ ok(
       ok(hasWorld(mobileSceneValuesForRest(1)), 'Rana rest still counts as a world');
       const zeroedRest = Object.assign({}, mobileSceneValuesForRest(1));
       worldKeys.forEach((key) => { zeroedRest[key] = 0; });
-      zeroedRest.entryCue = 0;
       zeroedRest.copyRana = 0;
       zeroedRest.copyProrok = 0;
       zeroedRest.copyTerminal = 0;
       ok(!hasWorld(zeroedRest), 'hasWorld fails when an authoritative world rest is zeroed');
       ok(noInterstitial, 'transition values contain no veil or interstitial channel');
-      ok(directHandoff, 'midpoint is a direct source/destination full-frame handoff, not a third visual or blank');
-      ok(sourceLegible, 'the outgoing world stays the nearer plate at the beginning of the handoff');
-      ok(copyAlive, 'copy leaves and enters in synchrony with no dead interval');
-      ok(reverseGrammar, 'reverse endpoints and handoff use the same mix grammar as forward');
+      ok(binaryWorld, 'every sample world equals the source rest before the cut and the destination rest at or after it');
+      ok(singleAuthority, 'before the cut the source world is authoritative; at or after it the destination is');
+      ok(noFractionalBlend, 'presentation-layer world values never create a fractional whole-world opacity blend');
+      ok(sourceBeforeCut, 'the outgoing world stays the authoritative plate before the cut');
+      ok(oneCopy, 'no sample has more than one copy value above zero');
+      ok(copyTiming, 'outgoing copy is zero by the cut and incoming copy is zero before the cut');
+      ok(cameraContract, 'restrained camera motion is neutral at rests and materially non-neutral during each glide');
+      ok(reverseGrammar, 'reverse transitions use the same cut, copy, and mirrored camera grammar as forward');
 
       ok(typeof mobilePairClock === 'function', 'pair renderer has a local wall-time clock');
       if (typeof mobilePairClock === 'function') {
