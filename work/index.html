@@ -175,6 +175,10 @@
     pointer-events:none;
   }
 
+  .mobile-scene-plate{
+    display:none;
+  }
+
   .layer{
     position:absolute;
     inset:0;
@@ -1034,10 +1038,37 @@
       top:50%;
       font-size:clamp(1.35rem, 7vw, 1.7rem);
     }
-    /* Mobile handoff: one full-bleed plate is authoritative. Adjacent rests
-       cut on MOBILE_CUT_PHASE. Camera push/shift rides the single visible
-       stack. No dissolve, corridor-energy veil, blur plate, gem, stack,
-       tear, or clip-path inset split-screen. */
+    /* Mobile handoff: one real raster surface is authoritative. The legacy
+       DOM worlds remain decoded below it as source material, but only this
+       opaque canvas reaches the recipient. That removes independent video
+       compositor planes—the source of Samsung's split bands and black cuts. */
+    .mobile-scene-plate{
+      display:block;
+      position:absolute;
+      inset:0;
+      z-index:10;
+      width:100%;
+      height:100%;
+      max-width:none;
+      background:var(--void);
+      opacity:0;
+      transition:opacity .12s linear;
+      pointer-events:none;
+    }
+    html.mobile-plate-active .mobile-scene-plate{opacity:1}
+    html.mobile-plate-active .world-stack{
+      transform:none;
+      will-change:auto;
+    }
+    html.mobile-plate-active .world-stack > .layer,
+    html.mobile-plate-active .world-stack > .grain,
+    html.mobile-plate-active .world-stack > .enter-veil{
+      visibility:hidden;
+    }
+    html.mobile-plate-active .world-stack > .corridor-lightning{
+      visibility:visible;
+      z-index:11;
+    }
     .world-stack{
       transform:translate3d(0, calc(var(--plate-shift) * 1%), 0) scale(var(--plate-scale));
       transform-origin:50% 50%;
@@ -1283,6 +1314,7 @@
   <div class="passage" id="passage">
     <div class="viewport" id="viewport" aria-label="Work passage from corridor through Rana and ProRok to the next step">
       <div class="world-stack" aria-hidden="true">
+        <canvas class="mobile-scene-plate" id="mobile-scene-plate"></canvas>
         <div class="layer layer-corridor" id="layer-corridor">
           <img class="corridor-frame corridor-poster" id="corridor-poster" src="../assets/golden-arrival/frames/ga-000.webp" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
           <video
@@ -1424,14 +1456,14 @@
               poster="../demos/dylan-prorok/dylan-portrait.jpg"
               autoplay muted loop playsinline preload="auto"
               width="960" height="540"></video>
-            <img class="prorok-portrait" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
+            <img class="prorok-portrait" id="prorok-portrait" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
             <div class="prorok-seal" aria-hidden="true"></div>
             <div class="prorok-wash"></div>
           </div>
         </div>
 
         <div class="layer layer-terminal" id="layer-terminal" aria-hidden="true">
-          <img class="terminal-return" src="../assets/golden-arrival/frames/ga-360.webp" alt="" width="1280" height="720" decoding="async">
+          <img class="terminal-return" id="terminal-return" src="../assets/golden-arrival/frames/ga-360.webp" alt="" width="1280" height="720" decoding="async">
           <div class="terminal-energy"></div>
           <div class="terminal-threshold"></div>
           <div class="terminal-vignette"></div>
@@ -1497,23 +1529,18 @@
 
 <!-- Maintained asset — canonical: work/index.html Work passage script;
      consumer/activation: /work/ auto-loads the mobile section-lock (max-width 720px)
-     so one vertical gesture lands on exactly one STILL rest; every mobile beat
-     video is warmed hidden at cold load; a swipe may request the next rest but
-     the outgoing composed rest stays painted until that beat's required media
-     has a decoded/renderable frame (loadeddata/canplay + readyState >= 2;
-     requestVideoFrameCallback when it fires; otherwise a reused 1x1 canvas
-     draw or a 0.05s playback-advance on same-origin hidden media), with a
-     24000ms hidden ceiling;
-     Invitation is synchronously ready (portrait already in the document).
-     Only then does one 2400ms single-plate handoff run: local pair + t keeps
-     the outgoing rest fully formed until MOBILE_CUT_PHASE, then the incoming
-     rest. Copy exits before the cut and enters after. Camera push/shift
-     continues across the cut. No passage-veil, blur plate, energy wash, gem,
-     stack, tear, split, dissolve, or poster waiting state. Check: node
-     work-smoke-test.mjs; recurrence: a real-phone recording of two worlds or
-     two copy systems at once, a blurred wash, intermediary field, split-screen
-     halves, a giant oval, mixed-world band, tear, or black dead interval;
-     retire when the four-rest mobile passage is replaced. -->
+     so one vertical gesture lands on exactly one STILL rest. Mobile videos and
+     images remain private source material below one opaque 2D canvas; the next
+     complete beat is assembled in an off-DOM buffer and copied atomically to
+     the visible canvas. A late or failed draw therefore retains the last full
+     frame instead of exposing an independent hardware video plane or clearing
+     to black. Required destination media must be renderable before the 960ms
+     handoff starts, with an 8000ms hidden ceiling. Copy exits before the cut
+     and enters after; restrained camera push/shift remains continuous. Check:
+     node work-smoke-test.mjs plus a full forward/reverse rendered passage.
+     Recurrence: a real-phone recording of two worlds, a mixed-world band,
+     split-screen halves, a black dead interval, or more than one visible media
+     compositor surface; retire when the four-rest mobile passage is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1532,6 +1559,13 @@
   var studioVideo = document.getElementById("rana-studio-video");
   var ringVideo = document.getElementById("rana-ring-video");
   var inkVideo = document.getElementById("prorok-ink-video");
+  var corridorPoster = document.getElementById("corridor-poster");
+  var ringPoster = document.getElementById("ring-poster");
+  var prorokPortrait = document.getElementById("prorok-portrait");
+  var terminalReturn = document.getElementById("terminal-return");
+  var mobileScenePlate = document.getElementById("mobile-scene-plate");
+  var worldStack = document.querySelector(".world-stack");
+  var corridorLightning = document.getElementById("corridor-lightning");
   var layerRana = document.getElementById("layer-rana");
   var layerProrok = document.getElementById("layer-prorok");
   var layerTerminal = document.getElementById("layer-terminal");
@@ -1572,14 +1606,14 @@
   var MOBILE_SWIPE_THRESHOLD_PX = 24;
   var MOBILE_WHEEL_THRESHOLD_PX = 18;
   var MOBILE_WHEEL_IDLE_MS = 180;
-  var MOBILE_SECTION_GLIDE_MS = 2400;
-  var MOBILE_READINESS_MS = 24000;
+  var MOBILE_SECTION_GLIDE_MS = 960;
+  var MOBILE_READINESS_MS = 8000;
   var MOBILE_FRAME_ADVANCE_S = 0.05;
   var MOBILE_CUT_PHASE = 0.5;
-  var MOBILE_COPY_OUT_END = 0.32;
-  var MOBILE_COPY_IN_START = 0.68;
-  var MOBILE_PLATE_PUSH = 0.06;
-  var MOBILE_PLATE_SHIFT = 1.6;
+  var MOBILE_COPY_OUT_END = 0.34;
+  var MOBILE_COPY_IN_START = 0.64;
+  var MOBILE_PLATE_PUSH = 0.035;
+  var MOBILE_PLATE_SHIFT = 0.8;
   var MOBILE_STOPS = [
     { id: "corridor", progress: STILL.corridor },
     { id: "rana", progress: STILL.rana },
@@ -1609,6 +1643,14 @@
   var mobileReadinessPulse = null;
   var hiddenFrameCanvas = null;
   var hiddenFrameCtx = null;
+  var mobilePlateCtx = null;
+  var mobileSceneBuffer = null;
+  var mobileSceneBufferCtx = null;
+  var mobileMaskBuffer = null;
+  var mobileMaskBufferCtx = null;
+  var mobilePlateWidth = 0;
+  var mobilePlateHeight = 0;
+  var mobilePlateActive = false;
 
   function clamp(v, a, b) {
     return Math.max(a, Math.min(b, v));
@@ -1825,12 +1867,249 @@
     setCopyAccess(copyTerminal, copyTerminalValue > 0.55);
   }
 
+  function imageHasRenderableFrame(image) {
+    return !!(image && image.complete && image.naturalWidth > 0 && image.naturalHeight > 0);
+  }
+
+  function mobileSource(video, poster) {
+    if (motionOn && videoHasRenderableFrame(video)) return video;
+    if (imageHasRenderableFrame(poster)) return poster;
+    if (videoHasRenderableFrame(video)) return video;
+    return null;
+  }
+
+  function mobileSourceSize(source) {
+    if (!source) return null;
+    var width = source.videoWidth || source.naturalWidth || source.width || 0;
+    var height = source.videoHeight || source.naturalHeight || source.height || 0;
+    return width > 0 && height > 0 ? { width: width, height: height } : null;
+  }
+
+  function drawMobileCover(ctx, source, focusX, focusY, overscale) {
+    var size = mobileSourceSize(source);
+    if (!ctx || !size) return false;
+    focusX = focusX == null ? 0.5 : focusX;
+    focusY = focusY == null ? 0.5 : focusY;
+    overscale = overscale == null ? 1 : overscale;
+    var scale = Math.max(mobilePlateWidth / size.width, mobilePlateHeight / size.height) * overscale;
+    var width = size.width * scale;
+    var height = size.height * scale;
+    var x = (mobilePlateWidth - width) * focusX;
+    var y = (mobilePlateHeight - height) * focusY;
+    try {
+      ctx.drawImage(source, x, y, width, height);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function fillMobileLinearGradient(ctx, x0, y0, x1, y1, stops) {
+    var gradient = ctx.createLinearGradient(x0, y0, x1, y1);
+    for (var i = 0; i < stops.length; i++) gradient.addColorStop(stops[i][0], stops[i][1]);
+    ctx.fillStyle = gradient;
+    ctx.fillRect(0, 0, mobilePlateWidth, mobilePlateHeight);
+  }
+
+  function fillMobileEllipseGradient(ctx, cx, cy, rx, ry, stops) {
+    ctx.save();
+    ctx.translate(cx, cy);
+    ctx.scale(rx, ry);
+    var gradient = ctx.createRadialGradient(0, 0, 0, 0, 0, 1);
+    for (var i = 0; i < stops.length; i++) gradient.addColorStop(stops[i][0], stops[i][1]);
+    ctx.fillStyle = gradient;
+    ctx.fillRect(-1, -1, 2, 2);
+    ctx.restore();
+  }
+
+  function ensureMobilePlateSize() {
+    if (!mobileScenePlate || !viewport || !mobilePlateCtx) return false;
+    var rect = viewport.getBoundingClientRect();
+    var dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
+    var width = Math.max(1, Math.round(rect.width * dpr));
+    var height = Math.max(1, Math.round(rect.height * dpr));
+    if (width === mobilePlateWidth && height === mobilePlateHeight) return true;
+    mobilePlateWidth = width;
+    mobilePlateHeight = height;
+    mobileScenePlate.width = width;
+    mobileScenePlate.height = height;
+    mobileSceneBuffer.width = width;
+    mobileSceneBuffer.height = height;
+    mobileMaskBuffer.width = width;
+    mobileMaskBuffer.height = height;
+    return true;
+  }
+
+  function initMobilePlate() {
+    if (!isMobile() || !mobileScenePlate || typeof mobileScenePlate.getContext !== "function") return false;
+    if (!mobilePlateCtx) {
+      try {
+        mobilePlateCtx = mobileScenePlate.getContext("2d", { alpha: false, desynchronized: true });
+      } catch (err) {
+        mobilePlateCtx = mobileScenePlate.getContext("2d");
+      }
+      if (!mobilePlateCtx) return false;
+      mobileSceneBuffer = document.createElement("canvas");
+      mobileMaskBuffer = document.createElement("canvas");
+      mobileSceneBufferCtx = mobileSceneBuffer.getContext("2d", { alpha: false });
+      mobileMaskBufferCtx = mobileMaskBuffer.getContext("2d");
+      if (!mobileSceneBufferCtx || !mobileMaskBufferCtx) return false;
+    }
+    return ensureMobilePlateSize();
+  }
+
+  function setMobilePlateActive(active) {
+    active = !!active && isMobile();
+    if (active === mobilePlateActive) return;
+    mobilePlateActive = active;
+    root.classList.toggle("mobile-plate-active", active);
+    if (corridorLightning) {
+      var parent = active ? worldStack : document.getElementById("layer-corridor");
+      if (parent && corridorLightning.parentNode !== parent) parent.appendChild(corridorLightning);
+    }
+  }
+
+  function drawMobileRanaScene(ctx) {
+    var source = mobileSource(ringVideo, ringPoster);
+    if (!source) return false;
+    ctx.filter = "saturate(1.1) contrast(1.06) brightness(1.03)";
+    var drawn = drawMobileCover(ctx, source, 0.48, 0.36, 1.035);
+    ctx.filter = "none";
+    if (!drawn) return false;
+    fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
+      [0, "rgba(4,10,12,.18)"],
+      [.5, "rgba(4,10,12,.03)"],
+      [1, "rgba(4,10,12,.72)"]
+    ]);
+    fillMobileLinearGradient(ctx, 0, 0, mobilePlateWidth, 0, [
+      [0, "rgba(4,10,12,.36)"],
+      [.58, "rgba(4,10,12,0)"],
+      [1, "rgba(4,10,12,.12)"]
+    ]);
+    return true;
+  }
+
+  function drawMobileProrokScene(ctx) {
+    var portrait = imageHasRenderableFrame(prorokPortrait) ? prorokPortrait : null;
+    if (!portrait) return false;
+    var ink = mobileSource(inkVideo, null);
+    if (ink) {
+      ctx.filter = "saturate(.9) contrast(1.08) brightness(.72)";
+      ctx.globalAlpha = .72;
+      drawMobileCover(ctx, ink, .5, .42, 1.02);
+      ctx.globalAlpha = 1;
+      ctx.filter = "none";
+    } else {
+      ctx.fillStyle = "#0b0807";
+      ctx.fillRect(0, 0, mobilePlateWidth, mobilePlateHeight);
+    }
+
+    mobileMaskBufferCtx.setTransform(1, 0, 0, 1, 0, 0);
+    mobileMaskBufferCtx.clearRect(0, 0, mobilePlateWidth, mobilePlateHeight);
+    mobileMaskBufferCtx.filter = "saturate(.94) contrast(1.14) brightness(1.06)";
+    var portraitDrawn = drawMobileCover(mobileMaskBufferCtx, portrait, .5, .14, 1.01);
+    mobileMaskBufferCtx.filter = "none";
+    if (!portraitDrawn) return false;
+    mobileMaskBufferCtx.globalCompositeOperation = "destination-in";
+    fillMobileEllipseGradient(
+      mobileMaskBufferCtx,
+      mobilePlateWidth * .5,
+      mobilePlateHeight * .34,
+      mobilePlateWidth * .72,
+      mobilePlateHeight * .66,
+      [[0, "#000"], [.67, "#000"], [1, "rgba(0,0,0,0)"]]
+    );
+    fillMobileLinearGradient(mobileMaskBufferCtx, 0, 0, 0, mobilePlateHeight, [
+      [0, "#000"],
+      [.67, "#000"],
+      [1, "rgba(0,0,0,0)"]
+    ]);
+    mobileMaskBufferCtx.globalCompositeOperation = "source-over";
+    ctx.drawImage(mobileMaskBuffer, 0, 0);
+    fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
+      [0, "rgba(11,8,7,.12)"],
+      [.55, "rgba(11,8,7,.08)"],
+      [1, "rgba(11,8,7,.76)"]
+    ]);
+    return true;
+  }
+
+  function drawMobileTerminalScene(ctx) {
+    if (!imageHasRenderableFrame(terminalReturn)) return false;
+    ctx.filter = "saturate(1) brightness(1) contrast(1.04)";
+    var drawn = drawMobileCover(ctx, terminalReturn, .45, 0, 1.01);
+    ctx.filter = "none";
+    if (!drawn) return false;
+    fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
+      [0, "rgba(4,10,12,.22)"],
+      [.48, "rgba(4,10,12,0)"],
+      [1, "rgba(4,10,12,.78)"]
+    ]);
+    fillMobileLinearGradient(ctx, 0, 0, mobilePlateWidth, 0, [
+      [0, "rgba(4,10,12,.34)"],
+      [.62, "rgba(4,10,12,.04)"],
+      [1, "rgba(4,10,12,.1)"]
+    ]);
+    return true;
+  }
+
+  function composeMobileScene(index) {
+    var ctx = mobileSceneBufferCtx;
+    if (!ctx) return false;
+    ctx.setTransform(1, 0, 0, 1, 0, 0);
+    ctx.globalAlpha = 1;
+    ctx.globalCompositeOperation = "source-over";
+    ctx.filter = "none";
+    ctx.fillStyle = "#040a0c";
+    ctx.fillRect(0, 0, mobilePlateWidth, mobilePlateHeight);
+    if (index === 0) {
+      var corridor = mobileSource(corridorVideo, corridorPoster);
+      if (!corridor) return false;
+      ctx.filter = "saturate(1.02) contrast(1.04) brightness(.98)";
+      var corridorDrawn = drawMobileCover(ctx, corridor, .5, .48, 1.01);
+      ctx.filter = "none";
+      return corridorDrawn;
+    }
+    if (index === 1) return drawMobileRanaScene(ctx);
+    if (index === 2) return drawMobileProrokScene(ctx);
+    return drawMobileTerminalScene(ctx);
+  }
+
+  function renderMobilePlate(index, values) {
+    if (!initMobilePlate()) {
+      setMobilePlateActive(false);
+      return false;
+    }
+    if (!composeMobileScene(index)) return false;
+    var scale = values && values.plateScale != null ? values.plateScale : 1;
+    var shift = values && values.plateShift != null ? values.plateShift : 0;
+    mobilePlateCtx.setTransform(1, 0, 0, 1, 0, 0);
+    mobilePlateCtx.globalAlpha = 1;
+    mobilePlateCtx.globalCompositeOperation = "source-over";
+    mobilePlateCtx.filter = "none";
+    mobilePlateCtx.fillStyle = "#040a0c";
+    mobilePlateCtx.fillRect(0, 0, mobilePlateWidth, mobilePlateHeight);
+    mobilePlateCtx.save();
+    mobilePlateCtx.translate(mobilePlateWidth * .5, mobilePlateHeight * (.5 + shift / 100));
+    mobilePlateCtx.scale(scale, scale);
+    mobilePlateCtx.translate(-mobilePlateWidth * .5, -mobilePlateHeight * .5);
+    mobilePlateCtx.drawImage(mobileSceneBuffer, 0, 0);
+    mobilePlateCtx.restore();
+    setMobilePlateActive(true);
+    return true;
+  }
+
   function paintMobileRest(index) {
-    applySceneValues(mobileSceneValuesForRest(index));
+    var values = mobileSceneValuesForRest(index);
+    var rendered = renderMobilePlate(index, values);
+    if (rendered || !mobilePlateActive) applySceneValues(values);
   }
 
   function paintMobileTransition(fromIndex, toIndex, t) {
-    applySceneValues(mobileSceneValuesForTransition(fromIndex, toIndex, t));
+    var values = mobileSceneValuesForTransition(fromIndex, toIndex, t);
+    var index = mobileAuthoritativeIndex(fromIndex, toIndex, t);
+    var rendered = renderMobilePlate(index, values);
+    if (rendered || !mobilePlateActive) applySceneValues(values);
   }
 
   function paint(p) {
@@ -1845,6 +2124,10 @@
       return;
     }
     if (isMobile() && motionOn) {
+      paintMobileRest(mobileStopIndexAtProgress(p));
+      return;
+    }
+    if (isMobile() && !motionOn) {
       paintMobileRest(mobileStopIndexAtProgress(p));
       return;
     }
@@ -1907,10 +2190,16 @@
     renderRaf = 0;
     var dt = lastFrameTs ? Math.min(0.048, (ts - lastFrameTs) / 1000) : 0.016;
     lastFrameTs = ts;
-    if (!motionOn || isMobile()) {
+    if (!motionOn) {
       progressCurrent = progressTarget;
       paint(progressCurrent);
       lastFrameTs = 0;
+      return;
+    }
+    if (isMobile()) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+      renderRaf = window.requestAnimationFrame(renderTick);
       return;
     }
     var alpha = 1 - Math.exp(-dt / Math.max(0.001, TAU));
@@ -1974,10 +2263,15 @@
 
   function videosForMobileStop(id) {
     if (id === "corridor") return [corridorVideo];
-    if (id === "rana") return [studioVideo, ringVideo];
+    if (id === "rana") return [ringVideo];
     if (id === "prorok") return [inkVideo];
-    /* Invitation has no destination video. The terminal portrait is already
-       in the document and is treated as synchronously ready. */
+    /* Invitation is image-backed; image readiness is checked separately. */
+    return [];
+  }
+
+  function imagesForMobileStop(id) {
+    if (id === "prorok") return [prorokPortrait];
+    if (id === "invitation") return [terminalReturn];
     return [];
   }
 
@@ -2080,6 +2374,9 @@
     if (!video || video.error || video.readyState < 2) return false;
     video.jwDecodedFrame = true;
     if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+    if (typeof window !== "undefined" && isMobile()) {
+      window.setTimeout(function () { syncVideos(progressCurrent); }, 0);
+    }
     return true;
   }
 
@@ -2127,18 +2424,26 @@
 
   function mobileDestinationReady(id) {
     var videos = videosForMobileStop(id);
+    var images = imagesForMobileStop(id);
     var i;
     for (i = 0; i < videos.length; i++) {
       if (!videoHasRenderableFrame(videos[i])) return false;
+    }
+    for (i = 0; i < images.length; i++) {
+      if (!imageHasRenderableFrame(images[i])) return false;
     }
     return true;
   }
 
   function mobileDestinationFailed(id) {
     var videos = videosForMobileStop(id);
+    var images = imagesForMobileStop(id);
     var i;
     for (i = 0; i < videos.length; i++) {
       if (videos[i] && videos[i].error) return true;
+    }
+    for (i = 0; i < images.length; i++) {
+      if (images[i] && images[i].complete && images[i].naturalWidth === 0) return true;
     }
     return false;
   }
@@ -2197,10 +2502,19 @@
     if (video.readyState >= 2) onDataSignal();
   }
 
+  function bindImageReadiness(image) {
+    if (!image) return;
+    function signal() {
+      if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+      if (isMobile()) paint(progressCurrent);
+    }
+    image.addEventListener("load", signal);
+    image.addEventListener("error", signal);
+  }
+
   function warmMobileBeatVideos() {
     if (!motionOn || !isMobile()) return;
     requestMobileVideo(corridorVideo);
-    requestMobileVideo(studioVideo);
     requestMobileVideo(ringVideo);
     requestMobileVideo(inkVideo);
   }
@@ -2234,6 +2548,25 @@
       return;
     }
     armVideos();
+    if (isMobile()) {
+      var activeIndex = mobileTransition
+        ? mobileAuthoritativeIndex(mobileTransition.fromIndex, mobileTransition.toIndex, mobileTransition.t)
+        : mobileStopIndexAtProgress(p);
+      var activeId = MOBILE_STOPS[activeIndex].id;
+      var activeVideos = videosForMobileStop(activeId);
+      function isActive(video) {
+        for (var i = 0; i < activeVideos.length; i++) if (activeVideos[i] === video) return true;
+        return false;
+      }
+      if (isActive(corridorVideo) || videoIsPreparedDestination(corridorVideo) || videoNeedsHiddenWarm(corridorVideo)) playSafe(corridorVideo);
+      else pauseSafe(corridorVideo);
+      pauseSafe(studioVideo);
+      if (isActive(ringVideo) || videoIsPreparedDestination(ringVideo) || videoNeedsHiddenWarm(ringVideo)) playSafe(ringVideo);
+      else pauseSafe(ringVideo);
+      if (isActive(inkVideo) || videoIsPreparedDestination(inkVideo) || videoNeedsHiddenWarm(inkVideo)) playSafe(inkVideo);
+      else pauseSafe(inkVideo);
+      return;
+    }
     if (p < 0.16 || videoIsPreparedDestination(corridorVideo) || videoNeedsHiddenWarm(corridorVideo)) playSafe(corridorVideo);
     else pauseSafe(corridorVideo);
     if ((p > 0.14 && p < 0.62) || videoIsPreparedDestination(studioVideo) || videoNeedsHiddenWarm(studioVideo)) playSafe(studioVideo);
@@ -2568,7 +2901,11 @@
     cancelMobileGlide();
     resetMobileTouch();
     resetMobileWheel();
-    if (motionOn && isMobile()) warmMobileBeatVideos();
+    if (!isMobile()) setMobilePlateActive(false);
+    if (motionOn && isMobile()) {
+      warmMobileBeatVideos();
+      startRenderLoop();
+    }
     sampleScroll();
   }
 
@@ -2632,6 +2969,10 @@
   bindVideoReadiness(studioVideo);
   bindVideoReadiness(ringVideo);
   bindVideoReadiness(inkVideo);
+  bindImageReadiness(corridorPoster);
+  bindImageReadiness(ringPoster);
+  bindImageReadiness(prorokPortrait);
+  bindImageReadiness(terminalReturn);
 
   /* Enter from homepage exit: brief void veil, then corridor present */
   var enterFromHome = root.getAttribute("data-work-enter") === "1";
@@ -2675,6 +3016,8 @@
     get mobileWaiting() { return mobileWaiting; },
     get mobileRequestedStop() { return mobileRequestedStopId; },
     get mobileDestination() { return mobileDestinationId; },
+    get mobilePlateActive() { return mobilePlateActive; },
+    get mobilePlateSize() { return { width: mobilePlateWidth, height: mobilePlateHeight }; },
     get mobileTransition() {
       return mobileTransition
         ? { fromIndex: mobileTransition.fromIndex, toIndex: mobileTransition.toIndex, t: mobileTransition.t }

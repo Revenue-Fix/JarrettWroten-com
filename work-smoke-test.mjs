@@ -191,7 +191,7 @@ ok(workHtml.includes('data-motion="off"') || workHtml.includes("data-motion\", o
 ok(workHtml.includes('terminalHold') && workHtml.includes('--terminal-hold'), 'terminal progress mapping');
 ok(workHtml.includes('layer-terminal') && workHtml.includes('copy-terminal'), 'terminal world + copy rest');
 ok(
-  /class="terminal-return"\s+src="\.\.\/assets\/golden-arrival\/frames\/ga-360\.webp"/.test(workHtml),
+  /class="terminal-return"\s+id="terminal-return"\s+src="\.\.\/assets\/golden-arrival\/frames\/ga-360\.webp"/.test(workHtml),
   'terminal resolves to approved Jarrett close-up'
 );
 // Focused tripwire — canonical: work-smoke-test.mjs; consumer/activation: Work release
@@ -555,15 +555,15 @@ ok(
  * Canonical path: work-smoke-test.mjs
  * Future consumer: Codex closer + every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
- * Behavioral check: four STILL rests; one-gesture / hidden 24000ms readiness
- * ceiling / 2400ms visible single-plate handoff / lock; cold-load warms every
+ * Behavioral check: four STILL rests; one-gesture / hidden 8000ms readiness
+ * ceiling / 960ms visible atomic-canvas handoff / lock; cold-load warms each
  * beat video; a destination is ready only after each required video has a
  * decoded frame; outgoing rest stays painted until that promise resolves;
  * timeout/error/stale tokens cancel without advancing; the visible handoff
  * keeps exactly one authored rest authoritative and cuts on a named phase —
  * no passage-veil, blur plate, dissolve, or third visual; copy exits before
  * the cut and enters after; reverse uses the same readiness rule and cut
- * grammar; landing clears transition state after 2400ms; Motion Off
+ * grammar; landing clears transition state after 960ms; Motion Off
  * immediate; TAU = 0.41. Rejected silhouettes (expanding gem, bottom-up
  * stack, vertical tear, clip-path inset split, cyan/copper veil) stay gone.
  * Retirement: only when the four-rest mobile passage is replaced.
@@ -706,12 +706,11 @@ ok(
   );
 
   ok(
-    /var MOBILE_SECTION_GLIDE_MS = 2400/.test(workHtml) &&
-      /var MOBILE_READINESS_MS = 24000/.test(workHtml) &&
+    /var MOBILE_SECTION_GLIDE_MS = 960/.test(workHtml) &&
+      /var MOBILE_READINESS_MS = 8000/.test(workHtml) &&
       /glideMs:\s*MOBILE_SECTION_GLIDE_MS/.test(workHtml) &&
-      /readinessMs:\s*MOBILE_READINESS_MS/.test(workHtml) &&
-      !/var MOBILE_SECTION_GLIDE_MS = 1200/.test(workHtml),
-    'hidden readiness ceiling is 24000ms and visible travel stays 2400ms'
+      /readinessMs:\s*MOBILE_READINESS_MS/.test(workHtml),
+    'hidden readiness ceiling is 8000ms and visible travel is 960ms'
   );
   ok(
     /function scrollToMobileStopIndex\(index\)[\s\S]*?mobileWaiting = true[\s\S]*?prepareMobileDestination\(bounded\)[\s\S]*?function startPassage\(\)[\s\S]*?glideScrollTo\(top\)[\s\S]*?if \(mobileDestinationReady\(stop\.id\)\)[\s\S]*?settle\("ready"\)[\s\S]*?waitForMobileDestinationReady\(stop\.id, token/.test(workHtml),
@@ -734,6 +733,8 @@ ok(
   const studioVideo = { id: 'studio' };
   const ringVideo = { id: 'ring' };
   const inkVideo = { id: 'ink' };
+  const prorokPortrait = { id: 'prorok-portrait', complete: true, naturalWidth: 617, naturalHeight: 849 };
+  const terminalReturn = { id: 'terminal-return', complete: true, naturalWidth: 1280, naturalHeight: 720 };
   if (videosForMatch) {
     try {
       videosForMobileStop = new Function(
@@ -752,7 +753,7 @@ ok(
     const sameRefs = (got, expected) =>
       got.length === expected.length && got.every((video, i) => video === expected[i]);
     ok(sameRefs(videosForMobileStop('corridor'), [corridorVideo]), 'Corridor destination is the corridor loop');
-    ok(sameRefs(videosForMobileStop('rana'), [studioVideo, ringVideo]), 'Rana destination is studio + ring');
+    ok(sameRefs(videosForMobileStop('rana'), [ringVideo]), 'Rana destination is the single ring carrier');
     ok(sameRefs(videosForMobileStop('prorok'), [inkVideo]), 'ProRok destination is the ink loop');
     ok(sameRefs(videosForMobileStop('invitation'), []), 'Invitation destination has no video to force-play');
 
@@ -786,9 +787,10 @@ ok(
     /video\.preload = "auto"/.test(requestSrc) &&
       /playSafe\(video\)/.test(requestSrc) &&
       /requestMobileVideo/.test(prepareSrc) &&
-      /function warmMobileBeatVideos\(\)[\s\S]*?requestMobileVideo\(corridorVideo\)[\s\S]*?requestMobileVideo\(studioVideo\)[\s\S]*?requestMobileVideo\(ringVideo\)[\s\S]*?requestMobileVideo\(inkVideo\)/.test(workHtml) &&
+      /function warmMobileBeatVideos\(\)[\s\S]*?requestMobileVideo\(corridorVideo\)[\s\S]*?requestMobileVideo\(ringVideo\)[\s\S]*?requestMobileVideo\(inkVideo\)/.test(workHtml) &&
+      !/function warmMobileBeatVideos\(\)[\s\S]*?requestMobileVideo\(studioVideo\)/.test(workHtml) &&
       /if \(motionOn\) \{[\s\S]*?warmMobileBeatVideos\(\)/.test(workHtml),
-    'cold load warms every mobile beat video with preload=auto and a muted play attempt'
+    'cold load warms only the three mobile source videos with preload=auto and a muted play attempt'
   );
   ok(
     /addEventListener\("loadeddata"/.test(workHtml) &&
@@ -809,7 +811,7 @@ ok(
   );
   ok(
     /if \(elapsed < 1\) mobileScrollRaf = window\.requestAnimationFrame\(glide\);\s*else \{\s*window\.scrollTo\(0, top\);\s*mobileScrollRaf = 0;\s*mobileTransition = null;\s*mobileGlideLocked = false;\s*clearMobileDestination\(\);\s*sampleScroll\(\);/.test(workHtml),
-    'landing clears transition state, synchronizes exact rest scroll, and unlocks only after the 2400ms clock'
+    'landing clears transition state, synchronizes exact rest scroll, and unlocks only after the 960ms clock'
   );
   ok(
     /function cancelMobileGlide\(\)[\s\S]*?clearMobileDestination\(\)/.test(workHtml) &&
@@ -824,7 +826,7 @@ ok(
   {
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
     const duration = Number((workHtml.match(/var MOBILE_SECTION_GLIDE_MS = ([0-9]+)/) || [])[1]);
-    ok(duration === 2400, 'parsed mobile glide duration is 2400');
+    ok(duration === 960, 'parsed mobile glide duration is 960');
 
     const easeName = (glideSrc.match(/var eased\s*=\s*([A-Za-z_][A-Za-z0-9_]*)\(elapsed\)/) || [])[1] || '';
     const easeSrc = easeName
@@ -848,8 +850,8 @@ ok(
     const uAt = (frac) => authoredEase(clamp(frac, 0, 1));
     const pAt = (ms) => from + (to - from) * uAt(ms / duration);
     ok(Math.abs(pAt(0) - from) < 1e-9, 'one clock departs from the current rest');
-    ok(Math.abs(pAt(2400) - to) < 1e-9, 'one clock arrives at the destination rest at 2400ms');
-    ok(pAt(1200) < to - 0.02, 'the old 1200ms mark is still mid-passage, not a landing');
+    ok(Math.abs(pAt(960) - to) < 1e-9, 'one clock arrives at the destination rest at 960ms');
+    ok(pAt(480) < to - 0.02, 'the 480ms midpoint remains in passage, not a landing');
 
     let monotonic = true;
     let prev = -1;
@@ -872,8 +874,8 @@ ok(
     ok(Math.abs((1 - uAt(1 - dt)) / dt) < 0.02, 'landing velocity is zero or near-zero');
 
     ok(
-      2399 / duration < 1 && 2400 / duration >= 1,
-      'glide lock follows the 2400ms clock to the rest, not visual proximity'
+      959 / duration < 1 && 960 / duration >= 1,
+      'glide lock follows the 960ms clock to the rest, not visual proximity'
     );
 
     ok(
@@ -922,11 +924,30 @@ ok(
       'mobile handoff keeps full-bleed plates with no veil or split-screen clip'
     );
     ok(
-      /\.world-stack\s*\{[\s\S]*?scale\(var\(--plate-scale\)\)/.test(mobileSheet) &&
-        /\.world-stack\s*\{[\s\S]*?var\(--plate-shift\)/.test(mobileSheet) &&
-        /html\[data-motion="off"\]\s*\.world-stack\s*\{[\s\S]*?transform\s*:\s*none/.test(mobileSheet),
-      'mobile plate camera rides world-stack and is identity under Motion Off'
+      /<canvas class="mobile-scene-plate" id="mobile-scene-plate"><\/canvas>/.test(workHtml) &&
+        /\.mobile-scene-plate\s*\{[\s\S]*?z-index\s*:\s*10[\s\S]*?background\s*:\s*var\(--void\)/.test(mobileSheet) &&
+        /html\.mobile-plate-active \.world-stack > \.layer[\s\S]*?visibility\s*:\s*hidden/.test(mobileSheet),
+      'mobile recipient sees one opaque canvas while legacy media layers remain hidden below it'
     );
+    ok(
+      /function renderMobilePlate\(index, values\)[\s\S]*?composeMobileScene\(index\)[\s\S]*?drawImage\(mobileSceneBuffer, 0, 0\)[\s\S]*?setMobilePlateActive\(true\)/.test(workHtml) &&
+        /values && values\.plateScale/.test(workHtml) &&
+        /values && values\.plateShift/.test(workHtml) &&
+        /html\.mobile-plate-active \.world-stack\s*\{[\s\S]*?transform\s*:\s*none/.test(mobileSheet),
+      'mobile camera is applied inside the atomic canvas without a second transformed compositor plane'
+    );
+    {
+      const renderSrc = (workHtml.match(/function renderMobilePlate\(index, values\) \{[\s\S]*?\n  \}/) || [''])[0];
+      const composeAt = renderSrc.indexOf('composeMobileScene(index)');
+      const visibleClearAt = renderSrc.indexOf('mobilePlateCtx.fillRect');
+      ok(
+        /if \(!composeMobileScene\(index\)\) return false;/.test(renderSrc) &&
+          composeAt >= 0 && visibleClearAt > composeAt &&
+          /mobileSceneBufferCtx/.test(workHtml) &&
+          /mobileMaskBufferCtx/.test(workHtml),
+        'a failed source draw retains the last complete visible frame; only a completed off-DOM buffer may publish'
+      );
+    }
     ok(
       /\.scene-copy--rana\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-rana\)/.test(mobileSheet) &&
         /\.scene-copy--prorok\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-prorok\)/.test(mobileSheet) &&
@@ -963,10 +984,10 @@ ok(
       'pair renderer names a cut phase and does not mix complete rests or add a veil'
     );
     ok(
-      /function paintMobileRest\(index\) \{\s*applySceneValues\(mobileSceneValuesForRest/.test(workHtml) &&
+      /function paintMobileRest\(index\)[\s\S]*?renderMobilePlate\(index, values\)[\s\S]*?applySceneValues\(values\)/.test(workHtml) &&
         /function cancelVisibleMobileGlide\(\)[\s\S]*?mobileTransition = null/.test(workHtml) &&
         !/clearPassageVeil/.test(workHtml),
-      'landing and cancel restore a rest without a veil path'
+      'landing and cancel restore one complete canvas rest without a veil path'
     );
   }
 
@@ -1236,22 +1257,22 @@ ok(
           Math.abs(mobilePairClock(0)) < 1e-12 && Math.abs(mobilePairClock(1) - 1) < 1e-12,
           'pair clock endpoints are 0 and 1'
         );
-        const t250 = mobilePairClock(250 / 2400);
-        ok(t250 >= 250 / 2400 - 1e-12, 'pair clock is not slower than linear wall time at 250ms');
+        const t250 = mobilePairClock(250 / 960);
+        ok(t250 >= 250 / 960 - 1e-12, 'pair clock is not slower than linear wall time at 250ms');
         let early = true;
         let dead = false;
         for (const [fromIndex, toIndex] of pairs) {
           const origin = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock(0));
           const at250 = mobileSceneValuesForTransition(fromIndex, toIndex, t250);
           if (dist(at250, origin) < 0.12) early = false;
-          for (let ms = 350; ms <= 2400; ms += 25) {
-            const a = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock((ms - 350) / 2400));
-            const b = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock(ms / 2400));
+          for (let ms = 160; ms <= 960; ms += 20) {
+            const a = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock((ms - 160) / 960));
+            const b = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock(ms / 960));
             if (dist(a, b) < 0.045) dead = true;
           }
         }
         ok(early, 'every adjacent pair shows authored change by 250ms');
-        ok(!dead, 'no authored dead interval lasts more than 350ms');
+        ok(!dead, 'no authored dead interval lasts more than 160ms');
       }
     }
   }
@@ -1273,7 +1294,7 @@ ok(
         'studioVideo',
         'ringVideo',
         'inkVideo',
-        'function videoNeedsHiddenWarm(){ return false; }\n' + syncMatch[0] + '; return syncVideos;'
+        'function isMobile(){ return false; }\nfunction videoNeedsHiddenWarm(){ return false; }\n' + syncMatch[0] + '; return syncVideos;'
       )(
         true,
         function armVideos() {},
@@ -1319,7 +1340,7 @@ ok(
         'studioVideo',
         'ringVideo',
         'inkVideo',
-        'function videoNeedsHiddenWarm(video){ return video && video.id === "ink"; }\n' +
+        'function isMobile(){ return false; }\nfunction videoNeedsHiddenWarm(video){ return video && video.id === "ink"; }\n' +
           syncMatch[0] +
           '; return syncVideos;'
       )(
@@ -1393,7 +1414,9 @@ ok(
     extractNamedFunction('proveHiddenVideoFrame'),
     extractNamedFunction('armVideoFrameCallback'),
     extractNamedFunction('videosForMobileStop'),
+    extractNamedFunction('imagesForMobileStop'),
     extractNamedFunction('videoHasRenderableFrame'),
+    extractNamedFunction('imageHasRenderableFrame'),
     extractNamedFunction('mobileDestinationReady'),
     extractNamedFunction('mobileDestinationFailed'),
     extractNamedFunction('mobileReadinessStatus'),
@@ -1433,6 +1456,8 @@ ok(
       'studioVideo',
       'ringVideo',
       'inkVideo',
+      'prorokPortrait',
+      'terminalReturn',
       'playSafe',
       'motionOn',
       'isMobile',
@@ -1443,6 +1468,8 @@ ok(
       studioVideo,
       ringVideo,
       inkVideo,
+      prorokPortrait,
+      terminalReturn,
       function playSafe(video) {
         playCalls.push(video && video.id);
         if (video && typeof video.play === 'function') video.play();
@@ -1572,28 +1599,20 @@ ok(
       hiddenStudio._heldCallback();
       ok(videoHasRenderableFrame(hiddenStudio), 'a later successful callback decodes after reset');
 
-      const ranaStudio = makeFakeVideo('studio');
       const ranaRing = makeFakeVideo('ring');
-      bindVideoReadiness(ranaStudio);
       bindVideoReadiness(ranaRing);
-      ranaStudio.readyState = 2;
       ranaRing.readyState = 2;
-      ranaStudio.dispatch('loadeddata');
       ranaRing.dispatch('loadeddata');
       ok(
-        !videoHasRenderableFrame(ranaStudio) && !videoHasRenderableFrame(ranaRing),
-        'both Rana videos stay unready on data events while rVFC is silent'
+        !videoHasRenderableFrame(ranaRing),
+        'Rana ring stays unready on a data event while rVFC is silent'
       );
-      ranaStudio.paused = false;
-      ranaStudio.currentTime = 0.2;
-      ranaStudio.dispatch('timeupdate');
-      ok(videoHasRenderableFrame(ranaStudio) && !videoHasRenderableFrame(ranaRing), 'one Rana proof is not enough');
       ranaRing.paused = false;
       ranaRing.currentTime = 0.2;
       ranaRing.dispatch('timeupdate');
       ok(
-        videoHasRenderableFrame(ranaStudio) && videoHasRenderableFrame(ranaRing),
-        'Rana needs both hidden-frame proofs'
+        videoHasRenderableFrame(ranaRing),
+        'Rana requires one proven frame from its single mobile carrier'
       );
 
       const failed = makeFakeVideo('ink');
@@ -1683,23 +1702,27 @@ ok(
     inkVideo.error = null;
     corridorVideo.readyState = 0;
     corridorVideo.error = null;
-    ok(!mobileDestinationReady('rana'), 'Rana is not ready when only studio has a decoded frame');
-    ok(mobileDestinationReady('prorok'), 'ProRok is ready from the ink loop alone');
+    ok(!mobileDestinationReady('rana'), 'Rana is not ready before the single ring carrier has a decoded frame');
+    ok(mobileDestinationReady('prorok'), 'ProRok is ready from its ink loop plus loaded portrait');
     ok(!mobileDestinationReady('corridor'), 'reverse corridor is not ready until its loop has a frame');
-    ok(mobileDestinationReady('invitation'), 'Invitation has no video and is immediately ready');
+    ok(mobileDestinationReady('invitation'), 'Invitation is ready only when its terminal image is loaded');
+    terminalReturn.complete = false;
+    ok(!mobileDestinationReady('invitation'), 'Invitation cannot cut to an undecoded terminal image');
+    terminalReturn.complete = true;
+    prorokPortrait.complete = false;
+    ok(!mobileDestinationReady('prorok'), 'ProRok cannot cut to an undecoded portrait image');
+    prorokPortrait.complete = true;
     ringVideo.readyState = 2;
-    ok(mobileDestinationReady('rana'), 'Rana becomes ready only after both studio and ring have frames');
+    ok(mobileDestinationReady('rana'), 'Rana becomes ready from the decoded ring carrier');
     studioVideo.requestVideoFrameCallback = function () {};
     ringVideo.requestVideoFrameCallback = function () {};
     studioVideo.jwSawDataEvent = true;
     ringVideo.jwSawDataEvent = true;
     delete studioVideo.jwDecodedFrame;
     delete ringVideo.jwDecodedFrame;
-    ok(!mobileDestinationReady('rana'), 'Rana stays pending on RVFC videos after data events only');
-    studioVideo.jwDecodedFrame = true;
-    ok(!mobileDestinationReady('rana'), 'one presented Rana frame is still insufficient');
+    ok(!mobileDestinationReady('rana'), 'Rana stays pending on an RVFC ring after data events only');
     ringVideo.jwDecodedFrame = true;
-    ok(mobileDestinationReady('rana'), 'Rana is ready only after both presented-frame callbacks');
+    ok(mobileDestinationReady('rana'), 'Rana is ready after the ring presented-frame callback');
     delete studioVideo.requestVideoFrameCallback;
     delete ringVideo.requestVideoFrameCallback;
     delete studioVideo.jwSawDataEvent;
@@ -1708,9 +1731,9 @@ ok(
     delete ringVideo.jwDecodedFrame;
     corridorVideo.readyState = 2;
     ok(mobileDestinationReady('corridor'), 'reverse corridor uses the same decoded-frame rule');
-    studioVideo.error = { code: 4 };
+    ringVideo.error = { code: 4 };
     ok(mobileDestinationFailed('rana') && !mobileDestinationReady('rana'), 'a Rana media error fails the destination');
-    studioVideo.error = null;
+    ringVideo.error = null;
 
     const coldStudio = { id: 'studio', readyState: 0, preload: 'metadata', loadCalls: 0, play() { this.played = true; } };
     coldStudio.load = function load() { this.loadCalls += 1; };
@@ -1735,8 +1758,9 @@ ok(
     inkVideo.play = function play() {};
     warmMobileBeatVideos();
     ok(
-      ['corridor', 'studio', 'ring', 'ink'].every((id) => playCalls.includes(id) && loadCalls.includes(id)),
-      'cold-load warming requests every mobile beat video'
+      ['corridor', 'ring', 'ink'].every((id) => playCalls.includes(id) && loadCalls.includes(id)) &&
+        !playCalls.includes('studio') && !loadCalls.includes('studio'),
+      'cold-load warming requests only the three mobile source videos'
     );
 
     const restSnapshot = {
@@ -1765,7 +1789,7 @@ ok(
       failed: false,
       ready: true,
       elapsedMs: 0,
-      ceilingMs: 24000,
+      ceilingMs: 8000,
     }) === 'ready', 'already-decoded media is ready with no mandatory delay');
     ok(applyMobileReadinessResult('ready', 1, 1, startPassage, abortRequest) === 'started', 'ready-before-transition starts the existing passage');
     ok(waitingScene.rest === 'rana', 'the visible clock starts only after readiness resolves');
@@ -1777,9 +1801,9 @@ ok(
       generation: 1,
       failed: false,
       ready: false,
-      elapsedMs: 23999,
-      ceilingMs: 24000,
-    }) === 'pending', 'an unreadied destination stays pending before the 24000ms ceiling');
+      elapsedMs: 7999,
+      ceilingMs: 8000,
+    }) === 'pending', 'an unreadied destination stays pending before the 8000ms ceiling');
     ok(
       waitingScene.scroll === restSnapshot.scroll &&
         waitingScene.copyRana === restSnapshot.copyRana &&
@@ -1795,10 +1819,10 @@ ok(
       generation: 1,
       failed: false,
       ready: false,
-      elapsedMs: 24000,
-      ceilingMs: 24000,
+      elapsedMs: 8000,
+      ceilingMs: 8000,
     });
-    ok(timeoutStatus === 'timeout', '24000ms without a decoded frame times out');
+    ok(timeoutStatus === 'timeout', '8000ms without a decoded frame times out');
     ok(applyMobileReadinessResult(timeoutStatus, 1, 1, startPassage, abortRequest) === 'timeout', 'timeout cancels instead of starting the passage');
     ok(waitingScene.rest === 'corridor' && waitingScene.unlocked === true, 'timeout leaves the outgoing rest intact and unlocks navigation');
 
@@ -1809,7 +1833,7 @@ ok(
       failed: true,
       ready: false,
       elapsedMs: 40,
-      ceilingMs: 24000,
+      ceilingMs: 8000,
     });
     ok(errorStatus === 'error', 'a media error is a failed readiness result');
     ok(applyMobileReadinessResult(errorStatus, 1, 1, startPassage, abortRequest) === 'error', 'error cancels the requested move');
@@ -1823,7 +1847,7 @@ ok(
       failed: false,
       ready: true,
       elapsedMs: 10,
-      ceilingMs: 24000,
+      ceilingMs: 8000,
     }) === 'stale', 'a newer generation makes the old readiness token stale');
     ok(
       applyMobileReadinessResult('ready', 1, 2, function () { staleStarted = true; }, function () { staleAborted = true; }) === 'stale' &&
@@ -1833,10 +1857,9 @@ ok(
     );
 
     ok(
-      Number((workHtml.match(/var MOBILE_READINESS_MS = ([0-9]+)/) || [])[1]) === 24000 &&
-        Number((workHtml.match(/var MOBILE_SECTION_GLIDE_MS = ([0-9]+)/) || [])[1]) === 2400 &&
-        24000 === 10 * 2400,
-      'exact clocks stay 24000ms hidden readiness and 2400ms visible passage'
+      Number((workHtml.match(/var MOBILE_READINESS_MS = ([0-9]+)/) || [])[1]) === 8000 &&
+        Number((workHtml.match(/var MOBILE_SECTION_GLIDE_MS = ([0-9]+)/) || [])[1]) === 960,
+      'exact clocks stay 8000ms hidden readiness and 960ms visible passage'
     );
   }
 }
