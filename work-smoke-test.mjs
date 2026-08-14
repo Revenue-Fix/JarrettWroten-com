@@ -1026,7 +1026,7 @@ ok(
         return v[key] + 1e-9 >= lo && v[key] - 1e-9 <= hi;
       });
     const hasWorld = (v) =>
-      (v.ranaOpen < 0.97 && v.prorokOpen < 0.97 && v.terminalHold < 0.97) ||
+      v.entryCue > 0.02 ||
       v.ranaOpen > 0.02 ||
       v.prorokOpen > 0.02 ||
       v.terminalHold > 0.02;
@@ -1110,6 +1110,15 @@ ok(
       ok(endpointsMatch, 'local t=0 matches the source rest and t=1 matches the destination rest');
       ok(midpointsMoved, 'at t=.25, .50, and .75 every transition has a materially changed visible state');
       ok(worldsPresent, 'no forward or reverse sample leaves all authoritative world layers absent');
+      ok(hasWorld(mobileSceneValuesForRest(0)), 'corridor rest still counts as a world via entry cue');
+      ok(hasWorld(mobileSceneValuesForRest(1)), 'Rana rest still counts as a world');
+      const zeroedRest = Object.assign({}, mobileSceneValuesForRest(1));
+      worldKeys.forEach((key) => { zeroedRest[key] = 0; });
+      zeroedRest.entryCue = 0;
+      zeroedRest.copyRana = 0;
+      zeroedRest.copyProrok = 0;
+      zeroedRest.copyTerminal = 0;
+      ok(!hasWorld(zeroedRest), 'hasWorld fails when an authoritative world rest is zeroed');
       ok(noInterstitial, 'transition values contain no veil or interstitial channel');
       ok(directHandoff, 'midpoint is a direct source/destination full-frame handoff, not a third visual or blank');
       ok(sourceLegible, 'the outgoing world stays the nearer plate at the beginning of the handoff');
@@ -1265,6 +1274,19 @@ ok(
   }
 
   const readinessParts = [
+    'var MOBILE_FRAME_ADVANCE_S = 0.05;',
+    'var hiddenFrameCanvas = null;',
+    'var hiddenFrameCtx = null;',
+    'var mobileReadinessPulse = null;',
+    extractNamedFunction('resetVideoReadinessState'),
+    extractNamedFunction('videoIsSameOrigin'),
+    extractNamedFunction('getHiddenFrameProbe'),
+    extractNamedFunction('probeHiddenVideoFrame'),
+    extractNamedFunction('capturePlaybackBaseline'),
+    extractNamedFunction('videoHasPlaybackAdvance'),
+    extractNamedFunction('noteDecodedVideoFrame'),
+    extractNamedFunction('proveHiddenVideoFrame'),
+    extractNamedFunction('armVideoFrameCallback'),
     extractNamedFunction('videosForMobileStop'),
     extractNamedFunction('videoHasRenderableFrame'),
     extractNamedFunction('mobileDestinationReady'),
@@ -1273,8 +1295,9 @@ ok(
     extractNamedFunction('applyMobileReadinessResult'),
     extractNamedFunction('requestMobileVideo'),
     extractNamedFunction('warmMobileBeatVideos'),
+    extractNamedFunction('bindVideoReadiness'),
   ];
-  ok(readinessParts.every((part) => part.length > 0), 'readiness helpers are extractable');
+  ok(readinessParts.every((part) => String(part).length > 0), 'readiness helpers are extractable');
 
   let videoHasRenderableFrame;
   let mobileDestinationReady;
@@ -1283,6 +1306,9 @@ ok(
   let applyMobileReadinessResult;
   let requestMobileVideo;
   let warmMobileBeatVideos;
+  let bindVideoReadiness;
+  let probeHiddenVideoFrame;
+  let resetVideoReadinessState;
   const playCalls = [];
   const loadCalls = [];
   try {
@@ -1294,6 +1320,9 @@ ok(
       applyMobileReadinessResult,
       requestMobileVideo,
       warmMobileBeatVideos,
+      bindVideoReadiness,
+      probeHiddenVideoFrame,
+      resetVideoReadinessState,
     } = new Function(
       'corridorVideo',
       'studioVideo',
@@ -1303,7 +1332,7 @@ ok(
       'motionOn',
       'isMobile',
       readinessParts.join('\n') +
-        '; return { videoHasRenderableFrame, mobileDestinationReady, mobileDestinationFailed, mobileReadinessStatus, applyMobileReadinessResult, requestMobileVideo, warmMobileBeatVideos };'
+        '; return { videoHasRenderableFrame, mobileDestinationReady, mobileDestinationFailed, mobileReadinessStatus, applyMobileReadinessResult, requestMobileVideo, warmMobileBeatVideos, bindVideoReadiness, probeHiddenVideoFrame, resetVideoReadinessState };'
     )(
       corridorVideo,
       studioVideo,
@@ -1326,7 +1355,9 @@ ok(
       typeof mobileReadinessStatus === 'function' &&
       typeof applyMobileReadinessResult === 'function' &&
       typeof requestMobileVideo === 'function' &&
-      typeof warmMobileBeatVideos === 'function',
+      typeof warmMobileBeatVideos === 'function' &&
+      typeof bindVideoReadiness === 'function' &&
+      typeof probeHiddenVideoFrame === 'function',
     'readiness helpers run as functions'
   );
 
@@ -1359,6 +1390,134 @@ ok(
     rvfcData.jwDecodedFrame = true;
     ok(videoHasRenderableFrame(rvfcData), 'an RVFC-capable video is ready only after the presented-frame callback');
     ok(videoHasRenderableFrame(rvfcFrame), 'requestVideoFrameCallback can prove a decoded frame');
+
+    function makeFakeVideo(id) {
+      const listeners = {};
+      const video = {
+        id: id,
+        readyState: 0,
+        error: null,
+        paused: true,
+        currentTime: 0,
+        src: '../assets/work/rana/' + (id === 'ring' ? 'ring-alexandrite.mp4' : 'studio-banner.mp4'),
+        requestVideoFrameCallback: function (cb) { this._heldCallback = cb; },
+        addEventListener: function (type, fn) {
+          (listeners[type] || (listeners[type] = [])).push(fn);
+        },
+        dispatch: function (type) {
+          (listeners[type] || []).slice().forEach(function (fn) { fn.call(video); });
+        },
+      };
+      return video;
+    }
+
+    if (typeof bindVideoReadiness === 'function') {
+      const hiddenStudio = makeFakeVideo('studio');
+      bindVideoReadiness(hiddenStudio);
+      hiddenStudio.readyState = 2;
+      hiddenStudio.dispatch('loadeddata');
+      ok(!videoHasRenderableFrame(hiddenStudio), 'rVFC exists but never fires: a bare data event stays unready');
+      ok(hiddenStudio.jwFrameCallbackArmed === true, 'rVFC is armed after the data signal');
+      ok(hiddenStudio.jwSawDataEvent === true, 'the data event is recorded without granting readiness');
+      hiddenStudio.paused = false;
+      hiddenStudio.currentTime = 0.2;
+      hiddenStudio.dispatch('timeupdate');
+      ok(videoHasRenderableFrame(hiddenStudio), 'the same hidden video becomes ready from current-frame proof');
+
+      hiddenStudio.dispatch('emptied');
+      ok(
+        hiddenStudio.jwDecodedFrame === false &&
+          hiddenStudio.jwFrameCallbackArmed === false &&
+          hiddenStudio.jwPlayBaseline == null,
+        'emptied clears stale readiness, baseline, and armed state'
+      );
+      ok(!videoHasRenderableFrame(hiddenStudio), 'a reset video is not ready');
+      hiddenStudio.readyState = 2;
+      hiddenStudio.error = null;
+      hiddenStudio.paused = true;
+      hiddenStudio.currentTime = 0;
+      hiddenStudio.dispatch('loadeddata');
+      ok(!videoHasRenderableFrame(hiddenStudio), 're-armed data event alone is still not ready');
+      ok(hiddenStudio.jwFrameCallbackArmed === true, 'a later data signal can arm rVFC again');
+      hiddenStudio.readyState = 1;
+      hiddenStudio._heldCallback();
+      ok(hiddenStudio.jwFrameCallbackArmed === false, 'the callback clears armed before recording readiness');
+      ok(!videoHasRenderableFrame(hiddenStudio), 'a callback with readyState < 2 does not mark ready');
+      hiddenStudio.readyState = 2;
+      hiddenStudio.dispatch('playing');
+      ok(hiddenStudio.jwFrameCallbackArmed === true, 'playing after a rejected callback can arm again');
+      hiddenStudio._heldCallback();
+      ok(videoHasRenderableFrame(hiddenStudio), 'a later successful callback decodes after reset');
+
+      const ranaStudio = makeFakeVideo('studio');
+      const ranaRing = makeFakeVideo('ring');
+      bindVideoReadiness(ranaStudio);
+      bindVideoReadiness(ranaRing);
+      ranaStudio.readyState = 2;
+      ranaRing.readyState = 2;
+      ranaStudio.dispatch('loadeddata');
+      ranaRing.dispatch('loadeddata');
+      ok(
+        !videoHasRenderableFrame(ranaStudio) && !videoHasRenderableFrame(ranaRing),
+        'both Rana videos stay unready on data events while rVFC is silent'
+      );
+      ranaStudio.paused = false;
+      ranaStudio.currentTime = 0.2;
+      ranaStudio.dispatch('timeupdate');
+      ok(videoHasRenderableFrame(ranaStudio) && !videoHasRenderableFrame(ranaRing), 'one Rana proof is not enough');
+      ranaRing.paused = false;
+      ranaRing.currentTime = 0.2;
+      ranaRing.dispatch('timeupdate');
+      ok(
+        videoHasRenderableFrame(ranaStudio) && videoHasRenderableFrame(ranaRing),
+        'Rana needs both hidden-frame proofs'
+      );
+
+      const failed = makeFakeVideo('ink');
+      bindVideoReadiness(failed);
+      failed.readyState = 2;
+      failed.dispatch('loadeddata');
+      failed.jwDecodedFrame = true;
+      failed.error = { code: 4 };
+      failed.dispatch('error');
+      ok(
+        failed.jwDecodedFrame === false && failed.jwFrameCallbackArmed === false,
+        'error clears stale decoded and armed state'
+      );
+    }
+
+    const rvfcAdvanced = {
+      readyState: 2,
+      error: null,
+      paused: false,
+      currentTime: 0.2,
+      jwPlayBaseline: 0,
+      jwSawDataEvent: true,
+      src: '../assets/work/rana/studio-banner.mp4',
+      requestVideoFrameCallback: function () {},
+    };
+    ok(videoHasRenderableFrame(rvfcAdvanced), 'playback advance proves a hidden current frame when rVFC never presents');
+    ok(
+      !probeHiddenVideoFrame(
+        { readyState: 2, error: null, src: '../assets/work/rana/studio-banner.mp4' },
+        { clearRect() {}, drawImage() {}, getImageData() { return { data: [0, 0, 0, 0] }; } }
+      ),
+      'a transparent canvas sample is not a decoded frame'
+    );
+    ok(
+      probeHiddenVideoFrame(
+        { readyState: 2, error: null, src: '../assets/work/rana/studio-banner.mp4' },
+        { clearRect() {}, drawImage() {}, getImageData() { return { data: [12, 40, 18, 255] }; } }
+      ),
+      'a readable opaque canvas pixel proves a hidden current frame'
+    );
+    ok(
+      !probeHiddenVideoFrame(
+        { readyState: 2, error: null, src: '../assets/work/rana/studio-banner.mp4' },
+        { clearRect() {}, drawImage() { throw new Error('tainted'); }, getImageData() { return { data: [1, 1, 1, 255] }; } }
+      ),
+      'a throwing canvas probe is not treated as ready'
+    );
 
     studioVideo.readyState = 2;
     studioVideo.error = null;

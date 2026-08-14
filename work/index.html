@@ -1488,8 +1488,10 @@
      so one vertical gesture lands on exactly one STILL rest; every mobile beat
      video is warmed hidden at cold load; a swipe may request the next rest but
      the outgoing composed rest stays painted until that beat's required media
-     has a decoded/renderable frame (loadeddata/canplay + readyState >= 2, and
-     requestVideoFrameCallback where exposed), with a 24000ms hidden ceiling;
+     has a decoded/renderable frame (loadeddata/canplay + readyState >= 2;
+     requestVideoFrameCallback when it fires; otherwise a reused 1x1 canvas
+     draw or a 0.05s playback-advance on same-origin hidden media), with a
+     24000ms hidden ceiling;
      Invitation is synchronously ready (portrait already in the document).
      Only then does one 2400ms direct handoff run: local pair + t dissolves the
      actual outgoing full-frame world into the actual incoming one. No
@@ -1558,6 +1560,7 @@
   var MOBILE_WHEEL_IDLE_MS = 180;
   var MOBILE_SECTION_GLIDE_MS = 2400;
   var MOBILE_READINESS_MS = 24000;
+  var MOBILE_FRAME_ADVANCE_S = 0.05;
   var MOBILE_STOPS = [
     { id: "corridor", progress: STILL.corridor },
     { id: "rana", progress: STILL.rana },
@@ -1585,6 +1588,8 @@
   var mobileReadinessTimer = 0;
   var mobileReadinessInterval = 0;
   var mobileReadinessPulse = null;
+  var hiddenFrameCanvas = null;
+  var hiddenFrameCtx = null;
 
   function clamp(v, a, b) {
     return Math.max(a, Math.min(b, v));
@@ -1938,13 +1943,116 @@
     playSafe(video);
   }
 
+  function resetVideoReadinessState(video) {
+    if (!video) return;
+    video.jwDecodedFrame = false;
+    video.jwSawDataEvent = false;
+    video.jwFrameCallbackArmed = false;
+    video.jwPlayBaseline = null;
+  }
+
+  function videoIsSameOrigin(video) {
+    if (!video) return false;
+    var src = video.currentSrc || video.src || "";
+    if (!src) return false;
+    if (src.indexOf("blob:") === 0 || src.indexOf("data:") === 0) return false;
+    try {
+      if (typeof window === "undefined" || !window.location) {
+        return src.charAt(0) === "." || src.charAt(0) === "/";
+      }
+      var resolved = new URL(src, window.location.href);
+      return resolved.origin === window.location.origin;
+    } catch (err) {
+      return src.indexOf("://") < 0;
+    }
+  }
+
+  function getHiddenFrameProbe() {
+    if (hiddenFrameCtx) return hiddenFrameCtx;
+    try {
+      if (typeof document === "undefined" || !document.createElement) return null;
+      var canvas = document.createElement("canvas");
+      canvas.width = 1;
+      canvas.height = 1;
+      var ctx = canvas.getContext("2d", { willReadFrequently: true });
+      if (!ctx) return null;
+      hiddenFrameCanvas = canvas;
+      hiddenFrameCtx = ctx;
+      return ctx;
+    } catch (err) {
+      return null;
+    }
+  }
+
+  function probeHiddenVideoFrame(video, ctx) {
+    if (!video || video.error || video.readyState < 2) return false;
+    if (!videoIsSameOrigin(video)) return false;
+    if (!ctx) ctx = getHiddenFrameProbe();
+    if (!ctx) return false;
+    try {
+      ctx.clearRect(0, 0, 1, 1);
+      ctx.drawImage(video, 0, 0, 1, 1);
+      var px = ctx.getImageData(0, 0, 1, 1).data;
+      return !!(px && px.length >= 4 && px[3] > 0);
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function capturePlaybackBaseline(video) {
+    if (!video || video.jwPlayBaseline != null) return;
+    if (typeof video.currentTime !== "number") return;
+    video.jwPlayBaseline = video.currentTime;
+  }
+
+  function videoHasPlaybackAdvance(video) {
+    if (!video || video.error || video.readyState < 2) return false;
+    if (video.paused !== false) return false;
+    if (typeof video.currentTime !== "number" || video.jwPlayBaseline == null) return false;
+    if (video.currentTime < video.jwPlayBaseline) return true;
+    return video.currentTime - video.jwPlayBaseline >= MOBILE_FRAME_ADVANCE_S;
+  }
+
+  function noteDecodedVideoFrame(video) {
+    if (!video || video.error || video.readyState < 2) return false;
+    video.jwDecodedFrame = true;
+    if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+    return true;
+  }
+
+  function proveHiddenVideoFrame(video) {
+    if (!video || video.error || video.readyState < 2) return false;
+    if (video.jwDecodedFrame === true) return true;
+    if (typeof video.requestVideoFrameCallback !== "function") {
+      return noteDecodedVideoFrame(video);
+    }
+    if (probeHiddenVideoFrame(video) || videoHasPlaybackAdvance(video)) {
+      return noteDecodedVideoFrame(video);
+    }
+    return false;
+  }
+
+  function armVideoFrameCallback(video) {
+    if (!video || typeof video.requestVideoFrameCallback !== "function") return;
+    if (video.jwFrameCallbackArmed) return;
+    video.jwFrameCallbackArmed = true;
+    try {
+      video.requestVideoFrameCallback(function () {
+        video.jwFrameCallbackArmed = false;
+        noteDecodedVideoFrame(video);
+      });
+    } catch (err) {
+      video.jwFrameCallbackArmed = false;
+      noteDecodedVideoFrame(video);
+    }
+  }
+
   function videoHasRenderableFrame(video) {
     if (!video || video.error) return false;
     if (video.readyState < 2) return false;
-    if (typeof video.requestVideoFrameCallback === "function") {
-      return video.jwDecodedFrame === true;
-    }
-    return true;
+    if (video.jwDecodedFrame === true) return true;
+    if (typeof video.requestVideoFrameCallback !== "function") return true;
+    return proveHiddenVideoFrame(video);
   }
 
   function mobileDestinationReady(id) {
@@ -1984,43 +2092,38 @@
     return "started";
   }
 
-  function noteDecodedVideoFrame(video) {
-    if (!video || video.error || video.readyState < 2) return;
-    video.jwDecodedFrame = true;
-    if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
-  }
-
   function bindVideoReadiness(video) {
     if (!video) return;
     function onDataSignal() {
       if (video.error) {
+        resetVideoReadinessState(video);
         if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
         return;
       }
       if (video.readyState < 2) return;
       video.jwSawDataEvent = true;
-      if (typeof video.requestVideoFrameCallback === "function") {
-        if (!video.jwFrameCallbackArmed) {
-          video.jwFrameCallbackArmed = true;
-          try {
-            video.requestVideoFrameCallback(function () {
-              noteDecodedVideoFrame(video);
-            });
-          } catch (err) {
-            noteDecodedVideoFrame(video);
-          }
-        }
-      } else {
-        noteDecodedVideoFrame(video);
-      }
+      capturePlaybackBaseline(video);
+      armVideoFrameCallback(video);
+      proveHiddenVideoFrame(video);
       if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+    }
+    function onResetSignal() {
+      resetVideoReadinessState(video);
+      if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+    }
+    function onTimeSignal() {
+      if (video.jwDecodedFrame === true) return;
+      if (proveHiddenVideoFrame(video) && typeof mobileReadinessPulse === "function") {
+        mobileReadinessPulse();
+      }
     }
     video.addEventListener("loadeddata", onDataSignal);
     video.addEventListener("canplay", onDataSignal);
     video.addEventListener("playing", onDataSignal);
-    video.addEventListener("error", function () {
-      if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
-    });
+    video.addEventListener("timeupdate", onTimeSignal);
+    video.addEventListener("loadstart", onResetSignal);
+    video.addEventListener("emptied", onResetSignal);
+    video.addEventListener("error", onResetSignal);
     if (video.readyState >= 2) onDataSignal();
   }
 
