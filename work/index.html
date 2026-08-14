@@ -116,7 +116,6 @@
     --copy-rana:0;
     --copy-prorok:0;
     --copy-terminal:0;
-    --passage-veil:0;
   }
 
   *{box-sizing:border-box}
@@ -938,11 +937,6 @@
   html[data-motion="off"] .scene-copy{
     transform:none;
   }
-  html[data-motion="off"] .passage-veil{
-    display:none;
-    opacity:0;
-  }
-  .passage-veil{display:none}
 
   /* No-JS readable path */
   .no-js-route{
@@ -1038,9 +1032,8 @@
       top:50%;
       font-size:clamp(1.35rem, 7vw, 1.7rem);
     }
-    /* Mobile handoff: worlds stay full-bleed plates. A full-frame corridor
-       energy veil occludes the viewport, the destination world takes the
-       plate underneath, then the same veil lifts. No incoming-layer gem,
+    /* Mobile handoff: worlds stay full-bleed plates. Adjacent rests dissolve
+       directly into each other. No corridor-energy veil, blur plate, gem,
        stack, tear, or clip-path inset split-screen. */
     .layer-rana,
     .layer-prorok,
@@ -1050,38 +1043,9 @@
       -webkit-mask:none;
       mask:none;
     }
-    .passage-veil{
-      display:block;
-      position:absolute;
-      inset:0;
-      z-index:26;
-      pointer-events:none;
-      opacity:var(--passage-veil);
-      /* Opaque authored field: doorway cyan + threshold copper over void.
-         The last stop is an opaque hex so the plate never holes through. */
-      background-image:
-        url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.45'/%3E%3C/svg%3E"),
-        radial-gradient(ellipse 38% 30% at 50% 46%, rgba(232,255,255,.58) 0%, transparent 54%),
-        radial-gradient(ellipse 56% 46% at 50% 60%, rgba(217,122,58,.46) 0%, transparent 64%),
-        radial-gradient(ellipse 90% 74% at 50% 40%, rgba(94,231,240,.24) 0%, transparent 70%),
-        linear-gradient(168deg, #0a1a20 0%, #081318 26%, #16110d 58%, #040A0C 100%);
-      background-size:220px 220px, auto, auto, auto, auto;
-      box-shadow:inset 0 0 80px rgba(94,231,240,.18), inset 0 -40px 70px rgba(217,122,58,.16);
-    }
-    .passage-veil::before{
-      content:"";
-      position:absolute;
-      inset:-14%;
-      background:
-        radial-gradient(ellipse 30% 20% at 50% calc(38% + var(--passage-veil) * 18%), rgba(94,231,240,.42), transparent 58%),
-        radial-gradient(ellipse 20% 16% at 46% 64%, rgba(217,122,58,.3), transparent 62%);
-      mix-blend-mode:screen;
-      pointer-events:none;
-    }
-    html[data-motion="off"] .passage-veil{
-      display:none;
-      opacity:0;
-    }
+    .layer-rana.is-revealing{opacity:var(--rana-open)}
+    .layer-prorok.is-revealing{opacity:var(--prorok-open)}
+    .layer-terminal.is-revealing{opacity:var(--terminal-hold)}
     .scene-copy--rana{
       opacity:var(--copy-rana);
       transform:translate3d(0, calc((1 - var(--copy-rana)) * 1.4rem), 0);
@@ -1418,7 +1382,7 @@
               data-video
               src="../assets/work/rana/studio-banner.mp4"
               poster="../assets/work/rana/studio-poster.jpg"
-              autoplay muted loop playsinline preload="metadata"
+              autoplay muted loop playsinline preload="auto"
               width="1280" height="640"></video>
             <img class="rana-opening" src="../assets/work/rana/studio-opening.jpg" alt="" width="1280" height="640" decoding="async">
             <div class="rana-ring-stage" id="rana-ring-stage">
@@ -1429,7 +1393,7 @@
                 data-video
                 src="../assets/work/rana/ring-alexandrite.mp4"
                 poster="../assets/work/rana/ring-poster.jpg"
-                autoplay muted loop playsinline preload="metadata"
+                autoplay muted loop playsinline preload="auto"
                 width="720" height="720"></video>
             </div>
             <div class="rana-bloom"></div>
@@ -1446,7 +1410,7 @@
               data-video
               src="../demos/dylan-prorok/sakura-ink-bloom.mp4"
               poster="../demos/dylan-prorok/dylan-portrait.jpg"
-              autoplay muted loop playsinline preload="metadata"
+              autoplay muted loop playsinline preload="auto"
               width="960" height="540"></video>
             <img class="prorok-portrait" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
             <div class="prorok-seal" aria-hidden="true"></div>
@@ -1468,7 +1432,6 @@
 
       <div class="ui">
         <div class="progress-hairline" aria-hidden="true"><span id="progress-fill"></span></div>
-        <div class="passage-veil" id="passage-veil" aria-hidden="true"></div>
         <header class="site-header">
           <a class="wordmark" href="../" aria-label="Back to Jarrett">Jarrett Wroten</a>
           <div class="header-tools">
@@ -1522,14 +1485,19 @@
 
 <!-- Maintained asset — canonical: work/index.html Work passage script;
      consumer/activation: /work/ auto-loads the mobile section-lock (max-width 720px)
-     so one vertical gesture lands on exactly one STILL rest over a 2400ms
-     cinematic glide; Motion On paints that glide from a local pair + t by
-     covering the viewport with one authored corridor-energy veil, swapping
-     the destination plate underneath, then lifting the same veil — not a
-     clip-path inset split, gem, stack, or tear; destination world requested
-     at accept; check: node work-smoke-test.mjs; recurrence: a real-phone recording
-     of split-screen halves, a giant oval, mixed-world band, tear, or black dead
-     interval; retire when the four-rest mobile passage is replaced. -->
+     so one vertical gesture lands on exactly one STILL rest; every mobile beat
+     video is warmed hidden at cold load; a swipe may request the next rest but
+     the outgoing composed rest stays painted until that beat's required media
+     has a decoded/renderable frame (loadeddata/canplay + readyState >= 2, and
+     requestVideoFrameCallback where exposed), with a 24000ms hidden ceiling;
+     Invitation is synchronously ready (portrait already in the document).
+     Only then does one 2400ms direct handoff run: local pair + t dissolves the
+     actual outgoing full-frame world into the actual incoming one. No
+     passage-veil, blur plate, energy wash, gem, stack, tear, split, or poster
+     waiting state. Check: node work-smoke-test.mjs; recurrence: a real-phone recording
+     of a full-frame blurred wash, intermediary field, split-screen halves, a giant
+     oval, mixed-world band, tear, or black dead interval; retire when the
+     four-rest mobile passage is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1589,6 +1557,7 @@
   var MOBILE_WHEEL_THRESHOLD_PX = 18;
   var MOBILE_WHEEL_IDLE_MS = 180;
   var MOBILE_SECTION_GLIDE_MS = 2400;
+  var MOBILE_READINESS_MS = 24000;
   var MOBILE_STOPS = [
     { id: "corridor", progress: STILL.corridor },
     { id: "rana", progress: STILL.rana },
@@ -1610,6 +1579,12 @@
   var mobileWheelIdleTimer = 0;
   var mobileDestinationId = "";
   var mobileTransition = null;
+  var mobileWaiting = false;
+  var mobileRequestedStopId = "";
+  var mobileRequestGeneration = 0;
+  var mobileReadinessTimer = 0;
+  var mobileReadinessInterval = 0;
+  var mobileReadinessPulse = null;
 
   function clamp(v, a, b) {
     return Math.max(a, Math.min(b, v));
@@ -1668,6 +1643,7 @@
       syncVideos(progressCurrent);
     } else {
       startRenderLoop();
+      if (isMobile()) warmMobileBeatVideos();
       syncVideos(progressCurrent);
     }
   }
@@ -1702,18 +1678,17 @@
     };
   }
 
-  function withCopyAndVeil(values, copy, veil) {
+  function withCopy(values, copy) {
     values.copyRana = copy.copyRana;
     values.copyProrok = copy.copyProrok;
     values.copyTerminal = copy.copyTerminal;
-    values.passageVeil = veil;
     return values;
   }
 
   function mobileSceneValuesForRest(index) {
     var stop = MOBILE_STOPS[clamp(index, 0, MOBILE_STOPS.length - 1)];
     var values = sceneValuesFromMap(stop.progress);
-    return withCopyAndVeil(values, copyValuesFromWorld(values), 0);
+    return withCopy(values, copyValuesFromWorld(values));
   }
 
   function mobileSceneValuesForTransition(fromIndex, toIndex, t) {
@@ -1725,30 +1700,22 @@
     var to = mobileSceneValuesForRest(toIndex);
     if (t <= 0) return from;
     if (t >= 1) return to;
-    /* Same grammar both ways. One full-frame veil covers, the destination
-       plate replaces the source underneath, then the same veil lifts.
-       Worlds are never both exposed. Local t is already the pair clock —
-       do not pass it through range(). */
-    var veilCover = span(t, 0.00, 0.18);
-    var veilLift = span(t, 0.26, 0.70);
-    var veil = veilCover < 1 ? veilCover : 1 - veilLift;
-    var swapped = t >= 0.22;
-    var world = swapped ? to : from;
-    var outCopy = 1 - span(t, 0.00, 0.14);
-    var inCopy = span(t, 0.74, 1.00);
+    /* Direct handoff both ways. Local t mixes only the two authored full-frame
+       rests — world and copy in synchrony. No third plate, veil, or blank.
+       Do not pass t through range(). */
+    function mix(a, b) { return a + (b - a) * t; }
     return {
-      corridorDark: world.corridorDark,
-      ranaOpen: world.ranaOpen,
-      ranaHold: world.ranaHold,
-      ring: world.ring,
-      prorokOpen: world.prorokOpen,
-      prorokHold: world.prorokHold,
-      terminalHold: world.terminalHold,
-      entryCue: from.entryCue * outCopy + to.entryCue * inCopy,
-      copyRana: from.copyRana * outCopy + to.copyRana * inCopy,
-      copyProrok: from.copyProrok * outCopy + to.copyProrok * inCopy,
-      copyTerminal: from.copyTerminal * outCopy + to.copyTerminal * inCopy,
-      passageVeil: veil
+      corridorDark: mix(from.corridorDark, to.corridorDark),
+      ranaOpen: mix(from.ranaOpen, to.ranaOpen),
+      ranaHold: mix(from.ranaHold, to.ranaHold),
+      ring: mix(from.ring, to.ring),
+      prorokOpen: mix(from.prorokOpen, to.prorokOpen),
+      prorokHold: mix(from.prorokHold, to.prorokHold),
+      terminalHold: mix(from.terminalHold, to.terminalHold),
+      entryCue: mix(from.entryCue, to.entryCue),
+      copyRana: mix(from.copyRana, to.copyRana),
+      copyProrok: mix(from.copyProrok, to.copyProrok),
+      copyTerminal: mix(from.copyTerminal, to.copyTerminal)
     };
   }
 
@@ -1780,10 +1747,9 @@
     root.style.setProperty("--copy-rana", Number(copyRanaValue).toFixed(4));
     root.style.setProperty("--copy-prorok", Number(copyProrokValue).toFixed(4));
     root.style.setProperty("--copy-terminal", Number(copyTerminalValue).toFixed(4));
-    root.style.setProperty("--passage-veil", Number(values.passageVeil || 0).toFixed(4));
 
-    /* Hard reveal gate: layers stay fully absent at open === 0 (visibility),
-       then spatially unmask once progress actually begins. No crossfade. */
+    /* Hard reveal gate: layers stay fully absent at open === 0 (visibility).
+       Desktop unmasks spatially; mobile dissolves full-bleed plates. */
     if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
     if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
     if (layerTerminal) {
@@ -1797,12 +1763,7 @@
     setCopyAccess(copyTerminal, copyTerminalValue > 0.55);
   }
 
-  function clearPassageVeil() {
-    root.style.setProperty("--passage-veil", "0");
-  }
-
   function paintMobileRest(index) {
-    clearPassageVeil();
     applySceneValues(mobileSceneValuesForRest(index));
   }
 
@@ -1825,8 +1786,6 @@
       paintMobileRest(mobileStopIndexAtProgress(p));
       return;
     }
-
-    clearPassageVeil();
 
     var corridorDark = range(p, MAP.corridorDark.a, MAP.corridorDark.b);
     var ranaOpen = range(p, MAP.ranaOpen.a, MAP.ranaOpen.b);
@@ -1955,6 +1914,8 @@
     if (id === "corridor") return [corridorVideo];
     if (id === "rana") return [studioVideo, ringVideo];
     if (id === "prorok") return [inkVideo];
+    /* Invitation has no destination video. The terminal portrait is already
+       in the document and is treated as synchronously ready. */
     return [];
   }
 
@@ -1975,6 +1936,104 @@
       try { video.load(); } catch (e2) {}
     }
     playSafe(video);
+  }
+
+  function videoHasRenderableFrame(video) {
+    if (!video || video.error) return false;
+    if (video.readyState < 2) return false;
+    if (typeof video.requestVideoFrameCallback === "function") {
+      return video.jwDecodedFrame === true || video.jwSawDataEvent === true;
+    }
+    return true;
+  }
+
+  function mobileDestinationReady(id) {
+    var videos = videosForMobileStop(id);
+    var i;
+    for (i = 0; i < videos.length; i++) {
+      if (!videoHasRenderableFrame(videos[i])) return false;
+    }
+    return true;
+  }
+
+  function mobileDestinationFailed(id) {
+    var videos = videosForMobileStop(id);
+    var i;
+    for (i = 0; i < videos.length; i++) {
+      if (videos[i] && videos[i].error) return true;
+    }
+    return false;
+  }
+
+  function mobileReadinessStatus(spec) {
+    if (!spec) return "pending";
+    if (spec.token !== spec.generation) return "stale";
+    if (spec.failed) return "error";
+    if (spec.ready) return "ready";
+    if (spec.elapsedMs >= spec.ceilingMs) return "timeout";
+    return "pending";
+  }
+
+  function applyMobileReadinessResult(result, token, generation, startPassage, abortRequest) {
+    if (token !== generation) return "stale";
+    if (result !== "ready") {
+      if (typeof abortRequest === "function") abortRequest();
+      return result;
+    }
+    if (typeof startPassage === "function") startPassage();
+    return "started";
+  }
+
+  function noteDecodedVideoFrame(video) {
+    if (!video || video.error || video.readyState < 2) return;
+    video.jwDecodedFrame = true;
+    if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+  }
+
+  function bindVideoReadiness(video) {
+    if (!video) return;
+    function onDataSignal() {
+      if (video.error) {
+        if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+        return;
+      }
+      if (video.readyState < 2) return;
+      video.jwSawDataEvent = true;
+      if (typeof video.requestVideoFrameCallback === "function") {
+        if (!video.jwFrameCallbackArmed) {
+          video.jwFrameCallbackArmed = true;
+          try {
+            video.requestVideoFrameCallback(function () {
+              noteDecodedVideoFrame(video);
+            });
+          } catch (err) {
+            noteDecodedVideoFrame(video);
+          }
+        }
+      } else {
+        noteDecodedVideoFrame(video);
+      }
+      if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+    }
+    video.addEventListener("loadeddata", onDataSignal);
+    video.addEventListener("canplay", onDataSignal);
+    video.addEventListener("playing", onDataSignal);
+    video.addEventListener("error", function () {
+      if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+    });
+    if (video.readyState >= 2) onDataSignal();
+  }
+
+  function warmMobileBeatVideos() {
+    if (!motionOn || !isMobile()) return;
+    requestMobileVideo(corridorVideo);
+    requestMobileVideo(studioVideo);
+    requestMobileVideo(ringVideo);
+    requestMobileVideo(inkVideo);
+  }
+
+  function videoNeedsHiddenWarm(video) {
+    return isMobile() && motionOn && !!video && !video.error && !videoHasRenderableFrame(video);
   }
 
   function prepareMobileDestination(index) {
@@ -2002,13 +2061,13 @@
       return;
     }
     armVideos();
-    if (p < 0.16 || videoIsPreparedDestination(corridorVideo)) playSafe(corridorVideo);
+    if (p < 0.16 || videoIsPreparedDestination(corridorVideo) || videoNeedsHiddenWarm(corridorVideo)) playSafe(corridorVideo);
     else pauseSafe(corridorVideo);
-    if ((p > 0.14 && p < 0.62) || videoIsPreparedDestination(studioVideo)) playSafe(studioVideo);
+    if ((p > 0.14 && p < 0.62) || videoIsPreparedDestination(studioVideo) || videoNeedsHiddenWarm(studioVideo)) playSafe(studioVideo);
     else pauseSafe(studioVideo);
-    if ((p > 0.26 && p < 0.56) || videoIsPreparedDestination(ringVideo)) playSafe(ringVideo);
+    if ((p > 0.26 && p < 0.56) || videoIsPreparedDestination(ringVideo) || videoNeedsHiddenWarm(ringVideo)) playSafe(ringVideo);
     else pauseSafe(ringVideo);
-    if ((p > 0.48 && p < 0.92) || videoIsPreparedDestination(inkVideo)) playSafe(inkVideo);
+    if ((p > 0.48 && p < 0.92) || videoIsPreparedDestination(inkVideo) || videoNeedsHiddenWarm(inkVideo)) playSafe(inkVideo);
     else pauseSafe(inkVideo);
   }
 
@@ -2028,12 +2087,84 @@
     return isMobile() && !!passage && !!viewport && !isOpenOverlay();
   }
 
-  function cancelMobileGlide() {
+  function mobileNavigationBusy() {
+    return mobileGlideLocked || mobileWaiting;
+  }
+
+  function nowMs() {
+    return window.performance && typeof performance.now === "function" ? performance.now() : Date.now();
+  }
+
+  function clearMobileReadinessWatch() {
+    if (mobileReadinessTimer) {
+      window.clearTimeout(mobileReadinessTimer);
+      mobileReadinessTimer = 0;
+    }
+    if (mobileReadinessInterval) {
+      window.clearInterval(mobileReadinessInterval);
+      mobileReadinessInterval = 0;
+    }
+    mobileReadinessPulse = null;
+  }
+
+  function abortMobileReadinessRequest() {
+    mobileWaiting = false;
+    mobileRequestedStopId = "";
+    clearMobileDestination();
+    clearMobileReadinessWatch();
+  }
+
+  function waitForMobileDestinationReady(id, token, onDone) {
+    var startedAt = nowMs();
+    var settled = false;
+
+    function finish(result) {
+      if (settled) return;
+      settled = true;
+      clearMobileReadinessWatch();
+      if (typeof onDone === "function") onDone(result);
+    }
+
+    function pulse() {
+      if (settled) return;
+      var status = mobileReadinessStatus({
+        token: token,
+        generation: mobileRequestGeneration,
+        failed: mobileDestinationFailed(id),
+        ready: mobileDestinationReady(id),
+        elapsedMs: nowMs() - startedAt,
+        ceilingMs: MOBILE_READINESS_MS
+      });
+      if (status === "pending") return;
+      finish(status);
+    }
+
+    pulse();
+    if (settled) return;
+
+    mobileReadinessPulse = pulse;
+    mobileReadinessInterval = window.setInterval(pulse, 50);
+    mobileReadinessTimer = window.setTimeout(pulse, MOBILE_READINESS_MS);
+  }
+
+  function cancelMobileReadiness() {
+    mobileRequestGeneration += 1;
+    mobileWaiting = false;
+    mobileRequestedStopId = "";
+    if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
+    else clearMobileReadinessWatch();
+  }
+
+  function cancelVisibleMobileGlide() {
     if (mobileScrollRaf) window.cancelAnimationFrame(mobileScrollRaf);
     mobileScrollRaf = 0;
     mobileGlideLocked = false;
     mobileTransition = null;
-    clearPassageVeil();
+  }
+
+  function cancelMobileGlide() {
+    cancelMobileReadiness();
+    cancelVisibleMobileGlide();
     clearMobileDestination();
   }
 
@@ -2058,7 +2189,7 @@
   }
 
   function glideScrollTo(top) {
-    cancelMobileGlide();
+    cancelVisibleMobileGlide();
     var start = window.scrollY || window.pageYOffset || 0;
     var distance = top - start;
     if (!motionOn || Math.abs(distance) < 0.5) {
@@ -2115,20 +2246,58 @@
   }
 
   function scrollToMobileStopIndex(index) {
-    if (!passage || !viewport) return false;
+    if (!passage || !viewport) return Promise.resolve(false);
     var bounded = clamp(index, 0, MOBILE_STOPS.length - 1);
     var top = MOBILE_STOPS[bounded].progress * passageScrollTotal();
-    if (motionOn) glideScrollTo(top);
-    else {
+    if (!motionOn) {
       cancelMobileGlide();
       window.scrollTo({ top: top, left: 0, behavior: "auto" });
       sampleScroll();
+      return Promise.resolve(true);
     }
-    return true;
+    var start = window.scrollY || window.pageYOffset || 0;
+    if (Math.abs(top - start) < 0.5) {
+      window.scrollTo(0, top);
+      sampleScroll();
+      return Promise.resolve(true);
+    }
+    if (mobileNavigationBusy()) return Promise.resolve(false);
+
+    var stop = MOBILE_STOPS[bounded];
+    var token = ++mobileRequestGeneration;
+    mobileWaiting = true;
+    mobileRequestedStopId = stop.id;
+    prepareMobileDestination(bounded);
+
+    function startPassage() {
+      mobileWaiting = false;
+      mobileRequestedStopId = "";
+      glideScrollTo(top);
+    }
+
+    function settle(result) {
+      return applyMobileReadinessResult(
+        result,
+        token,
+        mobileRequestGeneration,
+        startPassage,
+        abortMobileReadinessRequest
+      ) === "started";
+    }
+
+    if (mobileDestinationReady(stop.id)) {
+      return Promise.resolve(settle("ready"));
+    }
+
+    return new Promise(function (resolve) {
+      waitForMobileDestinationReady(stop.id, token, function (result) {
+        resolve(settle(result));
+      });
+    });
   }
 
   function advanceMobileStop(direction) {
-    if (!isMobile() || mobileGlideLocked || !direction) return false;
+    if (!isMobile() || mobileNavigationBusy() || !direction) return false;
     if (isOpenOverlay()) return false;
     var current = mobileStopIndexAtProgress(computeProgress());
     var next = clamp(current + (direction > 0 ? 1 : -1), 0, MOBILE_STOPS.length - 1);
@@ -2138,7 +2307,7 @@
 
   function onMobileTouchStart(e) {
     resetMobileTouch();
-    if (!mobileGestureAvailable() || mobileGlideLocked || !e.touches || e.touches.length !== 1) return;
+    if (!mobileGestureAvailable() || mobileNavigationBusy() || !e.touches || e.touches.length !== 1) return;
     if (isInteractiveOrigin(e)) return;
     var touch = e.touches[0];
     mobileTouchActive = true;
@@ -2147,7 +2316,7 @@
   }
 
   function onMobileTouchMove(e) {
-    if (mobileGlideLocked && mobileGestureAvailable()) {
+    if (mobileNavigationBusy() && mobileGestureAvailable()) {
       e.preventDefault();
       return;
     }
@@ -2219,13 +2388,14 @@
     closeMobileWheelGestureSoon();
     if (mobileWheelTriggered || Math.abs(mobileWheelDelta) < MOBILE_WHEEL_THRESHOLD_PX) return;
     mobileWheelTriggered = true;
-    if (!mobileGlideLocked) advanceMobileStop(mobileWheelDelta > 0 ? 1 : -1);
+    if (!mobileNavigationBusy()) advanceMobileStop(mobileWheelDelta > 0 ? 1 : -1);
   }
 
   function onMobileViewportChange() {
     cancelMobileGlide();
     resetMobileTouch();
     resetMobileWheel();
+    if (motionOn && isMobile()) warmMobileBeatVideos();
     sampleScroll();
   }
 
@@ -2265,6 +2435,7 @@
     cancelMobileGlide();
     resetMobileTouch();
     resetMobileWheel();
+    if (motionOn && isMobile()) warmMobileBeatVideos();
     sampleScroll();
   });
 
@@ -2284,6 +2455,10 @@
   bindPosterFallback(studioVideo, document.getElementById("rana-poster"));
   bindPosterFallback(ringVideo, document.getElementById("ring-poster"));
   bindPosterFallback(inkVideo, document.getElementById("prorok-poster"));
+  bindVideoReadiness(corridorVideo);
+  bindVideoReadiness(studioVideo);
+  bindVideoReadiness(ringVideo);
+  bindVideoReadiness(inkVideo);
 
   /* Enter from homepage exit: brief void veil, then corridor present */
   var enterFromHome = root.getAttribute("data-work-enter") === "1";
@@ -2312,6 +2487,7 @@
   paint(progressCurrent);
   if (motionOn) {
     armVideos();
+    if (isMobile()) warmMobileBeatVideos();
     syncVideos(progressCurrent);
   }
 
@@ -2323,11 +2499,21 @@
     get mobileStopIndex() { return mobileStopIndexAtProgress(progressCurrent); },
     get mobileStop() { return MOBILE_STOPS[mobileStopIndexAtProgress(progressCurrent)].id; },
     get mobileGliding() { return mobileGlideLocked; },
+    get mobileWaiting() { return mobileWaiting; },
+    get mobileRequestedStop() { return mobileRequestedStopId; },
     get mobileDestination() { return mobileDestinationId; },
     get mobileTransition() {
       return mobileTransition
         ? { fromIndex: mobileTransition.fromIndex, toIndex: mobileTransition.toIndex, t: mobileTransition.t }
         : null;
+    },
+    get videoReadiness() {
+      return {
+        corridor: videoHasRenderableFrame(corridorVideo),
+        studio: videoHasRenderableFrame(studioVideo),
+        ring: videoHasRenderableFrame(ringVideo),
+        ink: videoHasRenderableFrame(inkVideo)
+      };
     },
     tau: TAU,
     still: STILL,
@@ -2341,7 +2527,8 @@
       swipeThresholdPx: MOBILE_SWIPE_THRESHOLD_PX,
       wheelThresholdPx: MOBILE_WHEEL_THRESHOLD_PX,
       wheelIdleMs: MOBILE_WHEEL_IDLE_MS,
-      glideMs: MOBILE_SECTION_GLIDE_MS
+      glideMs: MOBILE_SECTION_GLIDE_MS,
+      readinessMs: MOBILE_READINESS_MS
     }
   };
 })();

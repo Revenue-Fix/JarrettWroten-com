@@ -172,10 +172,13 @@ ok(workHtml.includes('../demos/dylan-prorok/dylan-portrait.jpg'), 'ProRok portra
 ok(workHtml.includes('../demos/dylan-prorok/sakura-ink-bloom.mp4'), 'ProRok ink video reused');
 ok(workHtml.includes('../assets/golden-arrival/frames/ga-000.webp'), 'corridor entry frame');
 ok(workHtml.includes('../assets/work/corridor-entry-loop.mp4'), 'corridor entry motion path');
-ok(/autoplay\s+muted\s+loop\s+playsinline\s+preload="metadata"/.test(workHtml), 'ambient video attributes');
+ok(/autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml), 'ambient video attributes');
 ok(
-  /id="corridor-motion-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml),
-  'corridor motion autoplays inline with eager local preload'
+  /id="corridor-motion-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml) &&
+    /id="rana-studio-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml) &&
+    /id="rana-ring-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml) &&
+    /id="prorok-ink-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml),
+  'corridor, both Rana videos, and ProRok autoplay muted inline with eager local preload'
 );
 ok(!/src=["']https?:\/\//i.test(workHtml), 'no remote script/media src on work route');
 ok(!/fonts\.gstatic\.com|fonts\.googleapis\.com/i.test(workHtml), 'no external font CDN');
@@ -233,12 +236,13 @@ ok(
   'rejected straight clip-path inset split-screen grammar is gone'
 );
 ok(
-  /id="passage-veil"/.test(workHtml) &&
-    /--passage-veil/.test(workHtml) &&
-    /\.passage-veil\s*\{[\s\S]*?linear-gradient\(168deg, #0a1a20/.test(workHtml) &&
-    /\.passage-veil\s*\{[\s\S]*?rgba\(94,231,240/.test(workHtml) &&
-    /\.passage-veil\s*\{[\s\S]*?rgba\(217,122,58/.test(workHtml),
-  'mobile handoff uses a full-frame authored cyan/copper veil plate'
+  !/id="passage-veil"/.test(workHtml) &&
+    !/--passage-veil/.test(workHtml) &&
+    !/\.passage-veil/.test(workHtml) &&
+    !/passageVeil/.test(workHtml) &&
+    !/clearPassageVeil/.test(workHtml) &&
+    !/linear-gradient\(168deg, #0a1a20/.test(workHtml),
+  'rejected passage-veil markup, variable, and blurred-field recipe are absent'
 );
 // Zero-state reveal gate + nonzero mask floor (structural; not pixel proof).
 // Prevents Chromium multi-mask radial-gradient(0% 0% ...) covering the corridor.
@@ -489,9 +493,8 @@ ok(
     'Motion Off last rest still assigns terminalHold = 1'
   );
   ok(
-    /html\[data-motion="off"\] \.passage-veil\s*\{[\s\S]*?display\s*:\s*none/.test(workHtml) &&
-      /html\[data-motion="off"\] \.passage-veil\s*\{[\s\S]*?opacity\s*:\s*0/.test(workHtml),
-    'Motion Off does not depend on the animated passage veil'
+    !/\.passage-veil/.test(workHtml) && !/--passage-veil/.test(workHtml),
+    'Motion Off has no passage-veil path to depend on'
   );
 }
 
@@ -552,18 +555,17 @@ ok(
  * Canonical path: work-smoke-test.mjs
  * Future consumer: Codex closer + every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
- * Behavioral check: four STILL rests; one-gesture / 2400ms / lock;
- * scroll travel stays cubic smoothstep; pair renderer uses a local clock
- * with visible change by 250ms and no dead run over 350ms; Motion On
- * glide carries fromIndex/toIndex/local pair t and paints from the mobile
- * pair renderer rather than narrow global MAP bands; t=0/1 match rests; mid
- * samples are off both endpoints; no blank world; Rana/Dylan and Dylan/terminal
- * copy do not overlap; reverse uses the same full-frame veil grammar;
- * landing clears transition state after 2400ms; destination prewarm; Motion
- * Off immediate; TAU = 0.41. Rejected silhouettes (expanding gem, bottom-up
- * stack, vertical tear, clip-path inset split) stay gone. One veil covers
- * the viewport before world identity changes; copy enters only after the
- * incoming world owns the frame.
+ * Behavioral check: four STILL rests; one-gesture / hidden 24000ms readiness
+ * ceiling / 2400ms visible direct handoff / lock; cold-load warms every beat
+ * video; a destination is ready only after each required video has a decoded
+ * frame; outgoing rest stays painted until that promise resolves; timeout/error/
+ * stale tokens cancel without advancing; the visible handoff mixes only the two
+ * authored full-frame rests — no passage-veil, blur plate, or third visual;
+ * copy leaves and enters in synchrony with no dead interval; reverse uses the
+ * same readiness rule and dissolve grammar; landing clears transition state
+ * after 2400ms; Motion Off immediate; TAU = 0.41. Rejected silhouettes
+ * (expanding gem, bottom-up stack, vertical tear, clip-path inset split,
+ * cyan/copper veil) stay gone.
  * Retirement: only when the four-rest mobile passage is replaced.
  */
 {
@@ -627,10 +629,12 @@ ok(
 
   ok(
     workHtml.includes('mobileGlideLocked') &&
-      /function advanceMobileStop\(direction\)[\s\S]*?if \(!isMobile\(\) \|\| mobileGlideLocked/.test(workHtml) &&
-      /function onMobileTouchStart\(e\)[\s\S]*?mobileGlideLocked/.test(workHtml) &&
-      /function onMobileWheel\(e\)[\s\S]*?if \(!mobileGlideLocked\) advanceMobileStop/.test(workHtml),
-    'one authored glide lock blocks further stop-skipping fragments'
+      workHtml.includes('mobileWaiting') &&
+      /function mobileNavigationBusy\(\)[\s\S]*?return mobileGlideLocked \|\| mobileWaiting/.test(workHtml) &&
+      /function advanceMobileStop\(direction\)[\s\S]*?if \(!isMobile\(\) \|\| mobileNavigationBusy/.test(workHtml) &&
+      /function onMobileTouchStart\(e\)[\s\S]*?mobileNavigationBusy/.test(workHtml) &&
+      /function onMobileWheel\(e\)[\s\S]*?if \(!mobileNavigationBusy\(\)\) advanceMobileStop/.test(workHtml),
+    'pending readiness and the authored glide both block further stop-skipping fragments'
   );
 
   ok(
@@ -687,9 +691,11 @@ ok(
     'touch/wheel that begins on controls or an open overlay is not hijacked'
   );
   ok(
-    /window\.WORK_PASSAGE = \{[\s\S]*?mobileStopIndex[\s\S]*?mobileGliding[\s\S]*?goMobileStop:\s*scrollToMobileStopIndex/.test(workHtml) &&
-      /get mobileTransition\(\) \{[\s\S]*?fromIndex[\s\S]*?toIndex[\s\S]*?t:/.test(workHtml),
-    'WORK_PASSAGE exposes read-only stop/glide/transition state and the real navigation function'
+    /window\.WORK_PASSAGE = \{[\s\S]*?mobileStopIndex[\s\S]*?mobileGliding[\s\S]*?mobileWaiting[\s\S]*?mobileRequestedStop[\s\S]*?goMobileStop:\s*scrollToMobileStopIndex/.test(workHtml) &&
+      /get mobileTransition\(\) \{[\s\S]*?fromIndex[\s\S]*?toIndex[\s\S]*?t:/.test(workHtml) &&
+      /get videoReadiness\(\) \{[\s\S]*?corridor:[\s\S]*?studio:[\s\S]*?ring:[\s\S]*?ink:/.test(workHtml) &&
+      /readinessMs:\s*MOBILE_READINESS_MS/.test(workHtml),
+    'WORK_PASSAGE exposes waiting, requested destination, per-video readiness, and the real navigation function'
   );
   ok(
     /mobile section-lock/.test(workHtml) &&
@@ -701,16 +707,23 @@ ok(
 
   ok(
     /var MOBILE_SECTION_GLIDE_MS = 2400/.test(workHtml) &&
+      /var MOBILE_READINESS_MS = 24000/.test(workHtml) &&
       /glideMs:\s*MOBILE_SECTION_GLIDE_MS/.test(workHtml) &&
+      /readinessMs:\s*MOBILE_READINESS_MS/.test(workHtml) &&
       !/var MOBILE_SECTION_GLIDE_MS = 1200/.test(workHtml),
-    'mobile cinematic travel is authored at 2400ms, not the 1200ms jump'
+    'hidden readiness ceiling is 24000ms and visible travel stays 2400ms'
+  );
+  ok(
+    /function scrollToMobileStopIndex\(index\)[\s\S]*?mobileWaiting = true[\s\S]*?prepareMobileDestination\(bounded\)[\s\S]*?function startPassage\(\)[\s\S]*?glideScrollTo\(top\)[\s\S]*?if \(mobileDestinationReady\(stop\.id\)\)[\s\S]*?settle\("ready"\)[\s\S]*?waitForMobileDestinationReady\(stop\.id, token/.test(workHtml),
+    'accepting a rest waits for decoded readiness before the visible passage may start'
   );
   ok(
     /function glideScrollTo\(top\)[\s\S]*?var duration = MOBILE_SECTION_GLIDE_MS[\s\S]*?prepareMobileDestination\(toIndex\)[\s\S]*?mobileGlideLocked = true[\s\S]*?mobileTransition = \{ fromIndex: fromIndex, toIndex: toIndex, t: 0 \}/.test(workHtml),
-    'accepting a rest prepares that destination, then locks the one authored clock with local pair state'
+    'once ready, the destination stays warmed and the one authored clock starts with local pair state'
   );
   ok(
-    /function glideScrollTo\(top\)[\s\S]*?if \(!motionOn \|\| Math\.abs\(distance\) < 0\.5\)[\s\S]*?return;[\s\S]*?prepareMobileDestination/.test(workHtml),
+    /function glideScrollTo\(top\)[\s\S]*?if \(!motionOn \|\| Math\.abs\(distance\) < 0\.5\)[\s\S]*?return;[\s\S]*?prepareMobileDestination/.test(workHtml) &&
+      /function scrollToMobileStopIndex\(index\)[\s\S]*?if \(!motionOn\)[\s\S]*?behavior:\s*"auto"/.test(workHtml),
     'Motion Off and zero-distance lands skip cinematic prepare and travel'
   );
 
@@ -766,15 +779,33 @@ ok(
   const requestSrc = (workHtml.match(/function requestMobileVideo\(video\) \{[\s\S]*?\n  \}/) || [''])[0];
   const prepareSrc = (workHtml.match(/function prepareMobileDestination\(index\) \{[\s\S]*?\n  \}/) || [''])[0];
   const glideSrc = (workHtml.match(/function glideScrollTo\(top\) \{[\s\S]*?\n  \}/) || [''])[0];
-  ok(!!requestSrc && !!prepareSrc && !!glideSrc, 'request/prepare/glide functions are extractable');
+  const waitSrc = (workHtml.match(/function waitForMobileDestinationReady\(id, token, onDone\) \{[\s\S]*?\n  \}/) || [''])[0];
+  const scrollSrc = (workHtml.match(/function scrollToMobileStopIndex\(index\) \{[\s\S]*?\n  \}/) || [''])[0];
+  ok(!!requestSrc && !!prepareSrc && !!glideSrc && !!waitSrc && !!scrollSrc, 'request/prepare/wait/glide functions are extractable');
   ok(
     /video\.preload = "auto"/.test(requestSrc) &&
       /playSafe\(video\)/.test(requestSrc) &&
       /requestMobileVideo/.test(prepareSrc) &&
-      !/canplaythrough|await |readyState\s*>=\s*[34]/.test(requestSrc) &&
-      !/canplaythrough|await |readyState\s*>=\s*[34]/.test(prepareSrc) &&
-      !/canplaythrough|await /.test(glideSrc),
-    'destination load/play is eager and never gates the glide on readiness'
+      /function warmMobileBeatVideos\(\)[\s\S]*?requestMobileVideo\(corridorVideo\)[\s\S]*?requestMobileVideo\(studioVideo\)[\s\S]*?requestMobileVideo\(ringVideo\)[\s\S]*?requestMobileVideo\(inkVideo\)/.test(workHtml) &&
+      /if \(motionOn\) \{[\s\S]*?warmMobileBeatVideos\(\)/.test(workHtml),
+    'cold load warms every mobile beat video with preload=auto and a muted play attempt'
+  );
+  ok(
+    /addEventListener\("loadeddata"/.test(workHtml) &&
+      /addEventListener\("canplay"/.test(workHtml) &&
+      /requestVideoFrameCallback/.test(workHtml) &&
+      /readyState < 2/.test(workHtml) &&
+      !/addEventListener\("loadedmetadata"/.test(workHtml),
+    'readiness uses loadeddata/canplay, HAVE_CURRENT_DATA, and requestVideoFrameCallback — not loadedmetadata'
+  );
+  ok(
+    /function scrollToMobileStopIndex\(index\)[\s\S]*?return new Promise/.test(workHtml) &&
+      /function waitForMobileDestinationReady[\s\S]*?mobileReadinessStatus/.test(workHtml) &&
+      /function applyMobileReadinessResult[\s\S]*?startPassage/.test(workHtml) &&
+      !/canplaythrough/.test(requestSrc) &&
+      !/canplaythrough/.test(prepareSrc) &&
+      !/canplaythrough/.test(glideSrc),
+    'navigation is asynchronous and gates the visible passage on decoded readiness, not canplaythrough'
   );
   ok(
     /if \(elapsed < 1\) mobileScrollRaf = window\.requestAnimationFrame\(glide\);\s*else \{\s*window\.scrollTo\(0, top\);\s*mobileScrollRaf = 0;\s*mobileTransition = null;\s*mobileGlideLocked = false;\s*clearMobileDestination\(\);\s*sampleScroll\(\);/.test(workHtml),
@@ -883,9 +914,12 @@ ok(
       !/clip-path\s*:\s*inset\(/.test(mobileSheet) &&
         !/\.handoff-seam/.test(mobileSheet) &&
         !/\.layer\.is-carrier/.test(mobileSheet) &&
-        /\.passage-veil\s*\{[\s\S]*?opacity\s*:\s*var\(--passage-veil\)/.test(mobileSheet) &&
-        /\.passage-veil\s*\{[\s\S]*?#040A0C/.test(mobileSheet),
-      'mobile handoff is a full-frame opaque veil, not a split-screen clip'
+        !/\.passage-veil/.test(mobileSheet) &&
+        !/--passage-veil/.test(mobileSheet) &&
+        /\.layer-rana\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--rana-open\)/.test(mobileSheet) &&
+        /\.layer-prorok\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--prorok-open\)/.test(mobileSheet) &&
+        /\.layer-terminal\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--terminal-hold\)/.test(mobileSheet),
+      'mobile handoff dissolves full-bleed plates and has no veil or split-screen clip'
     );
     ok(
       /\.scene-copy--rana\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-rana\)/.test(mobileSheet) &&
@@ -905,14 +939,16 @@ ok(
       'eased scroll travel is preserved; pair t uses the local pair clock'
     );
     ok(
-      /function span\(t, a, b\)/.test(workHtml) &&
-        !/function mobileSceneValuesForTransition\([\s\S]*?range\(t,/.test(workHtml),
-      'pair renderer uses a linear local span and does not re-smoothstep through range()'
+      /function mobileSceneValuesForTransition\([\s\S]*?function mix\(a, b\)/.test(workHtml) &&
+        !/function mobileSceneValuesForTransition\([\s\S]*?range\(t,/.test(workHtml) &&
+        !/function mobileSceneValuesForTransition\([\s\S]*?passageVeil/.test(workHtml),
+      'pair renderer mixes the two rests along local t and has no veil channel'
     );
     ok(
-      /function paintMobileRest\(index\) \{\s*clearPassageVeil\(\);/.test(workHtml) &&
-        /function cancelMobileGlide\(\)[\s\S]*?clearPassageVeil\(\)/.test(workHtml),
-      'landing and cancel clear the passage veil'
+      /function paintMobileRest\(index\) \{\s*applySceneValues\(mobileSceneValuesForRest/.test(workHtml) &&
+        /function cancelVisibleMobileGlide\(\)[\s\S]*?mobileTransition = null/.test(workHtml) &&
+        !/clearPassageVeil/.test(workHtml),
+      'landing and cancel restore a rest without a veil path'
     );
   }
 
@@ -932,7 +968,7 @@ ok(
       extractFunction('span'),
       extractFunction('mobilePairClock'),
       extractFunction('copyValuesFromWorld'),
-      extractFunction('withCopyAndVeil'),
+      extractFunction('withCopy'),
       mapMatch ? mapMatch[0] : '',
       stillMatch ? stillMatch[0] : '',
       stopsMatch ? stopsMatch[0] : '',
@@ -974,12 +1010,21 @@ ok(
       'copyRana',
       'copyProrok',
       'copyTerminal',
-      'passageVeil',
     ];
     const worldKeys = ['corridorDark', 'ranaOpen', 'ranaHold', 'ring', 'prorokOpen', 'prorokHold', 'terminalHold'];
     const dist = (a, b) => Math.sqrt(keys.reduce((sum, key) => sum + (a[key] - b[key]) ** 2, 0));
-    const sameValues = (a, b) => keys.every((key) => Math.abs(a[key] - b[key]) <= 1e-9);
-    const sameWorld = (a, b) => worldKeys.every((key) => Math.abs(a[key] - b[key]) <= 1e-9);
+    const sameValues = (a, b) => keys.every((key) => Math.abs((a[key] || 0) - (b[key] || 0)) <= 1e-9);
+    const mixValues = (from, to, t) => {
+      const out = {};
+      for (const key of keys) out[key] = from[key] + (to[key] - from[key]) * t;
+      return out;
+    };
+    const betweenRests = (v, from, to) =>
+      keys.every((key) => {
+        const lo = Math.min(from[key], to[key]);
+        const hi = Math.max(from[key], to[key]);
+        return v[key] + 1e-9 >= lo && v[key] - 1e-9 <= hi;
+      });
     const hasWorld = (v) =>
       (v.ranaOpen < 0.97 && v.prorokOpen < 0.97 && v.terminalHold < 0.97) ||
       v.ranaOpen > 0.02 ||
@@ -995,6 +1040,10 @@ ok(
       if (fromIndex === 2 || toIndex === 2 && fromIndex === 1) return v.copyProrok;
       return v.copyTerminal;
     };
+    const hasInterstitial = (v) =>
+      Object.prototype.hasOwnProperty.call(v, 'passageVeil') ||
+      Object.prototype.hasOwnProperty.call(v, 'veil') ||
+      Object.prototype.hasOwnProperty.call(v, 'interstitial');
 
     const pairs = [
       [0, 1],
@@ -1013,60 +1062,59 @@ ok(
       let midpointsMoved = true;
       let reverseGrammar = true;
       let worldsPresent = true;
-      let copySeparated = true;
-      let veilCoversFirst = true;
-      let veilStartsEarly = true;
-      let singleWorld = true;
-      let copyAfterAuthority = true;
+      let noInterstitial = true;
+      let directHandoff = true;
+      let copyAlive = true;
+      let sourceLegible = true;
       for (const [fromIndex, toIndex] of pairs) {
         const fromRest = mobileSceneValuesForRest(fromIndex);
         const toRest = mobileSceneValuesForRest(toIndex);
         if (!sameValues(mobileSceneValuesForTransition(fromIndex, toIndex, 0), fromRest)) endpointsMatch = false;
         if (!sameValues(mobileSceneValuesForTransition(fromIndex, toIndex, 1), toRest)) endpointsMatch = false;
+        if (!sameValues(mobileSceneValuesForTransition(toIndex, fromIndex, 0), toRest)) endpointsMatch = false;
+        if (!sameValues(mobileSceneValuesForTransition(toIndex, fromIndex, 1), fromRest)) endpointsMatch = false;
         const early = mobileSceneValuesForTransition(fromIndex, toIndex, 0.12);
-        if (!(early.passageVeil > 0.15) || !sameWorld(early, fromRest)) veilStartsEarly = false;
+        if (dist(early, fromRest) >= dist(early, toRest)) sourceLegible = false;
+        if (!betweenRests(early, fromRest, toRest)) directHandoff = false;
         for (const t of [0.25, 0.5, 0.75]) {
           const mid = mobileSceneValuesForTransition(fromIndex, toIndex, t);
           if (dist(mid, fromRest) < 0.12 || dist(mid, toRest) < 0.12) midpointsMoved = false;
           if (!hasWorld(mid)) worldsPresent = false;
+          if (hasInterstitial(mid) || !betweenRests(mid, fromRest, toRest)) directHandoff = false;
+          if (!sameValues(mid, mixValues(fromRest, toRest, t))) directHandoff = false;
         }
-        let sawDest = false;
+        const midpoint = mobileSceneValuesForTransition(fromIndex, toIndex, 0.5);
+        if (hasInterstitial(midpoint) || !hasWorld(midpoint) || sameValues(midpoint, fromRest) || sameValues(midpoint, toRest)) {
+          directHandoff = false;
+        }
+        if (worldKeys.every((key) => midpoint[key] < 0.02)) directHandoff = false;
         for (let i = 0; i <= 80; i++) {
           const t = i / 80;
           const forward = mobileSceneValuesForTransition(fromIndex, toIndex, t);
           const reverse = mobileSceneValuesForTransition(toIndex, fromIndex, t);
-          if (Math.abs(forward.passageVeil - reverse.passageVeil) > 1e-9) reverseGrammar = false;
+          if (!sameValues(forward, mixValues(fromRest, toRest, t))) reverseGrammar = false;
+          if (!sameValues(reverse, mixValues(toRest, fromRest, t))) reverseGrammar = false;
+          if (hasInterstitial(forward) || hasInterstitial(reverse)) noInterstitial = false;
           if (!hasWorld(forward) || !hasWorld(reverse)) worldsPresent = false;
-          if (!sameWorld(forward, fromRest) && !sameWorld(forward, toRest)) singleWorld = false;
-          if (!sameWorld(reverse, mobileSceneValuesForRest(toIndex)) && !sameWorld(reverse, mobileSceneValuesForRest(fromIndex))) {
-            singleWorld = false;
+          if (!betweenRests(forward, fromRest, toRest) || !betweenRests(reverse, fromRest, toRest)) {
+            directHandoff = false;
           }
-          const copies = [forward.copyRana, forward.copyProrok, forward.copyTerminal].filter((value) => value > 0.06);
-          if (copies.length > 1) copySeparated = false;
-          const reverseCopies = [reverse.copyRana, reverse.copyProrok, reverse.copyTerminal].filter((value) => value > 0.06);
-          if (reverseCopies.length > 1) copySeparated = false;
-          if (!sameWorld(forward, fromRest)) {
-            if (!sawDest && forward.passageVeil < 0.97) veilCoversFirst = false;
-            sawDest = true;
-          }
-          if (fromIndex > 0 && outgoingCopy(fromIndex, toIndex, forward) > 0.06 && forward.passageVeil >= 0.97) {
-            copyAfterAuthority = false;
-          }
-          if (incomingCopy(fromIndex, toIndex, forward) > 0.06 && (forward.passageVeil > 0.2 || !sameWorld(forward, toRest))) {
-            copyAfterAuthority = false;
+          const outCopy = outgoingCopy(fromIndex, toIndex, fromRest);
+          const inCopy = incomingCopy(fromIndex, toIndex, toRest);
+          if (outCopy > 0.06 && inCopy > 0.06) {
+            const live = outgoingCopy(fromIndex, toIndex, forward) + incomingCopy(fromIndex, toIndex, forward);
+            if (live < 0.06) copyAlive = false;
           }
         }
-        if (!sawDest) veilCoversFirst = false;
       }
       ok(endpointsMatch, 'local t=0 matches the source rest and t=1 matches the destination rest');
       ok(midpointsMoved, 'at t=.25, .50, and .75 every transition has a materially changed visible state');
       ok(worldsPresent, 'no forward or reverse sample leaves all authoritative world layers absent');
-      ok(copySeparated, 'Rana/Dylan and Dylan/terminal copy never overlap above the 0.06 legibility threshold');
-      ok(veilStartsEarly, 'the full-frame veil is already visible in the first quarter while the outgoing world still owns the plate');
-      ok(veilCoversFirst, 'world identity changes only after the veil fully covers the viewport');
-      ok(singleWorld, 'every sample is exactly the outgoing rest or the incoming rest — never a mixed-world blend');
-      ok(copyAfterAuthority, 'outgoing copy retires before full occlusion; incoming copy enters only after the incoming world owns a lifted veil');
-      ok(reverseGrammar, 'reverse uses the same full-frame veil envelope as forward');
+      ok(noInterstitial, 'transition values contain no veil or interstitial channel');
+      ok(directHandoff, 'midpoint is a direct source/destination full-frame handoff, not a third visual or blank');
+      ok(sourceLegible, 'the outgoing world stays the nearer plate at the beginning of the handoff');
+      ok(copyAlive, 'copy leaves and enters in synchrony with no dead interval');
+      ok(reverseGrammar, 'reverse endpoints and handoff use the same mix grammar as forward');
 
       ok(typeof mobilePairClock === 'function', 'pair renderer has a local wall-time clock');
       if (typeof mobilePairClock === 'function') {
@@ -1111,7 +1159,7 @@ ok(
         'studioVideo',
         'ringVideo',
         'inkVideo',
-        syncMatch[0] + '; return syncVideos;'
+        'function videoNeedsHiddenWarm(){ return false; }\n' + syncMatch[0] + '; return syncVideos;'
       )(
         true,
         function armVideos() {},
@@ -1146,9 +1194,316 @@ ok(
           paused.includes('corridor'),
         'Invitation→ProRok reverse prewarm wakes ink before the ProRok range'
       );
+
+      const warmSync = new Function(
+        'motionOn',
+        'armVideos',
+        'playSafe',
+        'pauseSafe',
+        'videoIsPreparedDestination',
+        'corridorVideo',
+        'studioVideo',
+        'ringVideo',
+        'inkVideo',
+        'function videoNeedsHiddenWarm(video){ return video && video.id === "ink"; }\n' +
+          syncMatch[0] +
+          '; return syncVideos;'
+      )(
+        true,
+        function armVideos() {},
+        function playSafe(video) { played.push(video.id); },
+        function pauseSafe(video) { paused.push(video.id); },
+        function videoIsPreparedDestination() { return false; },
+        corridorVideo,
+        studioVideo,
+        ringVideo,
+        inkVideo
+      );
+      played.length = 0;
+      paused.length = 0;
+      warmSync(0.04);
+      ok(played.includes('ink'), 'cold-load warming keeps an unreadied destination video playing while hidden');
     } catch (e) {
       failures.push('syncVideos destination keep-alive: ' + e.message);
     }
+  }
+
+  ok(
+    /function cancelMobileGlide\(\)[\s\S]*?cancelMobileReadiness\(\)/.test(workHtml) &&
+      /function applyMotionPreference\([\s\S]*?cancelMobileGlide\(\)/.test(workHtml) &&
+      /function onMobileViewportChange\(\)[\s\S]*?cancelMobileGlide\(\)/.test(workHtml) &&
+      /function cancelMobileReadiness\(\)[\s\S]*?mobileRequestGeneration \+= 1/.test(workHtml),
+    'Motion Off and viewport change cancel the pending readiness token'
+  );
+  {
+    const waitFn = (workHtml.match(/function waitForMobileDestinationReady\(id, token, onDone\) \{[\s\S]*?\n  \}/) || [''])[0];
+    const requestFn = (workHtml.match(/function scrollToMobileStopIndex\(index\) \{[\s\S]*?\n  \}/) || [''])[0];
+    ok(
+      /mobileWaiting = true/.test(requestFn) &&
+        /mobileRequestedStopId = stop\.id/.test(requestFn) &&
+        /prepareMobileDestination/.test(requestFn) &&
+        /applyMobileReadinessResult/.test(requestFn) &&
+        /function startPassage\(\)[\s\S]*?glideScrollTo\(top\)/.test(requestFn) &&
+        /waitForMobileDestinationReady/.test(requestFn) &&
+        /mobileReadinessStatus/.test(waitFn) &&
+        !/mobileTransition = \{/.test(requestFn) &&
+        !/window\.scrollTo/.test(waitFn) &&
+        !/setProperty/.test(waitFn) &&
+        !/paintMobileTransition/.test(requestFn),
+      'hidden wait leaves the outgoing rest painted and only the live readiness path may start the handoff'
+    );
+  }
+  ok(
+    !/<[^>]+>(?:Loading|Please wait|Decoding)[^<]*</i.test(workHtml) &&
+      !/class="[^"]*(?:spinner|loading-plate|faux-veil)[^"]*"/.test(workHtml),
+    'no visitor-facing loading copy, spinner, or extra waiting plate'
+  );
+
+  function extractNamedFunction(name) {
+    const match = workHtml.match(new RegExp('function ' + name + '\\([^)]*\\) \\{[\\s\\S]*?\\n  \\}'));
+    return match ? match[0] : '';
+  }
+
+  const readinessParts = [
+    extractNamedFunction('videosForMobileStop'),
+    extractNamedFunction('videoHasRenderableFrame'),
+    extractNamedFunction('mobileDestinationReady'),
+    extractNamedFunction('mobileDestinationFailed'),
+    extractNamedFunction('mobileReadinessStatus'),
+    extractNamedFunction('applyMobileReadinessResult'),
+    extractNamedFunction('requestMobileVideo'),
+    extractNamedFunction('warmMobileBeatVideos'),
+  ];
+  ok(readinessParts.every((part) => part.length > 0), 'readiness helpers are extractable');
+
+  let videoHasRenderableFrame;
+  let mobileDestinationReady;
+  let mobileDestinationFailed;
+  let mobileReadinessStatus;
+  let applyMobileReadinessResult;
+  let requestMobileVideo;
+  let warmMobileBeatVideos;
+  const playCalls = [];
+  const loadCalls = [];
+  try {
+    ({
+      videoHasRenderableFrame,
+      mobileDestinationReady,
+      mobileDestinationFailed,
+      mobileReadinessStatus,
+      applyMobileReadinessResult,
+      requestMobileVideo,
+      warmMobileBeatVideos,
+    } = new Function(
+      'corridorVideo',
+      'studioVideo',
+      'ringVideo',
+      'inkVideo',
+      'playSafe',
+      'motionOn',
+      'isMobile',
+      readinessParts.join('\n') +
+        '; return { videoHasRenderableFrame, mobileDestinationReady, mobileDestinationFailed, mobileReadinessStatus, applyMobileReadinessResult, requestMobileVideo, warmMobileBeatVideos };'
+    )(
+      corridorVideo,
+      studioVideo,
+      ringVideo,
+      inkVideo,
+      function playSafe(video) {
+        playCalls.push(video && video.id);
+        if (video && typeof video.play === 'function') video.play();
+      },
+      true,
+      function isMobile() { return true; }
+    ));
+  } catch (e) {
+    failures.push('readiness helper parse: ' + e.message);
+  }
+
+  ok(
+    typeof videoHasRenderableFrame === 'function' &&
+      typeof mobileDestinationReady === 'function' &&
+      typeof mobileReadinessStatus === 'function' &&
+      typeof applyMobileReadinessResult === 'function' &&
+      typeof requestMobileVideo === 'function' &&
+      typeof warmMobileBeatVideos === 'function',
+    'readiness helpers run as functions'
+  );
+
+  if (typeof videoHasRenderableFrame === 'function') {
+    const metadataOnly = { readyState: 1, error: null };
+    const haveCurrent = { readyState: 2, error: null };
+    const errored = { readyState: 2, error: { code: 4 } };
+    const rvfcCold = {
+      readyState: 2,
+      error: null,
+      requestVideoFrameCallback: function () {},
+    };
+    const rvfcData = {
+      readyState: 2,
+      error: null,
+      jwSawDataEvent: true,
+      requestVideoFrameCallback: function () {},
+    };
+    const rvfcFrame = {
+      readyState: 2,
+      error: null,
+      jwDecodedFrame: true,
+      requestVideoFrameCallback: function () {},
+    };
+    ok(!videoHasRenderableFrame(metadataOnly), 'loadedmetadata / HAVE_METADATA alone is not a decoded frame');
+    ok(videoHasRenderableFrame(haveCurrent), 'HAVE_CURRENT_DATA without RVFC is a renderable frame');
+    ok(!videoHasRenderableFrame(errored), 'a media error is not a renderable frame');
+    ok(!videoHasRenderableFrame(rvfcCold), 'RVFC-exposed video still needs a data event or decoded frame');
+    ok(videoHasRenderableFrame(rvfcData), 'loadeddata/canplay plus HAVE_CURRENT_DATA readies an RVFC video');
+    ok(videoHasRenderableFrame(rvfcFrame), 'requestVideoFrameCallback can prove a decoded frame');
+
+    studioVideo.readyState = 2;
+    studioVideo.error = null;
+    ringVideo.readyState = 0;
+    ringVideo.error = null;
+    inkVideo.readyState = 2;
+    inkVideo.error = null;
+    corridorVideo.readyState = 0;
+    corridorVideo.error = null;
+    ok(!mobileDestinationReady('rana'), 'Rana is not ready when only studio has a decoded frame');
+    ok(mobileDestinationReady('prorok'), 'ProRok is ready from the ink loop alone');
+    ok(!mobileDestinationReady('corridor'), 'reverse corridor is not ready until its loop has a frame');
+    ok(mobileDestinationReady('invitation'), 'Invitation has no video and is immediately ready');
+    ringVideo.readyState = 2;
+    ok(mobileDestinationReady('rana'), 'Rana becomes ready only after both studio and ring have frames');
+    corridorVideo.readyState = 2;
+    ok(mobileDestinationReady('corridor'), 'reverse corridor uses the same decoded-frame rule');
+    studioVideo.error = { code: 4 };
+    ok(mobileDestinationFailed('rana') && !mobileDestinationReady('rana'), 'a Rana media error fails the destination');
+    studioVideo.error = null;
+
+    const coldStudio = { id: 'studio', readyState: 0, preload: 'metadata', loadCalls: 0, play() { this.played = true; } };
+    coldStudio.load = function load() { this.loadCalls += 1; };
+    requestMobileVideo(coldStudio);
+    ok(
+      coldStudio.preload === 'auto' && coldStudio.loadCalls === 1 && coldStudio.played === true,
+      'requestMobileVideo upgrades preload, loads a cold element, and attempts muted play'
+    );
+
+    playCalls.length = 0;
+    corridorVideo.readyState = 0;
+    studioVideo.readyState = 0;
+    ringVideo.readyState = 0;
+    inkVideo.readyState = 0;
+    corridorVideo.load = function load() { loadCalls.push('corridor'); };
+    studioVideo.load = function load() { loadCalls.push('studio'); };
+    ringVideo.load = function load() { loadCalls.push('ring'); };
+    inkVideo.load = function load() { loadCalls.push('ink'); };
+    corridorVideo.play = function play() {};
+    studioVideo.play = function play() {};
+    ringVideo.play = function play() {};
+    inkVideo.play = function play() {};
+    warmMobileBeatVideos();
+    ok(
+      ['corridor', 'studio', 'ring', 'ink'].every((id) => playCalls.includes(id) && loadCalls.includes(id)),
+      'cold-load warming requests every mobile beat video'
+    );
+
+    const restSnapshot = {
+      scroll: 12,
+      copyRana: 0,
+      copyProrok: 0,
+      corridorDark: 0,
+      ranaOpen: 0,
+      rest: 'corridor',
+    };
+    const waitingScene = { ...restSnapshot };
+    function startPassage() {
+      waitingScene.scroll = 380;
+      waitingScene.copyRana = 1;
+      waitingScene.ranaOpen = 1;
+      waitingScene.corridorDark = 1;
+      waitingScene.rest = 'rana';
+    }
+    function abortRequest() {
+      waitingScene.unlocked = true;
+    }
+
+    ok(mobileReadinessStatus({
+      token: 1,
+      generation: 1,
+      failed: false,
+      ready: true,
+      elapsedMs: 0,
+      ceilingMs: 24000,
+    }) === 'ready', 'already-decoded media is ready with no mandatory delay');
+    ok(applyMobileReadinessResult('ready', 1, 1, startPassage, abortRequest) === 'started', 'ready-before-transition starts the existing passage');
+    ok(waitingScene.rest === 'rana', 'the visible clock starts only after readiness resolves');
+
+    Object.assign(waitingScene, restSnapshot);
+    delete waitingScene.unlocked;
+    ok(mobileReadinessStatus({
+      token: 1,
+      generation: 1,
+      failed: false,
+      ready: false,
+      elapsedMs: 23999,
+      ceilingMs: 24000,
+    }) === 'pending', 'an unreadied destination stays pending before the 24000ms ceiling');
+    ok(
+      waitingScene.scroll === restSnapshot.scroll &&
+        waitingScene.copyRana === restSnapshot.copyRana &&
+        waitingScene.copyProrok === restSnapshot.copyProrok &&
+        waitingScene.corridorDark === restSnapshot.corridorDark &&
+        waitingScene.ranaOpen === restSnapshot.ranaOpen &&
+        waitingScene.rest === restSnapshot.rest,
+      'waiting leaves the complete outgoing rest unchanged'
+    );
+
+    const timeoutStatus = mobileReadinessStatus({
+      token: 1,
+      generation: 1,
+      failed: false,
+      ready: false,
+      elapsedMs: 24000,
+      ceilingMs: 24000,
+    });
+    ok(timeoutStatus === 'timeout', '24000ms without a decoded frame times out');
+    ok(applyMobileReadinessResult(timeoutStatus, 1, 1, startPassage, abortRequest) === 'timeout', 'timeout cancels instead of starting the passage');
+    ok(waitingScene.rest === 'corridor' && waitingScene.unlocked === true, 'timeout leaves the outgoing rest intact and unlocks navigation');
+
+    delete waitingScene.unlocked;
+    const errorStatus = mobileReadinessStatus({
+      token: 1,
+      generation: 1,
+      failed: true,
+      ready: false,
+      elapsedMs: 40,
+      ceilingMs: 24000,
+    });
+    ok(errorStatus === 'error', 'a media error is a failed readiness result');
+    ok(applyMobileReadinessResult(errorStatus, 1, 1, startPassage, abortRequest) === 'error', 'error cancels the requested move');
+    ok(waitingScene.rest === 'corridor', 'error does not advance to a poster or partial destination');
+
+    let staleStarted = false;
+    let staleAborted = false;
+    ok(mobileReadinessStatus({
+      token: 1,
+      generation: 2,
+      failed: false,
+      ready: true,
+      elapsedMs: 10,
+      ceilingMs: 24000,
+    }) === 'stale', 'a newer generation makes the old readiness token stale');
+    ok(
+      applyMobileReadinessResult('ready', 1, 2, function () { staleStarted = true; }, function () { staleAborted = true; }) === 'stale' &&
+        staleStarted === false &&
+        staleAborted === false,
+      'a stale token cannot start a late transition or abort a newer request'
+    );
+
+    ok(
+      Number((workHtml.match(/var MOBILE_READINESS_MS = ([0-9]+)/) || [])[1]) === 24000 &&
+        Number((workHtml.match(/var MOBILE_SECTION_GLIDE_MS = ([0-9]+)/) || [])[1]) === 2400 &&
+        24000 === 10 * 2400,
+      'exact clocks stay 24000ms hidden readiness and 2400ms visible passage'
+    );
   }
 }
 
