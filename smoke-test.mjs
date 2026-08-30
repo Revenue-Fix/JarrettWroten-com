@@ -55,7 +55,12 @@ ok(sourceHtml.includes('id="portfolio-passage"') && sourceHtml.includes('id="pro
 ok(sourceHtml.indexOf('id="portfolio-passage"') < sourceHtml.indexOf('id="process-journey"'), 'portfolio passage precedes process journey in document order');
 ok(sourceHtml.includes('journeyToDocumentY') && sourceHtml.includes('journeyDocumentTop'), 'process navigation is document-offset aware');
 ok(portfolioController.includes('portfolioOwnsViewport()') && sourceHtml.includes('journeyOwnsViewport()'), 'both passages gate viewport-owned input');
-ok(sourceHtml.includes('JW_MOTION.set(motionOn, "process"') && portfolioController.includes('JW_MOTION.set(motionOn, "portfolio"') && motionBootstrap.includes('jw-motion-change'), 'portfolio and process share one motion preference owner');
+ok(
+  sourceHtml.includes('addEventListener("jw-motion-change"') &&
+    portfolioController.includes('addEventListener("jw-motion-change"') &&
+    motionBootstrap.includes('jw-motion-change'),
+  'portfolio and process consume one motion preference owner'
+);
 ok(sourceHtml.includes('watchForProcessActivation') && sourceHtml.includes('processActivated'), 'process boot is deferred until its passage approaches');
 ok(/id="process-arrival-motion-video"[\s\S]*?preload="none"/.test(sourceHtml), 'offscreen process Arrival carrier does not preload on portfolio cold load');
 
@@ -67,8 +72,8 @@ for (const s of ['leak', 'method', 'proof', 'jarrett', 'threshold']) {
   ok(html.includes('data-go="' + s + '"') || html.includes("'" + s + "'"), 'station seam ' + s);
 }
 
-ok(html.includes('jw-motion'), 'motion preference key');
-ok(html.includes('Motion on') || html.includes('motion-toggle'), 'motion control');
+ok(motionBootstrap.includes('localStorage.removeItem("jw-motion")') && !motionBootstrap.includes('localStorage.setItem('), 'legacy motion preference key is retired');
+ok(!/<button[^>]*(?:portfolio-motion-toggle|process-motion-toggle)/.test(sourceHtml), 'homepage renders no Motion On or Off control');
 ok(html.includes('data-motion'), 'motion attribute boot');
 ok(motionBootstrap.includes('get("motion")') && motionBootstrap.includes('requested === "on" || requested === "off"'), 'motion query support');
 
@@ -250,7 +255,7 @@ for (const sel of ['.station-kicker', '.note-device-caption', '.lightbox-caption
   ok(/letter-spacing\s*:\s*0/.test(block), '.scroll-invitation keeps natural tracking');
   ok(/class="scroll-invitation"/.test(html) && html.includes('<span>Scroll</span>'), 'centered Scroll invitation markup present');
 }
-for (const sel of ['.wordmark', '.motion-toggle', '.loader-label', '.station-rail-tick span', '.distance-hud', '.method-annot-num', '.proof-open-hint', '.site-footer', '.lightbox-close']) {
+for (const sel of ['.wordmark', '.loader-label', '.station-rail-tick span', '.distance-hud', '.method-annot-num', '.proof-open-hint', '.site-footer', '.lightbox-close']) {
   const block = styleBlock(sel);
   ok(/font-family\s*:\s*var\(--text\)/.test(block), sel + ' uses readable utility sans');
   ok(!/text-transform\s*:\s*uppercase/.test(block), sel + ' is not forced into all caps');

@@ -241,8 +241,6 @@
     transition:opacity .35s var(--portfolio-ease-enter);
   }
   .portfolio-media-fill[data-video].portfolio-is-ready{opacity:1}
-  #portfolio-rana-studio-video,
-  #portfolio-rana-ring-video,
   #portfolio-prorok-ink-video{display:none !important}
   .portfolio-rana-studio{
     /* Full-bleed hero — center the subject so desktop and mobile cover crops keep gem + scale cue. */

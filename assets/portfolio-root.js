@@ -385,8 +385,8 @@
   function expectedFoodVideoPath(video, mobile) {
     if (video === generationsVideo) {
       return mobile
-        ? "/assets/work/generations/hurricane-fries-mobile-3p6.mp4"
-        : "/assets/work/generations/hurricane-fries-desktop-3p6.mp4";
+        ? "/assets/work/generations/loco-moco-site-mobile-49849434.mp4"
+        : "/assets/work/generations/loco-moco-site-desktop-3b1c9987.mp4";
     }
     if (video === painaVideo) {
       return mobile
@@ -399,8 +399,8 @@
   function expectedFoodPosterPath(image, mobile) {
     if (image === generationsPoster) {
       return mobile
-        ? "/assets/work/generations/hurricane-fries-mobile.jpg"
-        : "/assets/work/generations/hurricane-fries-desktop.jpg";
+        ? "/assets/work/generations/loco-moco-site-mobile-ea703ae1.jpg"
+        : "/assets/work/generations/loco-moco-site-desktop-bf93bac9.jpg";
     }
     if (image === painaPoster) {
       return mobile
@@ -560,7 +560,7 @@
   }
 
   function drawMobileRanaScene(ctx) {
-    var source = imageHasRenderableFrame(ringPoster) ? ringPoster : null;
+    var source = mobileSource(ringVideo, ringPoster);
     if (!source) return false;
     ctx.filter = "saturate(1.1) contrast(1.06) brightness(1.03)";
     var drawn = drawMobileContain(ctx, source);
@@ -859,7 +859,8 @@
   function videosForMobileStop(id) {
     if (id === "generations") return [generationsVideo];
     if (id === "paina") return [painaVideo];
-    if (id === "rana" || id === "prorok") return [];
+    if (id === "rana") return [ringVideo];
+    if (id === "prorok") return [];
     /* Process is image-backed; image readiness is checked separately. */
     return [];
   }
@@ -1030,7 +1031,7 @@
   function mobileDestinationReady(id) {
     if (id === "generations") return destinationRepresentationReady(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationReady(painaVideo, painaPoster);
-    if (id === "rana") return imageHasRenderableFrame(ringPoster);
+    if (id === "rana") return destinationRepresentationReady(ringVideo, ringPoster);
     if (id === "prorok") return imageHasRenderableFrame(prorokPortrait);
     if (id === "process") return imageHasRenderableFrame(terminalReturn);
     return false;
@@ -1039,7 +1040,7 @@
   function mobileDestinationFailed(id) {
     if (id === "generations") return destinationRepresentationFailed(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationFailed(painaVideo, painaPoster);
-    if (id === "rana") return imageHasFailed(ringPoster);
+    if (id === "rana") return destinationRepresentationFailed(ringVideo, ringPoster);
     if (id === "prorok") return imageHasFailed(prorokPortrait);
     if (id === "process") return imageHasFailed(terminalReturn);
     return false;
@@ -1160,7 +1161,8 @@
       if (isActive(painaVideo)) playSafe(painaVideo);
       else pauseSafe(painaVideo);
       pauseSafe(studioVideo);
-      pauseSafe(ringVideo);
+      if (isActive(ringVideo)) playSafe(ringVideo);
+      else pauseSafe(ringVideo);
       pauseSafe(inkVideo);
       return;
     }
@@ -1168,8 +1170,10 @@
     else pauseSafe(generationsVideo);
     if (p > 0.08 && p < 0.45) playSafe(painaVideo);
     else pauseSafe(painaVideo);
-    pauseSafe(studioVideo);
-    pauseSafe(ringVideo);
+    if (p > 0.39 && p < 0.74) playSafe(studioVideo);
+    else pauseSafe(studioVideo);
+    if (p > 0.48 && p < 0.70) playSafe(ringVideo);
+    else pauseSafe(ringVideo);
     pauseSafe(inkVideo);
   }
 

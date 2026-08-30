@@ -91,7 +91,12 @@ for (const [route, status, signature] of caseRequirements) {
   const html = pages[route];
   ok(html.includes(status), route + ' shows exact relationship status');
   ok(html.includes(signature), route + ' has its project-specific content structure');
-  ok(html.includes('case-motion-toggle') && html.includes('/assets/case-study.js'), route + ' exposes the shared motion control');
+  ok(
+    !/<button[^>]*case-motion-toggle/.test(html) &&
+      html.includes('/assets/motion-bootstrap.js') &&
+      html.includes('/assets/case-study.js'),
+    route + ' defaults through the shared motion owner without a visible toggle'
+  );
   ok(!html.includes('What this status means'), route + ' avoids repeated legal-template ending');
   ok(!/created by Jarrett Wroten/i.test(html), route + ' speaks in Jarrett first person');
   ok(!/image000001|image0000002|stripe-growth/i.test(html), route + ' does not inherit unrelated process proof');
@@ -106,7 +111,7 @@ ok(!/font-style:italic/.test(pages['/work/paina-cafe/']), 'Pā‘ina does not sy
 
 ok(caseCss.includes('font:600 .875rem/1.2 var(--case-ui)') && caseCss.includes('font:600 .875rem/1.3 var(--case-ui)') && caseCss.includes('font:500 .875rem/1.4 var(--case-ui)'), 'case labels and footer meet the 14px authored floor');
 ok(caseCss.includes('html[data-case-motion="off"] video{visibility:hidden}'), 'motion-off reveals authored poster fields instead of moving video');
-ok(caseJs.includes('prefers-reduced-motion: reduce') && caseJs.includes('videos[i].pause()'), 'case motion control honors reduced-motion and pauses every carrier');
+ok(caseJs.includes('jw-motion-change') && caseJs.includes('videos[i].pause()'), 'case motion consumer follows the shared reduced-motion state and pauses every carrier');
 try { new Function(caseJs); ok(true, 'case motion controller parses'); }
 catch (error) { failures.push('case motion controller parse: ' + error.message); }
 try { new Function(portfolioJs); ok(true, 'root portfolio controller parses'); }
@@ -121,7 +126,13 @@ ok(ids.length === new Set(ids).size, 'combined root has no duplicate IDs');
 ok(/<meta name="viewport" content="width=device-width, initial-scale=1">/.test(root) && !/<meta name="process-viewport"/.test(root), 'combined root keeps the standard viewport meta');
 ok(root.indexOf('id="portfolio-passage"') < root.indexOf('id="process-journey"'), 'root visitor reaches portfolio before process');
 ok(portfolioJs.includes('portfolioOwnsViewport()') && root.includes('journeyOwnsViewport()'), 'portfolio and process inputs are passage-owned');
-ok(portfolioJs.includes('JW_MOTION.set(motionOn, "portfolio"') && root.includes('JW_MOTION.set(motionOn, "process"') && motionBootstrap.includes('prefers-reduced-motion: reduce'), 'motion changes share one deterministic bootstrap');
+ok(
+  portfolioJs.includes('addEventListener("jw-motion-change"') &&
+    root.includes('addEventListener("jw-motion-change"') &&
+    caseJs.includes('addEventListener("jw-motion-change"') &&
+    motionBootstrap.includes('prefers-reduced-motion: reduce'),
+  'portfolio, Process, and case studies consume one deterministic motion owner'
+);
 ok(root.includes('watchForProcessActivation') && /id="process-arrival-motion-video"[\s\S]*?preload="none"/.test(root), 'process media boot stays deferred on portfolio cold load');
 ok(root.includes('one result from the process') && work.includes('one result from the process') && !/result behind the work/.test(root + work), 'anonymous process proof is separated from the named concepts');
 
@@ -137,12 +148,31 @@ ok(!root.includes('The food already makes the sale') && !work.includes('The food
 ok(!/live Rana site|I built the site around the hand/.test(root + work), 'Rana stays inside the pending concept boundary');
 ok(!/currently being revised (?:with|by) Dylan Prorok/.test(root + work), 'Dylan copy makes no unsupported collaboration claim');
 
-ok(root.includes('<script src="assets/motion-bootstrap.js"></script>') && work.includes('<script src="../assets/motion-bootstrap.js"></script>'), 'root and Work load one shared synchronous motion bootstrap');
 ok(
-  motionBootstrap.includes('query || stored || (media.matches ? "off" : "on")') &&
+  root.includes('<script src="assets/motion-bootstrap.js"></script>') &&
+    work.includes('<script src="../assets/motion-bootstrap.js"></script>') &&
+    caseRequirements.every(([route]) => pages[route].includes('<script src="/assets/motion-bootstrap.js"></script>')),
+  'root, Work, and every case study load one shared synchronous motion bootstrap'
+);
+ok(
+  motionBootstrap.includes('query || (media.matches ? "off" : "on")') &&
     motionBootstrap.includes('if (explicit) return;') &&
-    motionBootstrap.includes('localStorage.setItem("jw-motion", current)'),
-  'motion bootstrap encodes query then stored then OS precedence and locks after explicit choice'
+    motionBootstrap.includes('localStorage.removeItem("jw-motion")') &&
+    !motionBootstrap.includes('localStorage.setItem('),
+  'motion bootstrap defaults on, honors query and OS reduction, and retires stored toggle state'
+);
+ok(
+  !/<button[^>]*(?:portfolio-motion-toggle|process-motion-toggle|class="motion-toggle"|case-motion-toggle)/.test(
+    root + work + caseRequirements.map(([route]) => pages[route]).join('\n')
+  ),
+  'no outward route renders a Motion On or Off button'
+);
+ok(
+  root.includes('loco-moco-site-desktop-3b1c9987.mp4') &&
+    root.includes('loco-moco-site-mobile-49849434.mp4') &&
+    work.includes('loco-moco-site-desktop-3b1c9987.mp4') &&
+    work.includes('loco-moco-site-mobile-49849434.mp4'),
+  'root and Work use the responsive Loco Moco website scene'
 );
 ok((work.match(/href="\.\.\/#process-journey"/g) || []).length === 2, 'scripted and no-JS Work terminal actions target homepage Process Arrival');
 ok(portfolioJs.includes('function glideToProcessArrival()') && portfolioJs.includes('current === MOBILE_STOPS.length - 1'), 'homepage mobile terminal has an explicit forward Process boundary');

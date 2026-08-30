@@ -121,6 +121,7 @@ async function readPassageMotion(page, route) {
     value: document.documentElement.getAttribute('data-motion'),
     source: document.documentElement.getAttribute('data-motion-source'),
     controls: [...document.querySelectorAll('#portfolio-motion-toggle,#process-motion-toggle,#motion-toggle')].map((element) => element.textContent.trim()),
+    legacyStored: localStorage.getItem('jw-motion'),
     generationsPaused: document.getElementById(currentRoute === '/' ? 'portfolio-generations-video' : 'generations-video')?.paused,
     portfolio: window.ROOT_PORTFOLIO_PASSAGE?.motion,
     process: window.PROCESS_JOURNEY?.motion,
@@ -130,10 +131,11 @@ async function readPassageMotion(page, route) {
 
 {
   const scenarios = [
+    { name: 'default-on', query: '', stored: '', reducedMotion: 'no-preference', expected: 'on', source: 'os' },
     { name: 'os-reduce', query: '', stored: '', reducedMotion: 'reduce', expected: 'off', source: 'os' },
     { name: 'query-off-over-stored-on', query: '?motion=off', stored: 'on', reducedMotion: 'no-preference', expected: 'off', source: 'query' },
     { name: 'query-on-over-stored-off', query: '?motion=on', stored: 'off', reducedMotion: 'reduce', expected: 'on', source: 'query' },
-    { name: 'stored-off', query: '', stored: 'off', reducedMotion: 'no-preference', expected: 'off', source: 'stored' }
+    { name: 'stale-stored-off-is-retired', query: '', stored: 'off', reducedMotion: 'no-preference', expected: 'on', source: 'os' }
   ];
   report.motion = [];
   for (const route of ['/', '/work/']) {
@@ -150,7 +152,8 @@ async function readPassageMotion(page, route) {
       const controllerValues = route === '/' ? [state.portfolio, state.process] : [state.work];
       check(state.value === scenario.expected && state.source === scenario.source, route + ' ' + scenario.name + ' resolves deterministic motion precedence');
       check(controllerValues.every((value) => value === (scenario.expected === 'on')), route + ' ' + scenario.name + ' initializes every route controller consistently');
-      check(state.controls.every((value) => value === (scenario.expected === 'on' ? 'Motion on' : 'Motion off')), route + ' ' + scenario.name + ' initializes every motion control consistently');
+      check(state.controls.length === 0, route + ' ' + scenario.name + ' renders no motion control');
+      check(state.legacyStored === null, route + ' ' + scenario.name + ' removes legacy stored motion state');
       if (scenario.expected === 'off') check(state.generationsPaused === true, route + ' ' + scenario.name + ' keeps Generations paused');
       report.motion.push({ route, ...scenario, state });
       await context.close();
@@ -166,13 +169,13 @@ async function readPassageMotion(page, route) {
   await page.waitForTimeout(150);
   const osUpdated = await readPassageMotion(page, '/');
   check(osUpdated.value === 'on' && osUpdated.portfolio === true && osUpdated.process === true, 'OS motion changes update both controllers before an explicit choice');
-  await page.click('#portfolio-motion-toggle');
-  await page.waitForTimeout(150);
+  await page.goto(BASE + '/?motion=off', { waitUntil: 'domcontentloaded' });
+  await page.waitForTimeout(400);
   await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.waitForTimeout(150);
   const explicitHeld = await readPassageMotion(page, '/');
-  check(explicitHeld.value === 'off' && explicitHeld.portfolio === false && explicitHeld.process === false, 'explicit motion choice is not overwritten by later OS changes');
+  check(explicitHeld.value === 'off' && explicitHeld.portfolio === false && explicitHeld.process === false && explicitHeld.controls.length === 0, 'hidden query choice is not overwritten by later OS changes and adds no control');
   report.motionOsChange = { osUpdated, explicitHeld };
   await context.close();
 }
@@ -261,7 +264,7 @@ async function readPassageMotion(page, route) {
   });
   const downstreamVideo = /opening-desktop\.mp4|studio-banner\.mp4|ring-alexandrite\.mp4|sakura-ink-bloom\.mp4/;
   check(!coldResources.paths.some((item) => downstreamVideo.test(item)), 'desktop cold load requests no downstream project video');
-  check(coldResources.bytes <= 2300000, 'desktop cold media transfer stays within 2.3 MB');
+  check(coldResources.bytes <= 2500000, 'desktop cold media transfer stays within 2.5 MB');
 
   const desktopFraming = await page.evaluate(() => {
     const ids = [
@@ -324,14 +327,16 @@ async function readPassageMotion(page, route) {
   const afterKey = await page.evaluate(() => window.scrollY);
   check(afterKey >= processTop && beforeKey >= processTop, 'portfolio keyboard handler does not pull Process back into Work');
 
-  await page.evaluate(() => document.getElementById('process-motion-toggle').click());
-  await page.waitForTimeout(120);
-  let sharedMotion = await page.evaluate(() => ({ portfolio: window.ROOT_PORTFOLIO_PASSAGE.motion, process: window.PROCESS_JOURNEY.motion, root: document.documentElement.getAttribute('data-motion') }));
-  check(sharedMotion.portfolio === false && sharedMotion.process === false && sharedMotion.root === 'off', 'Process motion toggle updates both controllers');
-  await page.evaluate(() => document.getElementById('portfolio-motion-toggle').click());
-  await page.waitForTimeout(120);
-  sharedMotion = await page.evaluate(() => ({ portfolio: window.ROOT_PORTFOLIO_PASSAGE.motion, process: window.PROCESS_JOURNEY.motion, root: document.documentElement.getAttribute('data-motion') }));
-  check(sharedMotion.portfolio === true && sharedMotion.process === true && sharedMotion.root === 'on', 'Portfolio motion toggle updates both controllers');
+  const sharedMotion = await page.evaluate(() => ({
+    portfolio: window.ROOT_PORTFOLIO_PASSAGE.motion,
+    process: window.PROCESS_JOURNEY.motion,
+    root: document.documentElement.getAttribute('data-motion'),
+    controls: document.querySelectorAll('#portfolio-motion-toggle,#process-motion-toggle').length,
+  }));
+  check(
+    sharedMotion.portfolio === true && sharedMotion.process === true && sharedMotion.root === 'on' && sharedMotion.controls === 0,
+    'desktop defaults both controllers on without rendering motion toggles'
+  );
 
   const processGeometry = await page.evaluate(() => {
     const journey = document.getElementById('process-journey');
@@ -441,18 +446,32 @@ async function readPassageMotion(page, route) {
 }
 
 {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: 'reduce' });
-  const page = await context.newPage();
-  await page.goto(BASE + '/work/rana-levy/', { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(600);
-  const state = await page.evaluate(() => ({
-    mode: document.documentElement.getAttribute('data-case-motion'),
-    paused: [...document.querySelectorAll('video')].every((video) => video.paused),
-    hidden: [...document.querySelectorAll('video')].every((video) => getComputedStyle(video).visibility === 'hidden'),
-  }));
-  check(state.mode === 'off' && state.paused && state.hidden, 'reduced-motion case route shows still composition with videos paused');
-  report.reducedMotion = state;
-  await context.close();
+  const scenarios = [
+    { name: 'default-on', query: '', reducedMotion: 'no-preference', expected: 'on' },
+    { name: 'os-reduce', query: '', reducedMotion: 'reduce', expected: 'off' },
+    { name: 'query-off', query: '?motion=off', reducedMotion: 'no-preference', expected: 'off' },
+  ];
+  report.caseMotion = [];
+  for (const scenario of scenarios) {
+    const context = await browser.newContext({ viewport: { width: 390, height: 844 }, reducedMotion: scenario.reducedMotion });
+    const page = await context.newPage();
+    await page.goto(BASE + '/work/rana-levy/' + scenario.query, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(600);
+    const state = await page.evaluate(() => ({
+      motion: document.documentElement.getAttribute('data-motion'),
+      source: document.documentElement.getAttribute('data-motion-source'),
+      mode: document.documentElement.getAttribute('data-case-motion'),
+      allPaused: [...document.querySelectorAll('video')].every((video) => video.paused),
+      allHidden: [...document.querySelectorAll('video')].every((video) => getComputedStyle(video).visibility === 'hidden'),
+      controls: document.querySelectorAll('.case-motion-toggle').length,
+    }));
+    const on = scenario.expected === 'on';
+    check(state.motion === scenario.expected && state.mode === scenario.expected, 'case route ' + scenario.name + ' follows the shared motion owner');
+    check(state.controls === 0, 'case route ' + scenario.name + ' renders no motion control');
+    if (!on) check(state.allPaused && state.allHidden, 'case route ' + scenario.name + ' shows the still composition with videos paused');
+    report.caseMotion.push({ scenario, state });
+    await context.close();
+  }
 }
 
 {
