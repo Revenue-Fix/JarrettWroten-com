@@ -2340,6 +2340,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
     let concurrentEntry = 0;
     let maxConcurrentEntry = 0;
     let retryTimer = null;
+    const injectedSchedulingDelayMs = Math.max(0, Number(process.env.SMOKE_RETRY_SCHEDULING_DELAY_MS || 0));
 
     function startBackground() {
       if (backgroundStarted) return;
@@ -2365,7 +2366,7 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
         maxConcurrentEntry = Math.max(maxConcurrentEntry, concurrentEntry);
       }
       loadStarts.push(i);
-      const delay = i === entry ? 40 : 80;
+      const delay = i === entry ? 40 + injectedSchedulingDelayMs : 80;
       setTimeout(() => {
         if (i === entry && failNext) {
           failNext = false;
@@ -2407,7 +2408,15 @@ ok(activeCount === 1, 'oracle: single is-active buffer (' + activeCount + ')');
     ok(loadStarts.filter((x) => x === entry).length === 1, 'oracle retry: sole entry request during sync boot');
     ok(activePainted === 0 && displayed === 0, 'oracle retry: holds last-good 0 after scheduling first fail path');
 
-    await new Promise((r) => setTimeout(r, 40 + RETRY_MS + 40 + 30));
+    await new Promise((resolve) => {
+      const deadline = Date.now() + 1500;
+      const tick = () => {
+        if (displayed === entry && activePainted === entry && unlocked && backgroundStarted) return resolve();
+        if (Date.now() > deadline) return resolve();
+        setTimeout(tick, 10);
+      };
+      tick();
+    });
 
     const entryStarts = loadStarts.filter((x) => x === entry);
     ok(entryStarts.length === 2, 'oracle retry: exactly two entry attempts after first fail (got ' + entryStarts.length + ')');
