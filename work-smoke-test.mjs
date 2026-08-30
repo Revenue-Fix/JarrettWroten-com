@@ -186,15 +186,19 @@ ok(workHtml.includes('../assets/work/rana/ring-poster.jpg'), 'ring poster');
 ok(workHtml.includes('../demos/dylan-prorok/dylan-portrait.jpg'), 'ProRok portrait reused');
 ok(workHtml.includes('../demos/dylan-prorok/sakura-ink-bloom.mp4'), 'ProRok ink video reused');
 ok(
-  /id="generations-video"[\s\S]*?data-once[\s\S]*?muted\s+playsinline\s+preload="none"/.test(workHtml) &&
-    /id="paina-video"[\s\S]*?data-once[\s\S]*?muted\s+playsinline\s+preload="none"/.test(workHtml) &&
-    /id="rana-studio-video"[\s\S]*?muted\s+loop\s+playsinline\s+preload="none"/.test(workHtml) &&
-    /id="rana-ring-video"[\s\S]*?muted\s+loop\s+playsinline\s+preload="none"/.test(workHtml) &&
-    /id="prorok-ink-video"[\s\S]*?muted\s+loop\s+playsinline\s+preload="none"/.test(workHtml) &&
+  /<video\b[^>]*\bid="generations-video"[^>]*\bloop\b[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
+    /<video\b[^>]*\bid="paina-video"[^>]*\bdata-once\b[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
+    /<video\b[^>]*\bid="rana-studio-video"[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
+    /<video\b[^>]*\bid="rana-ring-video"[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
+    /<video\b[^>]*\bid="prorok-ink-video"[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
     !/id="(?:paina-video|rana-studio-video|rana-ring-video|prorok-ink-video)"[\s\S]{0,260}\bautoplay\b/.test(workHtml),
-  'all motion carriers defer markup loading while Generations is armed immediately by its controller'
+  'Generations loops while every other motion carrier defers loading and autoplay'
 );
-ok(!/id="(?:generations|paina)-video"[\s\S]{0,260}\bloop\b/.test(workHtml), 'Generations and Pā‘ina do not loop');
+ok(
+  /<video\b[^>]*\bid="generations-video"[^>]*\bloop\b/.test(workHtml) &&
+    !/<video\b[^>]*\bid="paina-video"[^>]*\bloop\b/.test(workHtml),
+  'Hurricane Fries keeps moving while Pā‘ina retains its authored one-shot carrier'
+);
 ok(!/corridor-motion-video|corridor-entry-loop|layer-corridor/.test(workHtml), 'corridor is absent from Work markup and routing');
 ok(
   !/blocked-pending-reuse-rights/.test(workHtml) &&
@@ -277,7 +281,11 @@ ok(
   'zero-state reveal gate holds Pā‘ina plus the inherited Rana and Prorok layers'
 );
 ok(workHtml.includes('scrollbar-width:none') || workHtml.includes('scrollbar-width: none'), 'native scrollbar hidden');
-ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'), 'ProRok night-ink media grade');
+ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'), 'dormant ProRok ink asset retains its media grade');
+ok(
+  /#rana-studio-video,\s*#rana-ring-video,\s*#prorok-ink-video\s*\{\s*display\s*:\s*none !important\s*\}/.test(workHtml),
+  'Rana and Dylan use the approved still compositions, not their dormant motion layers'
+);
 ok(/aria-label="Back to Jarrett"/.test(workHtml), 'wordmark accessible back label');
 ok(workHtml.includes('no-js-route'), 'no-JS fallback on work route');
 ok(/\.no-js-poster\s*\{[\s\S]*?height\s*:\s*auto/.test(workHtml), 'no-JS media preserves intrinsic aspect ratio');
@@ -596,7 +604,8 @@ ok(
  * keeps exactly one authored rest authoritative and cuts on a named phase —
  * no passage-veil, blur plate, dissolve, or third visual; copy exits before
  * the cut and enters after; reverse uses the same readiness rule and cut
- * grammar; landing clears transition state after 960ms; Motion Off
+ * grammar; landing clears transition state after 960ms; wheel and keyboard
+ * input advance one stop on every viewport while touch remains mobile; Motion Off
  * immediate; TAU = 0.41. Rejected silhouettes (expanding gem, bottom-up
  * stack, vertical tear, clip-path inset split, cyan/copper veil) stay gone.
  * Retirement: only when the five-rest mobile passage is replaced.
@@ -666,18 +675,18 @@ ok(
     workHtml.includes('mobileGlideLocked') &&
       workHtml.includes('mobileWaiting') &&
       /function mobileNavigationBusy\(\)[\s\S]*?return mobileGlideLocked \|\| mobileWaiting \|\| breakpointSwapActive/.test(workHtml) &&
-      /function advanceMobileStop\(direction\)[\s\S]*?if \(!isMobile\(\) \|\| mobileNavigationBusy/.test(workHtml) &&
+      /function advanceMobileStop\(direction\)[\s\S]*?if \(mobileNavigationBusy\(\) \|\| !direction\) return false/.test(workHtml) &&
       /function onMobileTouchStart\(e\)[\s\S]*?mobileNavigationBusy/.test(workHtml) &&
       /function onMobileWheel\(e\)[\s\S]*?if \(!mobileNavigationBusy\(\)\) advanceMobileStop/.test(workHtml),
-    'pending readiness and the authored glide both block further stop-skipping fragments'
+    'pending readiness and the authored glide block stop-skipping on every viewport'
   );
 
   ok(
     /var MOBILE_BREAKPOINT_PX = 720/.test(workHtml) &&
       workHtml.includes('matchMedia("(max-width:" + MOBILE_BREAKPOINT_PX + "px)")') &&
-      /function mobileGestureAvailable\(\)[\s\S]*?return isMobile\(\) && !!passage && !!viewport/.test(workHtml) &&
-      /function onMobileWheel\(e\)[\s\S]*?if \(!mobileGestureAvailable\(\)\) return;[\s\S]*?e\.preventDefault\(\)/.test(workHtml),
-    'section lock is gated to the 720px mobile query before any wheel trap'
+      /function passageGestureAvailable\(\)[\s\S]*?return !!passage && !!viewport && passageOwnsViewport\(\) && !isOpenOverlay\(\)/.test(workHtml) &&
+      /function onMobileWheel\(e\)[\s\S]*?if \(!passageGestureAvailable\(\)\) return;[\s\S]*?e\.preventDefault\(\)/.test(workHtml),
+    'one-project wheel lock applies whenever the Work passage owns the viewport'
   );
   ok(
     /function onMobileBreakpointChange\(event\)[\s\S]*?beginBreakpointSwap\(!!event\.matches\)/.test(workHtml) &&
@@ -745,10 +754,9 @@ ok(
     'mobile-only touch-action owns vertical travel while leaving pinch and horizontal free'
   );
   ok(
-    /Keyboard depth without trapping/.test(workHtml) &&
-      /viewport\.offsetHeight \* \(e\.key === "PageDown" \|\| e\.key === "PageUp" \? 0\.85 : 0\.22\)/.test(workHtml) &&
-      !/function \(e\) \{\s*if \(e\.target && \(e\.target\.tagName === "INPUT"[\s\S]*?advanceMobileStop/.test(workHtml),
-    'keyboard depth remains free-step and is not remapped onto the mobile lock'
+    /One deliberate keypress advances one locked portfolio world/.test(workHtml) &&
+      /document\.addEventListener\("keydown"[\s\S]*?if \(e\.repeat\) return;[\s\S]*?if \(mobileNavigationBusy\(\)\) return;[\s\S]*?advanceMobileStop\(direction\)/.test(workHtml),
+    'one deliberate keyboard input advances one locked portfolio stop without repeats'
   );
 
   ok(/var TAU = 0\.41/.test(workHtml), 'work route TAU remains 0.41 after section lock');
@@ -767,9 +775,9 @@ ok(
   ok(
     /function isInteractiveOrigin\(e\)[\s\S]*?closest\("a, button, input, select, textarea, \[contenteditable\]/.test(workHtml) &&
       /function onMobileTouchStart\(e\)[\s\S]*?isInteractiveOrigin\(e\)/.test(workHtml) &&
-      /function onMobileWheel\(e\)[\s\S]*?isInteractiveOrigin\(e\)/.test(workHtml) &&
+      /function onMobileWheel\(e\)[\s\S]*?passageGestureAvailable\(\)/.test(workHtml) &&
       /function isOpenOverlay\(\)[\s\S]*?aria-modal/.test(workHtml),
-    'touch/wheel that begins on controls or an open overlay is not hijacked'
+    'touch controls remain interactive and an open overlay releases every passage gesture'
   );
   ok(
     /window\.WORK_PASSAGE = \{[\s\S]*?mobileStopIndex[\s\S]*?mobileGliding[\s\S]*?mobileWaiting[\s\S]*?mobileRequestedStop[\s\S]*?goMobileStop:\s*scrollToMobileStopIndex/.test(workHtml) &&
@@ -833,15 +841,15 @@ ok(
       got.length === expected.length && got.every((video, i) => video === expected[i]);
     ok(sameRefs(videosForMobileStop('generations'), [generationsVideo]), 'Generations destination is its portrait food carrier');
     ok(sameRefs(videosForMobileStop('paina'), [painaVideo]), 'Pā‘ina destination is its portrait kitchen carrier');
-    ok(sameRefs(videosForMobileStop('rana'), [ringVideo]), 'Rana destination is the single ring carrier');
-    ok(sameRefs(videosForMobileStop('prorok'), [inkVideo]), 'Prorok destination is the ink loop');
+    ok(sameRefs(videosForMobileStop('rana'), []), 'Rana destination is the approved still composition');
+    ok(sameRefs(videosForMobileStop('prorok'), []), 'Prorok destination is the approved still composition');
     ok(sameRefs(videosForMobileStop('process'), []), 'process destination has no video to force-play');
 
     const expectedByStop = {
       generations: [generationsVideo],
       paina: [painaVideo],
-      rana: [ringVideo],
-      prorok: [inkVideo],
+      rana: [],
+      prorok: [],
       process: [],
     };
     let prewarmBothWays = true;
@@ -859,7 +867,7 @@ ok(
         reverseDest.some((video, index) => video !== expectedReverse[index])
       ) prewarmBothWays = false;
     }
-    ok(prewarmBothWays, 'forward and reverse each prepare only the destination rest world');
+    ok(prewarmBothWays, 'forward and reverse prepare only the moving carrier required by the destination rest');
   }
 
   const requestSrc = (workHtml.match(/function requestMobileVideo\(video, shouldPlay\) \{[\s\S]*?\n  \}/) || [''])[0];
@@ -897,15 +905,15 @@ ok(
     'navigation is asynchronous and gates the visible passage on decoded readiness, not canplaythrough'
   );
   ok(
-    /if \(elapsed < 1\) mobileScrollRaf = window\.requestAnimationFrame\(glide\);\s*else \{\s*window\.scrollTo\(0, top\);\s*mobileScrollRaf = 0;\s*mobileTransition = null;\s*mobileGlideLocked = false;\s*clearMobileDestination\(\);\s*sampleScroll\(\);/.test(workHtml),
+    /if \(elapsed < 1\) mobileScrollRaf = window\.requestAnimationFrame\(glide\);\s*else \{\s*window\.scrollTo\(0, top\);\s*mobileScrollRaf = 0;\s*mobileTransition = null;\s*progressTarget = progressCurrent = computeProgress\(\);\s*paint\(progressCurrent\);\s*syncVideos\(progressCurrent\);\s*mobileGlideLocked = false;\s*clearMobileDestination\(\);/.test(workHtml),
     'landing clears transition state, synchronizes exact rest scroll, and unlocks only after the 960ms clock'
   );
   ok(
     /function cancelMobileGlide\(\)[\s\S]*?clearMobileDestination\(\)/.test(workHtml) &&
       /function prepareMobileDestination\(index\)[\s\S]*?requestMobileVideo\(videos\[i\], false\)/.test(workHtml) &&
-      /function syncVideos\(p\)[\s\S]*?if \(isActive\(generationsVideo\)\)[\s\S]*?if \(isActive\(painaVideo\)\)[\s\S]*?if \(isActive\(ringVideo\)\)[\s\S]*?if \(isActive\(inkVideo\)\)/.test(workHtml) &&
+      /function syncVideos\(p\)[\s\S]*?if \(isActive\(generationsVideo\)\)[\s\S]*?if \(isActive\(painaVideo\)\)[\s\S]*?pauseSafe\(studioVideo\);[\s\S]*?pauseSafe\(ringVideo\);[\s\S]*?pauseSafe\(inkVideo\)/.test(workHtml) &&
       !/videoIsPreparedDestination/.test(workHtml),
-    'destinations decode without pre-play; only the authoritative mobile world plays'
+    'moving destinations decode without pre-play while Rana and Dylan remain still-backed'
   );
   ok(
     /get mobileDestination\(\) \{ return mobileDestinationId; \}/.test(workHtml),
@@ -1427,17 +1435,17 @@ ok(
     paused.length = 0;
     syncDesktop(0.58);
     ok(
-      played.includes('studio') && played.includes('ring') &&
-        ['generations', 'paina', 'ink'].every((id) => paused.includes(id)),
-      'desktop inherited Rana media plays only in the Rana range'
+      played.length === 0 &&
+        ['generations', 'paina', 'studio', 'ring', 'ink'].every((id) => paused.includes(id)),
+      'desktop Rana rest keeps every dormant motion carrier paused'
     );
     played.length = 0;
     paused.length = 0;
     syncDesktop(0.80);
     ok(
-      played.includes('ink') &&
-        ['generations', 'paina', 'studio', 'ring'].every((id) => paused.includes(id)),
-      'desktop inherited Prorok media plays only in the Prorok range'
+      played.length === 0 &&
+        ['generations', 'paina', 'studio', 'ring', 'ink'].every((id) => paused.includes(id)),
+      'desktop Prorok rest keeps every dormant motion carrier paused'
     );
 
     const mobilePlayed = [];
@@ -1749,7 +1757,7 @@ ok(
       ranaRing.dispatch('timeupdate');
       ok(
         videoHasRenderableFrame(ranaRing),
-        'Rana requires one proven frame from its single mobile carrier'
+        'a dormant hidden ring carrier still requires one proven frame before it is renderable'
       );
 
       const failed = makeFakeVideo('ink');
@@ -1844,29 +1852,31 @@ ok(
     ok(mobileDestinationReady('generations'), 'Generations is ready from decoded motion or its matching poster');
     ok(mobileDestinationReady('paina'), 'Pā‘ina is immediately ready from its decoded time-zero match poster while video is cold');
     ok(mobileDestinationReady('rana'), 'Rana is immediately ready from its decoded matching ring poster while video is cold');
-    ok(mobileDestinationReady('prorok'), 'ProRok is ready from its ink loop or loaded portrait treatment');
+    ok(mobileDestinationReady('prorok'), 'ProRok is ready from its loaded portrait treatment');
     ok(mobileDestinationReady('process'), 'process is ready only when its terminal image is loaded');
     terminalReturn.complete = false;
     ok(!mobileDestinationReady('process'), 'process cannot cut to an undecoded terminal image');
     terminalReturn.complete = true;
     prorokPortrait.complete = false;
     inkVideo.readyState = 0;
-    ok(!mobileDestinationReady('prorok'), 'ProRok waits only when neither ink motion nor portrait treatment is decoded');
-    prorokPortrait.complete = true;
+    ok(!mobileDestinationReady('prorok'), 'ProRok waits while its portrait treatment is unavailable');
     inkVideo.readyState = 2;
+    ok(!mobileDestinationReady('prorok'), 'a decoded dormant ink loop cannot replace the approved ProRok still');
+    prorokPortrait.complete = true;
     ringPoster.complete = false;
     ringVideo.readyState = 2;
-    ok(mobileDestinationReady('rana'), 'Rana becomes ready from the decoded ring carrier');
+    ok(!mobileDestinationReady('rana'), 'a decoded dormant ring carrier cannot replace the approved Rana still');
     studioVideo.requestVideoFrameCallback = function () {};
     ringVideo.requestVideoFrameCallback = function () {};
     studioVideo.jwSawDataEvent = true;
     ringVideo.jwSawDataEvent = true;
     delete studioVideo.jwDecodedFrame;
     delete ringVideo.jwDecodedFrame;
-    ok(!mobileDestinationReady('rana'), 'Rana stays pending when neither its RVFC ring nor poster is decoded');
+    ok(!mobileDestinationReady('rana'), 'Rana stays pending while the approved poster is unavailable');
     ringVideo.jwDecodedFrame = true;
-    ok(mobileDestinationReady('rana'), 'Rana is ready after the ring presented-frame callback');
+    ok(!mobileDestinationReady('rana'), 'a presented dormant ring frame still cannot replace the approved Rana still');
     ringPoster.complete = true;
+    ok(mobileDestinationReady('rana'), 'Rana becomes ready when the approved ring poster is decoded');
     delete studioVideo.requestVideoFrameCallback;
     delete ringVideo.requestVideoFrameCallback;
     delete studioVideo.jwSawDataEvent;
@@ -1876,9 +1886,9 @@ ok(
     painaVideo.readyState = 2;
     ok(mobileDestinationReady('paina'), 'Pā‘ina becomes ready from its decoded portrait carrier');
     ringVideo.error = { code: 4 };
-    ok(!mobileDestinationFailed('rana') && mobileDestinationReady('rana'), 'a Rana media error advances immediately through the decoded ring poster');
+    ok(!mobileDestinationFailed('rana') && mobileDestinationReady('rana'), 'a dormant Rana media error cannot block the decoded ring poster');
     ringPoster.naturalWidth = 0;
-    ok(mobileDestinationFailed('rana') && !mobileDestinationReady('rana'), 'Rana fails only when both motion and matching poster are unavailable');
+    ok(mobileDestinationFailed('rana') && !mobileDestinationReady('rana'), 'Rana fails when the approved still is unavailable');
     ringPoster.naturalWidth = 720;
     ringVideo.error = null;
 

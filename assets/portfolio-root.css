@@ -104,7 +104,6 @@
   }
   .portfolio-generations-poster,
   .portfolio-generations-video,
-  .portfolio-generations-carousel-loop,
   .portfolio-paina-poster,
   .portfolio-paina-video{
     position:absolute;
@@ -115,34 +114,14 @@
     object-fit:contain;
   }
   .portfolio-generations-poster,
+  .portfolio-generations-video{object-position:50% 50%}
   .portfolio-generations-video,
-  .portfolio-generations-carousel-loop{object-position:50% 50%}
-  .portfolio-generations-video,
-  .portfolio-generations-carousel-loop,
   .portfolio-paina-video{
     opacity:0;
     transition:opacity .35s var(--portfolio-ease-enter);
   }
   .portfolio-generations-video.portfolio-is-ready,
   .portfolio-paina-video.portfolio-is-ready{opacity:1}
-  .portfolio-generations-carousel-loop.portfolio-is-ready{opacity:0}
-  .portfolio-generations-terminal{
-    position:absolute;
-    inset:0;
-    opacity:0;
-    pointer-events:none;
-    transition:opacity .18s linear;
-  }
-  .portfolio-generations-terminal img{
-    width:100%;
-    height:100%;
-    max-width:none;
-    object-fit:contain;
-    object-position:50% 50%;
-  }
-  html.portfolio-generations-terminal-held .portfolio-generations-terminal{opacity:1}
-  html.portfolio-generations-terminal-held .portfolio-generations-video{opacity:0 !important}
-  html.portfolio-generations-terminal-held .portfolio-generations-carousel-loop.portfolio-is-ready{opacity:1}
   .portfolio-generations-media{
     transform:none;
     filter:saturate(1.04) contrast(1.04) brightness(calc(.98 - (1 - var(--portfolio-generations-hold)) * .08));
@@ -208,7 +187,6 @@
   /* ── Rana world: inherited refractive material takeover ── */
   .portfolio-layer-rana{
     z-index:3;
-    background:#0c0909;
     /* Hard zero-state gate: layer is completely absent until open begins.
        Chromium can treat multi-mask radial-gradient(0% 0% ...) as covering,
        so never rely on zero-radius masks alone to hide the layer. */
@@ -243,10 +221,6 @@
     will-change:mask-image,-webkit-mask-image;
   }
   .portfolio-layer-rana.portfolio-is-revealing{visibility:visible}
-  .portfolio-layer-rana.portfolio-is-settled{
-    -webkit-mask-image:none;
-    mask-image:none;
-  }
   .portfolio-rana-media,
   .portfolio-prorok-media{
     position:absolute;
@@ -608,7 +582,9 @@
   }
   html[data-portfolio-identity="off"] .portfolio-scene-copy{display:none !important}
   .portfolio-scene-copy--generations{
-    display:none;
+    opacity:var(--portfolio-copy-generations);
+    transform:translate3d(0, calc((1 - var(--portfolio-copy-generations)) * 1.4rem), 0);
+    filter:blur(calc((1 - var(--portfolio-copy-generations)) * 4px));
   }
   .portfolio-scene-copy--paina{
     opacity:var(--portfolio-copy-paina);
@@ -864,7 +840,7 @@
     border-radius:0;
   }
 
-  @media (max-width:900px){
+  @media (max-width:720px){
     /* Mobile is a separately composed full-bleed passage, not scaled desktop. */
     .portfolio-passage{height:680svh}
     html[data-motion="off"] .portfolio-passage{height:560svh}
@@ -930,6 +906,11 @@
     .portfolio-layer-rana.portfolio-is-revealing{opacity:var(--portfolio-rana-open)}
     .portfolio-layer-prorok.portfolio-is-revealing{opacity:var(--portfolio-prorok-open)}
     .portfolio-layer-terminal.portfolio-is-revealing{opacity:var(--portfolio-terminal-hold)}
+    .portfolio-scene-copy--generations{
+      opacity:var(--portfolio-copy-generations);
+      transform:translate3d(0, calc((1 - var(--portfolio-copy-generations)) * 1.4rem), 0);
+      filter:none;
+    }
     .portfolio-scene-copy--paina{
       opacity:var(--portfolio-copy-paina);
       transform:translate3d(0, calc((1 - var(--portfolio-copy-paina)) * 1.4rem), 0);

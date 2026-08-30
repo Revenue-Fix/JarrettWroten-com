@@ -112,7 +112,7 @@ catch (error) { failures.push('case motion controller parse: ' + error.message);
 try { new Function(portfolioJs); ok(true, 'root portfolio controller parses'); }
 catch (error) { failures.push('root portfolio controller parse: ' + error.message); }
 
-const portfolioBlock = (root.match(/<!-- The approved \/work\/[\s\S]*?<script src="assets\/portfolio-root\.js"><\/script>/) || [''])[0];
+const portfolioBlock = (root.match(/<!-- The approved \/work\/[\s\S]*?<script src="assets\/portfolio-root\.js(?:\?[^\"]+)?"><\/script>/) || [''])[0];
 const portfolioClasses = [...portfolioBlock.matchAll(/class="([^"]+)"/g)].flatMap((match) => match[1].split(/\s+/));
 ok(portfolioClasses.length > 20 && portfolioClasses.every((name) => name.startsWith('portfolio-')), 'homepage portfolio markup contains only namespaced classes');
 ok([...new Set(portfolioClasses)].every((name) => portfolioCss.includes('.' + name)), 'every homepage portfolio class has a matching style selector');
