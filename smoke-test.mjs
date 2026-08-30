@@ -38,7 +38,26 @@ function mustExist(rel) {
 }
 
 const htmlBuf = mustExist('index.html');
-const html = htmlBuf ? htmlBuf.toString('utf8') : '';
+const sourceHtml = htmlBuf ? htmlBuf.toString('utf8') : '';
+const portfolioController = fs.readFileSync(path.join(ROOT, 'assets/portfolio-root.js'), 'utf8');
+const motionBootstrap = fs.readFileSync(path.join(ROOT, 'assets/motion-bootstrap.js'), 'utf8');
+/* Preserve the incumbent process suite while its consumer is embedded below a
+   namespaced first passage. New integration assertions below exercise the real
+   prefixes; the established process assertions read an equivalent local view. */
+const html = sourceHtml
+  .replaceAll('PROCESS_TUNING', 'SITE_TUNING')
+  .replaceAll('PROCESS_STATION_ORDER', 'STATION_ORDER')
+  .replaceAll('--process-', '--')
+  .replaceAll('process-', '');
+
+ok(/<meta\s+name="viewport"\s+content="width=device-width, initial-scale=1">/.test(sourceHtml), 'standard viewport meta survives passage namespacing');
+ok(sourceHtml.includes('id="portfolio-passage"') && sourceHtml.includes('id="process-journey"'), 'root contains sequential portfolio and process passages');
+ok(sourceHtml.indexOf('id="portfolio-passage"') < sourceHtml.indexOf('id="process-journey"'), 'portfolio passage precedes process journey in document order');
+ok(sourceHtml.includes('journeyToDocumentY') && sourceHtml.includes('journeyDocumentTop'), 'process navigation is document-offset aware');
+ok(portfolioController.includes('portfolioOwnsViewport()') && sourceHtml.includes('journeyOwnsViewport()'), 'both passages gate viewport-owned input');
+ok(sourceHtml.includes('JW_MOTION.set(motionOn, "process"') && portfolioController.includes('JW_MOTION.set(motionOn, "portfolio"') && motionBootstrap.includes('jw-motion-change'), 'portfolio and process share one motion preference owner');
+ok(sourceHtml.includes('watchForProcessActivation') && sourceHtml.includes('processActivated'), 'process boot is deferred until its passage approaches');
+ok(/id="process-arrival-motion-video"[\s\S]*?preload="none"/.test(sourceHtml), 'offscreen process Arrival carrier does not preload on portfolio cold load');
 
 ok(html.includes('data-station="leak"'), 'normal route has leak station');
 ok(html.includes('I FIND WHERE') || html.includes('I find where'), 'leak copy present');
@@ -51,7 +70,7 @@ for (const s of ['leak', 'method', 'proof', 'jarrett', 'threshold']) {
 ok(html.includes('jw-motion'), 'motion preference key');
 ok(html.includes('Motion on') || html.includes('motion-toggle'), 'motion control');
 ok(html.includes('data-motion'), 'motion attribute boot');
-ok(html.includes('motion=off') || html.includes("get(\"motion\")") || html.includes("params.get(\"motion\")"), 'motion query support');
+ok(motionBootstrap.includes('get("motion")') && motionBootstrap.includes('requested === "on" || requested === "off"'), 'motion query support');
 
 // unknown station fallback: validStations map + empty invalid
 ok(html.includes('validStations'), 'unknown station fallback map');
@@ -325,12 +344,12 @@ ok(!html.includes('id="world-frame"'), 'no single world-frame id');
     'Arrival video reuses exact assets/work/corridor-entry-loop.mp4 path'
   );
   ok(
-    /\bautoplay\b/.test(videoTag) &&
+    !/\bautoplay\b/.test(videoTag) &&
       /\bmuted\b/.test(videoTag) &&
       /\bloop\b/.test(videoTag) &&
       /\bplaysinline\b/.test(videoTag) &&
-      /preload="auto"/.test(videoTag),
-    'Arrival video carries autoplay muted loop playsinline preload="auto"'
+      /preload="none"/.test(videoTag),
+    'Arrival video defers load and autoplay until the process owns the viewport'
   );
   ok(
     /poster="assets\/golden-arrival\/frames\/ga-000\.webp"/.test(videoTag) &&
@@ -404,12 +423,13 @@ ok(!html.includes('id="world-frame"'), 'no single world-frame id');
     !/corridor-entry-loop\.mp4/.test(html.replace(/assets\/work\/corridor-entry-loop\.mp4/g, '')),
     'Main does not invent alternate corridor motion filenames'
   );
-  // Work source remains the oracle; Main must not mutate Work page ownership of the carrier.
+  // Work source remains independently owned; its portfolio-first carrier must not mutate Main.
   const workHtmlFrozen = fs.readFileSync(path.join(ROOT, 'work/index.html'));
   ok(
-    workHtmlFrozen.toString('utf8').includes('id="corridor-motion-video"') &&
-      workHtmlFrozen.toString('utf8').includes('../assets/work/corridor-entry-loop.mp4'),
-    'Work oracle still owns corridor-motion-video with the shared asset'
+    workHtmlFrozen.toString('utf8').includes('id="generations-video"') &&
+      workHtmlFrozen.toString('utf8').includes('id="paina-video"') &&
+      !workHtmlFrozen.toString('utf8').includes('id="corridor-motion-video"'),
+    'Work oracle owns its Generations-first carrier while Main keeps the shared corridor asset'
   );
 }
 
@@ -492,12 +512,12 @@ ok(!html.includes('id="world-frame"'), 'no single world-frame id');
 // Work passage: Dylan disclosure may update with owner truth; ProRok demo bytes stay frozen.
 {
   const workHtmlNow = fs.readFileSync(path.join(ROOT, 'work/index.html'), 'utf8');
-  const DYLAN_TRUTH = 'Work in progress — currently being revised with Dylan Prorok.';
+  const DYLAN_TRUTH = 'Tattoo Artist - In Progress.';
   const DYLAN_OLD = 'Independent redesign concept—not commissioned or approved by Dylan Prorok.';
   ok(workHtmlNow.includes(DYLAN_TRUTH), 'work/index.html carries exact Dylan revision truth');
   ok(!workHtmlNow.includes(DYLAN_OLD), 'work/index.html retires old Dylan independent-disclaimer');
   ok(
-    (workHtmlNow.match(/Work in progress — currently being revised with Dylan Prorok\./g) || []).length >= 2,
+    (workHtmlNow.match(/Tattoo Artist - In Progress\./g) || []).length >= 2,
     'Dylan truth present in both Work consumers (scripted + no-JS)'
   );
   // Demo / media identity under demos/dylan-prorok must remain byte-identical to HEAD parent.
@@ -632,13 +652,9 @@ ok(
   'threshold free-look body exact contract'
 );
 ok(
-  /name="description" content="I follow the path from first click to sale, find where people drop out, and build the fix\. Send me your site\. Your first look is free\."/.test(
-    html
-  ) &&
-    /property="og:description" content="I follow the path from first click to sale, find where people drop out, and build the fix\. Send me your site\. Your first look is free\."/.test(
-      html
-    ),
-  'standard and Open Graph descriptions carry free-look offer'
+  /name="description" content="Jarrett Wroten designs conversion-driven websites and improves the path from first click to sale for businesses in Las Vegas\."/.test(sourceHtml) &&
+    /property="og:description" content="See the work first, then follow the process Jarrett uses to find where a customer path breaks and build the fix\."/.test(sourceHtml),
+  'standard and Open Graph descriptions describe the portfolio-first Las Vegas offer'
 );
 ok(html.includes('SEND ME') && html.includes('YOUR SITE.'), 'threshold claim lines present');
 ok(!html.includes('If I find nothing worth fixing'), 'retired no-leak truth line absent from all page surfaces');
@@ -1421,8 +1437,8 @@ ok(
       'header My Work route preserved (id=work-link, href=work/)'
     );
     ok(
-      /class="no-js-route"[\s\S]*?<a class="work-link" href="work\/">My Work<\/a>/.test(html),
-      'no-JS My Work route preserved'
+      /class="no-js-route"[\s\S]*?Conversion-driven websites built around the next decision\.[\s\S]*?href="work\/generations-kitchen\/"/.test(html),
+      'no-JS route opens with crawlable portfolio work'
     );
     // Modified-click passthrough preserved in shared binding.
     ok(
@@ -1801,7 +1817,7 @@ for (const c of [
 }
 
 // Parse every inline script
-const scripts = [...html.matchAll(/<script(?![^>]*\bsrc=)[^>]*>([\s\S]*?)<\/script>/gi)];
+const scripts = [...html.matchAll(/<script(?![^>]*\bsrc=)(?![^>]*type=["']application\/ld\+json["'])[^>]*>([\s\S]*?)<\/script>/gi)];
 ok(scripts.length >= 2, 'inline scripts present (' + scripts.length + ')');
 for (let i = 0; i < scripts.length; i++) {
   const body = scripts[i][1].trim();

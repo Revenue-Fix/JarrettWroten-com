@@ -1,0 +1,1069 @@
+/* Root portfolio passage. Generated from the approved /work/ oracle; classes,
+   IDs, and custom properties are isolated from the process journey. */
+:root{
+    --portfolio-void:#040A0C;
+    --portfolio-ink:#E8F4F4;
+    --portfolio-ink-soft:rgba(232,244,244,.92);
+    --portfolio-ink-mute:rgba(208,228,230,.82);
+    --portfolio-cyan:#5EE7F0;
+    --portfolio-amber:#D97A3A;
+    --portfolio-sumi:#0B0807;
+    --portfolio-paper:#EFE7D8;
+    --portfolio-paper-dim:rgba(239,231,216,.78);
+    --portfolio-vermilion:#B23A2C;
+    --portfolio-display:"Bodoni Moda","Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --portfolio-reading:Georgia,"Rana Reader Fallback","Times New Roman",Times,serif;
+    --portfolio-text:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --portfolio-ease-enter:cubic-bezier(.16,.84,.24,1);
+    --portfolio-gutter:clamp(1.1rem,3.6vw,2.75rem);
+    --portfolio-top-chrome:clamp(2.9rem,5.2vh,3.4rem);
+    --portfolio-progress:0;
+    --portfolio-generations-hold:1;
+    --portfolio-paina-open:0;
+    --portfolio-paina-side:0;
+    --portfolio-paina-hold:0;
+    --portfolio-rana-open:0;
+    --portfolio-rana-hold:0;
+    --portfolio-prorok-open:0;
+    --portfolio-prorok-hold:0;
+    --portfolio-ring-presence:0;
+    --portfolio-terminal-hold:0;
+    --portfolio-enter-veil:0;
+    --portfolio-copy-generations:1;
+    --portfolio-copy-paina:0;
+    --portfolio-copy-rana:0;
+    --portfolio-copy-prorok:0;
+    --portfolio-copy-terminal:0;
+    --portfolio-plate-scale:1;
+    --portfolio-plate-shift:0;
+  }
+
+  .portfolio-passage{
+    position:relative;
+    /* Five full-screen worlds with authored rests and reversible handoffs. */
+    height:620svh;
+    background:var(--portfolio-void);
+  }
+  html[data-motion="off"] .portfolio-passage{height:520svh}
+
+  .portfolio-viewport{
+    position:sticky;
+    top:0;
+    height:100svh;
+    width:100%;
+    overflow:hidden;
+    overflow:clip;
+    isolation:isolate;
+    background:var(--portfolio-void);
+  }
+
+  .portfolio-world-stack{
+    position:absolute;
+    inset:0;
+    z-index:1;
+    pointer-events:none;
+  }
+
+  .portfolio-mobile-scene-plate{
+    display:none;
+    position:absolute;
+    inset:0;
+    z-index:10;
+    width:100%;
+    height:100%;
+    max-width:none;
+    object-fit:contain;
+    object-position:50% 50%;
+    background:var(--portfolio-void);
+    opacity:0;
+    transition:opacity .12s linear;
+    pointer-events:none;
+  }
+  html.portfolio-mobile-plate-active .portfolio-mobile-scene-plate,
+  html.portfolio-source-swap-active .portfolio-mobile-scene-plate{
+    display:block;
+    opacity:1;
+  }
+  html.portfolio-source-swap-active .portfolio-mobile-scene-plate{transition:none}
+
+  .portfolio-layer{
+    position:absolute;
+    inset:0;
+    overflow:hidden;
+  }
+
+  /* ── Generations world: the served plate owns the cold frame ── */
+  .portfolio-layer-generations{
+    z-index:1;
+    background:#0b0806;
+  }
+  .portfolio-generations-media,
+  .portfolio-paina-media{
+    position:absolute;
+    inset:0;
+  }
+  .portfolio-generations-poster,
+  .portfolio-generations-video,
+  .portfolio-paina-poster,
+  .portfolio-paina-video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    max-width:none;
+    object-fit:contain;
+  }
+  .portfolio-generations-poster,
+  .portfolio-generations-video{object-position:50% 50%}
+  .portfolio-generations-video,
+  .portfolio-paina-video{
+    opacity:0;
+    transition:opacity .35s var(--portfolio-ease-enter);
+  }
+  .portfolio-generations-video.portfolio-is-ready,
+  .portfolio-paina-video.portfolio-is-ready{opacity:1}
+  .portfolio-generations-media{
+    transform:none;
+    filter:saturate(1.04) contrast(1.04) brightness(calc(.98 - (1 - var(--portfolio-generations-hold)) * .08));
+    will-change:transform,filter;
+  }
+  .portfolio-generations-wash{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(102deg, rgba(8,6,4,.64) 0%, rgba(8,6,4,.22) 28%, transparent 56%),
+      linear-gradient(180deg, rgba(8,6,4,.18) 0%, transparent 46%, rgba(8,6,4,.48) 100%);
+  }
+
+  /* ── Pā‘ina threshold: the served food opens into the kitchen making it ── */
+  .portfolio-layer-paina{
+    z-index:2;
+    visibility:hidden;
+    background:#07110f;
+    --portfolio-paina-core:max(0.001, var(--portfolio-paina-open));
+    --portfolio-paina-join:max(0.001, var(--portfolio-paina-side));
+    -webkit-mask-image:
+      radial-gradient(ellipse calc(var(--portfolio-paina-core) * 94%) calc(var(--portfolio-paina-core) * 76%) at 52% 68%, #000 0%, #000 48%, transparent 75%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-core) * 66%) calc(var(--portfolio-paina-core) * 92%) at 45% 58%, #000 0%, #000 42%, transparent 70%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-core) * 72%) calc(var(--portfolio-paina-core) * 64%) at 61% 76%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-join) * 96%) calc(var(--portfolio-paina-join) * 82%) at 18% 48%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-join) * 92%) calc(var(--portfolio-paina-join) * 88%) at 84% 50%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-join) * 128%) calc(var(--portfolio-paina-join) * 94%) at 50% 28%, #000 0%, #000 44%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-join) * 180%) calc(var(--portfolio-paina-join) * 165%) at 52% 58%, #000 0%, #000 62%, transparent 88%);
+    mask-image:
+      radial-gradient(ellipse calc(var(--portfolio-paina-core) * 94%) calc(var(--portfolio-paina-core) * 76%) at 52% 68%, #000 0%, #000 48%, transparent 75%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-core) * 66%) calc(var(--portfolio-paina-core) * 92%) at 45% 58%, #000 0%, #000 42%, transparent 70%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-core) * 72%) calc(var(--portfolio-paina-core) * 64%) at 61% 76%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-join) * 96%) calc(var(--portfolio-paina-join) * 82%) at 18% 48%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-join) * 92%) calc(var(--portfolio-paina-join) * 88%) at 84% 50%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-join) * 128%) calc(var(--portfolio-paina-join) * 94%) at 50% 28%, #000 0%, #000 44%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-paina-join) * 180%) calc(var(--portfolio-paina-join) * 165%) at 52% 58%, #000 0%, #000 62%, transparent 88%);
+    -webkit-mask-composite:source-over;
+    mask-composite:add;
+    -webkit-mask-repeat:no-repeat;
+    mask-repeat:no-repeat;
+    -webkit-mask-size:100% 100%;
+    mask-size:100% 100%;
+    will-change:mask-image,-webkit-mask-image;
+  }
+  .portfolio-layer-paina.portfolio-is-revealing{visibility:visible}
+  .portfolio-paina-poster,
+  .portfolio-paina-video{object-position:50% 50%}
+  .portfolio-paina-media{
+    transform:none;
+    filter:saturate(calc(1.02 + var(--portfolio-paina-hold) * .05)) contrast(1.04) brightness(calc(.92 + var(--portfolio-paina-hold) * .06));
+    will-change:transform,filter;
+  }
+  .portfolio-paina-wash{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(102deg, rgba(4,12,11,.64) 0%, rgba(4,12,11,.22) 28%, transparent 54%),
+      linear-gradient(180deg, rgba(4,12,11,.2) 0%, transparent 50%, rgba(4,12,11,.52) 100%);
+  }
+
+  /* ── Rana world: inherited refractive material takeover ── */
+  .portfolio-layer-rana{
+    z-index:3;
+    /* Hard zero-state gate: layer is completely absent until open begins.
+       Chromium can treat multi-mask radial-gradient(0% 0% ...) as covering,
+       so never rely on zero-radius masks alone to hide the layer. */
+    visibility:hidden;
+    /* Nonzero floor so mask radii never collapse to degenerate 0% 0%. */
+    --portfolio-mask-open:max(0.001, var(--portfolio-rana-open));
+    /* Multi-lobed facet/bleed — not a clean oval portal with black crescents. */
+    -webkit-mask-image:
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 118%) calc(var(--portfolio-mask-open) * 96%) at 50% 54%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 92%) calc(var(--portfolio-mask-open) * 128%) at 38% 48%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 108%) calc(var(--portfolio-mask-open) * 82%) at 64% 58%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 78%) calc(var(--portfolio-mask-open) * 110%) at 46% 36%, #000 0%, #000 46%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 86%) calc(var(--portfolio-mask-open) * 74%) at 56% 72%, #000 0%, #000 44%, transparent 70%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 70%) calc(var(--portfolio-mask-open) * 98%) at 22% 60%, #000 0%, #000 42%, transparent 68%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 74%) calc(var(--portfolio-mask-open) * 88%) at 80% 42%, #000 0%, #000 40%, transparent 68%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 155%) calc(var(--portfolio-mask-open) * 145%) at 50% 52%, #000 0%, #000 62%, transparent 88%);
+    mask-image:
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 118%) calc(var(--portfolio-mask-open) * 96%) at 50% 54%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 92%) calc(var(--portfolio-mask-open) * 128%) at 38% 48%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 108%) calc(var(--portfolio-mask-open) * 82%) at 64% 58%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 78%) calc(var(--portfolio-mask-open) * 110%) at 46% 36%, #000 0%, #000 46%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 86%) calc(var(--portfolio-mask-open) * 74%) at 56% 72%, #000 0%, #000 44%, transparent 70%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 70%) calc(var(--portfolio-mask-open) * 98%) at 22% 60%, #000 0%, #000 42%, transparent 68%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 74%) calc(var(--portfolio-mask-open) * 88%) at 80% 42%, #000 0%, #000 40%, transparent 68%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 155%) calc(var(--portfolio-mask-open) * 145%) at 50% 52%, #000 0%, #000 62%, transparent 88%);
+    -webkit-mask-composite:source-over;
+    mask-composite:add;
+    -webkit-mask-repeat:no-repeat;
+    mask-repeat:no-repeat;
+    -webkit-mask-size:100% 100%;
+    mask-size:100% 100%;
+    will-change:mask-image,-webkit-mask-image;
+  }
+  .portfolio-layer-rana.portfolio-is-revealing{visibility:visible}
+  .portfolio-rana-media,
+  .portfolio-prorok-media{
+    position:absolute;
+    inset:0;
+  }
+  .portfolio-prorok-media{
+    isolation:isolate;
+  }
+  .portfolio-media-fill{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+  }
+  .portfolio-media-fill[data-video]{
+    opacity:0;
+    transition:opacity .35s var(--portfolio-ease-enter);
+  }
+  .portfolio-media-fill[data-video].portfolio-is-ready{opacity:1}
+  .portfolio-rana-studio{
+    /* Full-bleed hero — center the subject so desktop and mobile cover crops keep gem + scale cue. */
+    object-position:50% 50%;
+    transform:none;
+    filter:saturate(1.08) contrast(1.08) brightness(calc(.94 + var(--portfolio-rana-hold) * .08));
+  }
+  .portfolio-rana-opening{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:50% 50%;
+    opacity:calc(max(0, 1 - var(--portfolio-rana-hold) * 1.55) * .55);
+    mix-blend-mode:screen;
+    filter:brightness(1.05) contrast(1.06) saturate(1.05);
+  }
+  .portfolio-rana-ring-stage{
+    /* Subordinate refraction / light residue — not a circular badge or second photo. */
+    position:absolute;
+    right:clamp(-10%, -2vw, 4%);
+    bottom:clamp(-14%, -2vh, 4%);
+    width:min(56vw, 40rem);
+    height:min(68vh, 38rem);
+    opacity:calc(var(--portfolio-ring-presence) * .42);
+    transform:none;
+    mix-blend-mode:screen;
+    filter:saturate(1.2) contrast(1.05) brightness(1.18) blur(.35px);
+    will-change:opacity,transform;
+    pointer-events:none;
+  }
+  .portfolio-rana-ring-stage .portfolio-media-fill{
+    border-radius:0;
+    object-position:50% 50%;
+    -webkit-mask-image:none;
+    mask-image:none;
+  }
+  .portfolio-rana-bloom{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:calc(.14 + var(--portfolio-rana-hold) * .22);
+    background:
+      radial-gradient(ellipse 48% 40% at 56% 38%, rgba(255,236,210,.16) 0%, transparent 58%),
+      radial-gradient(ellipse 30% 26% at 68% 58%, rgba(200,160,255,.08) 0%, transparent 60%);
+    mix-blend-mode:screen;
+  }
+  .portfolio-rana-wash{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(100deg, rgba(4,10,12,.62) 0%, rgba(4,10,12,.2) 32%, rgba(4,10,12,.04) 56%, rgba(4,10,12,.38) 100%),
+      linear-gradient(180deg, rgba(4,10,12,.4) 0%, transparent 22%, transparent 70%, rgba(4,10,12,.58) 100%);
+  }
+
+  /* ── ProRok threshold: organic multi-lobed ink / erasure reveal ── */
+  .portfolio-layer-prorok{
+    z-index:4;
+    background:var(--portfolio-sumi);
+    /* Hard zero-state gate: Sumi layer must not paint at progress 0.
+       Degenerate multi-mask zero-radius composition can occlude the prior world. */
+    visibility:hidden;
+    /* Nonzero floor so mask radii never collapse to degenerate 0% 0%. */
+    --portfolio-mask-open:max(0.001, var(--portfolio-prorok-open));
+    /* Irregular ink blot lobes — no flat quadrilateral / panel silhouette. */
+    -webkit-mask-image:
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 92%) calc(var(--portfolio-mask-open) * 70%) at 6% 94%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 78%) calc(var(--portfolio-mask-open) * 88%) at 28% 100%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 68%) calc(var(--portfolio-mask-open) * 58%) at 0% 72%, #000 0%, #000 42%, transparent 70%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 102%) calc(var(--portfolio-mask-open) * 54%) at 48% 100%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 58%) calc(var(--portfolio-mask-open) * 96%) at 4% 48%, #000 0%, #000 40%, transparent 68%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 72%) calc(var(--portfolio-mask-open) * 64%) at 18% 82%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 54%) calc(var(--portfolio-mask-open) * 76%) at 38% 88%, #000 0%, #000 38%, transparent 66%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 48%) calc(var(--portfolio-mask-open) * 52%) at 12% 30%, #000 0%, #000 36%, transparent 64%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 160%) calc(var(--portfolio-mask-open) * 150%) at 22% 78%, #000 0%, #000 58%, transparent 84%);
+    mask-image:
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 92%) calc(var(--portfolio-mask-open) * 70%) at 6% 94%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 78%) calc(var(--portfolio-mask-open) * 88%) at 28% 100%, #000 0%, #000 50%, transparent 76%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 68%) calc(var(--portfolio-mask-open) * 58%) at 0% 72%, #000 0%, #000 42%, transparent 70%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 102%) calc(var(--portfolio-mask-open) * 54%) at 48% 100%, #000 0%, #000 48%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 58%) calc(var(--portfolio-mask-open) * 96%) at 4% 48%, #000 0%, #000 40%, transparent 68%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 72%) calc(var(--portfolio-mask-open) * 64%) at 18% 82%, #000 0%, #000 44%, transparent 72%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 54%) calc(var(--portfolio-mask-open) * 76%) at 38% 88%, #000 0%, #000 38%, transparent 66%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 48%) calc(var(--portfolio-mask-open) * 52%) at 12% 30%, #000 0%, #000 36%, transparent 64%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 160%) calc(var(--portfolio-mask-open) * 150%) at 22% 78%, #000 0%, #000 58%, transparent 84%);
+    -webkit-mask-composite:source-over;
+    mask-composite:add;
+    -webkit-mask-repeat:no-repeat;
+    mask-repeat:no-repeat;
+    -webkit-mask-size:100% 100%;
+    mask-size:100% 100%;
+    will-change:mask-image,-webkit-mask-image;
+  }
+  .portfolio-layer-prorok.portfolio-is-revealing{visibility:visible}
+  .portfolio-prorok-ink{
+    /* Actual watercolor media remapped into Sumi-black / vermilion night-ink. */
+    z-index:1;
+    object-position:50% 50%;
+    filter:url(#portfolio-gradeNightInk) contrast(1.1) saturate(1.08);
+    transform:none;
+    opacity:calc(.72 + var(--portfolio-prorok-hold) * .28);
+    mix-blend-mode:normal;
+  }
+  .portfolio-prorok-portrait{
+    /* Subject carrier above graded ink — must remain legible when the live MP4 is black paper. */
+    position:absolute;
+    z-index:2;
+    right:clamp(0%, 3vw, 8%);
+    top:0;
+    width:min(54vw, 42rem);
+    height:100%;
+    object-fit:contain;
+    object-position:50% 50%;
+    opacity:calc(.28 + var(--portfolio-prorok-hold) * .78);
+    mask-image:none;
+    -webkit-mask-image:none;
+    filter:saturate(.88) contrast(1.1) brightness(.9);
+    mix-blend-mode:normal;
+  }
+  .portfolio-prorok-seal{
+    position:absolute;
+    inset:0;
+    z-index:3;
+    pointer-events:none;
+    opacity:calc(.35 + var(--portfolio-prorok-hold) * .45);
+    background:
+      radial-gradient(ellipse 42% 36% at 72% 40%, rgba(178,58,44,.28) 0%, transparent 62%),
+      radial-gradient(ellipse 28% 22% at 18% 78%, rgba(178,58,44,.14) 0%, transparent 70%);
+    mix-blend-mode:screen;
+  }
+  .portfolio-prorok-wash{
+    position:absolute;
+    inset:0;
+    z-index:4;
+    pointer-events:none;
+    /* Edge negative for copy only — world darkness comes from graded media. */
+    background:
+      linear-gradient(90deg, rgba(11,8,7,.78) 0%, rgba(11,8,7,.35) 26%, rgba(11,8,7,.05) 55%, rgba(11,8,7,.28) 100%),
+      linear-gradient(180deg, rgba(11,8,7,.42) 0%, transparent 20%, transparent 68%, rgba(11,8,7,.7) 100%);
+    opacity:calc(1 - var(--portfolio-terminal-hold) * .55);
+  }
+
+  /* ── Terminal rest: Jarrett arrives after both project worlds ──
+     One connected spatial tear (not a viewport-ratio inset window or detached bands). */
+  .portfolio-layer-terminal{
+    z-index:5;
+    visibility:hidden;
+    background:var(--portfolio-void);
+    pointer-events:none;
+    /* Hard zero-state gate + nonzero floor — same family as Rana/ProRok reveals. */
+    --portfolio-mask-open:max(0.001, var(--portfolio-terminal-hold));
+    /* Vertical threshold tear from center — every lobe overlaps its neighbours at low open.
+       Fixed additive floors keep early silhouettes connected; envelope grows into full-bleed. */
+    -webkit-mask-image:
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 28% + 4%) calc(var(--portfolio-mask-open) * 120% + 10%) at 50% 48%, #000 0%, #000 58%, transparent 84%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 42% + 3%) calc(var(--portfolio-mask-open) * 78% + 8%) at 44% 50%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 42% + 3%) calc(var(--portfolio-mask-open) * 78% + 8%) at 56% 50%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 52% + 4%) calc(var(--portfolio-mask-open) * 56% + 6%) at 50% 40%, #000 0%, #000 52%, transparent 80%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 58% + 4%) calc(var(--portfolio-mask-open) * 62% + 6%) at 50% 62%, #000 0%, #000 52%, transparent 80%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 36% + 2%) calc(var(--portfolio-mask-open) * 48% + 4%) at 47% 55%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 36% + 2%) calc(var(--portfolio-mask-open) * 48% + 4%) at 53% 55%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 155%) calc(var(--portfolio-mask-open) * 145%) at 50% 50%, #000 0%, #000 58%, transparent 88%);
+    mask-image:
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 28% + 4%) calc(var(--portfolio-mask-open) * 120% + 10%) at 50% 48%, #000 0%, #000 58%, transparent 84%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 42% + 3%) calc(var(--portfolio-mask-open) * 78% + 8%) at 44% 50%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 42% + 3%) calc(var(--portfolio-mask-open) * 78% + 8%) at 56% 50%, #000 0%, #000 52%, transparent 78%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 52% + 4%) calc(var(--portfolio-mask-open) * 56% + 6%) at 50% 40%, #000 0%, #000 52%, transparent 80%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 58% + 4%) calc(var(--portfolio-mask-open) * 62% + 6%) at 50% 62%, #000 0%, #000 52%, transparent 80%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 36% + 2%) calc(var(--portfolio-mask-open) * 48% + 4%) at 47% 55%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 36% + 2%) calc(var(--portfolio-mask-open) * 48% + 4%) at 53% 55%, #000 0%, #000 46%, transparent 74%),
+      radial-gradient(ellipse calc(var(--portfolio-mask-open) * 155%) calc(var(--portfolio-mask-open) * 145%) at 50% 50%, #000 0%, #000 58%, transparent 88%);
+    -webkit-mask-composite:source-over;
+    mask-composite:add;
+    -webkit-mask-repeat:no-repeat;
+    mask-repeat:no-repeat;
+    -webkit-mask-size:100% 100%;
+    mask-size:100% 100%;
+    will-change:mask-image,-webkit-mask-image;
+  }
+  .portfolio-layer-terminal.portfolio-is-revealing{visibility:visible}
+  /* Settled Invitation rest: drop the tear mask so the portrait composition
+     paints the full viewport at every aspect ratio. Reveal keeps the mask.
+     Consumer: /work/ Invitation rest including Motion Off; check: node work-smoke-test.mjs;
+     retire when the terminal rest no longer uses a reveal mask. */
+  .portfolio-layer-terminal.portfolio-is-settled{
+    -webkit-mask-image:none;
+    mask-image:none;
+    -webkit-mask:none;
+    mask:none;
+  }
+  .portfolio-terminal-return{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    object-fit:contain;
+    object-position:50% 50%;
+    transform:none;
+    filter:
+      saturate(calc(.94 + var(--portfolio-terminal-hold) * .06))
+      brightness(calc(.82 + var(--portfolio-terminal-hold) * .18))
+      contrast(calc(1.02 + var(--portfolio-terminal-hold) * .02));
+    will-change:transform,filter;
+  }
+  .portfolio-terminal-energy{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:calc(.45 + var(--portfolio-terminal-hold) * .5);
+    background:
+      radial-gradient(ellipse 34% 34% at 8% 72%, rgba(94,231,240,.18) 0%, transparent 66%),
+      radial-gradient(ellipse 30% 28% at 92% 76%, rgba(217,122,58,.14) 0%, transparent 70%),
+      radial-gradient(ellipse 70% 48% at 50% 52%, transparent 42%, rgba(4,10,12,.28) 100%);
+    mix-blend-mode:screen;
+  }
+  .portfolio-terminal-threshold{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    opacity:calc(.4 + var(--portfolio-terminal-hold) * .6);
+    background:
+      radial-gradient(ellipse 34% 18% at 8% 94%, rgba(217,122,58,.16) 0%, transparent 72%),
+      radial-gradient(ellipse 34% 18% at 92% 94%, rgba(94,231,240,.1) 0%, transparent 72%);
+    mix-blend-mode:screen;
+  }
+  .portfolio-terminal-vignette{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      radial-gradient(ellipse 82% 72% at 50% 46%, transparent 28%, rgba(4,10,12,.22) 68%, rgba(4,10,12,.72) 100%);
+    opacity:calc(.75 + var(--portfolio-terminal-hold) * .2);
+  }
+  /* Soft edge for passage copy only — leave the doorway world legible. */
+  .portfolio-terminal-wash{
+    position:absolute;
+    inset:0;
+    pointer-events:none;
+    background:
+      linear-gradient(100deg, rgba(4,10,12,.58) 0%, rgba(4,10,12,.22) 26%, rgba(4,10,12,.04) 48%, transparent 64%),
+      linear-gradient(180deg, rgba(4,10,12,.28) 0%, transparent 18%, transparent 58%, rgba(4,10,12,.52) 100%);
+    opacity:calc(.55 + var(--portfolio-terminal-hold) * .4);
+  }
+
+  .portfolio-grain{
+    position:absolute;
+    inset:-20%;
+    z-index:6;
+    pointer-events:none;
+    opacity:calc(.1 + var(--portfolio-prorok-open) * .06 + var(--portfolio-terminal-hold) * .04);
+    background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.portfolio-w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
+    background-size:180px 180px;
+  }
+
+  .portfolio-enter-veil{
+    position:absolute;
+    inset:0;
+    z-index:7;
+    pointer-events:none;
+    background:var(--portfolio-void);
+    opacity:var(--portfolio-enter-veil);
+  }
+
+  /* ── UI chrome ── */
+  .portfolio-ui{
+    position:absolute;
+    inset:0;
+    z-index:20;
+    pointer-events:none;
+  }
+  .portfolio-ui > *{pointer-events:none}
+  .portfolio-site-header,
+  .portfolio-scene-copy,
+  .portfolio-scene-link,
+  .portfolio-scene-action{
+    pointer-events:auto;
+  }
+
+  .portfolio-site-header{
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:30;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:1rem;
+    padding:clamp(.85rem,1.8vh,1.15rem) var(--portfolio-gutter);
+    min-height:var(--portfolio-top-chrome);
+    background:linear-gradient(180deg, rgba(3,9,11,.72) 0%, rgba(3,9,11,.28) 62%, transparent 100%);
+  }
+  .portfolio-wordmark{
+    font-family:var(--portfolio-text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.015em;
+    color:var(--portfolio-ink);
+    white-space:nowrap;
+    min-height:44px;
+    display:inline-flex;
+    align-items:center;
+  }
+  .portfolio-header-tools{
+    display:flex;
+    align-items:center;
+    gap:clamp(.45rem,1.4vw,1rem);
+  }
+  .portfolio-nav-link,
+  .portfolio-motion-toggle{
+    min-height:44px;
+    min-width:44px;
+    padding:.35rem .35rem;
+    font-family:var(--portfolio-text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
+    color:var(--portfolio-ink-soft);
+    white-space:nowrap;
+    display:inline-flex;
+    align-items:center;
+  }
+  .portfolio-nav-link:hover,
+  .portfolio-motion-toggle:hover{color:var(--portfolio-ink)}
+  .portfolio-nav-link.portfolio-is-current{
+    color:var(--portfolio-ink);
+    box-shadow:inset 0 -2px 0 rgba(94,231,240,.75);
+  }
+
+  .portfolio-scene-copy{
+    position:absolute;
+    z-index:25;
+    left:var(--portfolio-gutter);
+    bottom:clamp(1.6rem,6vh,3.4rem);
+    max-width:min(34rem, 86vw);
+    color:var(--portfolio-ink);
+  }
+  html[data-portfolio-identity="off"] .portfolio-scene-copy{display:none !important}
+  .portfolio-scene-copy--generations{
+    opacity:var(--portfolio-copy-generations);
+    transform:translate3d(0, calc((1 - var(--portfolio-copy-generations)) * 1.4rem), 0);
+    filter:blur(calc((1 - var(--portfolio-copy-generations)) * 4px));
+  }
+  .portfolio-scene-copy--paina{
+    opacity:var(--portfolio-copy-paina);
+    transform:translate3d(0, calc((1 - var(--portfolio-copy-paina)) * 1.4rem), 0);
+    filter:blur(calc((1 - var(--portfolio-copy-paina)) * 4px));
+  }
+  .portfolio-scene-copy--rana{
+    opacity:calc(var(--portfolio-rana-hold) * (1 - var(--portfolio-prorok-open) * 1.15));
+    transform:translate3d(0, calc((1 - var(--portfolio-rana-hold)) * 1.4rem), 0);
+    filter:blur(calc((1 - var(--portfolio-rana-hold)) * 4px));
+  }
+  /* ProRok rest: distinct beat — longer craft line, vermilion action, disclosure under the link. */
+  .portfolio-scene-copy--prorok{
+    color:var(--portfolio-paper);
+    left:var(--portfolio-gutter);
+    right:auto;
+    bottom:clamp(1.8rem, 7.5vh, 4rem);
+    max-width:min(30rem, 78vw);
+    /* Harder fade than the world handoff so two copy blocks never double-expose. */
+    opacity:calc(var(--portfolio-prorok-hold) * max(0, 1 - var(--portfolio-terminal-hold) * 2));
+    transform:translate3d(0, calc((1 - var(--portfolio-prorok-hold)) * 1.5rem), 0);
+    filter:blur(calc((1 - var(--portfolio-prorok-hold)) * 4px));
+  }
+  .portfolio-scene-copy--terminal{
+    color:var(--portfolio-ink);
+    left:var(--portfolio-gutter);
+    right:var(--portfolio-gutter);
+    bottom:clamp(2rem, 9vh, 4.6rem);
+    max-width:min(36rem, 90vw);
+    opacity:var(--portfolio-terminal-hold);
+    transform:translate3d(0, calc((1 - var(--portfolio-terminal-hold)) * 1.2rem), 0);
+    filter:blur(calc((1 - var(--portfolio-terminal-hold)) * 3px));
+  }
+  .portfolio-scene-name{
+    margin:0 0 .55rem;
+    font-family:var(--portfolio-display);
+    font-weight:400;
+    font-optical-sizing:auto;
+    font-size:clamp(2.4rem,5.4vw,4.2rem);
+    line-height:.96;
+    letter-spacing:0;
+  }
+  .portfolio-scene-copy--prorok .portfolio-scene-name{
+    font-size:clamp(2.15rem, 4.8vw, 3.6rem);
+    margin-bottom:.7rem;
+  }
+  .portfolio-scene-copy--terminal .portfolio-scene-name{
+    font-size:clamp(2.2rem, 5vw, 3.7rem);
+    max-width:16ch;
+    margin-bottom:.75rem;
+  }
+  .portfolio-scene-line{
+    margin:0 0 .85rem;
+    font-family:var(--portfolio-reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(1.05rem,1.05rem + .35vw,1.3rem);
+    line-height:1.45;
+    letter-spacing:0;
+    color:var(--portfolio-ink-soft);
+    max-width:34ch;
+  }
+  .portfolio-scene-copy--prorok .portfolio-scene-line{
+    color:var(--portfolio-paper-dim);
+    max-width:32ch;
+    margin-bottom:1rem;
+  }
+  .portfolio-scene-copy--terminal .portfolio-scene-line{
+    max-width:36ch;
+    margin-bottom:1.15rem;
+  }
+  .portfolio-scene-support{
+    margin:0 0 1rem;
+    font-family:var(--portfolio-reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(1rem, 1rem + .2vw, 1.12rem);
+    line-height:1.5;
+    letter-spacing:0;
+    color:var(--portfolio-ink-mute);
+    max-width:36ch;
+  }
+  /* In-world paths — plain reading lines, never pills or cards. */
+  .portfolio-scene-paths{
+    margin:0 0 1.05rem;
+    padding:0;
+    list-style:none;
+    font-family:var(--portfolio-reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(1.02rem, 1.02rem + .18vw, 1.14rem);
+    line-height:1.55;
+    letter-spacing:0;
+    color:var(--portfolio-ink-soft);
+  }
+  .portfolio-scene-paths li{
+    margin:0;
+    padding:0;
+  }
+  .portfolio-scene-link{
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    font-family:var(--portfolio-text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
+    color:var(--portfolio-ink);
+    border-bottom:1px solid rgba(94,231,240,.55);
+  }
+  .portfolio-scene-copy--prorok .portfolio-scene-link{
+    color:var(--portfolio-paper);
+    border-bottom-color:rgba(178,58,44,.72);
+  }
+  .portfolio-scene-disclosure{
+    margin:.7rem 0 0;
+    font-family:var(--portfolio-reading);
+    font-weight:400;
+    font-style:italic;
+    font-synthesis:none;
+    font-size:clamp(.95rem, .95rem + .12vw, 1.02rem);
+    line-height:1.45;
+    letter-spacing:0;
+    color:var(--portfolio-paper-dim);
+    max-width:38ch;
+  }
+  .portfolio-scene-actions{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap:.35rem 1.6rem;
+    margin:0;
+    padding:0;
+  }
+  .portfolio-scene-action{
+    display:inline-flex;
+    align-items:center;
+    min-height:44px;
+    font-family:var(--portfolio-text);
+    font-weight:600;
+    font-size:14px;
+    letter-spacing:.01em;
+    color:var(--portfolio-ink);
+    border-bottom:1px solid rgba(217,122,58,.7);
+  }
+  .portfolio-scene-action:hover{color:var(--portfolio-ink)}
+
+  .portfolio-progress-hairline{
+    position:absolute;
+    top:0; left:0; right:0;
+    z-index:31;
+    height:2px;
+    background:rgba(232,244,244,.08);
+    pointer-events:none;
+  }
+  .portfolio-progress-hairline > span{
+    display:block;
+    height:100%;
+    width:calc(var(--portfolio-progress) * 100%);
+    background:linear-gradient(90deg, var(--portfolio-cyan), var(--portfolio-amber));
+    box-shadow:0 0 10px rgba(94,231,240,.28);
+  }
+
+  /* Motion-off: composed rests, no soft blur tails.
+     Keep media grade on ProRok ink and terminal return — palette composition, not motion. */
+  html[data-motion="off"] .portfolio-generations-media,
+  html[data-motion="off"] .portfolio-paina-media,
+  html[data-motion="off"] .portfolio-rana-studio,
+  html[data-motion="off"] .portfolio-rana-ring-stage,
+  html[data-motion="off"] .portfolio-scene-copy,
+  html[data-motion="off"] .portfolio-layer-terminal,
+  html[data-motion="off"] .portfolio-terminal-return{
+    transition:none !important;
+  }
+  html[data-motion="off"] .portfolio-generations-media,
+  html[data-motion="off"] .portfolio-paina-media,
+  html[data-motion="off"] .portfolio-rana-studio,
+  html[data-motion="off"] .portfolio-rana-ring-stage,
+  html[data-motion="off"] .portfolio-scene-copy{
+    filter:none;
+  }
+  html[data-motion="off"] .portfolio-prorok-ink{
+    transition:none !important;
+    filter:url(#portfolio-gradeNightInk) contrast(1.1) saturate(1.08);
+  }
+  html[data-motion="off"] .portfolio-terminal-return{
+    /* Hold the return grade at rest — not a motion soft-tail. */
+    filter:saturate(1) brightness(1) contrast(1.04);
+    transform:scale(1);
+  }
+  html[data-motion="off"] .portfolio-generations-video,
+  html[data-motion="off"] .portfolio-paina-video{display:none}
+  html[data-motion="off"] .portfolio-rana-ring-stage{
+    filter:none;
+    mix-blend-mode:screen;
+  }
+  html[data-motion="off"] .portfolio-scene-copy{
+    transform:none;
+  }
+
+  /* No-JS readable path */
+  .portfolio-no-js-route{
+    display:none;
+    position:relative;
+    min-height:100vh;
+    color:var(--portfolio-ink);
+    background:var(--portfolio-void);
+    overflow-x:hidden;
+  }
+  .portfolio-no-js-stack{
+    position:relative;
+    z-index:1;
+    max-width:42rem;
+    margin:0 auto;
+    padding:clamp(1.4rem,4vh,2.4rem) var(--portfolio-gutter) clamp(2.5rem,6vh,4rem);
+  }
+  .portfolio-no-js-stack h1,
+  .portfolio-no-js-stack h2{
+    font-family:var(--portfolio-display);
+    font-weight:400;
+    font-optical-sizing:auto;
+    line-height:.98;
+    letter-spacing:0;
+    margin:0 0 .85rem;
+  }
+  .portfolio-no-js-stack h1{font-size:clamp(2.2rem,5.4vw,3.4rem)}
+  .portfolio-no-js-stack h2{font-size:clamp(1.8rem,4vw,2.6rem); margin-top:2rem}
+  .portfolio-no-js-stack p{
+    font-family:var(--portfolio-reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:1.05rem;
+    line-height:1.5;
+    letter-spacing:0;
+    color:var(--portfolio-ink-soft);
+    max-width:40ch;
+  }
+  .portfolio-no-js-stack a{
+    font-family:var(--portfolio-text);
+    font-weight:600;
+    color:var(--portfolio-ink);
+    border-bottom:1px solid rgba(94,231,240,.55);
+  }
+  .portfolio-no-js-stack .portfolio-wordmark{
+    margin:0 0 1.5rem;
+    border:0;
+  }
+  .portfolio-no-js-poster{
+    width:100%;
+    height:auto;
+    max-width:36rem;
+    margin:1rem 0 1.5rem;
+    border-radius:0;
+  }
+
+  @media (max-width:720px){
+    /* Mobile is a separately composed full-bleed passage, not scaled desktop. */
+    .portfolio-passage{height:680svh}
+    html[data-motion="off"] .portfolio-passage{height:560svh}
+    .portfolio-passage,
+    .portfolio-viewport{
+      /* Vertical travel is authored one rest at a time; keep pinch and horizontal free. */
+      touch-action:pan-x pinch-zoom;
+      overscroll-behavior-y:contain;
+    }
+
+    .portfolio-site-header{
+      min-height:3.6rem;
+      padding:calc(.82rem + env(safe-area-inset-top)) var(--portfolio-gutter) .7rem;
+    }
+    .portfolio-wordmark{font-size:1rem}
+    .portfolio-nav-link,
+    .portfolio-motion-toggle{
+      min-height:2.75rem;
+      font-size:1rem;
+      font-weight:550;
+      letter-spacing:0;
+      padding:.3rem .2rem;
+    }
+    .portfolio-header-tools{gap:.55rem}
+    /* Wordmark is the clear back route; drop the redundant visible label. */
+    .portfolio-nav-link[data-role="portfolio-back-home"]{display:none}
+
+    .portfolio-generations-poster,
+    .portfolio-generations-video{object-position:50% 50%}
+    .portfolio-paina-poster,
+    .portfolio-paina-video{object-position:50% 50%}
+    /* Mobile handoff: one real raster surface is authoritative. The legacy
+       DOM worlds remain decoded below it as source material, but only this
+       opaque canvas reaches the recipient. That removes independent video
+       compositor planes—the source of Samsung's split bands and black cuts. */
+    .portfolio-mobile-scene-plate{
+      display:block;
+    }
+    html.portfolio-mobile-plate-active .portfolio-world-stack{
+      transform:none;
+      will-change:auto;
+    }
+    html.portfolio-mobile-plate-active .portfolio-world-stack > .portfolio-layer,
+    html.portfolio-mobile-plate-active .portfolio-world-stack > .portfolio-grain,
+    html.portfolio-mobile-plate-active .portfolio-world-stack > .portfolio-enter-veil{
+      visibility:hidden;
+    }
+    .portfolio-world-stack{transform:none;will-change:auto}
+    html[data-motion="off"] .portfolio-world-stack{
+      transform:none;
+      will-change:auto;
+    }
+    .portfolio-layer-paina,
+    .portfolio-layer-rana,
+    .portfolio-layer-prorok,
+    .portfolio-layer-terminal{
+      -webkit-mask-image:none;
+      mask-image:none;
+      -webkit-mask:none;
+      mask:none;
+    }
+    .portfolio-layer-paina.portfolio-is-revealing{opacity:var(--portfolio-paina-open)}
+    .portfolio-layer-rana.portfolio-is-revealing{opacity:var(--portfolio-rana-open)}
+    .portfolio-layer-prorok.portfolio-is-revealing{opacity:var(--portfolio-prorok-open)}
+    .portfolio-layer-terminal.portfolio-is-revealing{opacity:var(--portfolio-terminal-hold)}
+    .portfolio-scene-copy--generations{
+      opacity:var(--portfolio-copy-generations);
+      transform:translate3d(0, calc((1 - var(--portfolio-copy-generations)) * 1.4rem), 0);
+      filter:none;
+    }
+    .portfolio-scene-copy--paina{
+      opacity:var(--portfolio-copy-paina);
+      transform:translate3d(0, calc((1 - var(--portfolio-copy-paina)) * 1.4rem), 0);
+      filter:none;
+    }
+    .portfolio-scene-copy--rana{
+      opacity:var(--portfolio-copy-rana);
+      transform:translate3d(0, calc((1 - var(--portfolio-copy-rana)) * 1.4rem), 0);
+      filter:none;
+    }
+    .portfolio-scene-copy--prorok{
+      opacity:var(--portfolio-copy-prorok);
+      transform:translate3d(0, calc((1 - var(--portfolio-copy-prorok)) * 1.5rem), 0);
+      filter:none;
+    }
+    .portfolio-scene-copy--terminal{
+      opacity:var(--portfolio-copy-terminal);
+      transform:translate3d(0, calc((1 - var(--portfolio-copy-terminal)) * 1.2rem), 0);
+      filter:none;
+    }
+    /* Live mobile Rana: landscape studio cover crops can lose the gem into dark
+       material fields on the narrow strip. Square ring film is the subject carrier
+       (same pattern as ProRok portrait) — full-bleed material world, not a badge. */
+    .portfolio-rana-studio{
+      object-position:50% 50%;
+      /* Atmospheric underlayer while the ring carrier holds the rest. */
+      filter:saturate(1.04) contrast(1.05) brightness(calc(.86 + var(--portfolio-rana-hold) * .06));
+    }
+    .portfolio-rana-opening{object-position:50% 50%}
+    .portfolio-rana-ring-stage{
+      inset:0;
+      right:auto;
+      bottom:auto;
+      width:100%;
+      height:100%;
+      opacity:calc(var(--portfolio-ring-presence) * .97);
+      transform:none;
+      mix-blend-mode:normal;
+      filter:saturate(1.1) contrast(1.06) brightness(1.03);
+    }
+    .portfolio-rana-ring-stage .portfolio-media-fill{
+      object-position:50% 50%;
+      -webkit-mask-image:none;
+      mask-image:none;
+    }
+    .portfolio-rana-wash{
+      background:
+        linear-gradient(180deg, rgba(4,10,12,.42) 0%, rgba(4,10,12,.08) 26%, rgba(4,10,12,.18) 54%, rgba(4,10,12,.8) 100%),
+        linear-gradient(90deg, rgba(4,10,12,.48) 0%, transparent 52%);
+    }
+    /* Motion-off must not reapply desktop residual screen-blend on the carrier. */
+    html[data-motion="off"] .portfolio-rana-ring-stage{
+      mix-blend-mode:normal;
+      filter:saturate(1.08) contrast(1.05) brightness(1.02);
+    }
+    /* Live mobile ProRok: portrait is the subject carrier. Graded sakura paper is near-black;
+       without a strong portrait stack the rest collapses to an empty sumi field. */
+    .portfolio-prorok-portrait{
+      right:auto;
+      left:0;
+      width:100%;
+      height:100%;
+      object-position:50% 50%;
+      opacity:calc(var(--portfolio-prorok-hold));
+      filter:saturate(.94) contrast(1.14) brightness(1.06);
+      mask-image:none;
+      -webkit-mask-image:none;
+    }
+    .portfolio-prorok-ink{
+      object-position:50% 50%;
+      /* Ink world stays present but does not crush the subject zone to pure void. */
+      opacity:calc(.48 + var(--portfolio-prorok-hold) * .4);
+    }
+    .portfolio-prorok-seal{
+      opacity:calc(.4 + var(--portfolio-prorok-hold) * .4);
+      background:
+        radial-gradient(ellipse 55% 40% at 50% 42%, rgba(178,58,44,.24) 0%, transparent 68%),
+        radial-gradient(ellipse 40% 28% at 70% 78%, rgba(178,58,44,.16) 0%, transparent 70%);
+    }
+    .portfolio-prorok-wash{
+      /* Bottom/side negative for copy; keep the upper subject zone open. */
+      background:
+        linear-gradient(180deg, rgba(11,8,7,.22) 0%, rgba(11,8,7,.04) 28%, rgba(11,8,7,.32) 58%, rgba(11,8,7,.88) 100%),
+        linear-gradient(90deg, rgba(11,8,7,.42) 0%, rgba(11,8,7,.08) 48%, rgba(11,8,7,.3) 100%);
+    }
+    .portfolio-terminal-return{
+      object-position:50% 50%;
+      transform:none;
+    }
+    .portfolio-terminal-energy{
+      background:
+        radial-gradient(ellipse 52% 34% at 0% 76%, rgba(94,231,240,.16) 0%, transparent 68%),
+        radial-gradient(ellipse 52% 30% at 100% 78%, rgba(217,122,58,.12) 0%, transparent 72%),
+        radial-gradient(ellipse 78% 52% at 50% 52%, transparent 40%, rgba(4,10,12,.32) 100%);
+    }
+    .portfolio-terminal-threshold{
+      background:
+        radial-gradient(ellipse 58% 20% at 0% 96%, rgba(217,122,58,.14) 0%, transparent 72%),
+        radial-gradient(ellipse 58% 20% at 100% 96%, rgba(94,231,240,.08) 0%, transparent 72%);
+    }
+    .portfolio-terminal-wash{
+      background:
+        linear-gradient(180deg, rgba(4,10,12,.3) 0%, transparent 22%, transparent 48%, rgba(4,10,12,.84) 100%),
+        linear-gradient(90deg, rgba(4,10,12,.42) 0%, rgba(4,10,12,.1) 44%, transparent 76%);
+    }
+    .portfolio-scene-copy{
+      left:var(--portfolio-gutter);
+      right:var(--portfolio-gutter);
+      bottom:calc(1.2rem + env(safe-area-inset-bottom));
+      max-width:none;
+    }
+    .portfolio-scene-copy--prorok{
+      max-width:none;
+    }
+    .portfolio-scene-copy--terminal{
+      max-width:none;
+    }
+    .portfolio-scene-name{
+      font-size:clamp(2.05rem,10vw,2.7rem);
+    }
+    .portfolio-scene-copy--prorok .portfolio-scene-name{
+      font-size:clamp(1.95rem, 9.2vw, 2.5rem);
+    }
+    .portfolio-scene-copy--terminal .portfolio-scene-name{
+      font-size:clamp(1.95rem, 9vw, 2.55rem);
+      max-width:14ch;
+    }
+    .portfolio-scene-line{
+      font-size:1.05rem;
+      max-width:28ch;
+    }
+    .portfolio-scene-copy--prorok .portfolio-scene-line{
+      max-width:30ch;
+    }
+    .portfolio-scene-support{
+      max-width:32ch;
+      font-size:1rem;
+    }
+    .portfolio-scene-disclosure{
+      max-width:32ch;
+      font-size:.95rem;
+    }
+    .portfolio-scene-actions{
+      flex-direction:column;
+      align-items:flex-start;
+      gap:.15rem;
+    }
+    .portfolio-scene-link{font-size:1rem}
+    .portfolio-scene-action{
+      min-height:2.75rem;
+      font-size:1rem;
+    }
+  }
+
+  @media (max-width:380px){
+    .portfolio-nav-link[data-role="work-label"]{display:none}
+    .portfolio-scene-name{font-size:1.9rem}
+    .portfolio-scene-copy--terminal .portfolio-scene-name{font-size:1.85rem}
+  }

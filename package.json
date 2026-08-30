@@ -1,0 +1,12 @@
+{
+  "name": "jarrettwroten-release-candidate",
+  "private": true,
+  "scripts": {
+    "test": "npm run test:static",
+    "test:static": "node smoke-test.mjs && node work-smoke-test.mjs && node release-candidate-test.mjs",
+    "test:browser": "node browser-release-test.mjs"
+  },
+  "devDependencies": {
+    "playwright-core": "1.62.1"
+  }
+}

@@ -34,12 +34,12 @@ const workHtmlBuf = mustExist('work/index.html');
 const workHtml = workHtmlBuf ? workHtmlBuf.toString('utf8') : '';
 
 // Root: Work route on scripted header + no-JS path + exit transition
-ok(/id="work-link"[^>]*href="work\/"/.test(rootHtml) || /href="work\/"[^>]*id="work-link"/.test(rootHtml), 'scripted header Work link');
-ok(rootHtml.includes('class="work-link"') && rootHtml.includes('href="work/"'), 'Work link class + href present');
+ok(/data-role="work-label"[^>]*href="work\/"/.test(rootHtml) || /href="work\/"[^>]*data-role="work-label"/.test(rootHtml), 'scripted portfolio header Work link');
+ok(rootHtml.includes('class="portfolio-nav-link portfolio-is-current"') && rootHtml.includes('href="work/"'), 'homepage Work link class + href present');
 ok(/no-js-route[\s\S]*href="work\/"/.test(rootHtml), 'no-JS path includes Work route');
-ok(rootHtml.includes('data-work-exit') && rootHtml.includes('work-exit-veil'), 'authored Work exit transition');
+ok(rootHtml.includes('data-process-work-exit') && rootHtml.includes('process-work-exit-veil'), 'authored process-to-Work exit transition');
 ok(rootHtml.includes('jw-work-enter'), 'exit hands enter flag to Work route');
-ok(/min-height:\s*44px/.test(rootHtml) && rootHtml.includes('.work-link'), 'Work link 44px target styling');
+ok(/min-height:\s*44px/.test(rootHtml) && rootHtml.includes('.process-work-link'), 'Work link 44px target styling');
 ok(rootHtml.includes('tauDesktopSec: 0.41') && rootHtml.includes('tauMobileSec: 0.41'), 'root TAU remains 0.41');
 ok(rootHtml.includes('CNAME') || fs.existsSync(path.join(ROOT, 'CNAME')), 'CNAME preserved on disk');
 const cname = fs.readFileSync(path.join(ROOT, 'CNAME'), 'utf8').trim();
@@ -54,26 +54,37 @@ const requiredPhrases = [
   'Jarrett Wroten',
   'Work',
   'Motion on',
-  'Scroll',
+  'Generations Kitchen',
+  'The concept lets the food lead before the menu.',
+  'Pā‘ina Café',
+  'Pā‘ina means gathering. The kitchen in motion—mochi, poke, and the handoff—becomes the invitation.',
+  'Explore the restaurant concept',
   'Rana Levy',
-  'Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.',
+  'Rana cuts each stone by hand. So I built the concept around the hand, the cut, and the way a gem changes in the light.',
   'Ready Now',
   'Made To Order',
   'Custom Consultation',
-  'Visit the live site',
+  'Explore the concept',
   'Dylan Prorok',
   'A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.',
-  'Work in progress — currently being revised with Dylan Prorok.',
+  'Tattoo Artist - In Progress.',
   'Visit the concept',
-  'Your site should feel like your work.',
-  'Send me your site. I’ll find the first place the path breaks and show you what I’d change.',
-  'Send me your site',
-  'Book a call',
+  'See the process.',
+  'Continue into the leak, the rebuild, and one result from the process.',
+  'Continue to the process',
   'Back to Jarrett',
 ];
 for (const phrase of requiredPhrases) {
   ok(workHtml.includes(phrase), 'work copy: ' + phrase);
 }
+ok(!workHtml.includes('Explore the final draft'), 'superseded restaurant action wording is absent');
+ok((workHtml.match(/Restaurant Concept/g) || []).length >= 4, 'restaurant status is visible in scripted and no-JS Work consumers');
+{
+  const noJsRana = (workHtml.match(/<h2>Rana Levy<\/h2>[\s\S]*?<h2>Dylan Prorok<\/h2>/) || [''])[0];
+  const scriptedRana = (workHtml.match(/id="copy-rana"[\s\S]*?id="copy-prorok"/) || [''])[0];
+  ok(noJsRana.includes('Pending Engagement') && scriptedRana.includes('Pending Engagement'), 'Rana pending status is visible in scripted and no-JS Work consumers');
+}
+ok(!/live Rana site|I built the site around the hand/.test(workHtml), 'Rana copy stays inside the concept and pending-engagement boundary');
 // Redundant Rana support sentence removed — path labels carry the three routes alone
 ok(
   !workHtml.includes('Ready Now, Made To Order, and Custom Consultation stay clear without pulling you out of the world.'),
@@ -92,7 +103,7 @@ ok(
   'Rana not labeled redesign/concept'
 );
 // ProRok honesty: current collaboration-in-revision truth; no stronger status claims.
-const DYLAN_TRUTH = 'Work in progress — currently being revised with Dylan Prorok.';
+const DYLAN_TRUTH = 'Tattoo Artist - In Progress.';
 const DYLAN_OLD = 'Independent redesign concept—not commissioned or approved by Dylan Prorok.';
 ok(workHtml.includes(DYLAN_TRUTH), 'rendered Work page carries exact Dylan revision truth');
 ok(!workHtml.includes(DYLAN_OLD), 'old Dylan independent-disclaimer is retired');
@@ -115,38 +126,37 @@ ok(
   !/\b(Dylan Prorok|ProRok)\b[^.]{0,120}\b(approved|commissioned|hired|client)\b/i.test(workHtml),
   'no ProRok approval/commission/client implication'
 );
-ok(
-  /currently being revised with Dylan Prorok/.test(workHtml) &&
-    !/currently being revised by Dylan Prorok/.test(workHtml),
-  'Dylan revision truth uses with, not by'
-);
+ok(!/currently being revised (?:with|by) Dylan Prorok/.test(workHtml), 'Dylan copy makes no unsupported collaboration claim');
 
-// Links — four external actions + home
+// Links — four project destinations + process continuation
+ok(workHtml.includes('https://generations.jarrettwroten.com/'), 'Generations final-draft URL');
+ok(workHtml.includes('https://paina.jarrettwroten.com/'), 'Pā‘ina final-draft URL');
 ok(workHtml.includes('https://rana.jarrettwroten.com/'), 'Rana live site URL');
 ok(workHtml.includes('https://prorok.jarrettwroten.com/'), 'ProRok concept URL');
-ok(/href=["']mailto:Jarrett@JarrettWroten\.com["']/.test(workHtml), 'direct mailto action');
-ok(workHtml.includes('https://calendar.app.google/rTkdNoWpm6iRrXhB7'), 'booking URL');
 ok(/href="\.\.\/"/.test(workHtml) && workHtml.includes('Back to Jarrett'), 'route back home');
 ok(!/href=["']#["']/.test(workHtml), 'no dead hash-only links');
-ok(!/<form\b/i.test(workHtml), 'no email form — mailto + booking only');
+ok(!/<form\b/i.test(workHtml), 'no form inserted into the work passage');
 
-// No-JS truth path: identity → Rana → ProRok disclosure → terminal, with all four actions
+// No-JS truth path preserves the five-stop visitor order.
 const noJsMatch = workHtml.match(/id="no-js-route"[\s\S]*?<\/main>/i);
 ok(!!noJsMatch, 'no-JS route block present');
 if (noJsMatch) {
   const noJs = noJsMatch[0];
   const markers = [
     'Jarrett Wroten',
+    'Generations Kitchen',
+    'https://generations.jarrettwroten.com/',
+    'Pā‘ina Café',
+    'https://paina.jarrettwroten.com/',
     'Rana Levy',
     'Ready Now',
     'https://rana.jarrettwroten.com/',
     'Dylan Prorok',
     'https://prorok.jarrettwroten.com/',
-    'Work in progress — currently being revised with Dylan Prorok.',
+    'Tattoo Artist - In Progress.',
     '../assets/golden-arrival/frames/ga-360.webp',
-    'Your site should feel like your work.',
-    'mailto:Jarrett@JarrettWroten.com',
-    'https://calendar.app.google/rTkdNoWpm6iRrXhB7',
+    'See the process.',
+    'Continue to the process',
   ];
   let last = -1;
   let orderOk = true;
@@ -159,10 +169,15 @@ if (noJsMatch) {
     }
     last = at;
   }
-  if (orderOk) ok(true, 'no-JS readable order + four external actions');
+  if (orderOk) ok(true, 'no-JS readable five-stop order + project/process actions');
 }
 
 // Media wiring — local only, real posters, ambient video attrs
+ok(workHtml.includes('../assets/work/generations/hurricane-fries-desktop-3p6.mp4'), 'Generations desktop motion path');
+ok(workHtml.includes('../assets/work/generations/hurricane-fries-mobile-3p6.mp4'), 'Generations mobile motion path');
+ok(workHtml.includes('../assets/work/paina/opening-desktop.mp4'), 'Pā‘ina desktop motion path');
+ok(workHtml.includes('../assets/work/paina/opening-mobile-from-2p4.mp4'), 'Pā‘ina mobile motion path begins at the authored match frame');
+ok(workHtml.includes('../assets/work/paina/opening-mobile-entry-2p4.jpg'), 'Pā‘ina mobile match-cut frame');
 ok(workHtml.includes('../assets/work/rana/studio-banner.mp4'), 'studio video path');
 ok(workHtml.includes('../assets/work/rana/ring-alexandrite.mp4'), 'ring video path');
 ok(workHtml.includes('../assets/work/rana/studio-poster.jpg'), 'studio poster');
@@ -170,15 +185,22 @@ ok(workHtml.includes('../assets/work/rana/studio-opening.jpg'), 'studio opening 
 ok(workHtml.includes('../assets/work/rana/ring-poster.jpg'), 'ring poster');
 ok(workHtml.includes('../demos/dylan-prorok/dylan-portrait.jpg'), 'ProRok portrait reused');
 ok(workHtml.includes('../demos/dylan-prorok/sakura-ink-bloom.mp4'), 'ProRok ink video reused');
-ok(workHtml.includes('../assets/golden-arrival/frames/ga-000.webp'), 'corridor entry frame');
-ok(workHtml.includes('../assets/work/corridor-entry-loop.mp4'), 'corridor entry motion path');
-ok(/autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml), 'ambient video attributes');
 ok(
-  /id="corridor-motion-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml) &&
-    /id="rana-studio-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml) &&
-    /id="rana-ring-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml) &&
-    /id="prorok-ink-video"[\s\S]*?autoplay\s+muted\s+loop\s+playsinline\s+preload="auto"/.test(workHtml),
-  'corridor, both Rana videos, and ProRok autoplay muted inline with eager local preload'
+  /id="generations-video"[\s\S]*?data-once[\s\S]*?muted\s+playsinline\s+preload="none"/.test(workHtml) &&
+    /id="paina-video"[\s\S]*?data-once[\s\S]*?muted\s+playsinline\s+preload="none"/.test(workHtml) &&
+    /id="rana-studio-video"[\s\S]*?muted\s+loop\s+playsinline\s+preload="none"/.test(workHtml) &&
+    /id="rana-ring-video"[\s\S]*?muted\s+loop\s+playsinline\s+preload="none"/.test(workHtml) &&
+    /id="prorok-ink-video"[\s\S]*?muted\s+loop\s+playsinline\s+preload="none"/.test(workHtml) &&
+    !/id="(?:paina-video|rana-studio-video|rana-ring-video|prorok-ink-video)"[\s\S]{0,260}\bautoplay\b/.test(workHtml),
+  'all motion carriers defer markup loading while Generations is armed immediately by its controller'
+);
+ok(!/id="(?:generations|paina)-video"[\s\S]{0,260}\bloop\b/.test(workHtml), 'Generations and Pā‘ina do not loop');
+ok(!/corridor-motion-video|corridor-entry-loop|layer-corridor/.test(workHtml), 'corridor is absent from Work markup and routing');
+ok(
+  !/blocked-pending-reuse-rights/.test(workHtml) &&
+    workHtml.includes('../assets/work/generations/') &&
+    workHtml.includes('../assets/work/paina/'),
+  'approved portfolio carriers remain isolated behind replaceable project asset boundaries'
 );
 ok(!/src=["']https?:\/\//i.test(workHtml), 'no remote script/media src on work route');
 ok(!/fonts\.gstatic\.com|fonts\.googleapis\.com/i.test(workHtml), 'no external font CDN');
@@ -198,8 +220,8 @@ ok(
 // preflight executes `node work-smoke-test.mjs`; check: native-scale headroom plus no central
 // amber mouth cast; retire when the terminal portrait carrier is replaced.
 ok(
-  /\.terminal-return\s*\{[\s\S]*?object-position\s*:\s*45% 0%[\s\S]*?transform\s*:\s*scale\(calc\(1\.08 - var\(--terminal-hold\) \* \.08\)\)/.test(workHtml),
-  'terminal portrait preserves headroom and settles to native scale'
+  /\.terminal-return\s*\{[\s\S]*?object-fit\s*:\s*contain[\s\S]*?object-position\s*:\s*50% 50%[\s\S]*?transform\s*:\s*none/.test(workHtml),
+  'terminal portrait preserves the complete centered source plate'
 );
 ok(
   /html\[data-motion="off"\] \.terminal-return\s*\{[\s\S]*?transform\s*:\s*scale\(1\)/.test(workHtml),
@@ -210,11 +232,7 @@ ok(
     !workHtml.includes('at 50% 64%, rgba(217,122,58,.32)'),
   'terminal arrival glows do not cross Jarrett mouth and beard'
 );
-ok(
-  /class="scroll-invitation"[\s\S]*?<span>Scroll<\/span>/.test(workHtml) &&
-    /--entry-cue/.test(workHtml),
-  'centered Scroll invitation is mapped to entry progress'
-);
+ok(!/class="scroll-invitation"|--entry-cue/.test(workHtml), 'no Scroll tollbooth precedes the moving Generations encounter');
 ok(
   /\.layer-terminal\s*\{[\s\S]*?--mask-open\s*:\s*max\s*\(\s*0\.001\s*,\s*var\(--terminal-hold\)\s*\)/.test(workHtml),
   'terminal uses spatial mask aperture (not opacity primary)'
@@ -223,11 +241,7 @@ ok(
   !/\.layer-terminal\s*\{[^}]*opacity\s*:\s*var\(--terminal-hold\)/.test(workHtml),
   'terminal layer is not an opacity crossfade'
 );
-ok(
-  /Motion-off snaps to four composed rests/i.test(workHtml) ||
-    (workHtml.includes('terminalHold = 1') && workHtml.includes('terminalHold = 0')),
-  'motion-off includes terminal composed rest'
-);
+ok(/Motion-off snaps to five authored full-screen rests/i.test(workHtml), 'motion-off includes all five composed rests');
 ok(
   !/clip-path\s*:\s*inset\(/.test(workHtml) &&
     !/-webkit-clip-path\s*:\s*inset\(/.test(workHtml) &&
@@ -252,13 +266,15 @@ ok(
   'nonzero mask radius floor on both reveal layers'
 );
 ok(
-  /\.layer-rana\s*\{[\s\S]*?visibility\s*:\s*hidden/.test(workHtml) &&
+  /\.layer-paina\s*\{[\s\S]*?visibility\s*:\s*hidden/.test(workHtml) &&
+    /\.layer-rana\s*\{[\s\S]*?visibility\s*:\s*hidden/.test(workHtml) &&
     /\.layer-prorok\s*\{[\s\S]*?visibility\s*:\s*hidden/.test(workHtml) &&
+    /\.layer-paina\.is-revealing\s*\{\s*visibility\s*:\s*visible\s*\}/.test(workHtml) &&
     /\.layer-rana\.is-revealing\s*\{\s*visibility\s*:\s*visible\s*\}/.test(workHtml) &&
     /\.layer-prorok\.is-revealing\s*\{\s*visibility\s*:\s*visible\s*\}/.test(workHtml) &&
-    /classList\.toggle\s*\(\s*["']is-revealing["']\s*,\s*(?:ranaOpen|prorokOpen)\s*>\s*0\s*\)/.test(workHtml) &&
-    (workHtml.match(/classList\.toggle\s*\(\s*["']is-revealing["']/g) || []).length >= 2,
-  'zero-state reveal gate (visibility + is-revealing class) on both layers'
+    /classList\.toggle\s*\(\s*["']is-revealing["']\s*,\s*painaOpen\s*>\s*0\s*\)/.test(workHtml) &&
+    (workHtml.match(/classList\.toggle\s*\(\s*["']is-revealing["']/g) || []).length >= 3,
+  'zero-state reveal gate holds Pā‘ina plus the inherited Rana and Prorok layers'
 );
 ok(workHtml.includes('scrollbar-width:none') || workHtml.includes('scrollbar-width: none'), 'native scrollbar hidden');
 ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'), 'ProRok night-ink media grade');
@@ -278,7 +294,12 @@ ok(
 // Composition anti-patterns (markup-level)
 ok(!/<iframe\b/i.test(workHtml), 'no iframe embeds');
 ok(!/browser mockup|device frame|carousel|modal preview/i.test(workHtml), 'no mockup/carousel language');
-ok(!/portfolio|case study|design award|award-winning/i.test(workHtml), 'no portfolio jargon');
+ok(!/Selected Work|project\s*0[1-9]|design award|award-winning/i.test(workHtml), 'no portfolio UI labels, project ordinals, or award jargon');
+ok(
+  /params\.get\("identity"\) === "off"/.test(workHtml) &&
+    /html\[data-identity="off"\] \.scene-copy\s*\{\s*display\s*:\s*none !important\s*\}/.test(workHtml),
+  'identity-off control removes every project name, line, and action without changing world geometry'
+);
 
 // Assets present with frozen hashes (updated only when media bytes legitimately change)
 const ranaHashes = {
@@ -294,11 +315,22 @@ for (const [rel, expected] of Object.entries(ranaHashes)) {
 }
 const prorokPortrait = mustExist('demos/dylan-prorok/dylan-portrait.jpg');
 const prorokInk = mustExist('demos/dylan-prorok/sakura-ink-bloom.mp4');
-// Maintained asset: assets/work/corridor-entry-loop.mp4 auto-loads through
-// work/index.html#corridor-motion-video for Work-route visitors. The hash/weight
-// assertions below plus the rendered playback probe are its behavioral check.
-// Retire it only when an owner-approved moving opening replaces this consumer.
-const corridorEntry = mustExist('assets/work/corridor-entry-loop.mp4');
+const foodHashes = {
+  'assets/work/generations/hurricane-fries-desktop-3p6.mp4': 'b3bb00655c631ee328dbb9b153320c5f9aa049fa0335024eec4b1a170b05855d',
+  'assets/work/generations/hurricane-fries-desktop.jpg': '5d08fc59aa446b364693db2b99838f6b4ba15b2053e44d12ea33697c89eac846',
+  'assets/work/generations/hurricane-fries-mobile-3p6.mp4': '83462b27bd7327a2a7d04a46d0890f8126721b4230141820328e8feb766209e6',
+  'assets/work/generations/hurricane-fries-mobile.jpg': 'ff49242954f93e12b9d86e886e441c70df79793b41d027245e1598ef45b2085f',
+  'assets/work/paina/opening-desktop.mp4': 'ed99a05d492e5547b6a8c6b031f8560967cf1a84216e341642e4a73b470030dd',
+  'assets/work/paina/opening-desktop-poster.jpg': 'c3bcae6ab8b434029520d944738d7a79be0b3e21b4806ecd3593153f6da21700',
+  'assets/work/paina/opening-mobile-from-2p4.mp4': 'da23f85e89d36762b6e75c897f493d266fffcd4e43155bece14b5e9a0ff46259',
+  'assets/work/paina/opening-mobile-entry-2p4.jpg': 'c013573d997c4f1770db8cfa5724f13f67f8eb32c2d471d791753dff3bcedc5e',
+  'assets/work/paina/opening-mobile-poster.jpg': '8b3c1b6cc71f7aa9de1f62e0f0ef64e536e8f316371dee8ebd4f802eb460e110',
+};
+for (const [rel, expected] of Object.entries(foodHashes)) {
+  const buf = mustExist(rel);
+  if (buf) ok(sha256(buf) === expected, rel + ' SHA-256');
+}
+ok(!fs.existsSync(path.join(ROOT, 'assets/work/paina/opening-mobile.mp4')), 'unused pre-2.4 Pā‘ina mobile carrier is absent');
 const terminalPortrait = mustExist('assets/golden-arrival/frames/ga-360.webp');
 if (prorokPortrait) {
   ok(sha256(prorokPortrait) === '3c6eb7e4d23aca8e5bcf0784c934346a392d2421f28420699bd681aa99dfc397', 'dylan-portrait.jpg SHA-256');
@@ -306,19 +338,20 @@ if (prorokPortrait) {
 if (prorokInk) {
   ok(sha256(prorokInk) === '6c44c0204d994c3a504feecadd5da0ccf070113a8dbf2bfbee195dc8a4fe523d', 'sakura-ink-bloom.mp4 SHA-256');
 }
-if (corridorEntry) {
-  ok(sha256(corridorEntry) === '9a73d9709618212846ffdee29fd20e541bf16767b3a79b829197ad00e2b963f3', 'corridor-entry-loop.mp4 SHA-256');
-}
 if (terminalPortrait) {
   ok(sha256(terminalPortrait) === '552fba13d339f46bf909735f3b629c5574545fd7626021e7f371d650149bf224', 'ga-360.webp SHA-256');
 }
-// Media weight gate: heavy autoplay pair must stay well under the prior ~14 MB load
+// Media weight gate: Pā‘ina is deferred by scene lifecycle; Generations stays compact at cold load.
 const studioBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/studio-banner.mp4')).size;
 const inkBytes = fs.statSync(path.join(ROOT, 'demos/dylan-prorok/sakura-ink-bloom.mp4')).size;
 const ringBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/ring-alexandrite.mp4')).size;
-const entryBytes = fs.statSync(path.join(ROOT, 'assets/work/corridor-entry-loop.mp4')).size;
-ok(studioBytes + inkBytes + ringBytes + entryBytes < 5_500_000, 'autoplay media under 5.5 MB total');
-ok(entryBytes < 1_200_000, 'corridor-entry-loop under 1.2 MB');
+const generationsDesktopBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/hurricane-fries-desktop-3p6.mp4')).size;
+const generationsMobileBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/hurricane-fries-mobile-3p6.mp4')).size;
+const painaDesktopBytes = fs.statSync(path.join(ROOT, 'assets/work/paina/opening-desktop.mp4')).size;
+const painaMobileBytes = fs.statSync(path.join(ROOT, 'assets/work/paina/opening-mobile-from-2p4.mp4')).size;
+ok(generationsDesktopBytes < 1_500_000, 'Generations desktop cold-load carrier under 1.5 MB');
+ok(generationsMobileBytes < 550_000, 'Generations mobile cold-load carrier under 550 KB');
+ok(generationsDesktopBytes + generationsMobileBytes + painaDesktopBytes + painaMobileBytes < 13_000_000, 'new motion carriers under 13 MB total across both breakpoints');
 ok(studioBytes < 3_500_000, 'studio-banner under 3.5 MB');
 ok(inkBytes < 600_000, 'sakura-ink-bloom under 600 KB');
 // Do not duplicate ProRok binaries under work/
@@ -332,7 +365,7 @@ ok(!/text-transform\s*:\s*uppercase/i.test(workHtml), 'no faux-technical upperca
 ok(!/IBM Plex Mono|--mono\s*:/.test(workHtml), 'no mono register');
 
 // JS parse check for work page inline script (extract and Function-wrap)
-const scripts = [...workHtml.matchAll(/<script(?![^>]*src=)[^>]*>([\s\S]*?)<\/script>/gi)];
+const scripts = [...workHtml.matchAll(/<script(?![^>]*src=)(?![^>]*type=["']application\/ld\+json["'])[^>]*>([\s\S]*?)<\/script>/gi)];
 let parsed = 0;
 for (const m of scripts) {
   const body = m[1].trim();
@@ -429,10 +462,12 @@ ok(
   'hidden scene actions cannot override their parent pointer-event gate'
 );
 ok(
-  /setCopyAccess\(\s*copyRana/.test(workHtml) &&
+  /setCopyAccess\(\s*copyGenerations/.test(workHtml) &&
+    /setCopyAccess\(\s*copyPaina/.test(workHtml) &&
+    /setCopyAccess\(\s*copyRana/.test(workHtml) &&
     /setCopyAccess\(\s*copyProrok/.test(workHtml) &&
     /setCopyAccess\(\s*copyTerminal/.test(workHtml),
-  'all three scene-copy blocks use setCopyAccess'
+  'all five scene-copy blocks use setCopyAccess'
 );
 // Poster alt describes shipped still (hands + gemstones), not a fabricated bench claim
 ok(
@@ -467,7 +502,7 @@ ok(
     'desktop terminal reveal family remains a spatial aperture, not an opacity crossfade'
   );
   ok(
-    /\.layer-rana,\s*\.layer-prorok,\s*\.layer-terminal\s*\{[\s\S]*?(?:-webkit-)?mask(?:-image)?\s*:\s*none/.test(mobileSheet),
+    /\.layer-paina,\s*\.layer-rana,\s*\.layer-prorok,\s*\.layer-terminal\s*\{[\s\S]*?(?:-webkit-)?mask(?:-image)?\s*:\s*none/.test(mobileSheet),
     'mobile terminal rest is a full-bleed plate with no animated mask'
   );
   ok(
@@ -486,14 +521,16 @@ ok(
   );
 
   const motionOffPaint = workHtml.match(
-    /\/\* Motion-off snaps to four composed rests[\s\S]*?terminalHold\s*=\s*1;[\s\S]*?\n    \}/
+    /\/\* Motion-off snaps to five authored full-screen rests[\s\S]*?applySceneValues\(withCopy\(values, copyValuesFromWorld\(values\)\)\)/
   );
   const motionOffSrc = motionOffPaint ? motionOffPaint[0] : '';
   ok(!!motionOffSrc, 'Motion Off composed-rest paint extractable');
   ok(
-    /else if\s*\(\s*p\s*<\s*0\.74\s*\)[\s\S]*?else\s*\{[\s\S]*?terminalHold\s*=\s*1/.test(motionOffSrc) &&
-      /terminalHold\s*=\s*1/.test(motionOffSrc) &&
-      /terminalHold\s*=\s*0/.test(motionOffSrc),
+    /else if\s*\(\s*p\s*<\s*0\.89\s*\)[\s\S]*?else\s*\{[\s\S]*?terminalHold\s*:\s*1/.test(motionOffSrc) &&
+      /generationsHold\s*:\s*1/.test(motionOffSrc) &&
+      /painaHold\s*:\s*1/.test(motionOffSrc) &&
+      /ranaHold\s*:\s*1/.test(motionOffSrc) &&
+      /prorokHold\s*:\s*1/.test(motionOffSrc),
     'Motion Off last rest still assigns terminalHold = 1'
   );
   ok(
@@ -502,55 +539,48 @@ ok(
   );
 }
 
-// Live doorway lightning — structural tripwires (not rendered-pixel proof).
-// Consumer: visitor at /work/ opening with motion on; Codex exercises rendered motion separately.
+// Portfolio lineage — new worlds extend the incumbent compositor rather than replacing it.
 {
-  const corridorLayerMatch = workHtml.match(
-    /id="layer-corridor"[\s\S]*?(?=<div class="layer layer-rana"|id="layer-rana")/
-  );
-  const corridorLayer = corridorLayerMatch ? corridorLayerMatch[0] : '';
-  ok(!!corridorLayer, 'corridor layer markup extractable for lightning checks');
+  const generationsAt = workHtml.indexOf('id="layer-generations"');
+  const painaAt = workHtml.indexOf('id="layer-paina"');
+  const ranaAt = workHtml.indexOf('id="layer-rana"');
+  const prorokAt = workHtml.indexOf('id="layer-prorok"');
+  const terminalAt = workHtml.indexOf('id="layer-terminal"');
   ok(
-    /class="corridor-lightning"/.test(corridorLayer) &&
-      /aria-hidden="true"/.test(corridorLayer.match(/<svg[\s\S]*?class="corridor-lightning"[\s\S]*?>/)?.[0] || corridorLayer) &&
-      /corridor-lightning[\s\S]*?aria-hidden="true"|aria-hidden="true"[\s\S]*?corridor-lightning/.test(corridorLayer),
-    'aria-hidden lightning overlay exists inside corridor layer'
+    generationsAt >= 0 && generationsAt < painaAt && painaAt < ranaAt && ranaAt < prorokAt && prorokAt < terminalAt,
+    'world stack order is Generations → Pā‘ina → Rana → Prorok → process'
   );
   ok(
-    /class="bolt bolt--left"/.test(corridorLayer) && /class="bolt bolt--right"/.test(corridorLayer),
-    'both left and right bolt groups exist'
+    /\.viewport\s*\{[\s\S]*?position\s*:\s*sticky[\s\S]*?height\s*:\s*100svh/.test(workHtml) &&
+      /\.layer\s*\{[\s\S]*?position\s*:\s*absolute[\s\S]*?inset\s*:\s*0/.test(workHtml),
+    'new worlds retain the incumbent sticky viewport and absolute full-screen layer topology'
   );
   ok(
-    (corridorLayer.match(/class="bolt-charge"/g) || []).length >= 2 &&
-      /@keyframes\s+boltChargeTravel/.test(workHtml) &&
-      /stroke-dashoffset/.test(workHtml) &&
-      /stroke-dasharray/.test(workHtml),
-    'charge travel is animated along bolt paths'
+    /\.layer-generations\s*\{[\s\S]*?z-index\s*:\s*1/.test(workHtml) &&
+      /\.layer-paina\s*\{[\s\S]*?z-index\s*:\s*2/.test(workHtml) &&
+      /\.layer-rana\s*\{[\s\S]*?z-index\s*:\s*3/.test(workHtml) &&
+      /\.layer-prorok\s*\{[\s\S]*?z-index\s*:\s*4/.test(workHtml),
+    'new worlds prepend the inherited layer order without changing its topology'
   );
   ok(
-    /attributeName=["']d["']/.test(corridorLayer) &&
-      (corridorLayer.match(/<animate\b[^>]*attributeName=["']d["']/g) || []).length >= 4,
-    'bolt geometry has path-morph motion (not only opacity)'
+    /--paina-core:max\(0\.001,var\(--paina-open\)\)/.test(workHtml.replace(/\s+/g, '')) &&
+      /--paina-join:max\(0\.001,var\(--paina-side\)\)/.test(workHtml.replace(/\s+/g, '')) &&
+      /at 52% 68%/.test(workHtml) &&
+      /mask-composite:add/.test(workHtml),
+    'Pā‘ina reveal grows from merging food-centered lobes rather than a rectangular wipe'
   );
   ok(
-    /html\[data-motion=["']off["']\]\s*\.corridor-lightning\s*\{[\s\S]*?display\s*:\s*none/.test(workHtml),
-    'motion-off disables/hides the animated lightning overlay'
+    !/clip-path\s*:\s*inset\(/.test(workHtml) &&
+      !/grid-template-columns\s*:/.test(workHtml) &&
+      !/class="[^"]*(?:card|panel|mockup|ordinal|eyebrow|kicker|rail)[^"]*"/i.test(
+        (workHtml.match(/id="layer-generations"[\s\S]*?id="layer-rana"/) || [''])[0]
+      ),
+    'food passage contains no inset wipe, split grid, card, panel, portfolio rail, or identity furniture'
   );
   ok(
-    /html\[data-motion=["']off["']\]\s*\.corridor-motion\s*\{\s*display\s*:\s*none/.test(workHtml) &&
-      /corridor-poster|ga-000\.webp/.test(workHtml),
-    'motion-off keeps baked corridor still (poster path remains)'
-  );
-  // Whole-scene flicker falsifier: .corridor-frame must not host a lightning keyframe animation.
-  ok(
-    !/\.corridor-frame\s*\{[^}]*\banimation\s*:/.test(workHtml) &&
-      !/@keyframes\s+[^{]*corridor[^{]*\{[^}]*(opacity|brightness|contrast|filter)/i.test(workHtml),
-    'corridor frame has no whole-scene lightning flicker animation'
-  );
-  ok(
-    /viewBox=["']0 0 1280 720["']/.test(corridorLayer) &&
-      /preserveAspectRatio=["']xMidYMid slice["']/.test(corridorLayer),
-    'lightning overlay is geometry-locked to 1280x720 media cover'
+    /id="generations-video"[\s\S]*?<source media="\(max-width:720px\)"[^>]*hurricane-fries-mobile-3p6\.mp4[\s\S]*?<source media="\(min-width:721px\)"[^>]*hurricane-fries-desktop-3p6\.mp4/.test(workHtml) &&
+      /id="paina-video"[\s\S]*?<source media="\(max-width:720px\)"[^>]*opening-mobile-from-2p4\.mp4[\s\S]*?<source media="\(min-width:721px\)"[^>]*opening-desktop\.mp4/.test(workHtml),
+    'both food worlds carry breakpoint-exclusive desktop and portrait motion sources'
   );
 }
 
@@ -559,9 +589,8 @@ ok(
  * Canonical path: work-smoke-test.mjs
  * Future consumer: Codex closer + every local Work-route revision before adoption.
  * Activation: execute `node work-smoke-test.mjs`
- * Behavioral check: four STILL rests; one-gesture / hidden 8000ms readiness
- * ceiling / 960ms visible atomic-canvas handoff / lock; cold-load warms each
- * beat video; a destination is ready only after each required video has a
+ * Behavioral check: five STILL rests; one-gesture / hidden 8000ms readiness
+ * ceiling / 960ms visible atomic-canvas handoff / lock; a destination is ready only after its required video has a
  * decoded frame; outgoing rest stays painted until that promise resolves;
  * timeout/error/stale tokens cancel without advancing; the visible handoff
  * keeps exactly one authored rest authoritative and cuts on a named phase —
@@ -570,46 +599,48 @@ ok(
  * grammar; landing clears transition state after 960ms; Motion Off
  * immediate; TAU = 0.41. Rejected silhouettes (expanding gem, bottom-up
  * stack, vertical tear, clip-path inset split, cyan/copper veil) stay gone.
- * Retirement: only when the four-rest mobile passage is replaced.
+ * Retirement: only when the five-rest mobile passage is replaced.
  */
 {
   ok(
-    /corridor:\s*0\.04/.test(workHtml) &&
-      /rana:\s*0\.38/.test(workHtml) &&
-      /prorok:\s*0\.70/.test(workHtml) &&
-      /terminal:\s*0\.94/.test(workHtml),
-    'STILL rests remain corridor 0.04, rana 0.38, prorok 0.70, terminal 0.94'
+    /generations:\s*0\.04/.test(workHtml) &&
+      /paina:\s*0\.26/.test(workHtml) &&
+      /rana:\s*0\.566/.test(workHtml) &&
+      /prorok:\s*0\.79/.test(workHtml) &&
+      /process:\s*0\.958/.test(workHtml),
+    'STILL rests are Generations 0.04, Pā‘ina 0.26, Rana 0.566, Prorok 0.79, process 0.958'
   );
   ok(
-    /MOBILE_STOPS\s*=\s*\[[\s\S]*?id:\s*"corridor"[\s\S]*?STILL\.corridor[\s\S]*?id:\s*"rana"[\s\S]*?STILL\.rana[\s\S]*?id:\s*"prorok"[\s\S]*?STILL\.prorok[\s\S]*?id:\s*"invitation"[\s\S]*?STILL\.terminal/.test(workHtml),
-    'mobile stops derive from STILL in Corridor → Rana → ProRok → Invitation order'
+    /MOBILE_STOPS\s*=\s*\[[\s\S]*?id:\s*"generations"[\s\S]*?STILL\.generations[\s\S]*?id:\s*"paina"[\s\S]*?STILL\.paina[\s\S]*?id:\s*"rana"[\s\S]*?STILL\.rana[\s\S]*?id:\s*"prorok"[\s\S]*?STILL\.prorok[\s\S]*?id:\s*"process"[\s\S]*?STILL\.process/.test(workHtml),
+    'mobile stops derive from STILL in Generations → Pā‘ina → Rana → Prorok → process order'
   );
   const workStops = [
-    ['corridor', 0.04],
-    ['rana', 0.38],
-    ['prorok', 0.70],
-    ['invitation', 0.94],
+    ['generations', 0.04],
+    ['paina', 0.26],
+    ['rana', 0.566],
+    ['prorok', 0.79],
+    ['process', 0.958],
   ];
-  ok(workStops.length === 4, 'exactly four authored mobile rests');
+  ok(workStops.length === 5, 'exactly five authored mobile rests');
   const nextWorkStop = (index, direction) => Math.max(0, Math.min(workStops.length - 1, index + Math.sign(direction)));
   const forward = [];
   let stopIndex = 0;
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     stopIndex = nextWorkStop(stopIndex, 1);
     forward.push(workStops[stopIndex][0]);
   }
   ok(
-    JSON.stringify(forward) === JSON.stringify(['rana', 'prorok', 'invitation', 'invitation', 'invitation']),
-    'three forward gestures reach Invitation; further forward stays at Invitation'
+    JSON.stringify(forward) === JSON.stringify(['paina', 'rana', 'prorok', 'process', 'process', 'process']),
+    'four forward gestures reach process; further forward stays at process'
   );
   const reverse = [];
-  for (let i = 0; i < 5; i++) {
+  for (let i = 0; i < 6; i++) {
     stopIndex = nextWorkStop(stopIndex, -1);
     reverse.push(workStops[stopIndex][0]);
   }
   ok(
-    JSON.stringify(reverse) === JSON.stringify(['prorok', 'rana', 'corridor', 'corridor', 'corridor']),
-    'reverse gestures unwind one rest at a time and stay at Corridor'
+    JSON.stringify(reverse) === JSON.stringify(['prorok', 'rana', 'paina', 'generations', 'generations', 'generations']),
+    'reverse gestures unwind one rest at a time and stay at Generations'
   );
 
   ok(
@@ -634,7 +665,7 @@ ok(
   ok(
     workHtml.includes('mobileGlideLocked') &&
       workHtml.includes('mobileWaiting') &&
-      /function mobileNavigationBusy\(\)[\s\S]*?return mobileGlideLocked \|\| mobileWaiting/.test(workHtml) &&
+      /function mobileNavigationBusy\(\)[\s\S]*?return mobileGlideLocked \|\| mobileWaiting \|\| breakpointSwapActive/.test(workHtml) &&
       /function advanceMobileStop\(direction\)[\s\S]*?if \(!isMobile\(\) \|\| mobileNavigationBusy/.test(workHtml) &&
       /function onMobileTouchStart\(e\)[\s\S]*?mobileNavigationBusy/.test(workHtml) &&
       /function onMobileWheel\(e\)[\s\S]*?if \(!mobileNavigationBusy\(\)\) advanceMobileStop/.test(workHtml),
@@ -649,15 +680,61 @@ ok(
     'section lock is gated to the 720px mobile query before any wheel trap'
   );
   ok(
-    /function onMobileViewportChange\(\)[\s\S]*?cancelMobileGlide\(\)/.test(workHtml) &&
-      /mobileMq\.addEventListener\("change", onMobileViewportChange\)/.test(workHtml),
-    'leaving mobile cancels the authored glide and restores ordinary scroll ownership'
+    /function onMobileBreakpointChange\(event\)[\s\S]*?beginBreakpointSwap\(!!event\.matches\)/.test(workHtml) &&
+      /mobileMq\.addEventListener\("change", onMobileBreakpointChange\)/.test(workHtml) &&
+      /function beginBreakpointSwap\(targetMobile\)[\s\S]*?cancelMobileGlide\(\)[\s\S]*?pauseSafe\(generationsVideo\)[\s\S]*?pauseSafe\(painaVideo\)/.test(workHtml) &&
+      /function beginBreakpointSwap[\s\S]*?reloadFoodVideoForBreakpoint\(generationsVideo\)[\s\S]*?reloadFoodVideoForBreakpoint\(painaVideo\)[\s\S]*?requestFoodPosterForBreakpoint\(generationsPoster[\s\S]*?requestFoodPosterForBreakpoint\(painaPoster/.test(workHtml) &&
+      /function reloadFoodVideoForBreakpoint\(video\)[\s\S]*?resetVideoReadinessState\(video\)[\s\S]*?video\.load\(\)/.test(workHtml),
+    'one breakpoint transaction cancels the handoff and concurrently requests both target food representations'
+  );
+  ok(
+    /html\.mobile-plate-active \.mobile-scene-plate,\s*html\.source-swap-active \.mobile-scene-plate\s*\{[\s\S]*?display\s*:\s*block[\s\S]*?opacity\s*:\s*1/.test(workHtml) &&
+      /\.mobile-scene-plate\s*\{[\s\S]*?object-fit\s*:\s*contain[\s\S]*?object-position\s*:\s*50% 50%/.test(workHtml) &&
+      /function beginBreakpointSwap[\s\S]*?breakpointSwapGeneration[\s\S]*?source-swap-active/.test(workHtml) &&
+      /function finishBreakpointSwap\(token, targetMobile, index, targetReady\)[\s\S]*?token !== breakpointSwapGeneration[\s\S]*?clearBreakpointSwapWatch\(\)[\s\S]*?breakpointSwapActive = false/.test(workHtml) &&
+      /function breakpointWorldReady\(video, poster, targetMobile\)[\s\S]*?videoReady \|\| posterReady/.test(workHtml) &&
+      /breakpointSwapTimer = window\.setTimeout\(function \(\)[\s\S]*?finishBreakpointSwap\(token, targetMobile, breakpointSwapStopIndex, false\)/.test(workHtml),
+    'breakpoint swap accepts video OR poster, preserves an undistorted plate, and every deadline resolves the transaction'
+  );
+  {
+    const worldReadySrc = (workHtml.match(/function breakpointWorldReady\(video, poster, targetMobile\) \{[\s\S]*?\n  \}/) || [''])[0];
+    let worldReady;
+    try {
+      worldReady = new Function(
+        'foodVideoMatchesMode',
+        'videoHasRenderableFrame',
+        'foodPosterMatchesMode',
+        'imageHasRenderableFrame',
+        worldReadySrc + '; return breakpointWorldReady;'
+      )(
+        (video) => !!video.correct,
+        (video) => !!video.renderable,
+        (poster) => !!poster.correct,
+        (poster) => !!poster.renderable
+      );
+    } catch (error) {
+      failures.push('breakpointWorldReady parse: ' + error.message);
+    }
+    ok(typeof worldReady === 'function', 'breakpoint world readiness helper is extractable');
+    if (typeof worldReady === 'function') {
+      ok(worldReady({ correct:true, renderable:true }, { correct:true, renderable:false }, true), 'correct decoded video settles despite a missing poster');
+      ok(worldReady({ correct:true, renderable:false }, { correct:true, renderable:true }, true), 'correct decoded poster settles despite a missing video');
+      ok(!worldReady({ correct:true, renderable:false }, { correct:true, renderable:false }, true), 'neither target representation remains pending until the bounded deadline');
+      ok(!worldReady({ correct:false, renderable:true }, { correct:false, renderable:true }, true), 'wrong-mode decoded bytes cannot settle a target mode');
+    }
+  }
+  ok(
+    /breakpointFallbackOwnerIndex = targetReady \? -1 : index/.test(workHtml) &&
+      /function paint\(p\)[\s\S]*?breakpointFallbackActive && !isMobile\(\)[\s\S]*?semanticIndex === breakpointFallbackOwnerIndex[\s\S]*?setMobilePlateActive\(true\)[\s\S]*?completeSceneValuesForRest\(breakpointFallbackOwnerIndex\)[\s\S]*?setMobilePlateActive\(false\)[\s\S]*?completeSceneValuesForRest\(semanticIndex\)/.test(workHtml) &&
+      /function beginBreakpointSwap[\s\S]*?breakpointFallbackActive = false[\s\S]*?breakpointFallbackOwnerIndex = -1/.test(workHtml) &&
+      /function preserveBreakpointPlate[\s\S]*?heldCanvas[\s\S]*?renderMobilePlate\(index, mobileSceneValuesForRest\(index\), source\)/.test(workHtml),
+    'breakpoint fallback is owned by one semantic rest, yields to valid worlds, restores its held plate, and clears on supersession'
   );
 
   ok(
     /function scrollToMobileStopIndex\(index\)[\s\S]*?behavior:\s*"auto"/.test(workHtml) &&
       /function glideScrollTo\(top\)[\s\S]*?if \(!motionOn \|\| Math\.abs\(distance\) < 0\.5\)[\s\S]*?window\.scrollTo\(0, top\)/.test(workHtml),
-    'Motion Off lands on the same four stops immediately without an animated glide'
+    'Motion Off lands on the same five stops immediately without an animated glide'
   );
 
   const desktopCss = workHtml.split(/@media\s*\(\s*max-width\s*:\s*720px\s*\)/)[0];
@@ -697,17 +774,11 @@ ok(
   ok(
     /window\.WORK_PASSAGE = \{[\s\S]*?mobileStopIndex[\s\S]*?mobileGliding[\s\S]*?mobileWaiting[\s\S]*?mobileRequestedStop[\s\S]*?goMobileStop:\s*scrollToMobileStopIndex/.test(workHtml) &&
       /get mobileTransition\(\) \{[\s\S]*?fromIndex[\s\S]*?toIndex[\s\S]*?t:/.test(workHtml) &&
-      /get videoReadiness\(\) \{[\s\S]*?corridor:[\s\S]*?studio:[\s\S]*?ring:[\s\S]*?ink:/.test(workHtml) &&
+      /get videoReadiness\(\) \{[\s\S]*?generations:[\s\S]*?paina:[\s\S]*?studio:[\s\S]*?ring:[\s\S]*?ink:/.test(workHtml) &&
       /readinessMs:\s*MOBILE_READINESS_MS/.test(workHtml),
     'WORK_PASSAGE exposes waiting, requested destination, per-video readiness, and the real navigation function'
   );
-  ok(
-    /mobile section-lock/.test(workHtml) &&
-      /node work-smoke-test\.mjs/.test(workHtml) &&
-      /real-phone recording/.test(workHtml) &&
-      /four-rest mobile passage/.test(workHtml),
-    'maintained-asset comment names the mobile section-lock consumer, focused test, and real-phone recurrence'
-  );
+  ok(fs.existsSync(path.join(ROOT, 'PORTFOLIO-MAINTENANCE.md')), 'portfolio maintenance and test contract lives outside runtime source');
 
   ok(
     /var MOBILE_SECTION_GLIDE_MS = 960/.test(workHtml) &&
@@ -733,21 +804,25 @@ ok(
   const videosForMatch = workHtml.match(/function videosForMobileStop\(id\) \{[\s\S]*?return \[\];\s*\}/);
   ok(!!videosForMatch, 'videosForMobileStop is extractable');
   let videosForMobileStop;
-  const corridorVideo = { id: 'corridor' };
+  const generationsVideo = { id: 'generations', currentSrc: 'http://local/assets/work/generations/hurricane-fries-mobile-3p6.mp4' };
+  const painaVideo = { id: 'paina', currentSrc: 'http://local/assets/work/paina/opening-mobile-from-2p4.mp4' };
   const studioVideo = { id: 'studio' };
   const ringVideo = { id: 'ring' };
   const inkVideo = { id: 'ink' };
+  const generationsPoster = { id: 'generations-poster', currentSrc: 'http://local/assets/work/generations/hurricane-fries-mobile.jpg', complete: true, naturalWidth: 506, naturalHeight: 900 };
+  const painaPoster = { id: 'paina-poster', currentSrc: 'http://local/assets/work/paina/opening-mobile-entry-2p4.jpg', complete: true, naturalWidth: 720, naturalHeight: 1280 };
+  const ringPoster = { id: 'ring-poster', complete: true, naturalWidth: 720, naturalHeight: 720 };
   const prorokPortrait = { id: 'prorok-portrait', complete: true, naturalWidth: 617, naturalHeight: 849 };
   const terminalReturn = { id: 'terminal-return', complete: true, naturalWidth: 1280, naturalHeight: 720 };
   if (videosForMatch) {
     try {
       videosForMobileStop = new Function(
-        'corridorVideo',
-        'studioVideo',
+        'generationsVideo',
+        'painaVideo',
         'ringVideo',
         'inkVideo',
         videosForMatch[0] + '; return videosForMobileStop;'
-      )(corridorVideo, studioVideo, ringVideo, inkVideo);
+      )(generationsVideo, painaVideo, ringVideo, inkVideo);
     } catch (e) {
       failures.push('videosForMobileStop parse: ' + e.message);
     }
@@ -756,53 +831,61 @@ ok(
   if (typeof videosForMobileStop === 'function') {
     const sameRefs = (got, expected) =>
       got.length === expected.length && got.every((video, i) => video === expected[i]);
-    ok(sameRefs(videosForMobileStop('corridor'), [corridorVideo]), 'Corridor destination is the corridor loop');
+    ok(sameRefs(videosForMobileStop('generations'), [generationsVideo]), 'Generations destination is its portrait food carrier');
+    ok(sameRefs(videosForMobileStop('paina'), [painaVideo]), 'Pā‘ina destination is its portrait kitchen carrier');
     ok(sameRefs(videosForMobileStop('rana'), [ringVideo]), 'Rana destination is the single ring carrier');
-    ok(sameRefs(videosForMobileStop('prorok'), [inkVideo]), 'ProRok destination is the ink loop');
-    ok(sameRefs(videosForMobileStop('invitation'), []), 'Invitation destination has no video to force-play');
+    ok(sameRefs(videosForMobileStop('prorok'), [inkVideo]), 'Prorok destination is the ink loop');
+    ok(sameRefs(videosForMobileStop('process'), []), 'process destination has no video to force-play');
 
-    const ids = workStops.map((stop) => stop[0]);
+    const expectedByStop = {
+      generations: [generationsVideo],
+      paina: [painaVideo],
+      rana: [ringVideo],
+      prorok: [inkVideo],
+      process: [],
+    };
     let prewarmBothWays = true;
-    for (let i = 0; i < ids.length - 1; i++) {
-      const forwardDest = videosForMobileStop(ids[i + 1]);
-      const reverseDest = videosForMobileStop(ids[i]);
-      if (ids[i + 1] !== 'invitation' && forwardDest.length === 0) prewarmBothWays = false;
-      if (reverseDest.length === 0) prewarmBothWays = false;
-      const offRouteForward = forwardDest.some((video) => !['corridor', 'studio', 'ring', 'ink'].includes(video.id) ||
-        (ids[i + 1] === 'rana' && video.id === 'ink') ||
-        (ids[i + 1] === 'prorok' && video.id !== 'ink') ||
-        (ids[i + 1] === 'corridor' && video.id !== 'corridor'));
-      const offRouteReverse = reverseDest.some((video) =>
-        (ids[i] === 'rana' && video.id === 'ink') ||
-        (ids[i] === 'prorok' && video.id !== 'ink') ||
-        (ids[i] === 'corridor' && video.id !== 'corridor'));
-      if (offRouteForward || offRouteReverse) prewarmBothWays = false;
+    for (let i = 0; i < workStops.length - 1; i++) {
+      const fromId = workStops[i][0];
+      const toId = workStops[i + 1][0];
+      const forwardDest = videosForMobileStop(toId);
+      const reverseDest = videosForMobileStop(fromId);
+      const expectedForward = expectedByStop[toId];
+      const expectedReverse = expectedByStop[fromId];
+      if (
+        forwardDest.length !== expectedForward.length ||
+        forwardDest.some((video, index) => video !== expectedForward[index]) ||
+        reverseDest.length !== expectedReverse.length ||
+        reverseDest.some((video, index) => video !== expectedReverse[index])
+      ) prewarmBothWays = false;
     }
-    ok(prewarmBothWays, 'forward and reverse each prewarm only the destination rest world');
+    ok(prewarmBothWays, 'forward and reverse each prepare only the destination rest world');
   }
 
-  const requestSrc = (workHtml.match(/function requestMobileVideo\(video\) \{[\s\S]*?\n  \}/) || [''])[0];
+  const requestSrc = (workHtml.match(/function requestMobileVideo\(video, shouldPlay\) \{[\s\S]*?\n  \}/) || [''])[0];
   const prepareSrc = (workHtml.match(/function prepareMobileDestination\(index\) \{[\s\S]*?\n  \}/) || [''])[0];
   const glideSrc = (workHtml.match(/function glideScrollTo\(top\) \{[\s\S]*?\n  \}/) || [''])[0];
   const waitSrc = (workHtml.match(/function waitForMobileDestinationReady\(id, token, onDone\) \{[\s\S]*?\n  \}/) || [''])[0];
   const scrollSrc = (workHtml.match(/function scrollToMobileStopIndex\(index\) \{[\s\S]*?\n  \}/) || [''])[0];
+  const warmSrc = (workHtml.match(/function warmMobileBeatVideos\(\) \{[\s\S]*?\n  \}/) || [''])[0];
   ok(!!requestSrc && !!prepareSrc && !!glideSrc && !!waitSrc && !!scrollSrc, 'request/prepare/wait/glide functions are extractable');
   ok(
     /video\.preload = "auto"/.test(requestSrc) &&
-      /playSafe\(video\)/.test(requestSrc) &&
+      /if \(shouldPlay\) \{\s*playSafe\(video\)/.test(requestSrc) &&
       /requestMobileVideo/.test(prepareSrc) &&
-      /function warmMobileBeatVideos\(\)[\s\S]*?requestMobileVideo\(corridorVideo\)[\s\S]*?requestMobileVideo\(ringVideo\)[\s\S]*?requestMobileVideo\(inkVideo\)/.test(workHtml) &&
-      !/function warmMobileBeatVideos\(\)[\s\S]*?requestMobileVideo\(studioVideo\)/.test(workHtml) &&
+      /requestMobileVideo\(generationsVideo, true\)/.test(warmSrc) &&
+      !/requestMobileVideo\((?:painaVideo|studioVideo|ringVideo|inkVideo)/.test(warmSrc) &&
       /if \(motionOn\) \{[\s\S]*?warmMobileBeatVideos\(\)/.test(workHtml),
-    'cold load warms only the three mobile source videos with preload=auto and a muted play attempt'
+    'cold load requests only Generations before the next destination is chosen'
   );
   ok(
     /addEventListener\("loadeddata"/.test(workHtml) &&
       /addEventListener\("canplay"/.test(workHtml) &&
       /requestVideoFrameCallback/.test(workHtml) &&
       /readyState < 2/.test(workHtml) &&
-      !/addEventListener\("loadedmetadata"/.test(workHtml),
-    'readiness uses loadeddata/canplay, HAVE_CURRENT_DATA, and requestVideoFrameCallback — not loadedmetadata'
+      /opening-mobile-from-2p4\.mp4/.test(workHtml) &&
+      !/seekPainaMobileEntry|PAINA_MOBILE_ENTRY_S|painaVideo\.currentTime\s*=/.test(workHtml),
+    'Pā‘ina match frame is encoded at derivative time zero; runtime seeking and reverse rewinds are absent'
   );
   ok(
     /function scrollToMobileStopIndex\(index\)[\s\S]*?return new Promise/.test(workHtml) &&
@@ -819,8 +902,10 @@ ok(
   );
   ok(
     /function cancelMobileGlide\(\)[\s\S]*?clearMobileDestination\(\)/.test(workHtml) &&
-      /function syncVideos\(p\)[\s\S]*?videoIsPreparedDestination\(corridorVideo\)[\s\S]*?videoIsPreparedDestination\(studioVideo\)[\s\S]*?videoIsPreparedDestination\(ringVideo\)[\s\S]*?videoIsPreparedDestination\(inkVideo\)/.test(workHtml),
-    'prepared destination stays alive during travel; cancel and off-route sync still pause the rest'
+      /function prepareMobileDestination\(index\)[\s\S]*?requestMobileVideo\(videos\[i\], false\)/.test(workHtml) &&
+      /function syncVideos\(p\)[\s\S]*?if \(isActive\(generationsVideo\)\)[\s\S]*?if \(isActive\(painaVideo\)\)[\s\S]*?if \(isActive\(ringVideo\)\)[\s\S]*?if \(isActive\(inkVideo\)\)/.test(workHtml) &&
+      !/videoIsPreparedDestination/.test(workHtml),
+    'destinations decode without pre-play; only the authoritative mobile world plays'
   );
   ok(
     /get mobileDestination\(\) \{ return mobileDestinationId; \}/.test(workHtml),
@@ -850,7 +935,7 @@ ok(
     );
 
     const from = 0.04;
-    const to = 0.38;
+    const to = 0.26;
     const uAt = (frac) => authoredEase(clamp(frac, 0, 1));
     const pAt = (ms) => from + (to - from) * uAt(ms / duration);
     ok(Math.abs(pAt(0) - from) < 1e-9, 'one clock departs from the current rest');
@@ -885,7 +970,7 @@ ok(
     ok(
       /function paint\(p\)[\s\S]*?isMobile\(\) && motionOn && mobileTransition[\s\S]*?paintMobileTransition/.test(workHtml) &&
         /function paint\(p\)[\s\S]*?isMobile\(\) && motionOn[\s\S]*?paintMobileRest/.test(workHtml) &&
-        /function paint\(p\)[\s\S]*?range\(p, MAP\.corridorDark/.test(workHtml),
+        /function paint\(p\)[\s\S]*?sceneValuesFromMap\(p\)/.test(workHtml),
       'Motion On mobile glide paints from the local renderer; desktop still uses global MAP'
     );
     ok(
@@ -922,6 +1007,7 @@ ok(
         !/\.layer\.is-carrier/.test(mobileSheet) &&
         !/\.passage-veil/.test(mobileSheet) &&
         !/--passage-veil/.test(mobileSheet) &&
+        /\.layer-paina\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--paina-open\)/.test(mobileSheet) &&
         /\.layer-rana\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--rana-open\)/.test(mobileSheet) &&
         /\.layer-prorok\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--prorok-open\)/.test(mobileSheet) &&
         /\.layer-terminal\.is-revealing\s*\{[^}]*opacity\s*:\s*var\(--terminal-hold\)/.test(mobileSheet),
@@ -929,23 +1015,23 @@ ok(
     );
     ok(
       /<canvas class="mobile-scene-plate" id="mobile-scene-plate"><\/canvas>/.test(workHtml) &&
-        /\.mobile-scene-plate\s*\{[\s\S]*?z-index\s*:\s*10[\s\S]*?background\s*:\s*var\(--void\)/.test(mobileSheet) &&
+        /\.mobile-scene-plate\s*\{[\s\S]*?z-index\s*:\s*10[\s\S]*?background\s*:\s*var\(--void\)/.test(workHtml) &&
         /html\.mobile-plate-active \.world-stack > \.layer[\s\S]*?visibility\s*:\s*hidden/.test(mobileSheet),
       'mobile recipient sees one opaque canvas while legacy media layers remain hidden below it'
     );
     ok(
-      /function renderMobilePlate\(index, values\)[\s\S]*?composeMobileScene\(index\)[\s\S]*?drawImage\(mobileSceneBuffer, 0, 0\)[\s\S]*?setMobilePlateActive\(true\)/.test(workHtml) &&
-        /values && values\.plateScale/.test(workHtml) &&
-        /values && values\.plateShift/.test(workHtml) &&
+      /function renderMobilePlate\(index, values, sourceOverride\)[\s\S]*?composeMobileScene\(index, sourceOverride\)[\s\S]*?drawImage\(mobileSceneBuffer, 0, 0\)[\s\S]*?setMobilePlateActive\(true\)/.test(workHtml) &&
+        !/mobilePlateCtx\.scale\(/.test(workHtml) &&
+        /function drawMobileContain\(ctx, source\)[\s\S]*?Math\.min\(mobilePlateWidth \/ size\.width, mobilePlateHeight \/ size\.height\)/.test(workHtml) &&
         /html\.mobile-plate-active \.world-stack\s*\{[\s\S]*?transform\s*:\s*none/.test(mobileSheet),
-      'mobile camera is applied inside the atomic canvas without a second transformed compositor plane'
+      'mobile compositor centers a complete source plate without scale or focus motion'
     );
     {
-      const renderSrc = (workHtml.match(/function renderMobilePlate\(index, values\) \{[\s\S]*?\n  \}/) || [''])[0];
-      const composeAt = renderSrc.indexOf('composeMobileScene(index)');
+      const renderSrc = (workHtml.match(/function renderMobilePlate\(index, values, sourceOverride\) \{[\s\S]*?\n  \}/) || [''])[0];
+      const composeAt = renderSrc.indexOf('composeMobileScene(index, sourceOverride)');
       const visibleClearAt = renderSrc.indexOf('mobilePlateCtx.fillRect');
       ok(
-        /if \(!composeMobileScene\(index\)\) return false;/.test(renderSrc) &&
+        /if \(!composeMobileScene\(index, sourceOverride\)\) return false;/.test(renderSrc) &&
           composeAt >= 0 && visibleClearAt > composeAt &&
           /mobileSceneBufferCtx/.test(workHtml) &&
           /mobileMaskBufferCtx/.test(workHtml),
@@ -953,15 +1039,21 @@ ok(
       );
     }
     ok(
-      /\.scene-copy--rana\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-rana\)/.test(mobileSheet) &&
+      /\.scene-copy--generations\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-generations\)/.test(mobileSheet) &&
+        /\.scene-copy--paina\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-paina\)/.test(mobileSheet) &&
+        /\.scene-copy--rana\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-rana\)/.test(mobileSheet) &&
         /\.scene-copy--prorok\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-prorok\)/.test(mobileSheet) &&
         /\.scene-copy--terminal\s*\{[\s\S]*?opacity\s*:\s*var\(--copy-terminal\)/.test(mobileSheet),
       'mobile copy is gated independently of world composition'
     );
     ok(
-      !/\.scene-copy--rana\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
+      !/\.scene-copy--generations\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
+        !/\.scene-copy--paina\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
+        !/\.scene-copy--rana\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
         !/\.scene-copy--prorok\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
         !/\.scene-copy--terminal\s*\{[^}]*filter\s*:\s*blur/.test(mobileSheet) &&
+        /\.scene-copy--generations\s*\{[\s\S]*?filter\s*:\s*none/.test(mobileSheet) &&
+        /\.scene-copy--paina\s*\{[\s\S]*?filter\s*:\s*none/.test(mobileSheet) &&
         /\.scene-copy--rana\s*\{[\s\S]*?filter\s*:\s*none/.test(mobileSheet) &&
         /\.scene-copy--prorok\s*\{[\s\S]*?filter\s*:\s*none/.test(mobileSheet) &&
         /\.scene-copy--terminal\s*\{[\s\S]*?filter\s*:\s*none/.test(mobileSheet),
@@ -1000,14 +1092,14 @@ ok(
       const m = workHtml.match(new RegExp('function ' + name + '\\([^)]*\\) \\{[\\s\\S]*?\\n  \\}'));
       return m ? m[0] : '';
     }
+    const introMatch = workHtml.match(/var INTRO = \{[\s\S]*?\n  \};/);
     const mapMatch = workHtml.match(/var MAP = \{[\s\S]*?\n  \};/);
     const stillMatch = workHtml.match(/var STILL = \{[\s\S]*?\n  \};/);
     const stopsMatch = workHtml.match(/var MOBILE_STOPS = \[[\s\S]*?\];/);
+    const tailDecl = (workHtml.match(/var TAIL_START = [0-9.]+;/) || [''])[0];
     const cutDecl = (workHtml.match(/var MOBILE_CUT_PHASE = [0-9.]+;/) || [''])[0];
     const copyOutDecl = (workHtml.match(/var MOBILE_COPY_OUT_END = [0-9.]+;/) || [''])[0];
     const copyInDecl = (workHtml.match(/var MOBILE_COPY_IN_START = [0-9.]+;/) || [''])[0];
-    const platePushDecl = (workHtml.match(/var MOBILE_PLATE_PUSH = [0-9.]+;/) || [''])[0];
-    const plateShiftDecl = (workHtml.match(/var MOBILE_PLATE_SHIFT = [0-9.]+;/) || [''])[0];
     const parts = [
       extractFunction('clamp'),
       extractFunction('smoothstep'),
@@ -1017,14 +1109,14 @@ ok(
       extractFunction('mobilePairClock'),
       extractFunction('copyValuesFromWorld'),
       extractFunction('withCopy'),
+      tailDecl,
+      introMatch ? introMatch[0] : '',
       mapMatch ? mapMatch[0] : '',
       stillMatch ? stillMatch[0] : '',
       stopsMatch ? stopsMatch[0] : '',
       cutDecl,
       copyOutDecl,
       copyInDecl,
-      platePushDecl,
-      plateShiftDecl,
       extractFunction('sceneValuesFromMap'),
       extractFunction('mobileSceneValuesForRest'),
       extractFunction('mobileCopyWeights'),
@@ -1075,14 +1167,18 @@ ok(
     );
 
     const keys = [
-      'corridorDark',
+      'generationsHold',
+      'painaOpen',
+      'painaSide',
+      'painaHold',
       'ranaOpen',
       'ranaHold',
       'ring',
       'prorokOpen',
       'prorokHold',
       'terminalHold',
-      'entryCue',
+      'copyGenerations',
+      'copyPaina',
       'copyRana',
       'copyProrok',
       'copyTerminal',
@@ -1090,30 +1186,35 @@ ok(
       'plateShift',
     ];
     const worldKeys = [
-      'corridorDark',
+      'generationsHold',
+      'painaOpen',
+      'painaSide',
+      'painaHold',
       'ranaOpen',
       'ranaHold',
       'ring',
       'prorokOpen',
       'prorokHold',
       'terminalHold',
-      'entryCue',
     ];
-    const opacityKeys = ['ranaOpen', 'prorokOpen', 'terminalHold'];
-    const copyKeys = ['copyRana', 'copyProrok', 'copyTerminal'];
+    const opacityKeys = ['painaOpen', 'ranaOpen', 'prorokOpen', 'terminalHold'];
+    const copyKeys = ['copyGenerations', 'copyPaina', 'copyRana', 'copyProrok', 'copyTerminal'];
     const COPY_EPS = 1e-4;
     const dist = (a, b) => Math.sqrt(keys.reduce((sum, key) => sum + ((a[key] || 0) - (b[key] || 0)) ** 2, 0));
     const sameValues = (a, b) => keys.every((key) => Math.abs((a[key] || 0) - (b[key] || 0)) <= 1e-9);
     const sameWorld = (a, b) => worldKeys.every((key) => Math.abs((a[key] || 0) - (b[key] || 0)) <= 1e-9);
     const hasWorld = (v) =>
-      v.entryCue > 0.02 ||
+      v.generationsHold > 0.02 ||
+      v.painaOpen > 0.02 ||
       v.ranaOpen > 0.02 ||
       v.prorokOpen > 0.02 ||
       v.terminalHold > 0.02;
     const copyKeyForStop = (index) => {
-      if (index === 1) return 'copyRana';
-      if (index === 2) return 'copyProrok';
-      if (index === 3) return 'copyTerminal';
+      if (index === 0) return 'copyGenerations';
+      if (index === 1) return 'copyPaina';
+      if (index === 2) return 'copyRana';
+      if (index === 3) return 'copyProrok';
+      if (index === 4) return 'copyTerminal';
       return null;
     };
     const copyValue = (v, index) => {
@@ -1122,9 +1223,10 @@ ok(
     };
     const liveCopyCount = (v) => copyKeys.filter((key) => (v[key] || 0) > COPY_EPS).length;
     const topWorld = (v) => {
-      if (v.terminalHold > 0.5) return 3;
-      if (v.prorokOpen > 0.5) return 2;
-      if (v.ranaOpen > 0.5) return 1;
+      if (v.terminalHold > 0.5) return 4;
+      if (v.prorokOpen > 0.5) return 3;
+      if (v.ranaOpen > 0.5) return 2;
+      if (v.painaOpen > 0.5) return 1;
       return 0;
     };
     const hasFractionalWorldOpacity = (from, to, v) =>
@@ -1147,6 +1249,7 @@ ok(
       [0, 1],
       [1, 2],
       [2, 3],
+      [3, 4],
     ];
     ok(
       typeof MOBILE_CUT_PHASE === 'number' && MOBILE_CUT_PHASE > 0 && MOBILE_CUT_PHASE < 1,
@@ -1160,11 +1263,11 @@ ok(
       'copy exits before the named cut and enters after it'
     );
     if (typeof mobileSceneValuesForTransition === 'function') {
-      const mapAtMidFirst = sceneValuesFromMap(0.04 + (0.38 - 0.04) * 0.5);
+      const mapAtMidFirst = sceneValuesFromMap(0.04 + (0.26 - 0.04) * 0.5);
       const localAtMidFirst = mobileSceneValuesForTransition(0, 1, 0.5);
       ok(
-        mapAtMidFirst.ring < 0.02 && localAtMidFirst.ring > 0.35,
-        'during Motion On glide, visible Rana world is authored by local t, not the global MAP ring window'
+        mapAtMidFirst.painaOpen < 0.25 && localAtMidFirst.painaOpen > 0.9,
+        'during Motion On glide, visible Pā‘ina is authored by local t, not the global intro window'
       );
 
       let endpointsMatch = true;
@@ -1221,13 +1324,7 @@ ok(
           if (t >= MOBILE_CUT_PHASE && copyValue(reverse, toIndex) > COPY_EPS) copyTiming = false;
           if (hasInterstitial(forward) || hasInterstitial(reverse)) noInterstitial = false;
           if (!hasWorld(forward) || !hasWorld(reverse)) worldsPresent = false;
-          if (!cameraCovered(forward) || !cameraCovered(reverse)) cameraContract = false;
-          if (t === 0 || t === 1) {
-            if (!cameraNeutral(forward) || !cameraNeutral(reverse)) cameraContract = false;
-          } else if (t >= 0.2 && t <= 0.8) {
-            if ((forward.plateScale || 1) < 1.012 || Math.abs(forward.plateShift || 0) < 0.25) cameraContract = false;
-            if ((reverse.plateScale || 1) < 1.012 || Math.abs(reverse.plateShift || 0) < 0.25) cameraContract = false;
-          }
+          if (!cameraNeutral(forward) || !cameraNeutral(reverse)) cameraContract = false;
           if (Math.abs((forward.plateScale || 1) - (reverse.plateScale || 1)) > 1e-9) reverseGrammar = false;
           if (Math.abs((forward.plateShift || 0) + (reverse.plateShift || 0)) > 1e-9) reverseGrammar = false;
           const weights = mobileCopyWeights(t);
@@ -1237,10 +1334,15 @@ ok(
       ok(endpointsMatch, 'local t=0 matches the source rest and t=1 matches the destination rest');
       ok(midpointsMoved, 'at t=.25, .50, and .75 every transition has a materially changed visible state');
       ok(worldsPresent, 'no forward or reverse sample leaves all authoritative world layers absent');
-      ok(hasWorld(mobileSceneValuesForRest(0)), 'corridor rest still counts as a world via entry cue');
-      ok(hasWorld(mobileSceneValuesForRest(1)), 'Rana rest still counts as a world');
+      ok(hasWorld(mobileSceneValuesForRest(0)), 'Generations rest counts as a world through its full-screen carrier');
+      ok(hasWorld(mobileSceneValuesForRest(1)), 'Pā‘ina rest counts as a world');
+      ok(hasWorld(mobileSceneValuesForRest(2)), 'Rana rest still counts as a world');
+      ok(hasWorld(mobileSceneValuesForRest(3)), 'Prorok rest still counts as a world');
+      ok(hasWorld(mobileSceneValuesForRest(4)), 'process rest still counts as a world');
       const zeroedRest = Object.assign({}, mobileSceneValuesForRest(1));
       worldKeys.forEach((key) => { zeroedRest[key] = 0; });
+      zeroedRest.copyGenerations = 0;
+      zeroedRest.copyPaina = 0;
       zeroedRest.copyRana = 0;
       zeroedRest.copyProrok = 0;
       zeroedRest.copyTerminal = 0;
@@ -1252,8 +1354,8 @@ ok(
       ok(sourceBeforeCut, 'the outgoing world stays the authoritative plate before the cut');
       ok(oneCopy, 'no sample has more than one copy value above zero');
       ok(copyTiming, 'outgoing copy is zero by the cut and incoming copy is zero before the cut');
-      ok(cameraContract, 'restrained camera motion is neutral at rests and materially non-neutral during each glide');
-      ok(reverseGrammar, 'reverse transitions use the same cut, copy, and mirrored camera grammar as forward');
+      ok(cameraContract, 'complete plate geometry stays neutral at rests and throughout each glide');
+      ok(reverseGrammar, 'reverse transitions preserve the same neutral plate geometry');
 
       ok(typeof mobilePairClock === 'function', 'pair renderer has a local wall-time clock');
       if (typeof mobilePairClock === 'function') {
@@ -1264,113 +1366,128 @@ ok(
         const t250 = mobilePairClock(250 / 960);
         ok(t250 >= 250 / 960 - 1e-12, 'pair clock is not slower than linear wall time at 250ms');
         let early = true;
-        let dead = false;
         for (const [fromIndex, toIndex] of pairs) {
           const origin = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock(0));
           const at250 = mobileSceneValuesForTransition(fromIndex, toIndex, t250);
           if (dist(at250, origin) < 0.12) early = false;
-          for (let ms = 160; ms <= 960; ms += 20) {
-            const a = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock((ms - 160) / 960));
-            const b = mobileSceneValuesForTransition(fromIndex, toIndex, mobilePairClock(ms / 960));
-            if (dist(a, b) < 0.045) dead = true;
-          }
         }
         ok(early, 'every adjacent pair shows authored change by 250ms');
-        ok(!dead, 'no authored dead interval lasts more than 160ms');
+        ok(cameraContract, 'no transition motion is manufactured by cropping or shifting the plate');
       }
     }
   }
 
   const syncMatch = workHtml.match(/function syncVideos\(p\) \{[\s\S]*?\n  \}/);
-  ok(!!syncMatch, 'syncVideos is extractable for destination keep-alive');
+  ok(!!syncMatch, 'syncVideos is extractable for media lifecycle checks');
   if (syncMatch) {
     const played = [];
     const paused = [];
-    const prepared = new Set();
-    try {
-      const syncVideos = new Function(
-        'motionOn',
-        'armVideos',
-        'playSafe',
-        'pauseSafe',
-        'videoIsPreparedDestination',
-        'corridorVideo',
-        'studioVideo',
-        'ringVideo',
-        'inkVideo',
-        'function isMobile(){ return false; }\nfunction videoNeedsHiddenWarm(){ return false; }\n' + syncMatch[0] + '; return syncVideos;'
-      )(
-        true,
-        function armVideos() {},
-        function playSafe(video) { played.push(video.id); },
-        function pauseSafe(video) { paused.push(video.id); },
-        function videoIsPreparedDestination(video) { return prepared.has(video); },
-        corridorVideo,
-        studioVideo,
-        ringVideo,
-        inkVideo
-      );
-      prepared.add(studioVideo);
-      prepared.add(ringVideo);
-      syncVideos(0.04);
-      ok(
-        played.includes('studio') &&
-          played.includes('ring') &&
-          !played.includes('ink') &&
-          paused.includes('ink') &&
-          played.includes('corridor'),
-        'Corridor→Rana prewarm plays Rana media immediately without starting ProRok'
-      );
-      played.length = 0;
-      paused.length = 0;
-      prepared.clear();
-      prepared.add(inkVideo);
-      syncVideos(0.94);
-      ok(
-        played.includes('ink') &&
-          paused.includes('studio') &&
-          paused.includes('ring') &&
-          paused.includes('corridor'),
-        'Invitation→ProRok reverse prewarm wakes ink before the ProRok range'
-      );
+    const syncDesktop = new Function(
+      'motionOn',
+      'armVideos',
+      'playSafe',
+      'pauseSafe',
+      'videoIsPreparedDestination',
+      'generationsVideo',
+      'painaVideo',
+      'studioVideo',
+      'ringVideo',
+      'inkVideo',
+      'breakpointSwapActive',
+      'function isMobile(){ return false; }\n' + syncMatch[0] + '; return syncVideos;'
+    )(
+      true,
+      function armVideos() {},
+      function playSafe(video) { played.push(video.id); },
+      function pauseSafe(video) { paused.push(video.id); },
+      function videoIsPreparedDestination() { return false; },
+      generationsVideo,
+      painaVideo,
+      studioVideo,
+      ringVideo,
+      inkVideo,
+      false
+    );
 
-      const warmSync = new Function(
-        'motionOn',
-        'armVideos',
-        'playSafe',
-        'pauseSafe',
-        'videoIsPreparedDestination',
-        'corridorVideo',
-        'studioVideo',
-        'ringVideo',
-        'inkVideo',
-        'function isMobile(){ return false; }\nfunction videoNeedsHiddenWarm(video){ return video && video.id === "ink"; }\n' +
-          syncMatch[0] +
-          '; return syncVideos;'
-      )(
-        true,
-        function armVideos() {},
-        function playSafe(video) { played.push(video.id); },
-        function pauseSafe(video) { paused.push(video.id); },
-        function videoIsPreparedDestination() { return false; },
-        corridorVideo,
-        studioVideo,
-        ringVideo,
-        inkVideo
-      );
-      played.length = 0;
-      paused.length = 0;
-      warmSync(0.04);
-      ok(played.includes('ink'), 'cold-load warming keeps an unreadied destination video playing while hidden');
-    } catch (e) {
-      failures.push('syncVideos destination keep-alive: ' + e.message);
-    }
+    syncDesktop(0.04);
+    ok(
+      played.includes('generations') &&
+        ['paina', 'studio', 'ring', 'ink'].every((id) => paused.includes(id)),
+      'desktop cold load plays only Generations'
+    );
+    played.length = 0;
+    paused.length = 0;
+    syncDesktop(0.20);
+    ok(
+      played.includes('generations') && played.includes('paina') &&
+        ['studio', 'ring', 'ink'].every((id) => paused.includes(id)),
+      'desktop first handoff pre-rolls Pā‘ina while Generations still contributes'
+    );
+    played.length = 0;
+    paused.length = 0;
+    syncDesktop(0.58);
+    ok(
+      played.includes('studio') && played.includes('ring') &&
+        ['generations', 'paina', 'ink'].every((id) => paused.includes(id)),
+      'desktop inherited Rana media plays only in the Rana range'
+    );
+    played.length = 0;
+    paused.length = 0;
+    syncDesktop(0.80);
+    ok(
+      played.includes('ink') &&
+        ['generations', 'paina', 'studio', 'ring'].every((id) => paused.includes(id)),
+      'desktop inherited Prorok media plays only in the Prorok range'
+    );
+
+    const mobilePlayed = [];
+    const mobilePaused = [];
+    const syncMobile = new Function(
+      'motionOn',
+      'armVideos',
+      'playSafe',
+      'pauseSafe',
+      'generationsVideo',
+      'painaVideo',
+      'studioVideo',
+      'ringVideo',
+      'inkVideo',
+      'breakpointSwapActive',
+      'mobileTransition',
+      'MOBILE_STOPS',
+      'videosForMobileStop',
+      'mobileStopIndexAtProgress',
+      'mobileAuthoritativeIndex',
+      'function isMobile(){ return true; }\n' + syncMatch[0] + '; return syncVideos;'
+    )(
+      true,
+      function armVideos() {},
+      function playSafe(video) { mobilePlayed.push(video.id); },
+      function pauseSafe(video) { mobilePaused.push(video.id); },
+      generationsVideo,
+      painaVideo,
+      studioVideo,
+      ringVideo,
+      inkVideo,
+      false,
+      null,
+      workStops.map((stop) => ({ id: stop[0], progress: stop[1] })),
+      videosForMobileStop,
+      function mobileStopIndexAtProgress() { return 0; },
+      function mobileAuthoritativeIndex() { return 0; }
+    );
+    syncMobile(0.04);
+    ok(
+      mobilePlayed.includes('generations') &&
+        ['paina', 'ring', 'ink', 'studio'].every((id) => mobilePaused.includes(id)),
+      'mobile keeps the complete outgoing Generations rest while prepared Pā‘ina remains paused at time zero'
+    );
   }
 
   ok(
     /function cancelMobileGlide\(\)[\s\S]*?cancelMobileReadiness\(\)/.test(workHtml) &&
       /function applyMotionPreference\([\s\S]*?cancelMobileGlide\(\)/.test(workHtml) &&
-      /function onMobileViewportChange\(\)[\s\S]*?cancelMobileGlide\(\)/.test(workHtml) &&
+      /function beginBreakpointSwap\([\s\S]*?cancelMobileGlide\(\)/.test(workHtml) &&
       /function cancelMobileReadiness\(\)[\s\S]*?mobileRequestGeneration \+= 1/.test(workHtml),
     'Motion Off and viewport change cancel the pending readiness token'
   );
@@ -1408,6 +1525,11 @@ ok(
     'var hiddenFrameCanvas = null;',
     'var hiddenFrameCtx = null;',
     'var mobileReadinessPulse = null;',
+    extractNamedFunction('sourcePathEndsWith'),
+    extractNamedFunction('expectedFoodVideoPath'),
+    extractNamedFunction('expectedFoodPosterPath'),
+    extractNamedFunction('foodVideoMatchesMode'),
+    extractNamedFunction('foodPosterMatchesMode'),
     extractNamedFunction('resetVideoReadinessState'),
     extractNamedFunction('videoIsSameOrigin'),
     extractNamedFunction('getHiddenFrameProbe'),
@@ -1421,6 +1543,9 @@ ok(
     extractNamedFunction('imagesForMobileStop'),
     extractNamedFunction('videoHasRenderableFrame'),
     extractNamedFunction('imageHasRenderableFrame'),
+    extractNamedFunction('imageHasFailed'),
+    extractNamedFunction('destinationRepresentationReady'),
+    extractNamedFunction('destinationRepresentationFailed'),
     extractNamedFunction('mobileDestinationReady'),
     extractNamedFunction('mobileDestinationFailed'),
     extractNamedFunction('mobileReadinessStatus'),
@@ -1456,10 +1581,14 @@ ok(
       probeHiddenVideoFrame,
       resetVideoReadinessState,
     } = new Function(
-      'corridorVideo',
+      'generationsVideo',
+      'painaVideo',
       'studioVideo',
       'ringVideo',
       'inkVideo',
+      'generationsPoster',
+      'painaPoster',
+      'ringPoster',
       'prorokPortrait',
       'terminalReturn',
       'playSafe',
@@ -1468,10 +1597,14 @@ ok(
       readinessParts.join('\n') +
         '; return { videoHasRenderableFrame, mobileDestinationReady, mobileDestinationFailed, mobileReadinessStatus, applyMobileReadinessResult, requestMobileVideo, warmMobileBeatVideos, bindVideoReadiness, probeHiddenVideoFrame, resetVideoReadinessState };'
     )(
-      corridorVideo,
+      generationsVideo,
+      painaVideo,
       studioVideo,
       ringVideo,
       inkVideo,
+      generationsPoster,
+      painaPoster,
+      ringPoster,
       prorokPortrait,
       terminalReturn,
       function playSafe(video) {
@@ -1700,22 +1833,28 @@ ok(
 
     studioVideo.readyState = 2;
     studioVideo.error = null;
+    generationsVideo.readyState = 2;
+    generationsVideo.error = null;
+    painaVideo.readyState = 0;
+    painaVideo.error = null;
     ringVideo.readyState = 0;
     ringVideo.error = null;
     inkVideo.readyState = 2;
     inkVideo.error = null;
-    corridorVideo.readyState = 0;
-    corridorVideo.error = null;
-    ok(!mobileDestinationReady('rana'), 'Rana is not ready before the single ring carrier has a decoded frame');
-    ok(mobileDestinationReady('prorok'), 'ProRok is ready from its ink loop plus loaded portrait');
-    ok(!mobileDestinationReady('corridor'), 'reverse corridor is not ready until its loop has a frame');
-    ok(mobileDestinationReady('invitation'), 'Invitation is ready only when its terminal image is loaded');
+    ok(mobileDestinationReady('generations'), 'Generations is ready from decoded motion or its matching poster');
+    ok(mobileDestinationReady('paina'), 'Pā‘ina is immediately ready from its decoded time-zero match poster while video is cold');
+    ok(mobileDestinationReady('rana'), 'Rana is immediately ready from its decoded matching ring poster while video is cold');
+    ok(mobileDestinationReady('prorok'), 'ProRok is ready from its ink loop or loaded portrait treatment');
+    ok(mobileDestinationReady('process'), 'process is ready only when its terminal image is loaded');
     terminalReturn.complete = false;
-    ok(!mobileDestinationReady('invitation'), 'Invitation cannot cut to an undecoded terminal image');
+    ok(!mobileDestinationReady('process'), 'process cannot cut to an undecoded terminal image');
     terminalReturn.complete = true;
     prorokPortrait.complete = false;
-    ok(!mobileDestinationReady('prorok'), 'ProRok cannot cut to an undecoded portrait image');
+    inkVideo.readyState = 0;
+    ok(!mobileDestinationReady('prorok'), 'ProRok waits only when neither ink motion nor portrait treatment is decoded');
     prorokPortrait.complete = true;
+    inkVideo.readyState = 2;
+    ringPoster.complete = false;
     ringVideo.readyState = 2;
     ok(mobileDestinationReady('rana'), 'Rana becomes ready from the decoded ring carrier');
     studioVideo.requestVideoFrameCallback = function () {};
@@ -1724,64 +1863,86 @@ ok(
     ringVideo.jwSawDataEvent = true;
     delete studioVideo.jwDecodedFrame;
     delete ringVideo.jwDecodedFrame;
-    ok(!mobileDestinationReady('rana'), 'Rana stays pending on an RVFC ring after data events only');
+    ok(!mobileDestinationReady('rana'), 'Rana stays pending when neither its RVFC ring nor poster is decoded');
     ringVideo.jwDecodedFrame = true;
     ok(mobileDestinationReady('rana'), 'Rana is ready after the ring presented-frame callback');
+    ringPoster.complete = true;
     delete studioVideo.requestVideoFrameCallback;
     delete ringVideo.requestVideoFrameCallback;
     delete studioVideo.jwSawDataEvent;
     delete ringVideo.jwSawDataEvent;
     delete studioVideo.jwDecodedFrame;
     delete ringVideo.jwDecodedFrame;
-    corridorVideo.readyState = 2;
-    ok(mobileDestinationReady('corridor'), 'reverse corridor uses the same decoded-frame rule');
+    painaVideo.readyState = 2;
+    ok(mobileDestinationReady('paina'), 'Pā‘ina becomes ready from its decoded portrait carrier');
     ringVideo.error = { code: 4 };
-    ok(mobileDestinationFailed('rana') && !mobileDestinationReady('rana'), 'a Rana media error fails the destination');
+    ok(!mobileDestinationFailed('rana') && mobileDestinationReady('rana'), 'a Rana media error advances immediately through the decoded ring poster');
+    ringPoster.naturalWidth = 0;
+    ok(mobileDestinationFailed('rana') && !mobileDestinationReady('rana'), 'Rana fails only when both motion and matching poster are unavailable');
+    ringPoster.naturalWidth = 720;
     ringVideo.error = null;
+
+    generationsVideo.error = { code: 4 };
+    ok(!mobileDestinationFailed('generations') && mobileDestinationReady('generations'), 'Generations video error advances through its decoded matching poster');
+    generationsVideo.error = null;
+    painaVideo.error = { code: 4 };
+    ok(!mobileDestinationFailed('paina') && mobileDestinationReady('paina'), 'Pā‘ina video error advances through its decoded time-zero poster');
+    painaVideo.error = null;
+    inkVideo.error = { code: 4 };
+    ok(!mobileDestinationFailed('prorok') && mobileDestinationReady('prorok'), 'Prorok video error advances through its decoded portrait treatment');
+    inkVideo.error = null;
 
     const coldStudio = { id: 'studio', readyState: 0, preload: 'metadata', loadCalls: 0, play() { this.played = true; } };
     coldStudio.load = function load() { this.loadCalls += 1; };
-    requestMobileVideo(coldStudio);
+    requestMobileVideo(coldStudio, true);
     ok(
-      coldStudio.preload === 'auto' && coldStudio.loadCalls === 1 && coldStudio.played === true,
-      'requestMobileVideo upgrades preload, loads a cold element, and attempts muted play'
+      coldStudio.preload === 'auto' && coldStudio.loadCalls === 0 && coldStudio.played === true,
+      'requestMobileVideo lets play own the active carrier request without a duplicate load'
     );
 
     playCalls.length = 0;
-    corridorVideo.readyState = 0;
+    generationsVideo.readyState = 0;
+    painaVideo.readyState = 0;
     studioVideo.readyState = 0;
     ringVideo.readyState = 0;
     inkVideo.readyState = 0;
-    corridorVideo.load = function load() { loadCalls.push('corridor'); };
+    generationsVideo.load = function load() { loadCalls.push('generations'); };
+    painaVideo.load = function load() { loadCalls.push('paina'); };
     studioVideo.load = function load() { loadCalls.push('studio'); };
     ringVideo.load = function load() { loadCalls.push('ring'); };
     inkVideo.load = function load() { loadCalls.push('ink'); };
-    corridorVideo.play = function play() {};
+    generationsVideo.play = function play() {};
+    painaVideo.play = function play() {};
     studioVideo.play = function play() {};
     ringVideo.play = function play() {};
     inkVideo.play = function play() {};
     warmMobileBeatVideos();
     ok(
-      ['corridor', 'ring', 'ink'].every((id) => playCalls.includes(id) && loadCalls.includes(id)) &&
-        !playCalls.includes('studio') && !loadCalls.includes('studio'),
-      'cold-load warming requests only the three mobile source videos'
+      playCalls.includes('generations') && !playCalls.includes('paina') &&
+        !loadCalls.includes('generations') && !loadCalls.includes('paina') &&
+        ['studio', 'ring', 'ink'].every((id) => !playCalls.includes(id) && !loadCalls.includes(id)),
+      'cold-load warming requests and plays only Generations'
     );
 
     const restSnapshot = {
       scroll: 12,
+      copyGenerations: 1,
+      copyPaina: 0,
       copyRana: 0,
       copyProrok: 0,
-      corridorDark: 0,
+      generationsHold: 1,
+      painaOpen: 0,
       ranaOpen: 0,
-      rest: 'corridor',
+      rest: 'generations',
     };
     const waitingScene = { ...restSnapshot };
     function startPassage() {
       waitingScene.scroll = 380;
-      waitingScene.copyRana = 1;
-      waitingScene.ranaOpen = 1;
-      waitingScene.corridorDark = 1;
-      waitingScene.rest = 'rana';
+      waitingScene.copyGenerations = 0;
+      waitingScene.copyPaina = 1;
+      waitingScene.generationsHold = 0;
+      waitingScene.painaOpen = 1;
+      waitingScene.rest = 'paina';
     }
     function abortRequest() {
       waitingScene.unlocked = true;
@@ -1796,7 +1957,7 @@ ok(
       ceilingMs: 8000,
     }) === 'ready', 'already-decoded media is ready with no mandatory delay');
     ok(applyMobileReadinessResult('ready', 1, 1, startPassage, abortRequest) === 'started', 'ready-before-transition starts the existing passage');
-    ok(waitingScene.rest === 'rana', 'the visible clock starts only after readiness resolves');
+    ok(waitingScene.rest === 'paina', 'the visible clock starts only after readiness resolves');
 
     Object.assign(waitingScene, restSnapshot);
     delete waitingScene.unlocked;
@@ -1810,9 +1971,12 @@ ok(
     }) === 'pending', 'an unreadied destination stays pending before the 8000ms ceiling');
     ok(
       waitingScene.scroll === restSnapshot.scroll &&
+        waitingScene.copyGenerations === restSnapshot.copyGenerations &&
+        waitingScene.copyPaina === restSnapshot.copyPaina &&
         waitingScene.copyRana === restSnapshot.copyRana &&
         waitingScene.copyProrok === restSnapshot.copyProrok &&
-        waitingScene.corridorDark === restSnapshot.corridorDark &&
+        waitingScene.generationsHold === restSnapshot.generationsHold &&
+        waitingScene.painaOpen === restSnapshot.painaOpen &&
         waitingScene.ranaOpen === restSnapshot.ranaOpen &&
         waitingScene.rest === restSnapshot.rest,
       'waiting leaves the complete outgoing rest unchanged'
@@ -1828,7 +1992,7 @@ ok(
     });
     ok(timeoutStatus === 'timeout', '8000ms without a decoded frame times out');
     ok(applyMobileReadinessResult(timeoutStatus, 1, 1, startPassage, abortRequest) === 'timeout', 'timeout cancels instead of starting the passage');
-    ok(waitingScene.rest === 'corridor' && waitingScene.unlocked === true, 'timeout leaves the outgoing rest intact and unlocks navigation');
+    ok(waitingScene.rest === 'generations' && waitingScene.unlocked === true, 'timeout leaves the outgoing rest intact and unlocks navigation');
 
     delete waitingScene.unlocked;
     const errorStatus = mobileReadinessStatus({
@@ -1841,7 +2005,7 @@ ok(
     });
     ok(errorStatus === 'error', 'a media error is a failed readiness result');
     ok(applyMobileReadinessResult(errorStatus, 1, 1, startPassage, abortRequest) === 'error', 'error cancels the requested move');
-    ok(waitingScene.rest === 'corridor', 'error does not advance to a poster or partial destination');
+    ok(waitingScene.rest === 'generations', 'error does not advance to a poster or partial destination');
 
     let staleStarted = false;
     let staleAborted = false;
