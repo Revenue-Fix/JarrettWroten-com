@@ -111,6 +111,7 @@
   var mobileMaskBufferCtx = null;
   var mobilePlateWidth = 0;
   var mobilePlateHeight = 0;
+  var mobilePlateSafeTop = 0;
   var lastMobileContainGeometry = null;
   var mobilePlateActive = false;
   var breakpointModeMobile = !!mobileMq.matches;
@@ -385,8 +386,8 @@
   function expectedFoodVideoPath(video, mobile) {
     if (video === generationsVideo) {
       return mobile
-        ? "/assets/work/generations/hurricane-fries-mobile-3p6.mp4"
-        : "/assets/work/generations/hurricane-fries-desktop-3p6.mp4";
+        ? "/assets/work/generations/carrier-mobile.mp4"
+        : "/assets/work/generations/carrier-desktop.mp4";
     }
     if (video === painaVideo) {
       return mobile
@@ -399,8 +400,8 @@
   function expectedFoodPosterPath(image, mobile) {
     if (image === generationsPoster) {
       return mobile
-        ? "/assets/work/generations/hurricane-fries-mobile.jpg"
-        : "/assets/work/generations/hurricane-fries-desktop.jpg";
+        ? "/assets/work/generations/carrier-mobile.jpg"
+        : "/assets/work/generations/carrier-desktop.jpg";
     }
     if (image === painaPoster) {
       return mobile
@@ -432,7 +433,7 @@
     return width > 0 && height > 0 ? { width: width, height: height } : null;
   }
 
-  function drawMobileContain(ctx, source) {
+  function drawMobileContain(ctx, source, clearHeader) {
     var size = mobileSourceSize(source);
     if (!ctx || !size) return false;
     var scale = Math.min(mobilePlateWidth / size.width, mobilePlateHeight / size.height);
@@ -440,6 +441,14 @@
     var height = size.height * scale;
     var x = (mobilePlateWidth - width) * .5;
     var y = (mobilePlateHeight - height) * .5;
+    if (clearHeader && y < mobilePlateSafeTop) {
+      var availableHeight = Math.max(1, mobilePlateHeight - mobilePlateSafeTop);
+      scale = Math.min(mobilePlateWidth / size.width, availableHeight / size.height);
+      width = size.width * scale;
+      height = size.height * scale;
+      x = (mobilePlateWidth - width) * .5;
+      y = mobilePlateSafeTop + (availableHeight - height) * .5;
+    }
     lastMobileContainGeometry = {
       sourceWidth: size.width,
       sourceHeight: size.height,
@@ -482,6 +491,10 @@
     var dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
     var width = Math.max(1, Math.round(rect.width * dpr));
     var height = Math.max(1, Math.round(rect.height * dpr));
+    var siteHeader = viewport.querySelector("header");
+    mobilePlateSafeTop = siteHeader
+      ? Math.max(0, Math.round((siteHeader.getBoundingClientRect().bottom - rect.top) * dpr))
+      : Math.round(70 * dpr);
     if (width === mobilePlateWidth && height === mobilePlateHeight) return true;
     mobilePlateWidth = width;
     mobilePlateHeight = height;
@@ -523,7 +536,7 @@
     var source = sourceOverride || mobileSource(generationsVideo, generationsPoster);
     if (!source) return false;
     ctx.filter = "saturate(1.04) contrast(1.04) brightness(.98)";
-    var drawn = drawMobileContain(ctx, source);
+    var drawn = drawMobileContain(ctx, source, true);
     ctx.filter = "none";
     if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
@@ -560,7 +573,7 @@
   }
 
   function drawMobileRanaScene(ctx) {
-    var source = mobileSource(ringVideo, ringPoster);
+    var source = imageHasRenderableFrame(ringPoster) ? ringPoster : null;
     if (!source) return false;
     ctx.filter = "saturate(1.1) contrast(1.06) brightness(1.03)";
     var drawn = drawMobileContain(ctx, source);
@@ -582,7 +595,7 @@
   function drawMobileProrokScene(ctx) {
     var portrait = imageHasRenderableFrame(prorokPortrait) ? prorokPortrait : null;
     if (!portrait) return false;
-    var ink = mobileSource(inkVideo, null);
+    var ink = null;
     if (ink) {
       ctx.filter = "saturate(.9) contrast(1.08) brightness(.72)";
       ctx.globalAlpha = .72;
@@ -859,8 +872,7 @@
   function videosForMobileStop(id) {
     if (id === "generations") return [generationsVideo];
     if (id === "paina") return [painaVideo];
-    if (id === "rana") return [ringVideo];
-    if (id === "prorok") return [inkVideo];
+    if (id === "rana" || id === "prorok") return [];
     /* Process is image-backed; image readiness is checked separately. */
     return [];
   }
@@ -1031,8 +1043,8 @@
   function mobileDestinationReady(id) {
     if (id === "generations") return destinationRepresentationReady(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationReady(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationReady(ringVideo, ringPoster);
-    if (id === "prorok") return destinationRepresentationReady(inkVideo, prorokPortrait);
+    if (id === "rana") return imageHasRenderableFrame(ringPoster);
+    if (id === "prorok") return imageHasRenderableFrame(prorokPortrait);
     if (id === "process") return imageHasRenderableFrame(terminalReturn);
     return false;
   }
@@ -1040,8 +1052,8 @@
   function mobileDestinationFailed(id) {
     if (id === "generations") return destinationRepresentationFailed(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationFailed(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationFailed(ringVideo, ringPoster);
-    if (id === "prorok") return destinationRepresentationFailed(inkVideo, prorokPortrait);
+    if (id === "rana") return imageHasFailed(ringPoster);
+    if (id === "prorok") return imageHasFailed(prorokPortrait);
     if (id === "process") return imageHasFailed(terminalReturn);
     return false;
   }
@@ -1161,22 +1173,17 @@
       if (isActive(painaVideo)) playSafe(painaVideo);
       else pauseSafe(painaVideo);
       pauseSafe(studioVideo);
-      if (isActive(ringVideo)) playSafe(ringVideo);
-      else pauseSafe(ringVideo);
-      if (isActive(inkVideo)) playSafe(inkVideo);
-      else pauseSafe(inkVideo);
+      pauseSafe(ringVideo);
+      pauseSafe(inkVideo);
       return;
     }
     if (p < 0.28) playSafe(generationsVideo);
     else pauseSafe(generationsVideo);
     if (p > 0.08 && p < 0.45) playSafe(painaVideo);
     else pauseSafe(painaVideo);
-    if (p > 0.39 && p < 0.74) playSafe(studioVideo);
-    else pauseSafe(studioVideo);
-    if (p > 0.48 && p < 0.70) playSafe(ringVideo);
-    else pauseSafe(ringVideo);
-    if (p > 0.62 && p < 0.95) playSafe(inkVideo);
-    else pauseSafe(inkVideo);
+    pauseSafe(studioVideo);
+    pauseSafe(ringVideo);
+    pauseSafe(inkVideo);
   }
 
   function isInteractiveOrigin(e) {
@@ -1739,6 +1746,14 @@
   bindVideoReadiness(studioVideo);
   bindVideoReadiness(ringVideo);
   bindVideoReadiness(inkVideo);
+  if (generationsVideo) {
+    generationsVideo.addEventListener("play", function () {
+      root.classList.remove("portfolio-generations-terminal-held");
+    });
+    generationsVideo.addEventListener("ended", function () {
+      root.classList.add("portfolio-generations-terminal-held");
+    });
+  }
   bindImageReadiness(generationsPoster);
   bindImageReadiness(painaPoster);
   bindImageReadiness(ringPoster);

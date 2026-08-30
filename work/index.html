@@ -23,8 +23,8 @@
 {"@context":"https://schema.org","@type":"CollectionPage","name":"Jarrett Wroten Website Portfolio","url":"https://jarrettwroten.com/work/","description":"Conversion-driven website concepts by Jarrett Wroten.","creator":{"@type":"Person","name":"Jarrett Wroten","url":"https://jarrettwroten.com/"},"hasPart":[{"@id":"https://jarrettwroten.com/work/generations-kitchen/"},{"@id":"https://jarrettwroten.com/work/paina-cafe/"},{"@id":"https://jarrettwroten.com/work/rana-levy/"},{"@id":"https://jarrettwroten.com/work/dylan-prorok/"}]}
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
-<link rel="preload" as="image" href="../assets/work/generations/hurricane-fries-desktop.jpg" media="(min-width:721px)">
-<link rel="preload" as="image" href="../assets/work/generations/hurricane-fries-mobile.jpg" media="(max-width:720px)">
+<link rel="preload" as="image" href="../assets/work/generations/carrier-desktop.jpg" media="(min-width:721px)">
+<link rel="preload" as="image" href="../assets/work/generations/carrier-mobile.jpg" media="(max-width:720px)">
 <link rel="preload" as="image" href="../assets/work/paina/opening-mobile-entry-2p4.jpg" media="(max-width:720px)">
 <link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-360.webp">
 <link rel="preload" as="image" href="../assets/work/rana/studio-opening.jpg">
@@ -245,6 +245,22 @@
   }
   .generations-video.is-ready,
   .paina-video.is-ready{opacity:1}
+  .generations-terminal{
+    position:absolute;
+    inset:0;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s linear;
+  }
+  .generations-terminal img{
+    width:100%;
+    height:100%;
+    max-width:none;
+    object-fit:contain;
+    object-position:50% 50%;
+  }
+  html.generations-terminal-held .generations-terminal{opacity:1}
+  html.generations-terminal-held .generations-video{opacity:0 !important}
   .generations-media{
     transform:none;
     filter:saturate(1.04) contrast(1.04) brightness(calc(.98 - (1 - var(--generations-hold)) * .08));
@@ -364,6 +380,9 @@
     transition:opacity .35s var(--ease-enter);
   }
   .media-fill[data-video].is-ready{opacity:1}
+  #rana-studio-video,
+  #rana-ring-video,
+  #prorok-ink-video{display:none !important}
   .rana-studio{
     /* Full-bleed hero — center the subject so desktop and mobile cover crops keep gem + scale cue. */
     object-position:50% 50%;
@@ -702,9 +721,7 @@
   }
   html[data-identity="off"] .scene-copy{display:none !important}
   .scene-copy--generations{
-    opacity:var(--copy-generations);
-    transform:translate3d(0, calc((1 - var(--copy-generations)) * 1.4rem), 0);
-    filter:blur(calc((1 - var(--copy-generations)) * 4px));
+    display:none;
   }
   .scene-copy--paina{
     opacity:var(--copy-paina);
@@ -1027,11 +1044,6 @@
     .layer-rana.is-revealing{opacity:var(--rana-open)}
     .layer-prorok.is-revealing{opacity:var(--prorok-open)}
     .layer-terminal.is-revealing{opacity:var(--terminal-hold)}
-    .scene-copy--generations{
-      opacity:var(--copy-generations);
-      transform:translate3d(0, calc((1 - var(--copy-generations)) * 1.4rem), 0);
-      filter:none;
-    }
     .scene-copy--paina{
       opacity:var(--copy-paina);
       transform:translate3d(0, calc((1 - var(--copy-paina)) * 1.4rem), 0);
@@ -1226,7 +1238,7 @@
       <h1>Generations Kitchen</h1>
       <p>Restaurant Concept</p>
       <p>The concept lets the food lead before the menu.</p>
-      <img class="no-js-poster" src="../assets/work/generations/hurricane-fries-desktop.jpg" alt="Hurricane fries prepared for service at Generations Kitchen." width="1728" height="972">
+      <img class="no-js-poster" src="../assets/work/generations/carrier-desktop.jpg" alt="The Generations Kitchen Poke Bowl scene before it explodes into the first-order carousel." width="1728" height="972">
       <p><a href="https://generations.jarrettwroten.com/">Explore the restaurant concept</a></p>
       <h2>Pā‘ina Café</h2>
       <p>Restaurant Concept</p>
@@ -1261,8 +1273,8 @@
         <div class="layer layer-generations" id="layer-generations">
           <div class="generations-media">
             <picture>
-              <source media="(max-width:720px)" srcset="../assets/work/generations/hurricane-fries-mobile.jpg">
-              <img class="generations-poster" id="generations-poster" src="../assets/work/generations/hurricane-fries-desktop.jpg" alt="" width="1728" height="972" decoding="async" fetchpriority="high">
+              <source media="(max-width:720px)" srcset="../assets/work/generations/carrier-mobile.jpg">
+              <img class="generations-poster" id="generations-poster" src="../assets/work/generations/carrier-desktop.jpg" alt="" width="1728" height="972" decoding="async" fetchpriority="high">
             </picture>
             <video
               class="generations-video"
@@ -1271,9 +1283,13 @@
               data-once
               muted playsinline preload="none"
               width="1728" height="972">
-              <source media="(max-width:720px)" src="../assets/work/generations/hurricane-fries-mobile-3p6.mp4" type="video/mp4">
-              <source media="(min-width:721px)" src="../assets/work/generations/hurricane-fries-desktop-3p6.mp4" type="video/mp4">
+              <source media="(max-width:720px)" src="../assets/work/generations/carrier-mobile.mp4" type="video/mp4">
+              <source media="(min-width:721px)" src="../assets/work/generations/carrier-desktop.mp4" type="video/mp4">
             </video>
+            <picture class="generations-terminal" aria-hidden="true">
+              <source media="(max-width:720px)" srcset="../assets/work/generations/carrier-terminal-mobile.jpg">
+              <img src="../assets/work/generations/carrier-terminal-desktop.jpg" alt="" width="1728" height="972" decoding="async">
+            </picture>
             <div class="generations-wash"></div>
           </div>
         </div>
@@ -1533,6 +1549,7 @@
   var mobileMaskBufferCtx = null;
   var mobilePlateWidth = 0;
   var mobilePlateHeight = 0;
+  var mobilePlateSafeTop = 0;
   var lastMobileContainGeometry = null;
   var mobilePlateActive = false;
   var breakpointModeMobile = !!mobileMq.matches;
@@ -1800,8 +1817,8 @@
   function expectedFoodVideoPath(video, mobile) {
     if (video === generationsVideo) {
       return mobile
-        ? "/assets/work/generations/hurricane-fries-mobile-3p6.mp4"
-        : "/assets/work/generations/hurricane-fries-desktop-3p6.mp4";
+        ? "/assets/work/generations/carrier-mobile.mp4"
+        : "/assets/work/generations/carrier-desktop.mp4";
     }
     if (video === painaVideo) {
       return mobile
@@ -1814,8 +1831,8 @@
   function expectedFoodPosterPath(image, mobile) {
     if (image === generationsPoster) {
       return mobile
-        ? "/assets/work/generations/hurricane-fries-mobile.jpg"
-        : "/assets/work/generations/hurricane-fries-desktop.jpg";
+        ? "/assets/work/generations/carrier-mobile.jpg"
+        : "/assets/work/generations/carrier-desktop.jpg";
     }
     if (image === painaPoster) {
       return mobile
@@ -1847,7 +1864,7 @@
     return width > 0 && height > 0 ? { width: width, height: height } : null;
   }
 
-  function drawMobileContain(ctx, source) {
+  function drawMobileContain(ctx, source, clearHeader) {
     var size = mobileSourceSize(source);
     if (!ctx || !size) return false;
     var scale = Math.min(mobilePlateWidth / size.width, mobilePlateHeight / size.height);
@@ -1855,6 +1872,14 @@
     var height = size.height * scale;
     var x = (mobilePlateWidth - width) * .5;
     var y = (mobilePlateHeight - height) * .5;
+    if (clearHeader && y < mobilePlateSafeTop) {
+      var availableHeight = Math.max(1, mobilePlateHeight - mobilePlateSafeTop);
+      scale = Math.min(mobilePlateWidth / size.width, availableHeight / size.height);
+      width = size.width * scale;
+      height = size.height * scale;
+      x = (mobilePlateWidth - width) * .5;
+      y = mobilePlateSafeTop + (availableHeight - height) * .5;
+    }
     lastMobileContainGeometry = {
       sourceWidth: size.width,
       sourceHeight: size.height,
@@ -1897,6 +1922,10 @@
     var dpr = Math.min(2, Math.max(1, window.devicePixelRatio || 1));
     var width = Math.max(1, Math.round(rect.width * dpr));
     var height = Math.max(1, Math.round(rect.height * dpr));
+    var siteHeader = viewport.querySelector("header");
+    mobilePlateSafeTop = siteHeader
+      ? Math.max(0, Math.round((siteHeader.getBoundingClientRect().bottom - rect.top) * dpr))
+      : Math.round(70 * dpr);
     if (width === mobilePlateWidth && height === mobilePlateHeight) return true;
     mobilePlateWidth = width;
     mobilePlateHeight = height;
@@ -1938,7 +1967,7 @@
     var source = sourceOverride || mobileSource(generationsVideo, generationsPoster);
     if (!source) return false;
     ctx.filter = "saturate(1.04) contrast(1.04) brightness(.98)";
-    var drawn = drawMobileContain(ctx, source);
+    var drawn = drawMobileContain(ctx, source, true);
     ctx.filter = "none";
     if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
@@ -1975,7 +2004,7 @@
   }
 
   function drawMobileRanaScene(ctx) {
-    var source = mobileSource(ringVideo, ringPoster);
+    var source = imageHasRenderableFrame(ringPoster) ? ringPoster : null;
     if (!source) return false;
     ctx.filter = "saturate(1.1) contrast(1.06) brightness(1.03)";
     var drawn = drawMobileContain(ctx, source);
@@ -1997,7 +2026,7 @@
   function drawMobileProrokScene(ctx) {
     var portrait = imageHasRenderableFrame(prorokPortrait) ? prorokPortrait : null;
     if (!portrait) return false;
-    var ink = mobileSource(inkVideo, null);
+    var ink = null;
     if (ink) {
       ctx.filter = "saturate(.9) contrast(1.08) brightness(.72)";
       ctx.globalAlpha = .72;
@@ -2274,8 +2303,7 @@
   function videosForMobileStop(id) {
     if (id === "generations") return [generationsVideo];
     if (id === "paina") return [painaVideo];
-    if (id === "rana") return [ringVideo];
-    if (id === "prorok") return [inkVideo];
+    if (id === "rana" || id === "prorok") return [];
     /* Process is image-backed; image readiness is checked separately. */
     return [];
   }
@@ -2446,8 +2474,8 @@
   function mobileDestinationReady(id) {
     if (id === "generations") return destinationRepresentationReady(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationReady(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationReady(ringVideo, ringPoster);
-    if (id === "prorok") return destinationRepresentationReady(inkVideo, prorokPortrait);
+    if (id === "rana") return imageHasRenderableFrame(ringPoster);
+    if (id === "prorok") return imageHasRenderableFrame(prorokPortrait);
     if (id === "process") return imageHasRenderableFrame(terminalReturn);
     return false;
   }
@@ -2455,8 +2483,8 @@
   function mobileDestinationFailed(id) {
     if (id === "generations") return destinationRepresentationFailed(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationFailed(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationFailed(ringVideo, ringPoster);
-    if (id === "prorok") return destinationRepresentationFailed(inkVideo, prorokPortrait);
+    if (id === "rana") return imageHasFailed(ringPoster);
+    if (id === "prorok") return imageHasFailed(prorokPortrait);
     if (id === "process") return imageHasFailed(terminalReturn);
     return false;
   }
@@ -2576,22 +2604,17 @@
       if (isActive(painaVideo)) playSafe(painaVideo);
       else pauseSafe(painaVideo);
       pauseSafe(studioVideo);
-      if (isActive(ringVideo)) playSafe(ringVideo);
-      else pauseSafe(ringVideo);
-      if (isActive(inkVideo)) playSafe(inkVideo);
-      else pauseSafe(inkVideo);
+      pauseSafe(ringVideo);
+      pauseSafe(inkVideo);
       return;
     }
     if (p < 0.28) playSafe(generationsVideo);
     else pauseSafe(generationsVideo);
     if (p > 0.08 && p < 0.45) playSafe(painaVideo);
     else pauseSafe(painaVideo);
-    if (p > 0.39 && p < 0.74) playSafe(studioVideo);
-    else pauseSafe(studioVideo);
-    if (p > 0.48 && p < 0.70) playSafe(ringVideo);
-    else pauseSafe(ringVideo);
-    if (p > 0.62 && p < 0.95) playSafe(inkVideo);
-    else pauseSafe(inkVideo);
+    pauseSafe(studioVideo);
+    pauseSafe(ringVideo);
+    pauseSafe(inkVideo);
   }
 
   function isInteractiveOrigin(e) {
@@ -3127,6 +3150,14 @@
   bindVideoReadiness(studioVideo);
   bindVideoReadiness(ringVideo);
   bindVideoReadiness(inkVideo);
+  if (generationsVideo) {
+    generationsVideo.addEventListener("play", function () {
+      root.classList.remove("generations-terminal-held");
+    });
+    generationsVideo.addEventListener("ended", function () {
+      root.classList.add("generations-terminal-held");
+    });
+  }
   bindImageReadiness(generationsPoster);
   bindImageReadiness(painaPoster);
   bindImageReadiness(ringPoster);

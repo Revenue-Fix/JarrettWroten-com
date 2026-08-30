@@ -122,6 +122,22 @@
   }
   .portfolio-generations-video.portfolio-is-ready,
   .portfolio-paina-video.portfolio-is-ready{opacity:1}
+  .portfolio-generations-terminal{
+    position:absolute;
+    inset:0;
+    opacity:0;
+    pointer-events:none;
+    transition:opacity .18s linear;
+  }
+  .portfolio-generations-terminal img{
+    width:100%;
+    height:100%;
+    max-width:none;
+    object-fit:contain;
+    object-position:50% 50%;
+  }
+  html.portfolio-generations-terminal-held .portfolio-generations-terminal{opacity:1}
+  html.portfolio-generations-terminal-held .portfolio-generations-video{opacity:0 !important}
   .portfolio-generations-media{
     transform:none;
     filter:saturate(1.04) contrast(1.04) brightness(calc(.98 - (1 - var(--portfolio-generations-hold)) * .08));
@@ -241,6 +257,9 @@
     transition:opacity .35s var(--portfolio-ease-enter);
   }
   .portfolio-media-fill[data-video].portfolio-is-ready{opacity:1}
+  #portfolio-rana-studio-video,
+  #portfolio-rana-ring-video,
+  #portfolio-prorok-ink-video{display:none !important}
   .portfolio-rana-studio{
     /* Full-bleed hero — center the subject so desktop and mobile cover crops keep gem + scale cue. */
     object-position:50% 50%;
@@ -579,9 +598,7 @@
   }
   html[data-portfolio-identity="off"] .portfolio-scene-copy{display:none !important}
   .portfolio-scene-copy--generations{
-    opacity:var(--portfolio-copy-generations);
-    transform:translate3d(0, calc((1 - var(--portfolio-copy-generations)) * 1.4rem), 0);
-    filter:blur(calc((1 - var(--portfolio-copy-generations)) * 4px));
+    display:none;
   }
   .portfolio-scene-copy--paina{
     opacity:var(--portfolio-copy-paina);
@@ -903,11 +920,6 @@
     .portfolio-layer-rana.portfolio-is-revealing{opacity:var(--portfolio-rana-open)}
     .portfolio-layer-prorok.portfolio-is-revealing{opacity:var(--portfolio-prorok-open)}
     .portfolio-layer-terminal.portfolio-is-revealing{opacity:var(--portfolio-terminal-hold)}
-    .portfolio-scene-copy--generations{
-      opacity:var(--portfolio-copy-generations);
-      transform:translate3d(0, calc((1 - var(--portfolio-copy-generations)) * 1.4rem), 0);
-      filter:none;
-    }
     .portfolio-scene-copy--paina{
       opacity:var(--portfolio-copy-paina);
       transform:translate3d(0, calc((1 - var(--portfolio-copy-paina)) * 1.4rem), 0);
