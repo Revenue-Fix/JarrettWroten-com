@@ -385,8 +385,8 @@
   function expectedFoodVideoPath(video, mobile) {
     if (video === generationsVideo) {
       return mobile
-        ? "/assets/work/generations/loco-moco-site-mobile-49849434.mp4"
-        : "/assets/work/generations/loco-moco-site-desktop-3b1c9987.mp4";
+        ? "/assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4"
+        : "/assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4";
     }
     if (video === painaVideo) {
       return mobile
@@ -399,8 +399,8 @@
   function expectedFoodPosterPath(image, mobile) {
     if (image === generationsPoster) {
       return mobile
-        ? "/assets/work/generations/loco-moco-site-mobile-ea703ae1.jpg"
-        : "/assets/work/generations/loco-moco-site-desktop-bf93bac9.jpg";
+        ? "/assets/work/generations/loco-moco-site-mobile-1075c858.jpg"
+        : "/assets/work/generations/loco-moco-site-desktop-df266fa6.jpg";
     }
     if (image === painaPoster) {
       return mobile
@@ -522,21 +522,7 @@
   function drawMobileGenerationsScene(ctx, sourceOverride) {
     var source = sourceOverride || mobileSource(generationsVideo, generationsPoster);
     if (!source) return false;
-    ctx.filter = "saturate(1.04) contrast(1.04) brightness(.98)";
-    var drawn = drawMobileContain(ctx, source);
-    ctx.filter = "none";
-    if (!drawn) return false;
-    fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
-      [0, "rgba(8,6,4,.12)"],
-      [.5, "rgba(8,6,4,0)"],
-      [1, "rgba(8,6,4,.66)"]
-    ]);
-    fillMobileLinearGradient(ctx, 0, 0, mobilePlateWidth, 0, [
-      [0, "rgba(8,6,4,.34)"],
-      [.62, "rgba(8,6,4,0)"],
-      [1, "rgba(8,6,4,.08)"]
-    ]);
-    return true;
+    return drawMobileContain(ctx, source);
   }
 
   function drawMobilePainaScene(ctx, sourceOverride) {
@@ -1177,6 +1163,33 @@
     pauseSafe(inkVideo);
   }
 
+  function syncGenerationsHumanBeat() {
+    var t = generationsVideo ? generationsVideo.currentTime || 0 : 0;
+    var active = !!(
+      generationsVideo && motionOn && !isMobile() && !generationsVideo.paused &&
+      t >= 0.2 && t < 1.9
+    );
+    root.classList.toggle("portfolio-generations-human-beat", active);
+  }
+
+  var generationsHumanBeatFrame = 0;
+  function queueGenerationsHumanBeatFrame() {
+    if (
+      generationsHumanBeatFrame || !generationsVideo || generationsVideo.paused ||
+      !motionOn || isMobile() || typeof generationsVideo.requestVideoFrameCallback !== "function"
+    ) return;
+    generationsHumanBeatFrame = generationsVideo.requestVideoFrameCallback(function () {
+      generationsHumanBeatFrame = 0;
+      syncGenerationsHumanBeat();
+      queueGenerationsHumanBeatFrame();
+    });
+  }
+  function stopGenerationsHumanBeatFrame() {
+    if (!generationsHumanBeatFrame || typeof generationsVideo.cancelVideoFrameCallback !== "function") return;
+    try { generationsVideo.cancelVideoFrameCallback(generationsHumanBeatFrame); } catch (error) {}
+    generationsHumanBeatFrame = 0;
+  }
+
   function isInteractiveOrigin(e) {
     var t = e && e.target;
     if (!t) return false;
@@ -1692,6 +1705,24 @@
   window.addEventListener("jw-motion-change", function (event) {
     if (!event.detail || event.detail.source === "portfolio") return;
     if (motionOn !== !!event.detail.on) applyMotionPreference(!!event.detail.on, false);
+  });
+
+  ["playing", "timeupdate", "seeked"].forEach(function (type) {
+    generationsVideo.addEventListener(type, function () {
+      syncGenerationsHumanBeat();
+      queueGenerationsHumanBeatFrame();
+    });
+  });
+  ["pause", "ended", "emptied"].forEach(function (type) {
+    generationsVideo.addEventListener(type, function () {
+      stopGenerationsHumanBeatFrame();
+      syncGenerationsHumanBeat();
+    });
+  });
+  window.addEventListener("resize", function () {
+    syncGenerationsHumanBeat();
+    if (isMobile()) stopGenerationsHumanBeatFrame();
+    else queueGenerationsHumanBeatFrame();
   });
 
   window.addEventListener("scroll", function () {

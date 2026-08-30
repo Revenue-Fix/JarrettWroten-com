@@ -168,11 +168,27 @@ ok(
   'no outward route renders a Motion On or Off button'
 );
 ok(
-  root.includes('loco-moco-site-desktop-3b1c9987.mp4') &&
-    root.includes('loco-moco-site-mobile-49849434.mp4') &&
-    work.includes('loco-moco-site-desktop-3b1c9987.mp4') &&
-    work.includes('loco-moco-site-mobile-49849434.mp4'),
-  'root and Work use the responsive Loco Moco website scene'
+  root.includes('loco-moco-site-desktop-a3073c1c.mp4') &&
+    root.includes('loco-moco-site-mobile-1f14c4e8.mp4') &&
+    work.includes('loco-moco-site-desktop-a3073c1c.mp4') &&
+    work.includes('loco-moco-site-mobile-1f14c4e8.mp4'),
+  'root and Work use the responsive high-quality Loco Moco website scene'
+);
+ok(
+  !portfolioCss.includes('.portfolio-generations-wash') &&
+    !portfolioCss.includes('filter:saturate(1.04) contrast(1.04)') &&
+    !root.includes('class="portfolio-generations-wash"') &&
+    !work.includes('class="generations-wash"') &&
+    !/function drawMobileGenerationsScene\(ctx, sourceOverride\) \{[^}]*ctx\.filter/.test(portfolioJs),
+  'Generations renders without the portfolio-added grade, wash, or mobile canvas filter'
+);
+ok(
+  portfolioCss.includes('html.portfolio-generations-human-beat .portfolio-scene-copy--generations') &&
+    portfolioJs.includes('t >= 0.2 && t < 1.9') &&
+    portfolioJs.includes('portfolio-generations-human-beat') &&
+    work.includes('html.generations-human-beat .scene-copy--generations') &&
+    work.includes('root.classList.toggle("generations-human-beat", active)'),
+  'duplicate portfolio copy yields during the extended human beat without grading the footage'
 );
 ok((work.match(/href="\.\.\/#process-journey"/g) || []).length === 2, 'scripted and no-JS Work terminal actions target homepage Process Arrival');
 ok(portfolioJs.includes('function glideToProcessArrival()') && portfolioJs.includes('current === MOBILE_STOPS.length - 1'), 'homepage mobile terminal has an explicit forward Process boundary');

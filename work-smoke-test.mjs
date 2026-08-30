@@ -172,8 +172,8 @@ if (noJsMatch) {
 }
 
 // Media wiring — local only, real posters, ambient video attrs
-ok(workHtml.includes('../assets/work/generations/loco-moco-site-desktop-3b1c9987.mp4'), 'Generations desktop Loco Moco motion path');
-ok(workHtml.includes('../assets/work/generations/loco-moco-site-mobile-49849434.mp4'), 'Generations mobile Loco Moco motion path');
+ok(workHtml.includes('../assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4'), 'Generations desktop high-quality Loco Moco motion path');
+ok(workHtml.includes('../assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4'), 'Generations mobile high-quality Loco Moco motion path');
 ok(workHtml.includes('../assets/work/paina/opening-desktop.mp4'), 'Pā‘ina desktop motion path');
 ok(workHtml.includes('../assets/work/paina/opening-mobile-from-2p4.mp4'), 'Pā‘ina mobile motion path begins at the authored match frame');
 ok(workHtml.includes('../assets/work/paina/opening-mobile-entry-2p4.jpg'), 'Pā‘ina mobile match-cut frame');
@@ -207,6 +207,18 @@ ok(
 );
 ok(!/src=["']https?:\/\//i.test(workHtml), 'no remote script/media src on work route');
 ok(!/fonts\.gstatic\.com|fonts\.googleapis\.com/i.test(workHtml), 'no external font CDN');
+ok(
+  !workHtml.includes('class="generations-wash"') &&
+    !workHtml.includes('.generations-wash{') &&
+    !workHtml.includes('filter:saturate(1.04) contrast(1.04) brightness(calc(.98') &&
+    /function drawMobileGenerationsScene\(ctx, sourceOverride\) \{[\s\S]*?return drawMobileContain\(ctx, source\);\s*\}/.test(workHtml),
+  'Generations uses the source pixels without the portfolio grade, wash, or canvas gradients'
+);
+ok(
+  workHtml.includes('html.generations-human-beat .scene-copy--generations') &&
+    /function syncGenerationsHumanBeat\(\)[\s\S]*?t >= 0\.2 && t < 1\.9[\s\S]*?root\.classList\.toggle\("generations-human-beat", active\)/.test(workHtml),
+  'duplicate portfolio copy yields for the extended desktop human beat'
+);
 
 // Motion contract + terminal rest mapping
 ok(workHtml.includes('jw-motion') && workHtml.includes('data-motion'), 'motion preference wiring');
@@ -329,10 +341,10 @@ const foodHashes = {
   'assets/work/generations/hurricane-fries-desktop.jpg': '5d08fc59aa446b364693db2b99838f6b4ba15b2053e44d12ea33697c89eac846',
   'assets/work/generations/hurricane-fries-mobile-3p6.mp4': '83462b27bd7327a2a7d04a46d0890f8126721b4230141820328e8feb766209e6',
   'assets/work/generations/hurricane-fries-mobile.jpg': 'ff49242954f93e12b9d86e886e441c70df79793b41d027245e1598ef45b2085f',
-  'assets/work/generations/loco-moco-site-desktop-3b1c9987.mp4': '3b1c998792ce7b007fe77f8bb70b2bad69b131c5754580576c854c5a0da51f80',
-  'assets/work/generations/loco-moco-site-desktop-bf93bac9.jpg': 'bf93bac944cea4faab2230ed3eb8a8dc8b9ebe1e3f822449ae86f8d1b32abc99',
-  'assets/work/generations/loco-moco-site-mobile-49849434.mp4': '4984943424fc1b1da85e9179e09b9caeb1712fca06c2b4628ec319e82a77681b',
-  'assets/work/generations/loco-moco-site-mobile-ea703ae1.jpg': 'ea703ae1258ed4297db406267b45f92cd461c0bd895e8f6d87e6c3bddb4ccef4',
+  'assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4': 'a3073c1c9dd9261ddc782a42f72a730eac5cd465d380941838896b78b6bc9f85',
+  'assets/work/generations/loco-moco-site-desktop-df266fa6.jpg': 'df266fa655b9da4e20eb53d3bd4e60d4fff8927022aea4016b58f967de863492',
+  'assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4': '1f14c4e834b572473d36df01900c2c4f5b826208e98c89b140e1a771af761104',
+  'assets/work/generations/loco-moco-site-mobile-1075c858.jpg': '1075c8580d17b1ce7dbf623390a06df053c4a029b68c0b4a5b003cb8980a7fcc',
   'assets/work/paina/opening-desktop.mp4': 'ed99a05d492e5547b6a8c6b031f8560967cf1a84216e341642e4a73b470030dd',
   'assets/work/paina/opening-desktop-poster.jpg': 'c3bcae6ab8b434029520d944738d7a79be0b3e21b4806ecd3593153f6da21700',
   'assets/work/paina/opening-mobile-from-2p4.mp4': 'da23f85e89d36762b6e75c897f493d266fffcd4e43155bece14b5e9a0ff46259',
@@ -343,6 +355,12 @@ for (const [rel, expected] of Object.entries(foodHashes)) {
   const buf = mustExist(rel);
   if (buf) ok(sha256(buf) === expected, rel + ' SHA-256');
 }
+for (const retired of [
+  'assets/work/generations/loco-moco-site-desktop-3b1c9987.mp4',
+  'assets/work/generations/loco-moco-site-desktop-bf93bac9.jpg',
+  'assets/work/generations/loco-moco-site-mobile-49849434.mp4',
+  'assets/work/generations/loco-moco-site-mobile-ea703ae1.jpg',
+]) ok(!fs.existsSync(path.join(ROOT, retired)), 'retired lower-quality carrier is absent: ' + retired);
 ok(!fs.existsSync(path.join(ROOT, 'assets/work/paina/opening-mobile.mp4')), 'unused pre-2.4 Pā‘ina mobile carrier is absent');
 const terminalPortrait = mustExist('assets/golden-arrival/frames/ga-360.webp');
 if (prorokPortrait) {
@@ -358,13 +376,13 @@ if (terminalPortrait) {
 const studioBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/studio-banner.mp4')).size;
 const inkBytes = fs.statSync(path.join(ROOT, 'demos/dylan-prorok/sakura-ink-bloom.mp4')).size;
 const ringBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/ring-alexandrite.mp4')).size;
-const generationsDesktopBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/loco-moco-site-desktop-3b1c9987.mp4')).size;
-const generationsMobileBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/loco-moco-site-mobile-49849434.mp4')).size;
+const generationsDesktopBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4')).size;
+const generationsMobileBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4')).size;
 const painaDesktopBytes = fs.statSync(path.join(ROOT, 'assets/work/paina/opening-desktop.mp4')).size;
 const painaMobileBytes = fs.statSync(path.join(ROOT, 'assets/work/paina/opening-mobile-from-2p4.mp4')).size;
-ok(generationsDesktopBytes < 1_800_000, 'Generations desktop Loco Moco carrier under 1.8 MB');
-ok(generationsMobileBytes < 300_000, 'Generations mobile Loco Moco carrier under 300 KB');
-ok(generationsDesktopBytes + generationsMobileBytes + painaDesktopBytes + painaMobileBytes < 13_000_000, 'new motion carriers under 13 MB total across both breakpoints');
+ok(generationsDesktopBytes < 4_900_000, 'Generations native-1080p Loco Moco carrier under 4.9 MB');
+ok(generationsMobileBytes < 900_000, 'Generations high-quality portrait Loco Moco carrier under 900 KB');
+ok(generationsDesktopBytes + generationsMobileBytes + painaDesktopBytes + painaMobileBytes < 17_000_000, 'new motion carriers under 17 MB total across both breakpoints');
 ok(studioBytes < 3_500_000, 'studio-banner under 3.5 MB');
 ok(inkBytes < 600_000, 'sakura-ink-bloom under 600 KB');
 // Do not duplicate ProRok binaries under work/
@@ -591,7 +609,7 @@ ok(
     'food passage contains no inset wipe, split grid, card, panel, portfolio rail, or identity furniture'
   );
   ok(
-    /id="generations-video"[\s\S]*?<source media="\(max-width:720px\)"[^>]*loco-moco-site-mobile-49849434\.mp4[\s\S]*?<source media="\(min-width:721px\)"[^>]*loco-moco-site-desktop-3b1c9987\.mp4/.test(workHtml) &&
+    /id="generations-video"[\s\S]*?<source media="\(max-width:720px\)"[^>]*loco-moco-site-mobile-1f14c4e8\.mp4[\s\S]*?<source media="\(min-width:721px\)"[^>]*loco-moco-site-desktop-a3073c1c\.mp4/.test(workHtml) &&
       /id="paina-video"[\s\S]*?<source media="\(max-width:720px\)"[^>]*opening-mobile-from-2p4\.mp4[\s\S]*?<source media="\(min-width:721px\)"[^>]*opening-desktop\.mp4/.test(workHtml),
     'both food worlds carry breakpoint-exclusive desktop and portrait motion sources'
   );
@@ -817,12 +835,12 @@ ok(
   const videosForMatch = workHtml.match(/function videosForMobileStop\(id\) \{[\s\S]*?return \[\];\s*\}/);
   ok(!!videosForMatch, 'videosForMobileStop is extractable');
   let videosForMobileStop;
-  const generationsVideo = { id: 'generations', currentSrc: 'http://local/assets/work/generations/loco-moco-site-mobile-49849434.mp4' };
+  const generationsVideo = { id: 'generations', currentSrc: 'http://local/assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4' };
   const painaVideo = { id: 'paina', currentSrc: 'http://local/assets/work/paina/opening-mobile-from-2p4.mp4' };
   const studioVideo = { id: 'studio' };
   const ringVideo = { id: 'ring' };
   const inkVideo = { id: 'ink' };
-  const generationsPoster = { id: 'generations-poster', currentSrc: 'http://local/assets/work/generations/loco-moco-site-mobile-ea703ae1.jpg', complete: true, naturalWidth: 720, naturalHeight: 1280 };
+  const generationsPoster = { id: 'generations-poster', currentSrc: 'http://local/assets/work/generations/loco-moco-site-mobile-1075c858.jpg', complete: true, naturalWidth: 720, naturalHeight: 1280 };
   const painaPoster = { id: 'paina-poster', currentSrc: 'http://local/assets/work/paina/opening-mobile-entry-2p4.jpg', complete: true, naturalWidth: 720, naturalHeight: 1280 };
   const ringPoster = { id: 'ring-poster', complete: true, naturalWidth: 720, naturalHeight: 720 };
   const prorokPortrait = { id: 'prorok-portrait', complete: true, naturalWidth: 617, naturalHeight: 849 };

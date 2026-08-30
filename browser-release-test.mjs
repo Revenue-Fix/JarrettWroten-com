@@ -257,14 +257,54 @@ async function readPassageMotion(page, route) {
     visibleCopy: [...document.querySelectorAll('.portfolio-scene-copy')].filter((el) => Number(getComputedStyle(el).opacity) > .05).map((el) => el.id),
   }));
   check(cold.processActivated === false, 'desktop cold load leaves process inactive');
-  check(cold.visibleCopy.length === 1 && cold.visibleCopy[0] === 'portfolio-copy-generations', 'desktop cold load shows only Generations copy');
+  check(cold.visibleCopy.every((id) => id === 'portfolio-copy-generations'), 'desktop cold load never exposes competing project copy');
   const coldResources = await page.evaluate(() => {
     const entries = performance.getEntriesByType('resource').filter((entry) => /\.(?:mp4|jpe?g|png|webp)(?:$|\?)/i.test(entry.name));
     return { paths: entries.map((entry) => new URL(entry.name).pathname), bytes: entries.reduce((sum, entry) => sum + (entry.transferSize || 0), 0) };
   });
   const downstreamVideo = /opening-desktop\.mp4|studio-banner\.mp4|ring-alexandrite\.mp4|sakura-ink-bloom\.mp4/;
   check(!coldResources.paths.some((item) => downstreamVideo.test(item)), 'desktop cold load requests no downstream project video');
-  check(coldResources.bytes <= 2500000, 'desktop cold media transfer stays within 2.5 MB');
+  check(coldResources.bytes <= 5800000, 'desktop native-1080p cold media transfer stays within 5.8 MB');
+  const generationsQuality = await page.evaluate(() => {
+    const video = document.getElementById('portfolio-generations-video');
+    const media = document.querySelector('.portfolio-generations-media');
+    const grain = document.querySelector('.portfolio-grain');
+    return {
+      width: video.videoWidth,
+      height: video.videoHeight,
+      duration: video.duration,
+      source: video.currentSrc,
+      mediaFilter: getComputedStyle(media).filter,
+      washCount: document.querySelectorAll('.portfolio-generations-wash').length,
+      grainOpacity: Number(getComputedStyle(grain).opacity),
+    };
+  });
+  check(
+    generationsQuality.width === 1920 && generationsQuality.height === 1080 && generationsQuality.duration > 5.3,
+    'desktop Generations uses the native-1080p extended-girl carrier'
+  );
+  check(
+    generationsQuality.mediaFilter === 'none' && generationsQuality.washCount === 0 && generationsQuality.grainOpacity < .01,
+    'desktop Generations source pixels have no portfolio grade, wash, or grain at rest'
+  );
+  await page.waitForFunction(() => {
+    const t = document.getElementById('portfolio-generations-video')?.currentTime || 0;
+    return t >= .55 && t <= 1.65;
+  });
+  const humanBeat = await page.evaluate(() => ({
+    active: document.documentElement.classList.contains('portfolio-generations-human-beat'),
+    copyOpacity: Number(getComputedStyle(document.querySelector('.portfolio-scene-copy--generations')).opacity),
+  }));
+  check(humanBeat.active && humanBeat.copyOpacity < .01, 'desktop extended girl beat is clean of duplicate portfolio copy');
+  await page.waitForFunction(() => {
+    const t = document.getElementById('portfolio-generations-video')?.currentTime || 0;
+    return t >= 2.05 && t <= 2.8;
+  });
+  const foodBeat = await page.evaluate(() => ({
+    active: document.documentElement.classList.contains('portfolio-generations-human-beat'),
+    copyOpacity: Number(getComputedStyle(document.querySelector('.portfolio-scene-copy--generations')).opacity),
+  }));
+  check(!foodBeat.active && foodBeat.copyOpacity > .9, 'desktop portfolio copy returns over the darker food beat');
 
   const desktopFraming = await page.evaluate(() => {
     const ids = [
@@ -297,7 +337,19 @@ async function readPassageMotion(page, route) {
   }
   for (const [name, progress] of stops) {
     await page.evaluate((top) => window.scrollTo(0, top), portfolioGeometry.top + portfolioGeometry.total * progress);
-    await page.waitForTimeout(1500);
+    await page.waitForFunction(
+      (target) => Math.abs((window.ROOT_PORTFOLIO_PASSAGE?.progress || 0) - target) < .01,
+      progress,
+      { timeout: 5000 }
+    );
+    if (name === 'generations') {
+      await page.waitForFunction(() => {
+        const video = document.getElementById('portfolio-generations-video');
+        return !document.documentElement.classList.contains('portfolio-generations-human-beat') &&
+          video && video.currentTime >= 2.05 && video.currentTime <= 4.9;
+      }, null, { timeout: 6000 });
+    }
+    await page.waitForTimeout(120);
     const state = await page.evaluate(() => ({
       progress: window.ROOT_PORTFOLIO_PASSAGE.progress,
       visibleCopy: [...document.querySelectorAll('.portfolio-scene-copy')].filter((el) => Number(getComputedStyle(el).opacity) > .05).map((el) => el.id),
@@ -372,7 +424,7 @@ async function readPassageMotion(page, route) {
   }));
   check(reverse.y < 2 && reverse.progress < .02 && reverse.processPaused, 'desktop reverse walk returns to cold Generations and pauses Process');
   check(errors.length === 0, 'desktop continuous root walk has no browser errors');
-  report.root = { cold, coldResources, desktopFraming, forward, processStart, processEnd, reverse, errors, requestCount: requests.length };
+  report.root = { cold, coldResources, generationsQuality, humanBeat, foodBeat, desktopFraming, forward, processStart, processEnd, reverse, errors, requestCount: requests.length };
   await page.close();
   const generatedVideo = await video.path();
   const finalVideo = path.join(EVIDENCE, 'root-continuous-desktop.webm');
@@ -394,7 +446,15 @@ async function readPassageMotion(page, route) {
   });
   const downstreamVideo = /opening-mobile-from-2p4\.mp4|studio-banner\.mp4|ring-alexandrite\.mp4|sakura-ink-bloom\.mp4/;
   check(!coldResources.paths.some((item) => downstreamVideo.test(item)), 'mobile cold load requests no downstream project video');
-  check(coldResources.bytes <= 1400000, 'mobile cold media transfer stays within 1.4 MB');
+  check(coldResources.bytes <= 1700000, 'mobile high-quality cold media transfer stays within 1.7 MB');
+  const generationsQuality = await page.evaluate(() => {
+    const video = document.getElementById('portfolio-generations-video');
+    return { width: video.videoWidth, height: video.videoHeight, duration: video.duration, source: video.currentSrc };
+  });
+  check(
+    generationsQuality.width === 720 && generationsQuality.height === 1280 && generationsQuality.duration >= 5.09,
+    'mobile Generations uses the high-quality portrait extended-girl carrier'
+  );
   const stops = [];
   for (let i = 0; i < 5; i++) {
     await page.evaluate(async (index) => { await window.ROOT_PORTFOLIO_PASSAGE.goMobileStop(index); }, i);
@@ -441,7 +501,7 @@ async function readPassageMotion(page, route) {
   const reverse = await page.evaluate(() => ({ stop: window.ROOT_PORTFOLIO_PASSAGE.mobileStop, processPaused: document.getElementById('process-arrival-motion-video').paused }));
   check(reverse.stop === 'generations' && reverse.processPaused, 'mobile reverse returns to Generations and pauses Process');
   check(errors.length === 0, 'mobile root walk has no browser errors');
-  report.mobile = { coldResources, stops, processTouch, touchReverse, processWheel, final, reverse, errors };
+  report.mobile = { coldResources, generationsQuality, stops, processTouch, touchReverse, processWheel, final, reverse, errors };
   await context.close();
 }
 
