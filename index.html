@@ -3,40 +3,29 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Conversion-Driven Web Design in Las Vegas | Jarrett Wroten</title>
-<meta name="description" content="Jarrett Wroten designs conversion-driven websites and improves the path from first click to sale for businesses in Las Vegas.">
-<link rel="canonical" href="https://jarrettwroten.com/">
+<title>Jarrett Wroten | I find the leak and build the fix</title>
+<meta name="description" content="I follow the path from first click to sale, find where people drop out, and build the fix. Send me your site. Your first look is free.">
+<meta property="og:title" content="Jarrett Wroten | I find the leak and build the fix">
+<meta property="og:description" content="I follow the path from first click to sale, find where people drop out, and build the fix. Send me your site. Your first look is free.">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Jarrett Wroten">
-<meta property="og:title" content="Conversion-Driven Web Design in Las Vegas | Jarrett Wroten">
-<meta property="og:description" content="See the work first, then follow the process Jarrett uses to find where a customer path breaks and build the fix.">
-<meta property="og:url" content="https://jarrettwroten.com/">
-<meta property="og:image" content="https://jarrettwroten.com/assets/golden-arrival/frames/ga-360.webp">
-<meta property="og:image:width" content="1280">
-<meta property="og:image:height" content="720">
-<meta property="og:image:alt" content="Jarrett Wroten at the threshold to his conversion design process.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Conversion-Driven Web Design in Las Vegas | Jarrett Wroten">
-<meta name="twitter:description" content="See Jarrett's work, then follow the process from first click to finished fix.">
-<meta name="twitter:image" content="https://jarrettwroten.com/assets/golden-arrival/frames/ga-360.webp">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@graph":[{"@type":"WebSite","@id":"https://jarrettwroten.com/#website","url":"https://jarrettwroten.com/","name":"Jarrett Wroten"},{"@type":"Person","@id":"https://jarrettwroten.com/#jarrett","name":"Jarrett Wroten","url":"https://jarrettwroten.com/","email":"mailto:Jarrett@JarrettWroten.com","jobTitle":"Conversion-focused web designer and business optimizer","homeLocation":{"@type":"City","name":"Las Vegas"}},{"@type":"ProfessionalService","@id":"https://jarrettwroten.com/#business","name":"Jarrett Wroten","url":"https://jarrettwroten.com/","email":"Jarrett@JarrettWroten.com","areaServed":{"@type":"City","name":"Las Vegas"},"serviceType":["Conversion-focused web design","Business optimization","Search engine optimization"]}]}
-</script>
+<meta property="og:url" content="https://jarrettwroten.com">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
-<link rel="preload" as="image" href="assets/work/generations/hurricane-fries-desktop.jpg" media="(min-width:721px)">
-<link rel="preload" as="image" href="assets/work/generations/hurricane-fries-mobile.jpg" media="(max-width:720px)">
+<link rel="preload" as="image" href="assets/golden-arrival/frames/ga-000.webp">
+<link rel="preload" as="image" href="assets/stripe-growth-focal.png">
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/bodoni-moda-latin-variable.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/ibm-plex-sans-latin-variable.woff2" crossorigin>
-<link rel="stylesheet" href="assets/portfolio-root.css">
-<script src="assets/motion-bootstrap.js"></script>
 <script>
 (function () {
   try {
-    var params = new URLSearchParams(window.location.search);
-    if (params.get("identity") === "off") {
-      document.documentElement.setAttribute("data-portfolio-identity", "off");
+    var stored = localStorage.getItem("jw-motion");
+    var on = stored === "off" ? false : true;
+    document.documentElement.setAttribute("data-motion", on ? "on" : "off");
+    if (stored === "on" || stored === "off") {
+      document.documentElement.setAttribute("data-motion-user", stored);
     }
-  } catch (error) {}
+  } catch (e) {
+    document.documentElement.setAttribute("data-motion", "on");
+  }
 })();
 </script>
 <style>
@@ -84,66 +73,66 @@
   }
 
   :root{
-    --process-void:#040A0C;
-    --process-ink:#E8F4F4;
-    --process-ink-soft:rgba(232,244,244,.92);
-    --process-ink-mute:rgba(208,228,230,.82);
-    --process-cyan:#5EE7F0;
-    --process-amber:#D97A3A;
-    --process-display:"Bodoni Moda","Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
-    --process-reading:Georgia,"Rana Reader Fallback","Times New Roman",Times,serif;
-    --process-text:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-    --process-ease-enter:cubic-bezier(.16,.84,.24,1);
-    --process-ease-overshoot:cubic-bezier(.34,1.32,.48,1);
-    --process-gutter:clamp(1.1rem,3.6vw,2.75rem);
-    --process-top-chrome:clamp(2.9rem,5.2vh,3.4rem);
-    --process-progress:0;
-    --process-station:0;
-    --process-world-opacity:0;
-    --process-signal-core:0;
-    --process-console-lit:0;
-    --process-hud-opacity:1;
-    --process-rail-marker:0%;
-    --process-intro-veil:1;
-    --process-proof-apparatus:0;
-    --process-loader:0;
-    --process-live-conduit:1;
-    --process-entry-cue:1;
-    --process-arrival-motion:0;
+    --void:#040A0C;
+    --ink:#E8F4F4;
+    --ink-soft:rgba(232,244,244,.92);
+    --ink-mute:rgba(208,228,230,.82);
+    --cyan:#5EE7F0;
+    --amber:#D97A3A;
+    --display:"Bodoni Moda","Iowan Old Style","Palatino Linotype","Book Antiqua",Palatino,Georgia,serif;
+    --reading:Georgia,"Rana Reader Fallback","Times New Roman",Times,serif;
+    --text:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+    --ease-enter:cubic-bezier(.16,.84,.24,1);
+    --ease-overshoot:cubic-bezier(.34,1.32,.48,1);
+    --gutter:clamp(1.1rem,3.6vw,2.75rem);
+    --top-chrome:clamp(2.9rem,5.2vh,3.4rem);
+    --progress:0;
+    --station:0;
+    --world-opacity:0;
+    --signal-core:0;
+    --console-lit:0;
+    --hud-opacity:1;
+    --rail-marker:0%;
+    --intro-veil:1;
+    --proof-apparatus:0;
+    --loader:0;
+    --live-conduit:1;
+    --entry-cue:1;
+    --arrival-motion:0;
   }
 
   *{box-sizing:border-box}
   html,body{margin:0;padding:0;overflow-anchor:none}
   html{
-    background:var(--process-void);
-    color:var(--process-ink);
+    background:var(--void);
+    color:var(--ink);
     scroll-behavior:auto;
   }
   body{
     min-height:100%;
-    font-family:var(--process-text);
+    font-family:var(--text);
     -webkit-font-smoothing:antialiased;
     -moz-osx-font-smoothing:grayscale;
     text-rendering:optimizeLegibility;
-    background:var(--process-void);
+    background:var(--void);
     overflow-x:hidden;
   }
   a{color:inherit;text-decoration:none}
   button{font:inherit;color:inherit;background:none;border:0;padding:0;cursor:pointer}
   img{display:block;max-width:100%}
   :focus-visible{
-    outline:2px solid var(--process-cyan);
+    outline:2px solid var(--cyan);
     outline-offset:3px;
   }
 
   .text{
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-synthesis:none;
     font-size:clamp(1rem,1.05rem + .2vw,1.18rem);
     line-height:1.52;
     letter-spacing:0;
-    color:var(--process-ink-soft);
+    color:var(--ink-soft);
     max-width:46ch;
   }
   .text p{margin:0 0 .85em}
@@ -151,14 +140,14 @@
 
   .display{
     margin:0;
-    font-family:var(--process-display);
+    font-family:var(--display);
     font-weight:400;
     font-optical-sizing:auto;
     font-variation-settings:normal;
     font-size:clamp(2.35rem,5.6vw,4.5rem);
     line-height:.96;
     letter-spacing:0;
-    color:var(--process-ink);
+    color:var(--ink);
   }
   .display .line{
     display:block;
@@ -176,15 +165,15 @@
     transform:translate3d(0,0,0);
     opacity:1;
     transition:
-      transform .9s var(--process-ease-enter),
-      opacity .7s var(--process-ease-enter);
+      transform .9s var(--ease-enter),
+      opacity .7s var(--ease-enter);
   }
   .station.is-exiting .display .line > span{
     transform:translate3d(0,-105%,0);
     opacity:0;
     transition:
-      transform .55s var(--process-ease-enter),
-      opacity .4s var(--process-ease-enter);
+      transform .55s var(--ease-enter),
+      opacity .4s var(--ease-enter);
   }
   .station[data-station="leak"].is-exiting .display .line:nth-child(1) > span{transition-delay:150ms}
   .station[data-station="leak"].is-exiting .display .line:nth-child(2) > span{transition-delay:120ms}
@@ -206,14 +195,14 @@
   .station.is-active .display .line:nth-child(6) > span,
   .station.is-held .display .line:nth-child(6) > span{transition-delay:150ms}
 
-  .process-journey{
+  .journey{
     position:relative;
     height:640svh;
-    background:var(--process-void);
+    background:var(--void);
   }
-  html[data-motion="off"] .process-journey{height:600svh}
+  html[data-motion="off"] .journey{height:600svh}
 
-  .process-viewport{
+  .viewport{
     position:sticky;
     top:0;
     height:100svh;
@@ -221,17 +210,17 @@
     overflow:hidden;
     overflow:clip;
     isolation:isolate;
-    background:var(--process-void);
+    background:var(--void);
   }
 
   /* World layer — frame sequence only; no blend modes over the scrub path */
-  .process-world{
+  .world{
     position:absolute;
     inset:0;
     z-index:1;
-    opacity:var(--process-world-opacity);
+    opacity:var(--world-opacity);
     pointer-events:none;
-    background:var(--process-void);
+    background:var(--void);
     perspective:1400px;
   }
   /* Double-buffered corridor frames: only the active buffer is on top.
@@ -250,7 +239,18 @@
   .world-frame.is-active{
     z-index:1;
   }
-  /* Arrival motion sits over a decoded frame-zero fallback. */
+  /*
+   * COMPOUNDING — maintained asset
+   * Canonical path: index.html — #arrival-motion-video plus arrivalMotionVisibility/syncArrivalMotion
+   * Future consumer: normal root visitor with Motion On at the Arrival rest
+   * Activation: auto-load through this production entry document
+   * Behavioral check: node smoke-test.mjs living-Arrival block; Codex desktop/mobile visual exercise
+   * Retirement: only when Main Arrival no longer reuses the Work corridor living carrier
+   *
+   * Living Arrival carrier — exact Work corridor loop over frame-zero fallback.
+   * Below lightning/Scroll; above double-buffered frames. Opacity is readiness ×
+   * --arrival-motion (authored Arrival progress), never a whole-frame flicker.
+   */
   .arrival-motion{
     position:absolute;
     inset:0;
@@ -262,15 +262,15 @@
     background:transparent;
     opacity:0;
     pointer-events:none;
-    transition:opacity .45s var(--process-ease-enter);
+    transition:opacity .45s var(--ease-enter);
   }
   .arrival-motion.is-ready{
-    opacity:var(--process-arrival-motion);
+    opacity:var(--arrival-motion);
   }
   /* Live doorway lightning — geometry-locked to 1280×720 frame-zero corridor.
      Charge travels each bolt; path topology morphs. Not a whole-frame flicker.
-     Full only at the opening; --process-live-conduit fades it before Method / frame drift. */
-  .process-arrival-lightning{
+     Full only at the opening; --live-conduit fades it before Method / frame drift. */
+  .arrival-lightning{
     position:absolute;
     inset:0;
     width:100%;
@@ -278,51 +278,51 @@
     z-index:2;
     pointer-events:none;
     overflow:hidden;
-    opacity:calc(var(--process-live-conduit) * .94);
+    opacity:calc(var(--live-conduit) * .94);
     mix-blend-mode:screen;
   }
-  .process-arrival-lightning .bolt-halo,
-  .process-arrival-lightning .bolt-core,
-  .process-arrival-lightning .bolt-charge,
-  .process-arrival-lightning .bolt-charge-soft{
+  .arrival-lightning .bolt-halo,
+  .arrival-lightning .bolt-core,
+  .arrival-lightning .bolt-charge,
+  .arrival-lightning .bolt-charge-soft{
     fill:none;
     stroke-linecap:round;
     stroke-linejoin:round;
   }
-  .process-arrival-lightning .bolt-halo{
+  .arrival-lightning .bolt-halo{
     stroke:rgba(94,231,240,.26);
     stroke-width:6.5;
   }
-  .process-arrival-lightning .bolt-core{
+  .arrival-lightning .bolt-core{
     stroke:rgba(168,248,255,.4);
     stroke-width:1.3;
   }
-  .process-arrival-lightning .bolt-charge-soft{
+  .arrival-lightning .bolt-charge-soft{
     stroke:rgba(94,231,240,.5);
     stroke-width:4.2;
     stroke-dasharray:18 82;
     animation:arrivalBoltChargeTravel 2.4s linear infinite;
   }
-  .process-arrival-lightning .bolt-charge{
+  .arrival-lightning .bolt-charge{
     stroke:#E8FFFF;
     stroke-width:2.05;
     stroke-dasharray:10 90;
     animation:arrivalBoltChargeTravel 1.82s linear infinite;
   }
   /* Restrained left/right asymmetry — not a metronomic blink. */
-  .process-arrival-lightning .bolt--process-left .bolt-charge{
+  .arrival-lightning .bolt--left .bolt-charge{
     animation-duration:1.82s;
     animation-delay:0s;
   }
-  .process-arrival-lightning .bolt--process-left .bolt-charge-soft{
+  .arrival-lightning .bolt--left .bolt-charge-soft{
     animation-duration:2.4s;
     animation-delay:-.42s;
   }
-  .process-arrival-lightning .bolt--process-right .bolt-charge{
+  .arrival-lightning .bolt--right .bolt-charge{
     animation-duration:2.18s;
     animation-delay:-.92s;
   }
-  .process-arrival-lightning .bolt--process-right .bolt-charge-soft{
+  .arrival-lightning .bolt--right .bolt-charge-soft{
     animation-duration:2.76s;
     animation-delay:-1.55s;
   }
@@ -331,8 +331,8 @@
     to{stroke-dashoffset:-100}
   }
   /* Pause charge travel once paint retires the overlay (SMIL paused in JS). */
-  .process-arrival-lightning[data-retired="true"] .bolt-charge,
-  .process-arrival-lightning[data-retired="true"] .bolt-charge-soft{
+  .arrival-lightning[data-retired="true"] .bolt-charge,
+  .arrival-lightning[data-retired="true"] .bolt-charge-soft{
     animation:none;
   }
   .world-vignette{
@@ -343,7 +343,7 @@
     background:
       radial-gradient(ellipse 78% 68% at 50% 48%, transparent 35%, rgba(4,10,12,.28) 72%, rgba(4,10,12,.72) 100%);
   }
-  .process-console-spill{
+  .console-spill{
     position:absolute;
     z-index:2;
     left:50%;
@@ -352,9 +352,9 @@
     height:min(48vh, 22rem);
     transform:translate(-50%, 18%);
     pointer-events:none;
-    opacity:calc(var(--process-proof-apparatus) * var(--process-console-lit));
+    opacity:calc(var(--proof-apparatus) * var(--console-lit));
     background:radial-gradient(ellipse 120% 90% at 50% 100%, rgba(190,235,245,.30), rgba(94,231,240,.14) 45%, transparent 78%);
-    transition:opacity .42s var(--process-ease-enter);
+    transition:opacity .42s var(--ease-enter);
   }
   .world-grain{
     position:absolute;
@@ -365,10 +365,10 @@
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
     background-size:180px 180px;
     /* grain sits above frame but is not mix-blend over the img fast path of the scrub layer */
-    opacity:calc(.12 + var(--process-signal-core) * .06);
+    opacity:calc(.12 + var(--signal-core) * .06);
   }
 
-  .process-console-mount{
+  .console-mount{
     position:absolute;
     z-index:5;
     pointer-events:none;
@@ -378,16 +378,16 @@
     height:auto;
     transform:translate(-50%,-50%) rotateY(-4deg) rotateX(1.5deg);
     transform-style:preserve-3d;
-    opacity:var(--process-proof-apparatus);
+    opacity:var(--proof-apparatus);
     visibility:hidden;
-    transition:opacity .42s var(--process-ease-enter), visibility 0s linear .42s;
+    transition:opacity .42s var(--ease-enter), visibility 0s linear .42s;
   }
-  .process-console-mount.is-present{
+  .console-mount.is-present{
     visibility:visible;
-    transition:opacity .42s var(--process-ease-enter), visibility 0s linear 0s;
+    transition:opacity .42s var(--ease-enter), visibility 0s linear 0s;
   }
-  .process-console-mount.is-live{pointer-events:auto}
-  .process-console-mount.is-gone{
+  .console-mount.is-live{pointer-events:auto}
+  .console-mount.is-gone{
     opacity:0 !important;
     visibility:hidden !important;
     pointer-events:none !important;
@@ -414,7 +414,7 @@
   }
   .console-housing::before{ top:6px; left:18px; }
   .console-housing::after{ top:6px; right:18px; }
-  .process-console-screen{
+  .console-screen{
     position:relative;
     display:block;
     width:100%;
@@ -424,32 +424,32 @@
     border:0;
     box-shadow:
       0 0 0 1px rgba(0,0,0,.65),
-      0 0 40px rgba(94,231,240,calc(var(--process-console-lit) * .18));
-    opacity:calc(0.78 + var(--process-console-lit) * 0.22);
-    filter:brightness(calc(0.78 + var(--process-console-lit) * 0.22));
-    transition:filter .28s var(--process-ease-enter), opacity .28s var(--process-ease-enter);
+      0 0 40px rgba(94,231,240,calc(var(--console-lit) * .18));
+    opacity:calc(0.78 + var(--console-lit) * 0.22);
+    filter:brightness(calc(0.78 + var(--console-lit) * 0.22));
+    transition:filter .28s var(--ease-enter), opacity .28s var(--ease-enter);
   }
-  .process-console-mount.is-live .process-console-screen:hover,
-  .process-console-mount.is-live .process-console-screen:focus-visible{
+  .console-mount.is-live .console-screen:hover,
+  .console-mount.is-live .console-screen:focus-visible{
     filter:brightness(1);
     opacity:1;
   }
-  .process-console-screen img{
+  .console-screen img{
     width:100%;
     height:auto;
     display:block;
     pointer-events:none;
   }
-  .process-console-screen::after{
+  .console-screen::after{
     content:"";
     position:absolute;
     inset:0;
     background:linear-gradient(112deg, transparent 30%, rgba(200,240,250,.16) 44%, transparent 58%);
     pointer-events:none;
-    opacity:calc(0.2 + var(--process-console-lit) * 0.55);
+    opacity:calc(0.2 + var(--console-lit) * 0.55);
   }
 
-  .process-note-mount{
+  .note-mount{
     position:absolute;
     z-index:5;
     pointer-events:none;
@@ -457,21 +457,21 @@
     top:34%;
     width:min(16vw, 10rem);
     transform:translateY(-20%) rotate(-6deg);
-    opacity:var(--process-proof-apparatus);
+    opacity:var(--proof-apparatus);
     visibility:hidden;
-    transition:opacity .42s var(--process-ease-enter), visibility 0s linear .42s;
+    transition:opacity .42s var(--ease-enter), visibility 0s linear .42s;
   }
-  .process-note-mount.is-present{
+  .note-mount.is-present{
     visibility:visible;
-    transition:opacity .42s var(--process-ease-enter), visibility 0s linear 0s;
+    transition:opacity .42s var(--ease-enter), visibility 0s linear 0s;
   }
-  .process-note-mount.is-live{pointer-events:auto}
-  .process-note-mount.is-gone{
+  .note-mount.is-live{pointer-events:auto}
+  .note-mount.is-gone{
     opacity:0 !important;
     visibility:hidden !important;
     pointer-events:none !important;
   }
-  .process-note-device{
+  .note-device{
     display:block;
     width:100%;
     overflow:hidden;
@@ -483,9 +483,9 @@
     box-shadow:
       0 14px 30px -8px rgba(0,0,0,.8),
       inset 0 1px 0 rgba(190,235,245,.28);
-    opacity:calc(0.55 + var(--process-console-lit) * 0.45);
+    opacity:calc(0.55 + var(--console-lit) * 0.45);
   }
-  .process-note-device img{
+  .note-device img{
     width:100%;
     height:auto;
     pointer-events:none;
@@ -493,64 +493,64 @@
   }
   .note-device-caption{
     margin:.45rem 0 0;
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-style:italic;
     font-synthesis:none;
     font-size:clamp(.9rem,.86rem + .15vw,1rem);
     line-height:1.35;
     letter-spacing:0;
-    color:var(--process-amber);
+    color:var(--amber);
     text-align:center;
     white-space:nowrap;
   }
 
-  .process-intro-veil{
+  .intro-veil{
     position:absolute;
     inset:0;
     z-index:20;
-    background:var(--process-void);
-    opacity:var(--process-intro-veil);
+    background:var(--void);
+    opacity:var(--intro-veil);
     pointer-events:none;
-    transition:opacity 1.1s var(--process-ease-enter);
+    transition:opacity 1.1s var(--ease-enter);
   }
 
   /* First-scene-only loader — hairline under header, never a mid-composition rule */
-  .process-loader-bar{
+  .loader-bar{
     position:absolute;
-    left:var(--process-gutter);
-    top:calc(var(--process-top-chrome) - 1px);
+    left:var(--gutter);
+    top:calc(var(--top-chrome) - 1px);
     width:min(180px, 28vw);
     z-index:32;
     height:1px;
     background:rgba(232,244,244,.08);
-    opacity:calc(var(--process-loader) * 1);
+    opacity:calc(var(--loader) * 1);
     pointer-events:none;
     transition:opacity .35s ease;
   }
-  .process-loader-bar.is-done,
-  .process-loader-label.is-done{
+  .loader-bar.is-done,
+  .loader-label.is-done{
     opacity:0 !important;
     visibility:hidden;
   }
-  .process-loader-bar > span{
+  .loader-bar > span{
     display:block;
     height:100%;
-    width:calc(var(--process-loader) * 100%);
-    background:linear-gradient(90deg, var(--process-cyan), var(--process-amber));
+    width:calc(var(--loader) * 100%);
+    background:linear-gradient(90deg, var(--cyan), var(--amber));
     box-shadow:0 0 8px rgba(94,231,240,.3);
   }
-  .process-loader-label{
+  .loader-label{
     position:absolute;
-    left:var(--process-gutter);
-    top:calc(var(--process-top-chrome) + .35rem);
+    left:var(--gutter);
+    top:calc(var(--top-chrome) + .35rem);
     z-index:32;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:500;
     font-size:13px;
     letter-spacing:.01em;
-    color:var(--process-ink-mute);
-    opacity:calc(var(--process-loader) * .85);
+    color:var(--ink-mute);
+    opacity:calc(var(--loader) * .85);
     pointer-events:none;
     transition:opacity .35s ease;
   }
@@ -564,12 +564,12 @@
   .ui a,
   .ui button,
   .site-header,
-  .process-station-rail,
+  .station-rail,
   .station-copy,
   .proof-values,
   .method-annots,
-  .process-site-footer,
-  .process-distance-hud{
+  .site-footer,
+  .distance-hud{
     pointer-events:auto;
   }
 
@@ -581,15 +581,15 @@
     align-items:center;
     justify-content:space-between;
     gap:1rem;
-    padding:clamp(.85rem,1.8vh,1.15rem) var(--process-gutter);
-    min-height:var(--process-top-chrome);
+    padding:clamp(.85rem,1.8vh,1.15rem) var(--gutter);
+    min-height:var(--top-chrome);
   }
   .wordmark{
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     font-size:14px;
     letter-spacing:.015em;
-    color:var(--process-ink);
+    color:var(--ink);
     white-space:nowrap;
   }
   .header-tools{
@@ -597,56 +597,56 @@
     align-items:center;
     gap:clamp(.6rem,1.5vw,1.1rem);
   }
-  .process-motion-toggle{
+  .motion-toggle{
     min-height:44px;
     min-width:44px;
     padding:.35rem .2rem;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     font-size:14px;
     letter-spacing:.01em;
-    color:var(--process-ink-soft);
+    color:var(--ink-soft);
     white-space:nowrap;
   }
-  .process-motion-toggle:hover{color:var(--process-ink)}
-  .process-work-link{
+  .motion-toggle:hover{color:var(--ink)}
+  .work-link{
     min-height:44px;
     min-width:44px;
     padding:.35rem .2rem;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     font-size:14px;
     letter-spacing:.01em;
-    color:var(--process-ink-soft);
+    color:var(--ink-soft);
     white-space:nowrap;
     display:inline-flex;
     align-items:center;
   }
-  .process-work-link:hover{color:var(--process-ink)}
+  .work-link:hover{color:var(--ink)}
 
   /* Authored homepage → Work exit: darken corridor, open a spatial aperture */
-  .process-work-exit-veil{
+  .work-exit-veil{
     position:fixed;
     inset:0;
     z-index:400;
     pointer-events:none;
     opacity:0;
-    background:var(--process-void);
+    background:var(--void);
     clip-path:circle(0% at 78% 8%);
     -webkit-clip-path:circle(0% at 78% 8%);
     transition:
-      opacity .42s var(--process-ease-enter),
-      clip-path .48s var(--process-ease-enter),
-      -webkit-clip-path .48s var(--process-ease-enter);
+      opacity .42s var(--ease-enter),
+      clip-path .48s var(--ease-enter),
+      -webkit-clip-path .48s var(--ease-enter);
   }
-  html[data-process-work-exit="on"] .process-work-exit-veil{
+  html[data-work-exit="on"] .work-exit-veil{
     opacity:1;
     clip-path:circle(160% at 50% 45%);
     -webkit-clip-path:circle(160% at 50% 45%);
   }
-  html[data-process-work-exit="on"] .process-journey{
+  html[data-work-exit="on"] .journey{
     filter:brightness(.42) saturate(.7);
-    transition:filter .4s var(--process-ease-enter);
+    transition:filter .4s var(--ease-enter);
   }
 
   .progress-bar{
@@ -660,12 +660,12 @@
   .progress-bar > span{
     display:block;
     height:100%;
-    width:calc(var(--process-progress) * 100%);
-    background:linear-gradient(90deg, var(--process-cyan), var(--process-amber));
+    width:calc(var(--progress) * 100%);
+    background:linear-gradient(90deg, var(--cyan), var(--amber));
     box-shadow:0 0 12px rgba(94,231,240,.35);
   }
 
-  .process-station-rail{
+  .station-rail{
     position:absolute;
     right:clamp(.7rem,1.6vw,1.2rem);
     top:50%;
@@ -688,10 +688,10 @@
   .station-rail-marker{
     position:absolute;
     left:50%;
-    top:var(--process-rail-marker);
+    top:var(--rail-marker);
     width:7px; height:7px;
     border-radius:50%;
-    background:var(--process-cyan);
+    background:var(--cyan);
     box-shadow:0 0 10px rgba(94,231,240,.55);
     transform:translate(-50%,-50%);
   }
@@ -703,7 +703,7 @@
     align-items:center;
     justify-content:center;
     min-height:44px;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
     background:transparent;
   }
   .station-rail-tick::before{
@@ -712,22 +712,22 @@
     border:1px solid rgba(232,244,244,.4);
     border-radius:50%;
   }
-  .station-rail-tick[aria-current="true"]{color:var(--process-ink)}
+  .station-rail-tick[aria-current="true"]{color:var(--ink)}
   .station-rail-tick[aria-current="true"]::before{
-    background:var(--process-ink);
-    border-color:var(--process-ink);
+    background:var(--ink);
+    border-color:var(--ink);
   }
   .station-rail-tick span{
     position:absolute;
     right:calc(100% + .55rem);
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     font-size:13px;
     letter-spacing:.01em;
     white-space:nowrap;
     opacity:0;
     transform:translateX(4px);
-    transition:opacity .25s var(--process-ease-enter), transform .25s var(--process-ease-enter);
+    transition:opacity .25s var(--ease-enter), transform .25s var(--ease-enter);
     pointer-events:none;
   }
   .station-rail-tick:hover span,
@@ -737,19 +737,19 @@
     transform:translateX(0);
   }
 
-  .process-distance-hud{
+  .distance-hud{
     position:absolute;
-    left:var(--process-gutter);
+    left:var(--gutter);
     bottom:clamp(.85rem,2vh,1.35rem);
     z-index:30;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:500;
     font-size:13px;
     letter-spacing:.01em;
     font-variant-numeric:tabular-nums;
-    color:var(--process-ink-mute);
-    opacity:var(--process-hud-opacity);
-    transition:opacity .4s var(--process-ease-enter);
+    color:var(--ink-mute);
+    opacity:var(--hud-opacity);
+    transition:opacity .4s var(--ease-enter);
   }
 
   .station{
@@ -775,14 +775,14 @@
   }
   .station-kicker{
     margin:0 0 clamp(.65rem,1.2vh,.95rem);
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-style:italic;
     font-synthesis:none;
     font-size:clamp(1rem,.96rem + .22vw,1.18rem);
     line-height:1.35;
     letter-spacing:0;
-    color:var(--process-cyan);
+    color:var(--cyan);
     opacity:0;
     transform:translateY(8px);
   }
@@ -790,12 +790,12 @@
   .station.is-held .station-kicker{
     opacity:1;
     transform:none;
-    transition:opacity .6s var(--process-ease-enter), transform .6s var(--process-ease-enter);
+    transition:opacity .6s var(--ease-enter), transform .6s var(--ease-enter);
     transition-delay:40ms;
   }
   .station.is-exiting .station-kicker{
     opacity:0;
-    transition:opacity .3s var(--process-ease-enter);
+    transition:opacity .3s var(--ease-enter);
   }
   .station-support{
     margin:clamp(1rem,2vh,1.45rem) 0 0;
@@ -806,12 +806,12 @@
   .station.is-held .station-support{
     opacity:1;
     transform:none;
-    transition:opacity .7s var(--process-ease-enter), transform .7s var(--process-ease-enter);
+    transition:opacity .7s var(--ease-enter), transform .7s var(--ease-enter);
     transition-delay:180ms;
   }
   .station.is-exiting .station-support{
     opacity:0;
-    transition:opacity .3s var(--process-ease-enter);
+    transition:opacity .3s var(--ease-enter);
   }
 
   .cta{
@@ -819,11 +819,11 @@
     align-items:center;
     min-height:44px;
     margin-top:clamp(1.1rem,2.2vh,1.6rem);
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     font-size:15px;
     letter-spacing:.01em;
-    color:var(--process-ink);
+    color:var(--ink);
     border-bottom:1px solid rgba(232,244,244,.35);
     opacity:0;
     transform:translateY(12px);
@@ -833,17 +833,17 @@
     opacity:1;
     transform:none;
     transition:
-      opacity .7s var(--process-ease-overshoot),
-      transform .7s var(--process-ease-overshoot),
+      opacity .7s var(--ease-overshoot),
+      transform .7s var(--ease-overshoot),
       border-color .25s ease;
     transition-delay:240ms;
   }
   .cta:hover, .cta:focus-visible{
-    border-color:var(--process-cyan);
-    color:var(--process-cyan);
+    border-color:var(--cyan);
+    color:var(--cyan);
   }
 
-  /* Corridor scrims — washes dissolve to --process-void, never rectangular cards */
+  /* Corridor scrims — washes dissolve to --void, never rectangular cards */
   .station[data-station="leak"] .station-copy,
   .station[data-station="method"] .station-copy,
   .station[data-station="proof"] .station-copy{
@@ -866,7 +866,7 @@
 
   /* LEAK — sole full-height type wall + in-scene CTA */
   .station[data-station="leak"] .station-copy{
-    left:var(--process-gutter);
+    left:var(--gutter);
     top:clamp(5.5rem,13.9vh,7.5rem);
     max-width:min(46rem, 52vw);
   }
@@ -877,7 +877,7 @@
 
   /* METHOD — inverted: heading bottom-left; annotations climb toward vanishing point */
   .station[data-station="method"] .station-copy{
-    left:var(--process-gutter);
+    left:var(--gutter);
     top:auto;
     bottom:clamp(6rem,16vh,9rem);
     max-width:min(34rem, 50vw);
@@ -896,7 +896,7 @@
     max-width:16rem;
     opacity:0;
     transform:translateY(10px);
-    transition:opacity .55s var(--process-ease-enter), transform .55s var(--process-ease-enter);
+    transition:opacity .55s var(--ease-enter), transform .55s var(--ease-enter);
     isolation:isolate;
   }
   .method-annot::before{
@@ -911,22 +911,22 @@
   .method-annot-num{
     display:block;
     margin:0 0 .35rem;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     font-size:14px;
     line-height:1.3;
     letter-spacing:.01em;
-    color:var(--process-cyan);
+    color:var(--cyan);
   }
   .method-annot-text{
     margin:0;
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-synthesis:none;
     font-size:clamp(1rem,1.05rem + .15vw,1.12rem);
     line-height:1.45;
     letter-spacing:0;
-    color:var(--process-ink-soft);
+    color:var(--ink-soft);
     max-width:28ch;
   }
   .method-annot[data-step="1"]{ left:10%; top:44%; }
@@ -945,16 +945,16 @@
   }
   .proof-figure{
     margin:0;
-    font-family:var(--process-display);
+    font-family:var(--display);
     font-weight:400;
     font-optical-sizing:auto;
     font-variation-settings:normal;
     font-size:clamp(2.8rem,6vw,5.75rem);
     line-height:.94;
     letter-spacing:0;
-    color:var(--process-ink);
+    color:var(--ink);
   }
-  .proof-figure .currency{color:var(--process-amber); margin-right:.04em}
+  .proof-figure .currency{color:var(--amber); margin-right:.04em}
   .proof-values{
     margin:clamp(.9rem,1.8vh,1.25rem) auto 0;
     display:grid;
@@ -964,35 +964,35 @@
   }
   .proof-row{
     margin:0;
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-synthesis:none;
     font-size:clamp(1rem,1.02rem + .15vw,1.12rem);
     line-height:1.45;
     letter-spacing:0;
-    color:var(--process-ink-soft);
+    color:var(--ink-soft);
     white-space:nowrap;
   }
-  .proof-row strong{font-weight:700; color:var(--process-ink)}
-  .proof-row .delta{color:var(--process-amber)}
+  .proof-row strong{font-weight:700; color:var(--ink)}
+  .proof-row .delta{color:var(--amber)}
   .proof-qualifier{
     margin:clamp(.85rem,1.6vh,1.15rem) auto 0;
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-synthesis:none;
     font-size:clamp(1rem,1.02rem + .12vw,1.1rem);
     line-height:1.5;
     letter-spacing:0;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
     max-width:46ch;
   }
   .proof-open-hint{
     margin:.75rem auto 0;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     font-size:14px;
     letter-spacing:.01em;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
   }
 
   /* JARRETT — face carries; high-left claim + one restrained low-left support.
@@ -1001,7 +1001,7 @@
   .station[data-station="jarrett"] .station-copy{
     position:absolute;
     isolation:isolate;
-    left:var(--process-gutter);
+    left:var(--gutter);
     top:clamp(5.5rem,13vh,7rem);
     max-width:min(38rem, 48vw);
   }
@@ -1029,7 +1029,7 @@
   .station[data-station="threshold"] .station-copy{
     position:absolute;
     isolation:isolate;
-    left:var(--process-gutter);
+    left:var(--gutter);
     top:clamp(5.2rem,12vh,6.8rem);
     bottom:clamp(5.5rem,12vh,7rem);
     max-width:min(30rem, 40vw);
@@ -1087,11 +1087,11 @@
     width:100%;
     max-width:100%;
     margin-top:clamp(.4rem,.95vh,.65rem);
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     line-height:1.2;
     letter-spacing:-.01em;
-    color:var(--process-ink);
+    color:var(--ink);
     position:relative;
     min-height:44px;
     padding-bottom:.2em;
@@ -1109,10 +1109,10 @@
     position:absolute;
     left:0; right:0; bottom:0;
     height:2px;
-    background:linear-gradient(90deg, var(--process-amber), rgba(217,122,58,.2));
+    background:linear-gradient(90deg, var(--amber), rgba(217,122,58,.2));
     transform:scaleX(0);
     transform-origin:right center;
-    transition:transform .45s var(--process-ease-enter);
+    transition:transform .45s var(--ease-enter);
   }
   .station[data-station="threshold"].is-active .invite-email::after,
   .station[data-station="threshold"].is-held .invite-email::after,
@@ -1125,7 +1125,7 @@
   .station[data-station="threshold"].is-held .invite-email{
     opacity:1;
     transform:none;
-    transition:opacity .75s var(--process-ease-overshoot), transform .75s var(--process-ease-overshoot);
+    transition:opacity .75s var(--ease-overshoot), transform .75s var(--ease-overshoot);
     transition-delay:200ms;
   }
   /* Secondary booking path — subordinate to the free-look email invite.
@@ -1133,20 +1133,20 @@
   .invite-book{
     margin:clamp(.4rem,.95vh,.65rem) 0 0;
     max-width:34ch;
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-synthesis:none;
     font-size:clamp(.95rem,.97rem + .08vw,1.04rem);
     line-height:1.45;
     letter-spacing:0;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
   }
   .invite-book-link{
     position:relative;
     display:inline;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:500;
-    color:var(--process-cyan);
+    color:var(--cyan);
     border-bottom:1px solid rgba(94,231,240,.42);
     transition:color .2s ease, border-color .2s ease;
   }
@@ -1162,23 +1162,23 @@
     min-width:44px;
   }
   .invite-book-link:hover{
-    color:var(--process-cyan);
-    border-bottom-color:var(--process-cyan);
+    color:var(--cyan);
+    border-bottom-color:var(--cyan);
   }
   .invite-book-link:focus-visible{
-    outline:2px solid var(--process-cyan);
+    outline:2px solid var(--cyan);
     outline-offset:3px;
-    border-bottom-color:var(--process-cyan);
+    border-bottom-color:var(--cyan);
   }
   .invite-whisper{
     margin:clamp(.4rem,.9vh,.65rem) 0 0;
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-synthesis:none;
     font-size:clamp(1rem,1.02rem + .1vw,1.08rem);
     line-height:1.5;
     letter-spacing:0;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
   }
   /* THRESHOLD services — middle member of the left threshold column */
   .threshold-services{
@@ -1203,14 +1203,14 @@
   }
   .threshold-services-label{
     margin:0 0 .7rem;
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-style:italic;
     font-synthesis:none;
     font-size:clamp(1rem,1.02rem + .12vw,1.12rem);
     line-height:1.3;
     letter-spacing:0;
-    color:var(--process-cyan);
+    color:var(--cyan);
   }
   .threshold-services-list{
     list-style:none;
@@ -1220,12 +1220,12 @@
   .threshold-services-list li{
     margin:0;
     padding:.38rem 0;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:500;
     font-size:clamp(.95rem,.92rem + .18vw,1.05rem);
     line-height:1.35;
     letter-spacing:0;
-    color:var(--process-ink-soft);
+    color:var(--ink-soft);
     border-top:1px solid rgba(232,244,244,.12);
   }
   .threshold-services-list li:first-child{border-top:0;padding-top:0}
@@ -1243,12 +1243,12 @@
     margin:clamp(.55rem,1.15vh,.85rem) 0 0;
     min-height:44px;
     padding:.12em 0 .22em;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:500;
     font-size:clamp(.95rem,.92rem + .14vw,1.04rem);
     line-height:1.35;
     letter-spacing:0;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
   }
   .threshold-work-invite::after{
     content:"";
@@ -1257,20 +1257,20 @@
     right:0;
     bottom:0;
     height:1px;
-    background:linear-gradient(90deg, var(--process-cyan), rgba(94,231,240,.12));
+    background:linear-gradient(90deg, var(--cyan), rgba(94,231,240,.12));
     transform:scaleX(.2);
     transform-origin:left center;
     opacity:.5;
-    transition:transform .4s var(--process-ease-enter), opacity .25s ease;
+    transition:transform .4s var(--ease-enter), opacity .25s ease;
   }
   .threshold-work-invite .work-invite-arrow{
     display:inline-block;
-    color:var(--process-cyan);
-    transition:transform .28s var(--process-ease-enter);
+    color:var(--cyan);
+    transition:transform .28s var(--ease-enter);
   }
   .threshold-work-invite:hover,
   .threshold-work-invite:focus-visible{
-    color:var(--process-cyan);
+    color:var(--cyan);
   }
   .threshold-work-invite:hover::after,
   .threshold-work-invite:focus-visible::after{
@@ -1282,14 +1282,14 @@
     transform:translateX(.16em);
   }
   .threshold-work-invite:focus-visible{
-    outline:2px solid var(--process-cyan);
+    outline:2px solid var(--cyan);
     outline-offset:3px;
   }
   .station[data-station="threshold"].is-active .threshold-services,
   .station[data-station="threshold"].is-held .threshold-services{
     opacity:1;
     transform:none;
-    transition:opacity .75s var(--process-ease-overshoot), transform .75s var(--process-ease-overshoot);
+    transition:opacity .75s var(--ease-overshoot), transform .75s var(--ease-overshoot);
     transition-delay:260ms;
   }
   /*
@@ -1385,7 +1385,7 @@
    */
   @media (min-width:721px) and (max-width:900px){
     .station[data-station="threshold"] .station-copy{
-      max-width:min(18.75rem, calc(29.5vw - var(--process-gutter)));
+      max-width:min(18.75rem, calc(29.5vw - var(--gutter)));
     }
     .station[data-station="threshold"] .display{
       font-size:clamp(1.95rem,4.2vw,2.35rem);
@@ -1398,38 +1398,29 @@
     }
   }
 
-  .process-site-footer{
+  .site-footer{
     position:absolute;
-    right:var(--process-gutter);
+    right:var(--gutter);
     left:auto;
     bottom:clamp(.85rem,2vh,1.35rem);
     z-index:30;
     display:flex;
     gap:.55rem;
     align-items:center;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:500;
     font-size:13px;
     letter-spacing:.01em;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
     opacity:0;
-    transition:opacity .45s var(--process-ease-enter);
+    transition:opacity .45s var(--ease-enter);
     white-space:nowrap;
   }
-  .process-site-footer p{margin:0}
-  .process-site-footer a{
-    min-height:44px;
-    display:inline-flex;
-    align-items:center;
-    margin-left:.9rem;
-    color:var(--process-ink-mute);
-    pointer-events:auto;
-  }
-  .process-site-footer a:hover{color:var(--process-ink)}
-  .process-site-footer.is-on{opacity:1}
+  .site-footer p{margin:0}
+  .site-footer.is-on{opacity:1}
 
   /* Centered Scroll invitation — same human editorial italic register as Work opening. */
-  .process-scroll-invitation{
+  .scroll-invitation{
     position:absolute;
     z-index:28;
     left:50%;
@@ -1438,27 +1429,27 @@
     flex-direction:column;
     align-items:center;
     gap:.8rem;
-    color:var(--process-ink);
-    font-family:var(--process-display);
+    color:var(--ink);
+    font-family:var(--display);
     font-size:clamp(1.35rem, 1.1rem + 1vw, 2rem);
     font-style:italic;
     font-weight:450;
     line-height:1;
     letter-spacing:0;
     text-shadow:0 2px 18px rgba(4,10,12,.9), 0 0 30px rgba(4,10,12,.55);
-    opacity:var(--process-entry-cue);
-    transform:translate3d(-50%, calc(-50% + (1 - var(--process-entry-cue)) * -1rem), 0);
+    opacity:var(--entry-cue);
+    transform:translate3d(-50%, calc(-50% + (1 - var(--entry-cue)) * -1rem), 0);
     pointer-events:none;
     will-change:opacity,transform;
   }
-  .process-scroll-invitation::after{
+  .scroll-invitation::after{
     content:"";
     display:block;
     width:1px;
     height:clamp(2.7rem, 6vh, 4rem);
     background:linear-gradient(180deg, rgba(232,244,244,.92), rgba(94,231,240,0));
     transform-origin:50% 0;
-    animation:scrollInvitation 1.8s var(--process-ease-enter) infinite;
+    animation:scrollInvitation 1.8s var(--ease-enter) infinite;
   }
   @keyframes scrollInvitation{
     0%,18%{transform:scaleY(.14); opacity:.25}
@@ -1467,25 +1458,25 @@
   }
 
   /* Arrival prelude: hide commercial-stage chrome; corridor + header + Scroll remain. */
-  html[data-process-passage="arrival"] .process-station-rail,
-  html[data-process-passage="arrival"] .station,
-  html[data-process-passage="arrival"] .method-annots,
-  html[data-process-passage="arrival"] .process-distance-hud,
-  html[data-process-passage="arrival"] .process-site-footer{
+  html[data-passage="arrival"] .station-rail,
+  html[data-passage="arrival"] .station,
+  html[data-passage="arrival"] .method-annots,
+  html[data-passage="arrival"] .distance-hud,
+  html[data-passage="arrival"] .site-footer{
     opacity:0 !important;
     visibility:hidden !important;
     pointer-events:none !important;
   }
-  html[data-process-passage="arrival"] .process-scroll-invitation{visibility:visible}
-  html[data-process-passage="process-journey"] .process-scroll-invitation,
-  html:not([data-process-passage]) .process-scroll-invitation{
+  html[data-passage="arrival"] .scroll-invitation{visibility:visible}
+  html[data-passage="journey"] .scroll-invitation,
+  html:not([data-passage]) .scroll-invitation{
     /* entry-cue drives opacity; keep in tree for reverse-scroll restore */
   }
 
   html[data-motion="off"] .method-annot[data-step="1"]{ left:10%; top:44%; }
   html[data-motion="off"] .method-annot[data-step="2"]{ left:30%; top:34%; }
   html[data-motion="off"] .method-annot[data-step="3"]{ left:48%; top:25%; }
-  .process-lightbox{
+  .lightbox{
     position:fixed;
     inset:0;
     z-index:100;
@@ -1496,18 +1487,18 @@
     background:rgba(4,10,12,.92);
     opacity:0;
     visibility:hidden;
-    transition:opacity .3s var(--process-ease-enter), visibility .3s;
+    transition:opacity .3s var(--ease-enter), visibility .3s;
   }
-  .process-lightbox.is-open{opacity:1; visibility:visible}
-  .process-lightbox[hidden]{display:none !important}
-  .process-lightbox.is-open[hidden]{display:flex !important}
-  .process-lightbox-panel{
+  .lightbox.is-open{opacity:1; visibility:visible}
+  .lightbox[hidden]{display:none !important}
+  .lightbox.is-open[hidden]{display:flex !important}
+  .lightbox-panel{
     position:relative;
     max-width:min(1100px, 96vw);
     max-height:92vh;
     outline:none;
   }
-  .process-lightbox-panel img{
+  .lightbox-panel img{
     max-width:100%;
     max-height:78vh;
     width:auto;
@@ -1515,28 +1506,28 @@
     margin:0 auto;
     box-shadow:0 20px 60px rgba(0,0,0,.55);
   }
-  .process-lightbox-close{
+  .lightbox-close{
     position:absolute;
     top:-2.4rem;
     right:0;
     min-height:44px;
     min-width:44px;
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:600;
     font-size:14px;
     letter-spacing:.01em;
-    color:var(--process-ink);
+    color:var(--ink);
   }
-  .process-lightbox-caption{
+  .lightbox-caption{
     margin:.85rem 0 0;
-    font-family:var(--process-reading);
+    font-family:var(--reading);
     font-weight:400;
     font-style:italic;
     font-synthesis:none;
     font-size:clamp(.95rem,.9rem + .2vw,1.08rem);
     line-height:1.4;
     letter-spacing:0;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
     text-align:center;
   }
 
@@ -1556,72 +1547,83 @@
     transform:none !important;
     transition:none !important;
   }
-  html[data-motion="off"] .process-scroll-invitation::after{animation:none; opacity:.72}
-  html[data-motion="off"] .process-intro-veil{opacity:0 !important}
-  html[data-motion="off"] .process-world{opacity:1 !important}
-  html[data-motion="off"] .process-loader-bar,
-  html[data-motion="off"] .process-loader-label{display:none}
+  html[data-motion="off"] .scroll-invitation::after{animation:none; opacity:.72}
+  html[data-motion="off"] .intro-veil{opacity:0 !important}
+  html[data-motion="off"] .world{opacity:1 !important}
+  html[data-motion="off"] .loader-bar,
+  html[data-motion="off"] .loader-label{display:none}
   /* Motion-off keeps baked ga-000.webp electricity; hide live overlay + motion carrier. */
-  html[data-motion="off"] .process-arrival-lightning{
+  html[data-motion="off"] .arrival-lightning{
     display:none;
   }
   html[data-motion="off"] .arrival-motion{
     display:none;
   }
 
-  /* Mobile keeps one active process rest between fixed safe-area controls. */
-  .process-mobile-experience{display:none}
+  /*
+   * COMPOUNDING — maintained asset
+   * Canonical path: index.html — #mobile-experience plus its <=720px render path.
+   * Future consumer: a portrait visitor deciding whether to send Jarrett a site.
+   * Activation: auto-load — @media (max-width:720px) and paintMobileExperience().
+   * Behavioral check: node smoke-test.mjs plus short and long CUA swipes through
+   * the rendered mobile journey; each physical swipe lands exactly one authored
+   * rest: Arrival, Leak, Look, Find, Build, Result, Me, Start, then Services. Copy stays inside an
+   * explicit safe region between header/safe-area top and nav/safe-area bottom;
+   * every handoff keeps one active beat, decoded world pixels, and no stale class.
+   * Retirement: retire when this site no longer uses the Golden Arrival buyer journey on mobile.
+   */
+  .mobile-experience{display:none}
 
   @media (max-width:720px){
     :root{
-      --process-gutter:max(1.1rem, env(safe-area-inset-left));
-      --process-mobile-nav-height:3.25rem;
+      --gutter:max(1.1rem, env(safe-area-inset-left));
+      --mobile-nav-height:3.25rem;
     }
 
     html{scrollbar-width:none}
     html::-webkit-scrollbar{display:none}
     body{overscroll-behavior-y:none}
-    .process-journey{height:calc(100svh + 4480px)}
-    html[data-motion="off"] .process-journey{height:600svh}
-    .process-journey,
-    .process-viewport{
+    .journey{height:calc(100svh + 4480px)}
+    html[data-motion="off"] .journey{height:600svh}
+    .journey,
+    .viewport{
       touch-action:pan-x pinch-zoom;
       overscroll-behavior-y:contain;
     }
     .station,
-    .process-station-rail,
-    .process-distance-hud,
-    .process-site-footer{display:none !important}
-    .process-scroll-invitation{
+    .station-rail,
+    .distance-hud,
+    .site-footer{display:none !important}
+    .scroll-invitation{
       top:50%;
       font-size:clamp(1.35rem, 7vw, 1.7rem);
     }
-    html[data-process-passage="arrival"] .mobile-station-nav,
-    html[data-process-passage="arrival"] .mobile-method-nav,
-    html[data-process-passage="arrival"] .process-mobile-swipe-cue,
-    html[data-process-passage="arrival"] .mobile-copy-stage{
+    html[data-passage="arrival"] .mobile-station-nav,
+    html[data-passage="arrival"] .mobile-method-nav,
+    html[data-passage="arrival"] .mobile-swipe-cue,
+    html[data-passage="arrival"] .mobile-copy-stage{
       opacity:0 !important;
       visibility:hidden !important;
       pointer-events:none !important;
     }
-    html[data-process-passage="process-journey"] .process-scroll-invitation{
+    html[data-passage="journey"] .scroll-invitation{
       /* retired after first rest; entry-cue already 0 */
     }
 
     .progress-bar{display:block}
     .site-header{
       min-height:3.6rem;
-      padding:calc(.82rem + env(safe-area-inset-top)) var(--process-gutter) .7rem;
+      padding:calc(.82rem + env(safe-area-inset-top)) var(--gutter) .7rem;
       background:linear-gradient(180deg, rgba(3,9,11,.86) 0%, rgba(3,9,11,.38) 62%, transparent 100%);
     }
     .wordmark{font-size:.875rem;letter-spacing:.01em}
-    .process-motion-toggle{
+    .motion-toggle{
       min-height:2.75rem;
       font-size:.8125rem;
       font-weight:550;
       letter-spacing:0;
     }
-    .process-work-link{
+    .work-link{
       min-height:2.75rem;
       font-size:.8125rem;
       font-weight:550;
@@ -1639,7 +1641,7 @@
         radial-gradient(ellipse 96% 72% at 50% 45%, transparent 30%, rgba(2,8,10,.38) 100%);
     }
 
-    .process-mobile-experience{
+    .mobile-experience{
       position:absolute;
       inset:0;
       z-index:21;
@@ -1654,15 +1656,15 @@
       background:
         linear-gradient(180deg, transparent 35%, rgba(3,9,11,.16) 49%, rgba(3,9,11,.88) 76%, #03090b 100%),
         radial-gradient(ellipse 100% 62% at 50% 46%, transparent 30%, rgba(3,9,11,.22) 100%);
-      transition:background .6s var(--process-ease-enter), opacity .45s linear;
+      transition:background .6s var(--ease-enter), opacity .45s linear;
     }
-    html[data-process-mobile-station="proof"] .mobile-story-wash{
+    html[data-mobile-station="proof"] .mobile-story-wash{
       background:
         linear-gradient(180deg, rgba(3,9,11,.28) 0%, transparent 24%, transparent 38%, rgba(3,9,11,.55) 58%, rgba(3,9,11,.96) 80%, #03090b 100%),
         radial-gradient(ellipse 92% 50% at 50% 28%, transparent 28%, rgba(3,9,11,.34) 100%);
     }
-    html[data-process-mobile-station="jarrett"] .mobile-story-wash,
-    html[data-process-mobile-station="threshold"] .mobile-story-wash{
+    html[data-mobile-station="jarrett"] .mobile-story-wash,
+    html[data-mobile-station="threshold"] .mobile-story-wash{
       background:
         linear-gradient(180deg, rgba(3,9,11,.20) 0%, transparent 30%, rgba(3,9,11,.18) 46%, rgba(3,9,11,.92) 72%, #03090b 100%),
         radial-gradient(ellipse 100% 64% at 50% 38%, transparent 30%, rgba(3,9,11,.30) 100%);
@@ -1671,8 +1673,8 @@
     .mobile-copy-stage{
       position:absolute;
       z-index:2;
-      left:var(--process-gutter);
-      right:var(--process-gutter);
+      left:var(--gutter);
+      right:var(--gutter);
       top:calc(4.5rem + env(safe-area-inset-top));
       bottom:calc(4.55rem + env(safe-area-inset-bottom));
       pointer-events:none;
@@ -1700,7 +1702,7 @@
       transition:none;
     }
     .mobile-beat.is-active.is-arriving{
-      animation:mobile-beat-reveal-forward var(--process-mobile-beat-erase, .22s) cubic-bezier(.65,0,.35,1) both;
+      animation:mobile-beat-reveal-forward var(--mobile-beat-erase, .22s) cubic-bezier(.65,0,.35,1) both;
     }
     .mobile-beat.is-leaving{
       opacity:1;
@@ -1708,7 +1710,7 @@
       transform:none;
       z-index:2;
       pointer-events:none;
-      animation:mobile-beat-erase-forward var(--process-mobile-beat-erase, .22s) cubic-bezier(.65,0,.35,1) both;
+      animation:mobile-beat-erase-forward var(--mobile-beat-erase, .22s) cubic-bezier(.65,0,.35,1) both;
     }
     .mobile-beat.is-active.is-arriving-backward{
       animation-name:mobile-beat-reveal-backward;
@@ -1740,35 +1742,35 @@
 
     .mobile-kicker{
       margin:0 0 .55rem;
-      font-family:var(--process-reading);
+      font-family:var(--reading);
       font-size:clamp(1rem,4.35vw,1.1rem);
       font-weight:400;
       font-style:italic;
       line-height:1.3;
       letter-spacing:0;
-      color:var(--process-cyan);
+      color:var(--cyan);
     }
     .mobile-title{
       margin:0;
       max-width:100%;
-      font-family:var(--process-display);
+      font-family:var(--display);
       font-size:clamp(3rem,13.35vw,3.42rem);
       font-weight:400;
       font-optical-sizing:auto;
       line-height:.92;
       letter-spacing:0;
-      color:var(--process-ink);
+      color:var(--ink);
     }
-    .mobile-beat[data-process-mobile-beat="leak"] .mobile-title{
+    .mobile-beat[data-mobile-beat="leak"] .mobile-title{
       font-size:clamp(2.62rem,11.75vw,3rem);
       line-height:.93;
     }
-    .mobile-beat[data-process-mobile-beat="method-find"] .mobile-title{
+    .mobile-beat[data-mobile-beat="method-find"] .mobile-title{
       font-size:clamp(2.72rem,12.2vw,3.15rem);
       max-width:11.5ch;
     }
-    .mobile-beat[data-process-mobile-beat="jarrett"] .mobile-title,
-    .mobile-beat[data-process-mobile-beat="threshold"] .mobile-title{
+    .mobile-beat[data-mobile-beat="jarrett"] .mobile-title,
+    .mobile-beat[data-mobile-beat="threshold"] .mobile-title{
       font-size:clamp(2.8rem,12.55vw,3.2rem);
     }
     .mobile-proof-figure{
@@ -1777,16 +1779,16 @@
       font-variant-numeric:tabular-nums;
       white-space:nowrap;
     }
-    .mobile-proof-figure span{color:var(--process-amber)}
+    .mobile-proof-figure span{color:var(--amber)}
     .mobile-body{
       margin:.85rem 0 0;
       max-width:32ch;
-      font-family:var(--process-reading);
+      font-family:var(--reading);
       font-size:clamp(1.075rem,4.65vw,1.2rem);
       font-weight:400;
       line-height:1.42;
       letter-spacing:0;
-      color:var(--process-ink-soft);
+      color:var(--ink-soft);
       text-wrap:pretty;
     }
     .mobile-proof-link{
@@ -1794,55 +1796,55 @@
       min-height:2.75rem;
       margin-top:.65rem;
       border-bottom:1px solid rgba(94,231,240,.55);
-      font-family:var(--process-text);
+      font-family:var(--text);
       font-size:.9rem;
       font-weight:600;
       line-height:1;
       letter-spacing:0;
-      color:var(--process-ink);
+      color:var(--ink);
     }
     .mobile-qualifier,
     .mobile-whisper{
       margin:.5rem 0 0;
       max-width:36ch;
-      font-family:var(--process-reading);
+      font-family:var(--reading);
       font-size:clamp(.9rem,3.8vw,.98rem);
       font-style:italic;
       line-height:1.36;
       letter-spacing:0;
-      color:var(--process-ink-mute);
+      color:var(--ink-mute);
     }
     /* Directly under the mobile threshold heading; keep touch line box, tighten top only. */
     .mobile-email{
       align-self:flex-start;
       min-height:2.75rem;
       margin-top:.45rem;
-      border-bottom:2px solid var(--process-amber);
-      font-family:var(--process-text);
+      border-bottom:2px solid var(--amber);
+      font-family:var(--text);
       font-size:clamp(1.05rem,4.55vw,1.2rem);
       font-weight:650;
       line-height:2.55rem;
       letter-spacing:0;
-      color:var(--process-ink);
+      color:var(--ink);
       white-space:nowrap;
     }
     /* Secondary booking path on Start — subordinate to .mobile-email */
     .mobile-book{
       margin:.45rem 0 0;
       max-width:32ch;
-      font-family:var(--process-reading);
+      font-family:var(--reading);
       font-weight:400;
       font-size:clamp(.9rem,3.8vw,.98rem);
       line-height:1.4;
       letter-spacing:0;
-      color:var(--process-ink-mute);
+      color:var(--ink-mute);
     }
     .mobile-book-link{
       position:relative;
       display:inline;
-      font-family:var(--process-text);
+      font-family:var(--text);
       font-weight:500;
-      color:var(--process-cyan);
+      color:var(--cyan);
       border-bottom:1px solid rgba(94,231,240,.42);
     }
     .mobile-book-link::before{
@@ -1856,16 +1858,16 @@
       min-width:44px;
     }
     .mobile-book-link:focus-visible{
-      outline:2px solid var(--process-cyan);
+      outline:2px solid var(--cyan);
       outline-offset:3px;
-      border-bottom-color:var(--process-cyan);
+      border-bottom-color:var(--cyan);
     }
-    .mobile-beat[data-process-mobile-beat="proof"],
-    .mobile-beat[data-process-mobile-beat="threshold"],
-    .mobile-beat[data-process-mobile-beat="services"]{
+    .mobile-beat[data-mobile-beat="proof"],
+    .mobile-beat[data-mobile-beat="threshold"],
+    .mobile-beat[data-mobile-beat="services"]{
       padding-bottom:.05rem;
     }
-    .mobile-beat[data-process-mobile-beat="services"] .mobile-title{
+    .mobile-beat[data-mobile-beat="services"] .mobile-title{
       font-size:clamp(2.35rem,10.8vw,2.85rem);
     }
     .mobile-services-list{
@@ -1878,12 +1880,12 @@
       position:relative;
       margin:0;
       padding:.28rem 0 .28rem 0;
-      font-family:var(--process-text);
+      font-family:var(--text);
       font-size:clamp(.98rem,4.2vw,1.08rem);
       font-weight:500;
       line-height:1.32;
       letter-spacing:0;
-      color:var(--process-ink-soft);
+      color:var(--ink-soft);
     }
     .mobile-services-list li + li{
       border-top:1px solid rgba(232,244,244,.12);
@@ -1898,12 +1900,12 @@
       margin-top:.55rem;
       min-height:44px;
       padding:.1em 0 .18em;
-      font-family:var(--process-text);
+      font-family:var(--text);
       font-weight:500;
       font-size:clamp(.95rem,4.05vw,1.04rem);
       line-height:1.35;
       letter-spacing:0;
-      color:var(--process-ink-mute);
+      color:var(--ink-mute);
       max-width:100%;
     }
     .mobile-work-invite::after{
@@ -1913,20 +1915,20 @@
       right:0;
       bottom:0;
       height:1px;
-      background:linear-gradient(90deg, var(--process-cyan), rgba(94,231,240,.12));
+      background:linear-gradient(90deg, var(--cyan), rgba(94,231,240,.12));
       transform:scaleX(.2);
       transform-origin:left center;
       opacity:.5;
-      transition:transform .4s var(--process-ease-enter), opacity .25s ease;
+      transition:transform .4s var(--ease-enter), opacity .25s ease;
     }
     .mobile-work-invite .work-invite-arrow{
       display:inline-block;
-      color:var(--process-cyan);
-      transition:transform .28s var(--process-ease-enter);
+      color:var(--cyan);
+      transition:transform .28s var(--ease-enter);
     }
     .mobile-work-invite:hover,
     .mobile-work-invite:focus-visible{
-      color:var(--process-cyan);
+      color:var(--cyan);
     }
     .mobile-work-invite:hover::after,
     .mobile-work-invite:focus-visible::after{
@@ -1938,38 +1940,38 @@
       transform:translateX(.16em);
     }
     .mobile-work-invite:focus-visible{
-      outline:2px solid var(--process-cyan);
+      outline:2px solid var(--cyan);
       outline-offset:3px;
     }
 
-    .process-mobile-swipe-cue{
+    .mobile-swipe-cue{
       position:absolute;
       z-index:3;
-      right:var(--process-gutter);
+      right:var(--gutter);
       top:calc(4.5rem + env(safe-area-inset-top));
       bottom:auto;
       margin:0;
-      font-family:var(--process-reading);
+      font-family:var(--reading);
       font-size:.95rem;
       font-style:italic;
       line-height:1;
       letter-spacing:0;
-      color:var(--process-ink-soft);
+      color:var(--ink-soft);
       opacity:0;
       transform:translateY(.3rem);
       transition:none;
     }
-    .process-mobile-swipe-cue.is-on{
+    .mobile-swipe-cue.is-on{
       opacity:1;
       transform:none;
-      transition:opacity .35s linear, transform .5s var(--process-ease-enter);
+      transition:opacity .35s linear, transform .5s var(--ease-enter);
     }
 
     .mobile-nav{
       position:absolute;
       z-index:4;
-      left:var(--process-gutter);
-      right:var(--process-gutter);
+      left:var(--gutter);
+      right:var(--gutter);
       bottom:calc(.72rem + env(safe-area-inset-bottom));
       display:grid;
       gap:.38rem;
@@ -1983,12 +1985,12 @@
       visibility:hidden;
       pointer-events:none;
     }
-    html[data-process-mobile-station="method"] .mobile-station-nav{
+    html[data-mobile-station="method"] .mobile-station-nav{
       opacity:0;
       visibility:hidden;
       pointer-events:none;
     }
-    html[data-process-mobile-station="method"] .mobile-method-nav{
+    html[data-mobile-station="method"] .mobile-method-nav{
       opacity:1;
       visibility:visible;
       pointer-events:auto;
@@ -1996,15 +1998,15 @@
     .mobile-nav button{
       position:relative;
       min-width:0;
-      min-height:var(--process-mobile-nav-height);
+      min-height:var(--mobile-nav-height);
       padding:.76rem 0 0;
-      font-family:var(--process-text);
+      font-family:var(--text);
       font-size:clamp(.72rem,3.1vw,.8rem);
       font-weight:550;
       line-height:1;
       letter-spacing:0;
       text-align:left;
-      color:var(--process-ink-mute);
+      color:var(--ink-mute);
     }
     .mobile-nav button::before,
     .mobile-nav button::after{
@@ -2021,17 +2023,17 @@
       width:0;
       height:3px;
       top:-1px;
-      background:var(--process-cyan);
+      background:var(--cyan);
       box-shadow:0 0 8px rgba(94,231,240,.4);
       transition:width .45s cubic-bezier(.16,1,.3,1), background .3s ease;
     }
-    .mobile-nav button.is-past{color:var(--process-ink-soft)}
+    .mobile-nav button.is-past{color:var(--ink-soft)}
     .mobile-nav button.is-past::after{width:100%;background:rgba(94,231,240,.55)}
-    .mobile-nav button.is-active{color:var(--process-ink)}
-    .mobile-nav button.is-active::after{width:100%;background:var(--process-amber)}
+    .mobile-nav button.is-active{color:var(--ink)}
+    .mobile-nav button.is-active::after{width:100%;background:var(--amber)}
     .mobile-nav button:focus-visible{
       outline:none;
-      color:var(--process-ink);
+      color:var(--ink);
       text-decoration:underline;
       text-decoration-thickness:1px;
       text-underline-offset:.35rem;
@@ -2047,14 +2049,14 @@
       .mobile-title{
         font-size:clamp(2.35rem,11.2vw,2.9rem);
       }
-      .mobile-beat[data-process-mobile-beat="leak"] .mobile-title{
+      .mobile-beat[data-mobile-beat="leak"] .mobile-title{
         font-size:clamp(2.05rem,9.8vw,2.45rem);
       }
-      .mobile-beat[data-process-mobile-beat="method-find"] .mobile-title{
+      .mobile-beat[data-mobile-beat="method-find"] .mobile-title{
         font-size:clamp(2.25rem,10.6vw,2.75rem);
       }
-      .mobile-beat[data-process-mobile-beat="jarrett"] .mobile-title,
-      .mobile-beat[data-process-mobile-beat="threshold"] .mobile-title{
+      .mobile-beat[data-mobile-beat="jarrett"] .mobile-title,
+      .mobile-beat[data-mobile-beat="threshold"] .mobile-title{
         font-size:clamp(2.25rem,10.8vw,2.75rem);
       }
       .mobile-proof-figure{
@@ -2094,8 +2096,8 @@
     @media (max-height:520px){
       .mobile-kicker{margin-bottom:.28rem;font-size:.88rem}
       .mobile-title{font-size:clamp(1.95rem,9.6vw,2.35rem);line-height:.94}
-      .mobile-beat[data-process-mobile-beat="leak"] .mobile-title{font-size:clamp(1.72rem,8.6vw,2.05rem)}
-      .mobile-beat[data-process-mobile-beat="method-find"] .mobile-title{font-size:clamp(1.9rem,9.2vw,2.25rem)}
+      .mobile-beat[data-mobile-beat="leak"] .mobile-title{font-size:clamp(1.72rem,8.6vw,2.05rem)}
+      .mobile-beat[data-mobile-beat="method-find"] .mobile-title{font-size:clamp(1.9rem,9.2vw,2.25rem)}
       .mobile-body{margin-top:.4rem;font-size:.94rem;line-height:1.32;max-width:34ch}
       .mobile-proof-figure{font-size:clamp(2.15rem,10.5vw,2.55rem)}
       .mobile-email{margin-top:.22rem;font-size:.95rem;line-height:2.1rem}
@@ -2107,44 +2109,44 @@
         margin-top:.22rem;
         font-size:.86rem;
       }
-      .mobile-beat[data-process-mobile-beat="services"] .mobile-title{
+      .mobile-beat[data-mobile-beat="services"] .mobile-title{
         font-size:clamp(1.85rem,9vw,2.2rem);
       }
     }
 
-    .process-note-mount{display:none !important}
-    .process-console-spill{
+    .note-mount{display:none !important}
+    .console-spill{
       top:25.5%;
       width:min(98vw, 26rem);
       height:min(38vh, 18rem);
       transform:translate(-50%, 8%);
     }
-    .process-console-mount{
+    .console-mount{
       left:50%;
       top:26%;
       width:min(88vw, 23rem);
       transform:translate(-50%,-50%) rotateY(-2deg) rotateX(1deg);
     }
     .console-housing{padding:10px}
-    .process-loader-bar{width:min(140px,36vw)}
+    .loader-bar{width:min(140px,36vw)}
 
-    .process-lightbox{
+    .lightbox{
       align-items:stretch;
       justify-content:stretch;
       padding:0;
       background:rgba(3,9,11,.97);
     }
-    .process-lightbox-panel{
+    .lightbox-panel{
       display:grid;
       grid-template-rows:auto minmax(0,1fr) auto;
       width:100%;
       height:100svh;
       max-width:none;
       max-height:none;
-      padding:calc(.8rem + env(safe-area-inset-top)) var(--process-gutter) calc(1rem + env(safe-area-inset-bottom));
+      padding:calc(.8rem + env(safe-area-inset-top)) var(--gutter) calc(1rem + env(safe-area-inset-bottom));
       overflow:hidden;
     }
-    .process-lightbox-close{
+    .lightbox-close{
       position:static;
       grid-row:1;
       justify-self:end;
@@ -2154,7 +2156,7 @@
       font-size:.875rem;
       letter-spacing:0;
     }
-    .process-lightbox-panel img{
+    .lightbox-panel img{
       grid-row:2;
       align-self:center;
       width:100%;
@@ -2164,7 +2166,7 @@
       box-shadow:0 20px 60px rgba(0,0,0,.55), 0 0 0 1px rgba(232,244,244,.08);
       touch-action:pinch-zoom;
     }
-    .process-lightbox-caption{
+    .lightbox-caption{
       grid-row:3;
       margin:.8rem auto 0;
       max-width:32ch;
@@ -2174,12 +2176,12 @@
     body.lightbox-open{overflow:hidden}
   }
 
-  .process-no-js-route{
+  .no-js-route{
     display:none;
     position:relative;
     min-height:100vh;
-    color:var(--process-ink);
-    background:var(--process-void);
+    color:var(--ink);
+    background:var(--void);
     overflow-x:hidden;
   }
   .no-js-wash{
@@ -2197,7 +2199,7 @@
     z-index:1;
     max-width:42rem;
     margin:0 auto;
-    padding:clamp(1.4rem,4vh,2.4rem) var(--process-gutter) clamp(2.5rem,6vh,4rem);
+    padding:clamp(1.4rem,4vh,2.4rem) var(--gutter) clamp(2.5rem,6vh,4rem);
   }
   .no-js-stack .wordmark{margin:0 0 clamp(1.6rem,4vh,2.4rem)}
   .no-js-stack .display{
@@ -2209,68 +2211,37 @@
   .no-js-stack .invite-email{opacity:1; transform:none; display:inline-block}
   .no-js-stack footer{
     margin-top:clamp(2rem,5vh,3rem);
-    font-family:var(--process-text);
+    font-family:var(--text);
     font-weight:500;
     font-size:13px;
     letter-spacing:.01em;
-    color:var(--process-ink-mute);
+    color:var(--ink-mute);
   }
-  .no-js-stack .process-work-link{
+  .no-js-stack .work-link{
     display:inline-flex;
     margin:0 0 1.1rem;
     border-bottom:1px solid rgba(94,231,240,.55);
-    color:var(--process-ink);
+    color:var(--ink);
   }
-  .no-js-project{padding:1.8rem 0;border-top:1px solid rgba(232,244,244,.14)}
-  .no-js-project h2{margin:.35rem 0 .75rem;font:500 clamp(2rem,5vw,3rem)/1 var(--process-display)}
-  .no-js-project img{width:100%;height:auto;margin:1rem 0}
-  .no-js-project a{border-bottom:1px solid rgba(94,231,240,.5)}
 </style>
 </head>
 <body>
-  <div class="process-work-exit-veil" id="process-work-exit-veil" aria-hidden="true"></div>
+  <div class="work-exit-veil" id="work-exit-veil" aria-hidden="true"></div>
   <noscript>
     <style>
-      #portfolio-passage, #process-journey, #process-lightbox{display:none !important}
-      .process-no-js-route{display:block !important}
+      #journey, #lightbox{display:none !important}
+      .no-js-route{display:block !important}
       body{overflow:auto !important; min-height:100%}
     </style>
   </noscript>
 
-  <main class="process-no-js-route" id="process-no-js-route" aria-label="Readable page without JavaScript">
+  <main class="no-js-route" id="no-js-route" aria-label="Readable page without JavaScript">
     <div class="no-js-wash" aria-hidden="true"></div>
     <div class="no-js-stack">
       <p class="wordmark">Jarrett Wroten</p>
-      <p class="station-kicker">Work</p>
-      <h1 class="display">Conversion-driven websites built around the next decision.</h1>
-      <article class="no-js-project">
-        <h2>Generations Kitchen</h2>
-        <p>Restaurant Concept</p>
-        <p>The concept lets the food lead before the menu.</p>
-        <img src="assets/work/generations/hurricane-fries-desktop.jpg" alt="Hurricane fries prepared for service at Generations Kitchen." width="1728" height="972">
-        <p><a href="work/generations-kitchen/">Read the Generations Kitchen case study</a></p>
-      </article>
-      <article class="no-js-project">
-        <h2>Pā‘ina Café</h2>
-        <p>Restaurant Concept</p>
-        <p>Pā‘ina means gathering. The kitchen in motion becomes the invitation.</p>
-        <img src="assets/work/paina/opening-desktop-poster.jpg" alt="Three kitchen moments in the Pā‘ina Café concept." width="1920" height="1080" loading="lazy">
-        <p><a href="work/paina-cafe/">Read the Pā‘ina Café case study</a></p>
-      </article>
-      <article class="no-js-project">
-        <h2>Rana Levy</h2>
-        <p>Pending Engagement. The concept is built around the hand, the cut, and the way a gem changes in the light.</p>
-        <img src="assets/work/rana/studio-poster.jpg" alt="Hands wearing gold rings with cut gemstones in the light." width="1280" height="640" loading="lazy">
-        <p><a href="work/rana-levy/">Read the Rana Levy case study</a></p>
-      </article>
-      <article class="no-js-project">
-        <h2>Dylan Prorok</h2>
-        <p>Tattoo Artist - In Progress. The concept is built around scale, body flow, and the choice to start a long project.</p>
-        <img src="demos/dylan-prorok/dylan-portrait.jpg" alt="Dylan Prorok tattooing in the studio." width="617" height="849" loading="lazy">
-        <p><a href="work/dylan-prorok/">Read the Dylan Prorok case study</a></p>
-      </article>
+      <a class="work-link" href="work/">My Work</a>
       <p class="station-kicker">The Leak</p>
-      <h2 class="display">I find where your business quietly loses customers. Then I build you the fix.</h2>
+      <h1 class="display">I find where your business quietly loses customers. Then I build you the fix.</h1>
       <div class="text">
         <p>I follow the path from first click to sale, find where people drop out, and build the finished fix.</p>
       </div>
@@ -2309,209 +2280,23 @@
           <li>Landing Pages &amp; Follow-Up Systems</li>
         </ol>
       </div>
-      <footer><p>Jarrett Wroten · Las Vegas · <a href="privacy/">Privacy</a></p></footer>
+      <footer><p>Jarrett Wroten · Las Vegas</p></footer>
     </div>
   </main>
 
-  <!-- The approved /work/ oracle, namespaced as the homepage's first sticky passage. -->
-  <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
-      <defs>
-        <filter id="portfolio-gradeNightInk" color-interpolation-filters="sRGB">
-          <feColorMatrix type="matrix" values="
-            .2126 .7152 .0722 0 0
-            .2126 .7152 .0722 0 0
-            .2126 .7152 .0722 0 0
-            0 0 0 1 0"/>
-          <feComponentTransfer>
-            <feFuncR type="table" tableValues=".937 .698 .549 .078 .078"/>
-            <feFuncG type="table" tableValues=".906 .400 .184 .063 .063"/>
-            <feFuncB type="table" tableValues=".847 .330 .133 .055 .055"/>
-          </feComponentTransfer>
-        </filter>
-      </defs>
-    </svg>
-  <div class="portfolio-passage" id="portfolio-passage" role="region" aria-label="Portfolio passage">
-      <div class="portfolio-viewport" id="portfolio-viewport" aria-label="Portfolio passage through Generations Kitchen, Pā‘ina Café, Rana Levy, Dylan Prorok, and the process">
-        <div class="portfolio-world-stack" aria-hidden="true">
-          <canvas class="portfolio-mobile-scene-plate" id="portfolio-mobile-scene-plate"></canvas>
-          <!-- Media stays isolated by project so a carrier can be replaced without rewriting the passage. -->
-          <div class="portfolio-layer portfolio-layer-generations" id="portfolio-layer-generations">
-            <div class="portfolio-generations-media">
-              <picture>
-                <source media="(max-width:720px)" srcset="assets/work/generations/hurricane-fries-mobile.jpg">
-                <img class="portfolio-generations-poster" id="portfolio-generations-poster" src="assets/work/generations/hurricane-fries-desktop.jpg" alt="" width="1728" height="972" decoding="async" fetchpriority="high">
-              </picture>
-              <video
-                class="portfolio-generations-video"
-                id="portfolio-generations-video"
-                data-video
-                data-once
-                muted playsinline preload="none"
-                width="1728" height="972">
-                <source media="(max-width:720px)" src="assets/work/generations/hurricane-fries-mobile-3p6.mp4" type="video/mp4">
-                <source media="(min-width:721px)" src="assets/work/generations/hurricane-fries-desktop-3p6.mp4" type="video/mp4">
-              </video>
-              <div class="portfolio-generations-wash"></div>
-            </div>
-          </div>
-
-          <div class="portfolio-layer portfolio-layer-paina" id="portfolio-layer-paina">
-            <div class="portfolio-paina-media">
-              <picture>
-                <source media="(max-width:720px)" srcset="assets/work/paina/opening-mobile-entry-2p4.jpg">
-                <img class="portfolio-paina-poster" id="portfolio-paina-poster" src="assets/work/paina/opening-desktop-poster.jpg" alt="" width="1920" height="1080" decoding="async">
-              </picture>
-              <video
-                class="portfolio-paina-video"
-                id="portfolio-paina-video"
-                data-video
-                data-once
-                muted playsinline preload="none"
-                width="1920" height="1080">
-                <source media="(max-width:720px)" src="assets/work/paina/opening-mobile-from-2p4.mp4" type="video/mp4">
-                <source media="(min-width:721px)" src="assets/work/paina/opening-desktop.mp4" type="video/mp4">
-              </video>
-              <div class="portfolio-paina-wash"></div>
-            </div>
-          </div>
-
-          <div class="portfolio-layer portfolio-layer-rana" id="portfolio-layer-rana">
-            <div class="portfolio-rana-media">
-              <img class="portfolio-media-fill portfolio-rana-studio" id="portfolio-rana-poster" src="assets/work/rana/studio-poster.jpg" alt="" width="1280" height="640" decoding="async">
-              <video
-                class="portfolio-media-fill portfolio-rana-studio"
-                id="portfolio-rana-studio-video"
-                data-video
-                src="assets/work/rana/studio-banner.mp4"
-                poster="assets/work/rana/studio-poster.jpg"
-                muted loop playsinline preload="none"
-                width="1280" height="640"></video>
-              <img class="portfolio-rana-opening" src="assets/work/rana/studio-opening.jpg" alt="" width="1280" height="640" decoding="async">
-              <div class="portfolio-rana-ring-stage" id="portfolio-rana-ring-stage">
-                <img class="portfolio-media-fill" id="portfolio-ring-poster" src="assets/work/rana/ring-poster.jpg" alt="" width="720" height="720" decoding="async">
-                <video
-                  class="portfolio-media-fill"
-                  id="portfolio-rana-ring-video"
-                  data-video
-                  src="assets/work/rana/ring-alexandrite.mp4"
-                  poster="assets/work/rana/ring-poster.jpg"
-                  muted loop playsinline preload="none"
-                  width="720" height="720"></video>
-              </div>
-              <div class="portfolio-rana-bloom"></div>
-              <div class="portfolio-rana-wash"></div>
-            </div>
-          </div>
-
-          <div class="portfolio-layer portfolio-layer-prorok" id="portfolio-layer-prorok">
-            <div class="portfolio-prorok-media">
-              <img class="portfolio-media-fill portfolio-prorok-ink" id="portfolio-prorok-poster" src="demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
-              <video
-                class="portfolio-media-fill portfolio-prorok-ink"
-                id="portfolio-prorok-ink-video"
-                data-video
-                src="demos/dylan-prorok/sakura-ink-bloom.mp4"
-                poster="demos/dylan-prorok/dylan-portrait.jpg"
-                muted loop playsinline preload="none"
-                width="960" height="540"></video>
-              <img class="portfolio-prorok-portrait" id="portfolio-prorok-portrait" src="demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
-              <div class="portfolio-prorok-seal" aria-hidden="true"></div>
-              <div class="portfolio-prorok-wash"></div>
-            </div>
-          </div>
-
-          <div class="portfolio-layer portfolio-layer-terminal" id="portfolio-layer-terminal" aria-hidden="true">
-            <img class="portfolio-terminal-return" id="portfolio-terminal-return" src="assets/golden-arrival/frames/ga-360.webp" alt="" width="1280" height="720" decoding="async">
-            <div class="portfolio-terminal-energy"></div>
-            <div class="portfolio-terminal-threshold"></div>
-            <div class="portfolio-terminal-vignette"></div>
-            <div class="portfolio-terminal-wash"></div>
-          </div>
-
-          <div class="portfolio-grain"></div>
-          <div class="portfolio-enter-veil" id="portfolio-enter-veil"></div>
-        </div>
-
-        <div class="portfolio-ui">
-          <div class="portfolio-progress-hairline" aria-hidden="true"><span id="portfolio-progress-fill"></span></div>
-          <header class="portfolio-site-header">
-            <a class="portfolio-wordmark" href="/" aria-label="Jarrett Wroten home">Jarrett Wroten</a>
-            <div class="portfolio-header-tools">
-              <a class="portfolio-nav-link portfolio-is-current" href="work/" data-role="work-label">Work</a>
-              <a class="portfolio-nav-link" href="#process-journey" id="portfolio-back-home" data-role="portfolio-back-home">Process</a>
-              <button type="button" class="portfolio-motion-toggle" id="portfolio-motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">Motion on</button>
-              <script>
-              (function () {
-                var on = document.documentElement.getAttribute("data-motion") === "on";
-                var b = document.getElementById("portfolio-motion-toggle");
-                if (!b) return;
-                b.setAttribute("aria-pressed", on ? "true" : "false");
-                b.textContent = on ? "Motion on" : "Motion off";
-                b.setAttribute("aria-label", on ? "Motion is on. Activate to turn motion off." : "Motion is off. Activate to enable full motion.");
-              })();
-              </script>
-            </div>
-          </header>
-
-          <div class="portfolio-scene-copy portfolio-scene-copy--generations" id="portfolio-copy-generations">
-            <h1 class="portfolio-scene-name"><a href="work/generations-kitchen/" aria-label="Read the Generations Kitchen case study">Generations Kitchen</a></h1>
-            <p class="portfolio-scene-line">The concept lets the food lead before the menu.</p>
-            <a class="portfolio-scene-link" href="https://generations.jarrettwroten.com/" rel="noopener">Explore the restaurant concept</a>
-            <p class="portfolio-scene-disclosure">Restaurant Concept</p>
-          </div>
-
-          <div class="portfolio-scene-copy portfolio-scene-copy--paina" id="portfolio-copy-paina">
-            <h2 class="portfolio-scene-name"><a href="work/paina-cafe/" aria-label="Read the Pā‘ina Café case study">Pā‘ina Café</a></h2>
-            <p class="portfolio-scene-line">Pā‘ina means gathering. The kitchen in motion—mochi, poke, and the handoff—becomes the invitation.</p>
-            <a class="portfolio-scene-link" href="https://paina.jarrettwroten.com/" rel="noopener">Explore the restaurant concept</a>
-            <p class="portfolio-scene-disclosure">Restaurant Concept</p>
-          </div>
-
-          <div class="portfolio-scene-copy portfolio-scene-copy--rana" id="portfolio-copy-rana">
-            <h2 class="portfolio-scene-name"><a href="work/rana-levy/" aria-label="Read the Rana Levy case study">Rana Levy</a></h2>
-            <p class="portfolio-scene-line">Rana cuts each stone by hand. So I built the concept around the hand, the cut, and the way a gem changes in the light.</p>
-            <ul class="portfolio-scene-paths" aria-label="Paths in the Rana concept">
-              <li>Ready Now</li>
-              <li>Made To Order</li>
-              <li>Custom Consultation</li>
-            </ul>
-            <a class="portfolio-scene-link" href="https://rana.jarrettwroten.com/" rel="noopener">Explore the concept</a>
-            <p class="portfolio-scene-disclosure">Pending Engagement</p>
-          </div>
-
-          <div class="portfolio-scene-copy portfolio-scene-copy--prorok" id="portfolio-copy-prorok">
-            <h2 class="portfolio-scene-name"><a href="work/dylan-prorok/" aria-label="Read the Dylan Prorok case study">Dylan Prorok</a></h2>
-            <p class="portfolio-scene-line">A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.</p>
-            <a class="portfolio-scene-link" href="https://prorok.jarrettwroten.com/" rel="noopener">Visit the concept</a>
-            <p class="portfolio-scene-disclosure">Tattoo Artist - In Progress.</p>
-          </div>
-
-          <div class="portfolio-scene-copy portfolio-scene-copy--terminal" id="portfolio-copy-terminal">
-            <h2 class="portfolio-scene-name">See the process.</h2>
-            <p class="portfolio-scene-line">Continue into the leak, the rebuild, and one result from the process.</p>
-            <div class="portfolio-scene-actions">
-              <a class="portfolio-scene-action" href="#process-journey">Continue to the process</a>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-  <script src="assets/portfolio-root.js"></script>
-
-
-  <div class="process-journey" id="process-journey">
-    <div class="process-viewport" id="process-viewport" aria-label="The Golden Arrival, continuous corridor">
-      <div class="process-world" id="process-world" aria-hidden="true">
-        <img class="world-frame is-active" id="process-world-frame-a" alt="" width="1280" height="720" decoding="async" loading="lazy" src="assets/golden-arrival/frames/ga-000.webp">
-        <img class="world-frame" id="process-world-frame-b" alt="" width="1280" height="720" decoding="async">
+  <div class="journey" id="journey">
+    <div class="viewport" id="viewport" aria-label="The Golden Arrival, continuous corridor">
+      <div class="world" id="world" aria-hidden="true">
+        <img class="world-frame is-active" id="world-frame-a" alt="" width="1280" height="720" decoding="async" src="assets/golden-arrival/frames/ga-000.webp">
+        <img class="world-frame" id="world-frame-b" alt="" width="1280" height="720" decoding="async">
         <!-- Living Arrival carrier: exact Work corridor loop. Frame-zero poster underneath remains the composed fallback. -->
         <video
           class="arrival-motion"
-          id="process-arrival-motion-video"
+          id="arrival-motion-video"
           data-video
           src="assets/work/corridor-entry-loop.mp4"
           poster="assets/golden-arrival/frames/ga-000.webp"
-          muted loop playsinline preload="none"
+          autoplay muted loop playsinline preload="auto"
           width="1280" height="720"
           aria-hidden="true"
           disablepictureinpicture
@@ -2519,14 +2304,14 @@
           tabindex="-1"></video>
         <!-- Geometry-locked live lightning: charge travels + bolt paths morph. Motion-off hides this; baked ga-000.webp electricity remains. -->
         <svg
-          class="process-arrival-lightning"
-          id="process-arrival-lightning"
+          class="arrival-lightning"
+          id="arrival-lightning"
           viewBox="0 0 1280 720"
           preserveAspectRatio="xMidYMid slice"
           aria-hidden="true"
           focusable="false">
           <defs>
-            <filter id="process-arrivalBoltGlow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+            <filter id="arrivalBoltGlow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
               <feGaussianBlur in="SourceGraphic" stdDeviation="1.7" result="boltBlur"/>
               <feMerge>
                 <feMergeNode in="boltBlur"/>
@@ -2535,7 +2320,7 @@
             </filter>
           </defs>
           <!-- Left bolt lineage ≈ (590,237) → upper-left diagonal → x≈545..560 @ y≈375 -->
-          <g class="bolt bolt--process-left" filter="url(#process-arrivalBoltGlow)">
+          <g class="bolt bolt--left" filter="url(#arrivalBoltGlow)">
             <path class="bolt-halo" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
               <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
                 M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
@@ -2570,7 +2355,7 @@
             </path>
           </g>
           <!-- Right bolt lineage ≈ (686,237) → upper-right diagonal → x≈720..735 @ y≈375 -->
-          <g class="bolt bolt--process-right" filter="url(#process-arrivalBoltGlow)">
+          <g class="bolt bolt--right" filter="url(#arrivalBoltGlow)">
             <path class="bolt-halo" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
               <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
                 M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
@@ -2605,17 +2390,17 @@
             </path>
           </g>
         </svg>
-        <div class="process-console-spill" id="process-console-spill" aria-hidden="true"></div>
-        <div class="process-console-mount" id="process-console-mount">
+        <div class="console-spill" id="console-spill" aria-hidden="true"></div>
+        <div class="console-mount" id="console-mount">
           <div class="console-housing">
-            <button type="button" class="process-console-screen" id="process-console-screen" data-lightbox="stripe" aria-haspopup="dialog" aria-label="Open the full Stripe view. Gross volume $40,114.81.">
-              <img src="assets/stripe-growth-focal.png" alt="Stripe growth comparison for one Las Vegas service business: gross volume $40,114.81, up 104.51% from $19,615.40; net volume $37,914.00, up 108.02% from $18,225.83. May 15 to June 15, 2026." width="503" height="244" decoding="async" loading="lazy">
+            <button type="button" class="console-screen" id="console-screen" data-lightbox="stripe" aria-haspopup="dialog" aria-label="Open the full Stripe view. Gross volume $40,114.81.">
+              <img src="assets/stripe-growth-focal.png" alt="Stripe growth comparison for one Las Vegas service business: gross volume $40,114.81, up 104.51% from $19,615.40; net volume $37,914.00, up 108.02% from $18,225.83. May 15 to June 15, 2026." width="503" height="244" decoding="async">
             </button>
           </div>
         </div>
-        <div class="process-note-mount" id="process-note-mount">
-          <button type="button" class="process-note-device" id="process-note-device" data-lightbox="note" aria-haspopup="dialog" aria-label="Open client note about payroll being covered">
-            <img src="image0000002.jpg" alt="Client note: they officially made payroll and no more money is coming out of savings." width="1200" height="623" decoding="async" loading="lazy">
+        <div class="note-mount" id="note-mount">
+          <button type="button" class="note-device" id="note-device" data-lightbox="note" aria-haspopup="dialog" aria-label="Open client note about payroll being covered">
+            <img src="image0000002.jpg" alt="Client note: they officially made payroll and no more money is coming out of savings." width="1200" height="623" decoding="async">
           </button>
           <p class="note-device-caption">The next morning, they said payroll was covered.</p>
         </div>
@@ -2623,21 +2408,21 @@
         <div class="world-grain"></div>
       </div>
 
-      <div class="process-intro-veil" id="process-intro-veil" aria-hidden="true"></div>
-      <div class="process-loader-label" id="process-loader-label" aria-hidden="true">Opening the story</div>
-      <div class="process-loader-bar" id="process-loader-bar" aria-hidden="true"><span></span></div>
+      <div class="intro-veil" id="intro-veil" aria-hidden="true"></div>
+      <div class="loader-label" id="loader-label" aria-hidden="true">Opening the story</div>
+      <div class="loader-bar" id="loader-bar" aria-hidden="true"><span></span></div>
 
       <div class="ui">
-        <div class="progress-bar" aria-hidden="true"><span id="process-progress-fill"></span></div>
+        <div class="progress-bar" aria-hidden="true"><span id="progress-fill"></span></div>
         <header class="site-header">
           <div class="wordmark">Jarrett Wroten</div>
           <div class="header-tools">
-            <a class="process-work-link" id="process-work-link" href="work/">My Work</a>
-            <button type="button" class="process-motion-toggle" id="process-motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">Motion on</button>
+            <a class="work-link" id="work-link" href="work/">My Work</a>
+            <button type="button" class="motion-toggle" id="motion-toggle" aria-pressed="true" aria-label="Motion is on. Activate to turn motion off.">Motion on</button>
             <script>
             (function () {
               var on = document.documentElement.getAttribute("data-motion") === "on";
-              var b = document.getElementById("process-motion-toggle");
+              var b = document.getElementById("motion-toggle");
               if (!b) return;
               b.setAttribute("aria-pressed", on ? "true" : "false");
               b.textContent = on ? "Motion on" : "Motion off";
@@ -2647,38 +2432,38 @@
           </div>
         </header>
 
-        <div class="process-mobile-experience" id="process-mobile-experience" aria-label="The Golden Arrival mobile journey">
+        <div class="mobile-experience" id="mobile-experience" aria-label="The Golden Arrival mobile journey">
           <div class="mobile-story-wash" aria-hidden="true"></div>
 
           <div class="mobile-copy-stage" aria-live="polite">
-            <article class="mobile-beat is-active" data-process-mobile-beat="arrival" data-process-mobile-station="arrival" aria-label="Arrival">
+            <article class="mobile-beat is-active" data-mobile-beat="arrival" data-mobile-station="arrival" aria-label="Arrival">
             </article>
 
-            <article class="mobile-beat" data-process-mobile-beat="leak" data-process-mobile-station="leak" aria-hidden="true">
+            <article class="mobile-beat" data-mobile-beat="leak" data-mobile-station="leak" aria-hidden="true">
               <p class="mobile-kicker">The Leak</p>
               <h1 class="mobile-title">I find where your business quietly loses customers.</h1>
               <p class="mobile-body">Then I build you the fix.</p>
             </article>
 
-            <article class="mobile-beat" data-process-mobile-beat="method-look" data-process-mobile-station="method" aria-hidden="true">
+            <article class="mobile-beat" data-mobile-beat="method-look" data-mobile-station="method" aria-hidden="true">
               <p class="mobile-kicker">Follow the real path</p>
               <h2 class="mobile-title">Look.</h2>
               <p class="mobile-body">I walk through your site like a real customer.</p>
             </article>
 
-            <article class="mobile-beat" data-process-mobile-beat="method-find" data-process-mobile-station="method" aria-hidden="true">
+            <article class="mobile-beat" data-mobile-beat="method-find" data-mobile-station="method" aria-hidden="true">
               <p class="mobile-kicker">Follow the real path</p>
               <h2 class="mobile-title">Find The<br>Leak.</h2>
               <p class="mobile-body">I find the first key step where the path breaks.</p>
             </article>
 
-            <article class="mobile-beat" data-process-mobile-beat="method-build" data-process-mobile-station="method" aria-hidden="true">
+            <article class="mobile-beat" data-mobile-beat="method-build" data-mobile-station="method" aria-hidden="true">
               <p class="mobile-kicker">Follow the real path</p>
               <h2 class="mobile-title">Build The Fix.</h2>
               <p class="mobile-body">I build the page, form, or follow-up that fixes it.</p>
             </article>
 
-            <article class="mobile-beat" data-process-mobile-beat="proof" data-process-mobile-station="proof" aria-hidden="true">
+            <article class="mobile-beat" data-mobile-beat="proof" data-mobile-station="proof" aria-hidden="true">
               <p class="mobile-kicker">One real result</p>
               <h2 class="mobile-title mobile-proof-figure"><span aria-hidden="true">$</span>40,114.81</h2>
               <p class="mobile-body">Gross volume rose 104.51% from $19,615.40 for one Las Vegas service business.</p>
@@ -2686,13 +2471,13 @@
               <p class="mobile-qualifier">May 15 to June 15, 2026. Your result will depend on your business.</p>
             </article>
 
-            <article class="mobile-beat" data-process-mobile-beat="jarrett" data-process-mobile-station="jarrett" aria-hidden="true">
+            <article class="mobile-beat" data-mobile-beat="jarrett" data-mobile-station="jarrett" aria-hidden="true">
               <p class="mobile-kicker">Built by Jarrett</p>
               <h2 class="mobile-title">I build the fix myself.</h2>
               <p class="mobile-body">You work with me from the first look through the finished fix.</p>
             </article>
 
-            <article class="mobile-beat" data-process-mobile-beat="threshold" data-process-mobile-station="threshold" aria-hidden="true">
+            <article class="mobile-beat" data-mobile-beat="threshold" data-mobile-station="threshold" aria-hidden="true">
               <p class="mobile-kicker">Your first look is free</p>
               <h2 class="mobile-title">Send me your site.</h2>
               <a class="mobile-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Jarrett@JarrettWroten.com</a>
@@ -2700,7 +2485,7 @@
               <p class="mobile-book">Want to talk first? <a class="mobile-book-link" href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call.</a></p>
             </article>
 
-            <article class="mobile-beat" data-process-mobile-beat="services" data-process-mobile-station="threshold" aria-hidden="true">
+            <article class="mobile-beat" data-mobile-beat="services" data-mobile-station="threshold" aria-hidden="true">
               <h2 class="mobile-title">Services</h2>
               <ol class="mobile-services-list">
                 <li>Custom Website Design</li>
@@ -2709,11 +2494,11 @@
                 <li>Lead Generation &amp; SEO</li>
                 <li>Landing Pages &amp; Follow-Up Systems</li>
               </ol>
-              <a class="mobile-work-invite" href="work/" data-process-work-exit>See my recent work<span class="work-invite-arrow" aria-hidden="true"> →</span></a>
+              <a class="mobile-work-invite" href="work/" data-work-exit>See my recent work<span class="work-invite-arrow" aria-hidden="true"> →</span></a>
             </article>
           </div>
 
-          <p class="process-mobile-swipe-cue" id="process-mobile-swipe-cue">Swipe to follow</p>
+          <p class="mobile-swipe-cue" id="mobile-swipe-cue">Swipe to follow</p>
 
           <nav class="mobile-nav mobile-station-nav" aria-label="Journey sections">
             <button type="button" data-go="leak">Leak</button>
@@ -2730,9 +2515,9 @@
           </nav>
         </div>
 
-        <nav class="process-station-rail" id="process-station-rail" aria-label="Journey sections">
+        <nav class="station-rail" id="station-rail" aria-label="Journey sections">
           <div class="station-rail-track" aria-hidden="true"></div>
-          <div class="station-rail-marker" id="process-rail-marker" aria-hidden="true"></div>
+          <div class="station-rail-marker" id="rail-marker" aria-hidden="true"></div>
           <button type="button" class="station-rail-tick" data-go="leak"><span>The Leak</span></button>
           <button type="button" class="station-rail-tick" data-go="method"><span>How I work</span></button>
           <button type="button" class="station-rail-tick" data-go="proof"><span>Real result</span></button>
@@ -2740,10 +2525,10 @@
           <button type="button" class="station-rail-tick" data-go="threshold"><span>Work with me</span></button>
         </nav>
 
-        <section class="station" data-station="leak" id="process-station-leak" aria-labelledby="process-leak-heading">
+        <section class="station" data-station="leak" id="station-leak" aria-labelledby="leak-heading">
           <div class="station-copy">
             <p class="station-kicker">The Leak</p>
-            <h1 class="display" id="process-leak-heading">
+            <h1 class="display" id="leak-heading">
               <span class="line"><span>I FIND WHERE</span></span>
               <span class="line"><span>YOUR BUSINESS</span></span>
               <span class="line"><span>QUIETLY LOSES</span></span>
@@ -2754,54 +2539,54 @@
             <div class="station-support text">
               <p>I follow the path from first click to sale, find where people drop out, and build the finished fix.</p>
             </div>
-            <a class="cta" href="#process-station-threshold" data-go="threshold">Show me where mine leaks ↗</a>
+            <a class="cta" href="#station-threshold" data-go="threshold">Show me where mine leaks ↗</a>
           </div>
         </section>
 
-        <section class="station" data-station="method" id="process-station-method" aria-labelledby="process-method-heading">
+        <section class="station" data-station="method" id="station-method" aria-labelledby="method-heading">
           <div class="station-copy">
             <p class="station-kicker">Follow the real path</p>
-            <h2 class="display" id="process-method-heading">
+            <h2 class="display" id="method-heading">
               <span class="line"><span>Look.</span></span>
               <span class="line"><span>Find The Leak.</span></span>
               <span class="line"><span>Build The Fix.</span></span>
             </h2>
           </div>
           <div class="method-annots" aria-label="Method steps">
-            <div class="method-annot" data-step="1" id="process-annot-1">
+            <div class="method-annot" data-step="1" id="annot-1">
               <span class="method-annot-num">01 — Look</span>
               <p class="method-annot-text">I walk through your site like a real customer.</p>
             </div>
-            <div class="method-annot" data-step="2" id="process-annot-2">
+            <div class="method-annot" data-step="2" id="annot-2">
               <span class="method-annot-num">02 — Find the break</span>
               <p class="method-annot-text">I find the first key step where the path breaks.</p>
             </div>
-            <div class="method-annot" data-step="3" id="process-annot-3">
+            <div class="method-annot" data-step="3" id="annot-3">
               <span class="method-annot-num">03 — Build the fix</span>
               <p class="method-annot-text">I build the page, form, or follow-up that fixes it.</p>
             </div>
           </div>
         </section>
 
-        <section class="station" data-station="proof" id="process-station-proof" aria-labelledby="process-proof-heading">
+        <section class="station" data-station="proof" id="station-proof" aria-labelledby="proof-heading">
           <div class="station-copy">
             <p class="station-kicker">One real result</p>
-            <h2 class="proof-figure" id="process-proof-heading">
-              <span class="currency">$</span><span id="process-proof-gross">40,114.81</span>
+            <h2 class="proof-figure" id="proof-heading">
+              <span class="currency">$</span><span id="proof-gross">40,114.81</span>
             </h2>
             <div class="proof-values">
-              <p class="proof-row"><strong>Gross volume</strong> <span id="process-proof-gross-full">$40,114.81</span> · <span class="delta">up 104.51%</span> from <span id="process-proof-gross-from">$19,615.40</span></p>
-              <p class="proof-row"><strong>Net volume</strong> <span id="process-proof-net">$37,914.00</span> · <span class="delta">up 108.02%</span> from <span id="process-proof-net-from">$18,225.83</span></p>
+              <p class="proof-row"><strong>Gross volume</strong> <span id="proof-gross-full">$40,114.81</span> · <span class="delta">up 104.51%</span> from <span id="proof-gross-from">$19,615.40</span></p>
+              <p class="proof-row"><strong>Net volume</strong> <span id="proof-net">$37,914.00</span> · <span class="delta">up 108.02%</span> from <span id="proof-net-from">$18,225.83</span></p>
             </div>
             <p class="proof-qualifier">This was one Las Vegas service business, from May 15 to June 15, 2026. Your result will depend on your business.</p>
             <p class="proof-open-hint">Open the full Stripe view</p>
           </div>
         </section>
 
-        <section class="station" data-station="jarrett" id="process-station-jarrett" aria-labelledby="process-jarrett-heading">
+        <section class="station" data-station="jarrett" id="station-jarrett" aria-labelledby="jarrett-heading">
           <div class="station-copy">
             <p class="station-kicker">Built by Jarrett</p>
-            <h2 class="display" id="process-jarrett-heading">
+            <h2 class="display" id="jarrett-heading">
               <span class="line"><span>I BUILD</span></span>
               <span class="line"><span>THE FIX</span></span>
               <span class="line"><span>MYSELF.</span></span>
@@ -2812,18 +2597,18 @@
           </div>
         </section>
 
-        <section class="station" data-station="threshold" id="process-station-threshold" aria-labelledby="process-threshold-heading">
+        <section class="station" data-station="threshold" id="station-threshold" aria-labelledby="threshold-heading">
           <div class="station-copy">
             <div class="threshold-top">
               <p class="station-kicker">Your first look is free</p>
-              <h2 class="display" id="process-threshold-heading">
+              <h2 class="display" id="threshold-heading">
                 <span class="line"><span>SEND ME</span></span>
                 <span class="line"><span>YOUR SITE.</span></span>
               </h2>
               <a class="invite-email" href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A"><span class="invite-email-text">Jarrett@JarrettWroten.com</span></a>
             </div>
-            <aside class="threshold-services" aria-labelledby="process-services-heading">
-              <h3 class="threshold-services-label" id="process-services-heading">Services</h3>
+            <aside class="threshold-services" aria-labelledby="services-heading">
+              <h3 class="threshold-services-label" id="services-heading">Services</h3>
               <ol class="threshold-services-list">
                 <li>Custom Website Design</li>
                 <li>AI Systems &amp; Automation</li>
@@ -2831,7 +2616,7 @@
                 <li>Lead Generation &amp; SEO</li>
                 <li>Landing Pages &amp; Follow-Up Systems</li>
               </ol>
-              <a class="threshold-work-invite" href="work/" data-process-work-exit>See my recent work<span class="work-invite-arrow" aria-hidden="true"> →</span></a>
+              <a class="threshold-work-invite" href="work/" data-work-exit>See my recent work<span class="work-invite-arrow" aria-hidden="true"> →</span></a>
             </aside>
             <div class="threshold-bottom">
               <div class="station-support text">
@@ -2842,20 +2627,20 @@
           </div>
         </section>
 
-        <div class="process-scroll-invitation" id="process-scroll-invitation" aria-hidden="true"><span>Scroll</span></div>
-        <div class="process-distance-hud" id="process-distance-hud" aria-live="polite">1 of 5 — The Leak</div>
-        <footer class="process-site-footer" id="process-site-footer">
-          <p>Jarrett Wroten · Las Vegas <a href="privacy/">Privacy</a></p>
+        <div class="scroll-invitation" id="scroll-invitation" aria-hidden="true"><span>Scroll</span></div>
+        <div class="distance-hud" id="distance-hud" aria-live="polite">1 of 5 — The Leak</div>
+        <footer class="site-footer" id="site-footer">
+          <p>Jarrett Wroten · Las Vegas</p>
         </footer>
       </div>
     </div>
   </div>
 
-  <div class="process-lightbox" id="process-lightbox" role="dialog" aria-modal="true" aria-labelledby="process-lightbox-caption" hidden>
-    <div class="process-lightbox-panel" tabindex="-1" id="process-lightbox-panel">
-      <button type="button" class="process-lightbox-close" id="process-lightbox-close">Close</button>
-      <img id="process-lightbox-img" src="" alt="">
-      <p class="process-lightbox-caption" id="process-lightbox-caption"></p>
+  <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-labelledby="lightbox-caption" hidden>
+    <div class="lightbox-panel" tabindex="-1" id="lightbox-panel">
+      <button type="button" class="lightbox-close" id="lightbox-close">Close</button>
+      <img id="lightbox-img" src="" alt="">
+      <p class="lightbox-caption" id="lightbox-caption"></p>
     </div>
   </div>
 
@@ -2863,8 +2648,20 @@
 (function () {
   "use strict";
 
-  /* Shared station map for desktop frames and nine mobile rests. */
-  var PROCESS_TUNING = {
+  /**
+   * SITE_TUNING — inspectable motion + station map for THE GOLDEN ARRIVAL.
+   * frameMap: nonlinear progress→frame (0..360). Faster through empty travel,
+   * holds for Proof and Jarrett, ends exactly on the approved smile.
+   */
+  /*
+   * Maintained asset: responsive first-swipe mobile story handoff.
+   * Future consumer: portrait visitors entering the Golden Arrival journey.
+   * Activation: auto-load through this production entry document.
+   * Behavioral check: node smoke-test.mjs plus short/long forward and reverse
+   * gestures through all eight authored section rests (nine stage stops).
+   * Retirement: only when this scroll-depth mobile journey is replaced end to end.
+   */
+  var SITE_TUNING = {
     motionStorageKey: "jw-motion",
     mobileBreakpoint: 720,
     /* Desktop motion-on runway: 640svh total → 540vh scrollable.
@@ -3025,15 +2822,15 @@
   };
 
   var root = document.documentElement;
-  root.style.setProperty("--process-mobile-beat-erase", PROCESS_TUNING.mobileBeatEraseMs + "ms");
+  root.style.setProperty("--mobile-beat-erase", SITE_TUNING.mobileBeatEraseMs + "ms");
   var body = document.body;
-  var journey = document.getElementById("process-journey");
-  var viewport = document.getElementById("process-viewport");
-  var world = document.getElementById("process-world");
-  var worldFrameA = document.getElementById("process-world-frame-a");
-  var worldFrameB = document.getElementById("process-world-frame-b");
-  var arrivalMotionVideo = document.getElementById("process-arrival-motion-video");
-  var arrivalLightning = document.getElementById("process-arrival-lightning");
+  var journey = document.getElementById("journey");
+  var viewport = document.getElementById("viewport");
+  var world = document.getElementById("world");
+  var worldFrameA = document.getElementById("world-frame-a");
+  var worldFrameB = document.getElementById("world-frame-b");
+  var arrivalMotionVideo = document.getElementById("arrival-motion-video");
+  var arrivalLightning = document.getElementById("arrival-lightning");
   /* Atomic presentation: two stacked buffers; only the inactive buffer receives src. */
   var frameBuffers = [worldFrameA, worldFrameB];
   var activeBufferIndex = 0;
@@ -3044,32 +2841,30 @@
   var liveConduitRetired = false;
   /* Direct ?station= boot must not flash or start the Arrival carrier before bypass lands. */
   var holdArrivalMotion = false;
-  var consoleMount = document.getElementById("process-console-mount");
-  var noteMount = document.getElementById("process-note-mount");
-  var motionToggle = document.getElementById("process-motion-toggle");
-  var distanceHud = document.getElementById("process-distance-hud");
-  var siteFooter = document.getElementById("process-site-footer");
-  var scrollInvitation = document.getElementById("process-scroll-invitation");
-  var railTicks = journey ? journey.querySelectorAll(".station-rail-tick") : [];
-  var stations = journey ? journey.querySelectorAll(".station") : [];
-  var methodAnnots = journey ? journey.querySelectorAll(".method-annot") : [];
-  var lightbox = document.getElementById("process-lightbox");
-  var lightboxImg = document.getElementById("process-lightbox-img");
-  var lightboxCaption = document.getElementById("process-lightbox-caption");
-  var lightboxClose = document.getElementById("process-lightbox-close");
-  var lightboxPanel = document.getElementById("process-lightbox-panel");
-  var loaderBar = document.getElementById("process-loader-bar");
-  var loaderLabel = document.getElementById("process-loader-label");
-  var mobileExperience = document.getElementById("process-mobile-experience");
-  var mobileBeats = journey ? journey.querySelectorAll(".mobile-beat") : [];
-  var mobileStationButtons = journey ? journey.querySelectorAll(".mobile-station-nav [data-go]") : [];
-  var mobileMethodButtons = journey ? journey.querySelectorAll("[data-mobile-method-go]") : [];
-  var mobileSwipeCue = document.getElementById("process-mobile-swipe-cue");
+  var consoleMount = document.getElementById("console-mount");
+  var noteMount = document.getElementById("note-mount");
+  var motionToggle = document.getElementById("motion-toggle");
+  var distanceHud = document.getElementById("distance-hud");
+  var siteFooter = document.getElementById("site-footer");
+  var scrollInvitation = document.getElementById("scroll-invitation");
+  var railTicks = document.querySelectorAll(".station-rail-tick");
+  var stations = document.querySelectorAll(".station");
+  var methodAnnots = document.querySelectorAll(".method-annot");
+  var lightbox = document.getElementById("lightbox");
+  var lightboxImg = document.getElementById("lightbox-img");
+  var lightboxCaption = document.getElementById("lightbox-caption");
+  var lightboxClose = document.getElementById("lightbox-close");
+  var lightboxPanel = document.getElementById("lightbox-panel");
+  var loaderBar = document.getElementById("loader-bar");
+  var loaderLabel = document.getElementById("loader-label");
+  var mobileExperience = document.getElementById("mobile-experience");
+  var mobileBeats = document.querySelectorAll(".mobile-beat");
+  var mobileStationButtons = document.querySelectorAll(".mobile-station-nav [data-go]");
+  var mobileMethodButtons = document.querySelectorAll("[data-mobile-method-go]");
+  var mobileSwipeCue = document.getElementById("mobile-swipe-cue");
 
-  var mobileMq = window.matchMedia("(max-width:" + PROCESS_TUNING.mobileBreakpoint + "px)");
+  var mobileMq = window.matchMedia("(max-width:" + SITE_TUNING.mobileBreakpoint + "px)");
   var motionOn = root.getAttribute("data-motion") === "on";
-  var processActivated = false;
-  var processActivationObserver = null;
   var params = new URLSearchParams(window.location.search);
   var stationParam = (params.get("station") || "").toLowerCase();
   var validStations = { leak: 1, method: 1, proof: 1, jarrett: 1, threshold: 1 };
@@ -3080,6 +2875,18 @@
   if (params.get("view") === "method") stationParam = stationParam || "method";
   if (params.get("state") === "leak") stationParam = stationParam || "leak";
   if (params.get("state") === "recovered") stationParam = stationParam || "method";
+
+  /* ?motion=off only if no stored user choice conflicts */
+  var motionParam = (params.get("motion") || "").toLowerCase();
+  var storedMotion = null;
+  try { storedMotion = localStorage.getItem(SITE_TUNING.motionStorageKey); } catch (e) {}
+  if (motionParam === "off" && storedMotion !== "on") {
+    motionOn = false;
+    root.setAttribute("data-motion", "off");
+  } else if (motionParam === "on" && storedMotion !== "off") {
+    motionOn = true;
+    root.setAttribute("data-motion", "on");
+  }
 
   var progressTarget = 0;
   var progressCurrent = 0;
@@ -3110,7 +2917,7 @@
   var desiredFrame = 0;
 
   /* Frame cache: index → {img, ready, url} ; do not retain 361 decoded bitmaps forever */
-  var frameMeta = new Array(PROCESS_TUNING.frameCount);
+  var frameMeta = new Array(SITE_TUNING.frameCount);
   var readySet = Object.create(null);
   var loadingSet = Object.create(null);
   var preloadCursor = 0;
@@ -3146,7 +2953,7 @@
     }
   };
 
-  var PROCESS_STATION_ORDER = ["leak", "method", "proof", "jarrett", "threshold"];
+  var STATION_ORDER = ["leak", "method", "proof", "jarrett", "threshold"];
 
   function clamp(n, a, b) { return Math.max(a, Math.min(b, n)); }
   function lerp(a, b, t) { return a + (b - a) * t; }
@@ -3161,25 +2968,10 @@
   }
   function isMobile() { return mobileMq.matches; }
 
-  function journeyDocumentTop() {
-    if (!journey) return 0;
-    return (window.scrollY || window.pageYOffset || 0) + journey.getBoundingClientRect().top;
-  }
-
-  function journeyToDocumentY(localTop) {
-    return journeyDocumentTop() + Math.max(0, localTop || 0);
-  }
-
-  function journeyOwnsViewport() {
-    if (!journey || !viewport) return false;
-    var rect = journey.getBoundingClientRect();
-    return rect.top <= 1 && rect.bottom >= viewport.offsetHeight - 1;
-  }
-
   function arrivalShare() {
     /* Mobile Arrival is the first of nine equal rests (1/8 of normalized progress). */
     if (isMobile()) return 0.125;
-    return PROCESS_TUNING.arrival.shareDesktop;
+    return SITE_TUNING.arrival.shareDesktop;
   }
 
   function worldToCommercial(p) {
@@ -3212,10 +3004,10 @@
 
   function ensureThresholdEmailFitNodes() {
     if (!thresholdEmailInk) {
-      thresholdEmailInk = document.querySelector("#process-station-threshold .invite-email-text");
+      thresholdEmailInk = document.querySelector("#station-threshold .invite-email-text");
     }
     if (!thresholdEmailMeasure) {
-      thresholdEmailMeasure = document.querySelector("#process-threshold-heading .line:last-child > span");
+      thresholdEmailMeasure = document.querySelector("#threshold-heading .line:last-child > span");
     }
     return !!(thresholdEmailInk && thresholdEmailMeasure);
   }
@@ -3384,7 +3176,7 @@
       return mobileStageIndexAtProgress(p) === 0;
     }
     if (!motionOn) {
-      return p < (1 / (PROCESS_STATION_ORDER.length + 1));
+      return p < (1 / (STATION_ORDER.length + 1));
     }
     return p < arrivalShare();
   }
@@ -3444,13 +3236,8 @@
   }
 
   function syncArrivalMotion(p) {
-    if (!processActivated || !journeyOwnsViewport()) {
-      root.style.setProperty("--process-arrival-motion", "0");
-      pauseArrivalMotion(arrivalMotionVideo);
-      return;
-    }
     var vis = arrivalMotionVisibility(p);
-    root.style.setProperty("--process-arrival-motion", vis.toFixed(4));
+    root.style.setProperty("--arrival-motion", vis.toFixed(4));
     if (!arrivalMotionVideo) return;
     /* Play only while the carrier is still visually contributing the Arrival scene. */
     if (motionOn && !holdArrivalMotion && vis > 0.001) {
@@ -3461,12 +3248,12 @@
   }
 
   function stationSpec(id) {
-    var map = isMobile() ? PROCESS_TUNING.mobileStations : PROCESS_TUNING.stations;
+    var map = isMobile() ? SITE_TUNING.mobileStations : SITE_TUNING.stations;
     return map[id];
   }
 
   function frameUrl(i) {
-    i = clamp(i | 0, 0, PROCESS_TUNING.frameCount - 1);
+    i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
     var s = String(i);
     while (s.length < 3) s = "0" + s;
     return "assets/golden-arrival/frames/ga-" + s + ".webp";
@@ -3474,7 +3261,7 @@
 
   function progressToFrame(p) {
     p = clamp(p, 0, 1);
-    var map = PROCESS_TUNING.frameMap;
+    var map = SITE_TUNING.frameMap;
     if (p <= map[0].p) return map[0].f;
     if (p >= map[map.length - 1].p) return map[map.length - 1].f;
     for (var i = 0; i < map.length - 1; i++) {
@@ -3489,14 +3276,14 @@
   }
 
   function mobileProgressToFrame(p) {
-    return Math.round(clamp(p, 0, 1) * (PROCESS_TUNING.frameCount - 1));
+    return Math.round(clamp(p, 0, 1) * (SITE_TUNING.frameCount - 1));
   }
 
   /* Exact first-paint frame for a direct ?station= route (motion-on uses station center). */
   function routeEntryFrame(stationId) {
     if (!stationId || !validStations[stationId]) return -1;
     if (!motionOn) {
-      var still = PROCESS_TUNING.stillFrames[stationId];
+      var still = SITE_TUNING.stillFrames[stationId];
       return still != null ? still : -1;
     }
     var st = stationSpec(stationId);
@@ -3512,11 +3299,11 @@
     forcedBackgroundStarted = true;
     var center = forcedEntryFrame;
     var j;
-    for (j = Math.max(0, center - 12); j <= Math.min(PROCESS_TUNING.frameCount - 1, center + 12); j++) {
+    for (j = Math.max(0, center - 12); j <= Math.min(SITE_TUNING.frameCount - 1, center + 12); j++) {
       if (j !== center) loadFrame(j, false);
     }
     for (j = 0; j < 24; j++) loadFrame(j, false);
-    var keys = PROCESS_TUNING.stillFrames;
+    var keys = SITE_TUNING.stillFrames;
     for (var k in keys) loadFrame(keys[k], false);
     preloadCursor = 0;
     scheduleIdlePreload();
@@ -3566,7 +3353,7 @@
   /* Monotonic presentable selection: never reverse against scroll direction and never
      overshoot desired merely because a far still arrived first. Hold last-good instead. */
   function selectPresentableFrame(target) {
-    target = clamp(target | 0, 0, PROCESS_TUNING.frameCount - 1);
+    target = clamp(target | 0, 0, SITE_TUNING.frameCount - 1);
     if (readySet[target]) return target;
     if (displayedFrame < 0) {
       /* Boot: exact target only when ready (handled above). Never scan for a nearest
@@ -3610,7 +3397,7 @@
   }
 
   function dismissLoader() {
-    root.style.setProperty("--process-loader", "0");
+    root.style.setProperty("--loader", "0");
     if (loaderBar) loaderBar.classList.add("is-done");
     if (loaderLabel) loaderLabel.classList.add("is-done");
   }
@@ -3621,11 +3408,11 @@
       return;
     }
     frac = clamp(frac, 0, 1);
-    root.style.setProperty("--process-loader", frac.toFixed(4));
+    root.style.setProperty("--loader", frac.toFixed(4));
   }
 
   function openingNeighborhoodReady() {
-    var openN = PROCESS_TUNING.layout.loaderOpeningFrames;
+    var openN = SITE_TUNING.layout.loaderOpeningFrames;
     var n = 0;
     for (var i = 0; i < openN; i++) {
       if (readySet[i]) n++;
@@ -3653,8 +3440,8 @@
   }
 
   function progressToRailMarker(p) {
-    var centers = PROCESS_TUNING.layout.railCenters;
-    var ticks = PROCESS_TUNING.layout.railTickPercents;
+    var centers = SITE_TUNING.layout.railCenters;
+    var ticks = SITE_TUNING.layout.railTickPercents;
     p = clamp(p, 0, 1);
     if (p <= centers[0]) return ticks[0];
     if (p >= centers[centers.length - 1]) return ticks[ticks.length - 1];
@@ -3753,7 +3540,7 @@
   }
 
   function loadFrame(i, priority) {
-    i = clamp(i | 0, 0, PROCESS_TUNING.frameCount - 1);
+    i = clamp(i | 0, 0, SITE_TUNING.frameCount - 1);
     /* Forced direct routes: refuse speculative starts until the entry center is ready
        or the bounded forced-entry retry policy is exhausted. */
     if (!worldLoadUnlocked && i !== forcedEntryFrame) return;
@@ -3852,13 +3639,13 @@
   }
 
   function showFrame(target) {
-    desiredFrame = clamp(target | 0, 0, PROCESS_TUNING.frameCount - 1);
+    desiredFrame = clamp(target | 0, 0, SITE_TUNING.frameCount - 1);
     /* Desired frame outranks neighborhood/still/idle speculative work. */
     loadFrame(desiredFrame, true);
     /* Closer neighbors first; speculative priority false so they queue behind desired. */
     for (var d = 1; d <= 8; d++) {
       if (desiredFrame - d >= 0) loadFrame(desiredFrame - d, false);
-      if (desiredFrame + d < PROCESS_TUNING.frameCount) loadFrame(desiredFrame + d, false);
+      if (desiredFrame + d < SITE_TUNING.frameCount) loadFrame(desiredFrame + d, false);
     }
     var show = selectPresentableFrame(desiredFrame);
     if (show === displayedFrame) {
@@ -3901,16 +3688,16 @@
   }
 
   function preloadBatch() {
-    var batch = PROCESS_TUNING.preloadBatch;
+    var batch = SITE_TUNING.preloadBatch;
     var n = 0;
-    while (n < batch && preloadCursor < PROCESS_TUNING.frameCount) {
+    while (n < batch && preloadCursor < SITE_TUNING.frameCount) {
       if (!readySet[preloadCursor] && !loadingSet[preloadCursor]) {
         loadFrame(preloadCursor, false);
         n++;
       }
       preloadCursor++;
     }
-    if (preloadCursor < PROCESS_TUNING.frameCount) {
+    if (preloadCursor < SITE_TUNING.frameCount) {
       scheduleIdlePreload();
     }
     /* Idle preload never drives the loader; opening neighbourhood owns it */
@@ -3923,14 +3710,14 @@
       preloadBatch();
     };
     if (window.requestIdleCallback) {
-      idleHandle = window.requestIdleCallback(run, { timeout: PROCESS_TUNING.idleTimeoutMs });
+      idleHandle = window.requestIdleCallback(run, { timeout: SITE_TUNING.idleTimeoutMs });
     } else {
       idleHandle = window.setTimeout(run, 48);
     }
   }
 
   function writeStoredMotion(value) {
-    try { localStorage.setItem(PROCESS_TUNING.motionStorageKey, value); }
+    try { localStorage.setItem(SITE_TUNING.motionStorageKey, value); }
     catch (e) {}
   }
 
@@ -3939,13 +3726,14 @@
        visitor's normalized place instead of throwing them into another station. */
     cancelMobileGlide();
     var preservedProgress = 0;
-    if (processActivated && journeyOwnsViewport()) {
-      preservedProgress = computeProgress();
+    if (journey && viewport) {
+      preservedProgress = clamp(window.scrollY / Math.max(1, journey.offsetHeight - viewport.offsetHeight), 0, 1);
     }
     motionOn = !!on;
     root.setAttribute("data-motion", motionOn ? "on" : "off");
     if (persist) {
-      if (window.JW_MOTION) window.JW_MOTION.set(motionOn, "process", true);
+      writeStoredMotion(motionOn ? "on" : "off");
+      root.setAttribute("data-motion-user", motionOn ? "on" : "off");
     }
     if (motionToggle) {
       motionToggle.setAttribute("aria-pressed", motionOn ? "true" : "false");
@@ -3957,11 +3745,10 @@
           : "Motion is off. Activate to enable full motion."
       );
     }
-    if (processActivated && journeyOwnsViewport()) {
+    if (journey && viewport) {
       var resizedTotal = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
-      window.scrollTo({ top: journeyToDocumentY(preservedProgress * resizedTotal), left: 0, behavior: "auto" });
+      window.scrollTo({ top: preservedProgress * resizedTotal, left: 0, behavior: "auto" });
     }
-    if (!processActivated) return;
     sampleScroll();
     paint(progressCurrent, true);
     syncArrivalMotion(progressCurrent);
@@ -3970,16 +3757,16 @@
   function stationStateAt(c) {
     /* c is commercial progress (Arrival stripped). */
     var result = {};
-    for (var i = 0; i < PROCESS_STATION_ORDER.length; i++) {
-      var s = stationSpec(PROCESS_STATION_ORDER[i]);
+    for (var i = 0; i < STATION_ORDER.length; i++) {
+      var s = stationSpec(STATION_ORDER[i]);
       var state = "idle";
       if (c >= s.enter && c < s.hold) state = "entering";
       else if (c >= s.hold && c < s.exit) state = "active";
       else if (c >= s.exit && c < s.exit + 0.04) state = "exiting";
-      if (PROCESS_STATION_ORDER[i] === "threshold" && c >= s.enter) {
+      if (STATION_ORDER[i] === "threshold" && c >= s.enter) {
         state = c >= s.hold ? "active" : "entering";
       }
-      result[PROCESS_STATION_ORDER[i]] = state;
+      result[STATION_ORDER[i]] = state;
     }
     return result;
   }
@@ -3988,16 +3775,16 @@
     /* p is world progress. Arrival is a prelude, not a commercial station. */
     if (isArrivalAt(p)) return "arrival";
     if (!motionOn && !isMobile()) {
-      var bands = PROCESS_STATION_ORDER.length + 1;
+      var bands = STATION_ORDER.length + 1;
       var idx = clamp(Math.floor(p * bands + 0.0001), 0, bands - 1);
       if (p >= 0.999) idx = bands - 1;
       if (idx === 0) return "arrival";
-      return PROCESS_STATION_ORDER[idx - 1];
+      return STATION_ORDER[idx - 1];
     }
     var c = worldToCommercial(p);
     var best = "leak", bestDist = 1;
-    for (var i = 0; i < PROCESS_STATION_ORDER.length; i++) {
-      var id = PROCESS_STATION_ORDER[i];
+    for (var i = 0; i < STATION_ORDER.length; i++) {
+      var id = STATION_ORDER[i];
       var s = stationSpec(id);
       if (c >= s.enter && c < s.exit) return id;
       var d = Math.abs(c - s.center);
@@ -4008,7 +3795,7 @@
   }
 
   function applyProofApparatus(p, dom) {
-    var life = isMobile() ? PROCESS_TUNING.mobileProofApparatus : PROCESS_TUNING.proofApparatus;
+    var life = isMobile() ? SITE_TUNING.mobileProofApparatus : SITE_TUNING.proofApparatus;
     var opacity = 0;
     var interactive = false;
     if (dom === "arrival" || p < 0) {
@@ -4025,12 +3812,12 @@
       else opacity = 0;
       interactive = opacity >= life.interactiveMin && p >= life.fullyPresent && p < life.fadeStart;
     }
-    root.style.setProperty("--process-proof-apparatus", opacity.toFixed(4));
+    root.style.setProperty("--proof-apparatus", opacity.toFixed(4));
     var gone = opacity <= 0.001;
     var present = opacity > 0.001;
-    setMountLifecycle(consoleMount, "process-console-screen", present, interactive, gone);
-    if (isMobile()) setMountLifecycle(noteMount, "process-note-device", false, false, true);
-    else setMountLifecycle(noteMount, "process-note-device", present, interactive, gone);
+    setMountLifecycle(consoleMount, "console-screen", present, interactive, gone);
+    if (isMobile()) setMountLifecycle(noteMount, "note-device", false, false, true);
+    else setMountLifecycle(noteMount, "note-device", present, interactive, gone);
   }
 
   function setMountLifecycle(mount, buttonId, present, interactive, gone) {
@@ -4054,11 +3841,11 @@
   }
 
   function mobileBeatAt(p, dom) {
-    var stops = PROCESS_TUNING.mobileStageStops;
+    var stops = SITE_TUNING.mobileStageStops;
     var idx = mobileStageIndexAtProgress(p);
     if (stops[idx]) return stops[idx].id;
     if (dom !== "method") return dom;
-    var steps = PROCESS_TUNING.mobileMethodSteps;
+    var steps = SITE_TUNING.mobileMethodSteps;
     for (var i = 0; i < steps.length; i++) {
       if (p < steps[i].until) return steps[i].id;
     }
@@ -4077,7 +3864,7 @@
     function commitBeat() {
       for (var i = 0; i < mobileBeats.length; i++) {
         var beat = mobileBeats[i];
-        var on = beat.getAttribute("data-process-mobile-beat") === activeMobileBeatId;
+        var on = beat.getAttribute("data-mobile-beat") === activeMobileBeatId;
         beat.classList.remove("is-arriving", "is-arriving-backward", "is-leaving", "is-leaving-backward");
         beat.classList.toggle("is-active", on);
         beat.setAttribute("aria-hidden", on ? "false" : "true");
@@ -4096,7 +3883,7 @@
     var nextIndex = -1;
     for (var b = 0; b < mobileBeats.length; b++) {
       var beat = mobileBeats[b];
-      var id = beat.getAttribute("data-process-mobile-beat");
+      var id = beat.getAttribute("data-mobile-beat");
       if (id === previousBeatId) previousIndex = b;
       if (id === beatId) nextIndex = b;
       beat.classList.remove("is-active", "is-arriving", "is-arriving-backward", "is-leaving", "is-leaving-backward");
@@ -4125,31 +3912,31 @@
         mobileBeats[j].classList.remove("is-arriving", "is-arriving-backward", "is-leaving", "is-leaving-backward");
       }
       mobileBeatCleanupTimer = 0;
-    }, PROCESS_TUNING.mobileBeatEraseMs + 20);
+    }, SITE_TUNING.mobileBeatEraseMs + 20);
   }
 
   function paintMobileExperience(p, dom) {
     if (!mobileExperience) return;
     if (!isMobile()) {
       mobileExperience.setAttribute("aria-hidden", "true");
-      root.removeAttribute("data-process-mobile-station");
-      root.removeAttribute("data-process-mobile-beat");
+      root.removeAttribute("data-mobile-station");
+      root.removeAttribute("data-mobile-beat");
       return;
     }
 
     mobileExperience.setAttribute("aria-hidden", "false");
     var beatId = mobileBeatAt(p, dom);
     var stationAttr = dom === "arrival" ? "arrival" : dom;
-    root.setAttribute("data-process-mobile-station", stationAttr);
-    root.setAttribute("data-process-mobile-beat", beatId);
+    root.setAttribute("data-mobile-station", stationAttr);
+    root.setAttribute("data-mobile-beat", beatId);
     renderMobileBeat(beatId, !mobileExperiencePrimed || !motionOn);
     mobileExperiencePrimed = true;
 
-    var stationIndex = PROCESS_STATION_ORDER.indexOf(dom);
+    var stationIndex = STATION_ORDER.indexOf(dom);
     for (var i = 0; i < mobileStationButtons.length; i++) {
       var stationButton = mobileStationButtons[i];
       var buttonId = stationButton.getAttribute("data-go");
-      var buttonIndex = PROCESS_STATION_ORDER.indexOf(buttonId);
+      var buttonIndex = STATION_ORDER.indexOf(buttonId);
       var active = dom !== "arrival" && buttonId === dom;
       stationButton.classList.toggle("is-active", active);
       stationButton.classList.toggle("is-past", dom !== "arrival" && buttonIndex >= 0 && buttonIndex < stationIndex);
@@ -4179,10 +3966,10 @@
     var c = worldToCommercial(p);
     var dom = dominantStation(p);
     activeStationId = dom;
-    root.setAttribute("data-process-passage", atArrival ? "arrival" : "process-journey");
+    root.setAttribute("data-passage", atArrival ? "arrival" : "journey");
 
     var entryCue = entryCueAt(p);
-    root.style.setProperty("--process-entry-cue", entryCue.toFixed(4));
+    root.style.setProperty("--entry-cue", entryCue.toFixed(4));
     if (scrollInvitation) {
       scrollInvitation.setAttribute("aria-hidden", entryCue > 0.04 ? "false" : "true");
     }
@@ -4210,7 +3997,7 @@
     paintMobileExperience(p, dom);
 
     /* Method annotations accumulate as an arc (and unwind in reverse).
-       Thresholds come only from PROCESS_TUNING.methodSteps[*].at (commercial progress). */
+       Thresholds come only from SITE_TUNING.methodSteps[*].at (commercial progress). */
     for (var m = 0; m < methodAnnots.length; m++) {
       var annot = methodAnnots[m];
       var on = false;
@@ -4218,7 +4005,7 @@
         if (!motionOn) {
           on = true;
         } else {
-          var range = PROCESS_TUNING.methodSteps[m];
+          var range = SITE_TUNING.methodSteps[m];
           on = !!(range && c >= range.at);
         }
       }
@@ -4230,21 +4017,21 @@
       var tick = railTicks[r];
       tick.setAttribute("aria-current", !atArrival && tick.getAttribute("data-go") === dom ? "true" : "false");
     }
-    root.style.setProperty("--process-rail-marker", progressToRailMarker(c).toFixed(2) + "%");
+    root.style.setProperty("--rail-marker", progressToRailMarker(c).toFixed(2) + "%");
 
     if (distanceHud) {
       if (atArrival) {
         distanceHud.textContent = "";
-        root.style.setProperty("--process-hud-opacity", "0");
+        root.style.setProperty("--hud-opacity", "0");
       } else {
-        var idx = PROCESS_STATION_ORDER.indexOf(dom) + 1;
-        var label = PROCESS_TUNING.stations[dom].label;
+        var idx = STATION_ORDER.indexOf(dom) + 1;
+        var label = SITE_TUNING.stations[dom].label;
         if (dom === "threshold" && c > 0.97) {
           distanceHud.textContent = "Journey complete";
-          root.style.setProperty("--process-hud-opacity", "0.35");
+          root.style.setProperty("--hud-opacity", "0.35");
         } else {
           distanceHud.textContent = idx + " of 5 — " + label;
-          root.style.setProperty("--process-hud-opacity", "1");
+          root.style.setProperty("--hud-opacity", "1");
         }
       }
     }
@@ -4257,26 +4044,26 @@
     if (atArrival) lit = 0;
     else if (!motionOn) lit = (dom === "proof") ? 1 : 0;
     else {
-      var cs = PROCESS_TUNING.consoleLit.start;
-      var cf = PROCESS_TUNING.consoleLit.full;
+      var cs = SITE_TUNING.consoleLit.start;
+      var cf = SITE_TUNING.consoleLit.full;
       lit = clamp((c - cs) / Math.max(0.0001, cf - cs), 0, 1);
-      var life = isMobile() ? PROCESS_TUNING.mobileProofApparatus : PROCESS_TUNING.proofApparatus;
+      var life = isMobile() ? SITE_TUNING.mobileProofApparatus : SITE_TUNING.proofApparatus;
       if (c >= life.fadeStart) {
         lit *= clamp(1 - (c - life.fadeStart) / Math.max(0.0001, life.fullyGone - life.fadeStart), 0, 1);
       }
     }
-    root.style.setProperty("--process-console-lit", lit.toFixed(4));
+    root.style.setProperty("--console-lit", lit.toFixed(4));
     applyProofApparatus(atArrival ? -1 : c, atArrival ? "arrival" : dom);
 
     var sig = motionOn ? clamp(0.25 + c * 0.7, 0.25, 0.95) : 0.55;
     if (atArrival) sig = motionOn ? 0.45 : 0.55;
-    root.style.setProperty("--process-signal-core", sig.toFixed(4));
+    root.style.setProperty("--signal-core", sig.toFixed(4));
   }
 
-  /* Live conduit visibility from named PROCESS_TUNING thresholds only.
+  /* Live conduit visibility from named SITE_TUNING thresholds only.
      Does not animate bolt geometry — CSS dash travel + SMIL path morph own that. */
   function liveConduitVisibility(p) {
-    var cfg = PROCESS_TUNING.liveConduit;
+    var cfg = SITE_TUNING.liveConduit;
     var fullUntil = cfg.fullUntil;
     var fadeEnd = cfg.fadeEnd;
     if (p <= fullUntil) return 1;
@@ -4286,7 +4073,7 @@
 
   function paintLiveConduit(p) {
     var v = motionOn ? liveConduitVisibility(p) : 0;
-    root.style.setProperty("--process-live-conduit", v.toFixed(4));
+    root.style.setProperty("--live-conduit", v.toFixed(4));
     if (!arrivalLightning) return;
     var retired = v <= 0.001;
     if (retired === liveConduitRetired) return;
@@ -4304,7 +4091,7 @@
 
   function paint(p) {
     p = clamp(p, 0, 1);
-    root.style.setProperty("--process-progress", p.toFixed(5));
+    root.style.setProperty("--progress", p.toFixed(5));
     var c = worldToCommercial(p);
     var atArrival = isArrivalAt(p);
 
@@ -4312,7 +4099,7 @@
     if (!motionOn) {
       var id = dominantStation(p);
       activeStationId = id;
-      frame = (id === "arrival") ? 0 : (PROCESS_TUNING.stillFrames[id] || 0);
+      frame = (id === "arrival") ? 0 : (SITE_TUNING.stillFrames[id] || 0);
     } else {
       /* Commercial progress drives the approved frame map so Arrival extends the
          runway instead of compressing Leak→Services travel. */
@@ -4334,7 +4121,6 @@
   }
 
   function sampleScroll() {
-    if (!processActivated) return;
     progressTarget = computeProgress();
     if (!motionOn) {
       progressCurrent = progressTarget;
@@ -4369,11 +4155,11 @@
       lastFrameTs = 0;
       return;
     }
-    var tau = isMobile() ? PROCESS_TUNING.settle.tauMobileSec : PROCESS_TUNING.settle.tauDesktopSec;
+    var tau = isMobile() ? SITE_TUNING.settle.tauMobileSec : SITE_TUNING.settle.tauDesktopSec;
     var alpha = 1 - Math.exp(-dt / Math.max(0.001, tau));
     progressCurrent += (progressTarget - progressCurrent) * alpha;
     paint(progressCurrent);
-    if (Math.abs(progressTarget - progressCurrent) > PROCESS_TUNING.settle.epsilon) {
+    if (Math.abs(progressTarget - progressCurrent) > SITE_TUNING.settle.epsilon) {
       renderRaf = window.requestAnimationFrame(renderTick);
     } else {
       progressCurrent = progressTarget;
@@ -4386,12 +4172,11 @@
     if (mobileScrollRaf) window.cancelAnimationFrame(mobileScrollRaf);
     mobileScrollRaf = 0;
     mobileGlideLocked = false;
-    root.removeAttribute("data-process-mobile-gliding");
+    root.removeAttribute("data-mobile-gliding");
   }
 
   function glideScrollTo(top) {
     cancelMobileGlide();
-    top = journeyToDocumentY(top);
     var start = window.scrollY;
     var distance = top - start;
     if (!motionOn || Math.abs(distance) < 0.5) {
@@ -4400,9 +4185,9 @@
       return;
     }
     var started = performance.now();
-    var duration = PROCESS_TUNING.mobileSectionGlideMs;
+    var duration = SITE_TUNING.mobileSectionGlideMs;
     mobileGlideLocked = true;
-    root.setAttribute("data-process-mobile-gliding", "true");
+    root.setAttribute("data-mobile-gliding", "true");
 
     function glide(now) {
       var elapsed = clamp((now - started) / duration, 0, 1);
@@ -4415,7 +4200,7 @@
         window.scrollTo(0, top);
         mobileScrollRaf = 0;
         mobileGlideLocked = false;
-        root.removeAttribute("data-process-mobile-gliding");
+        root.removeAttribute("data-mobile-gliding");
         sampleScroll();
       }
     }
@@ -4424,7 +4209,7 @@
   }
 
   function mobileStageIndexAtProgress(p) {
-    var stops = PROCESS_TUNING.mobileStageStops;
+    var stops = SITE_TUNING.mobileStageStops;
     var best = 0;
     var bestDistance = Infinity;
     for (var i = 0; i < stops.length; i++) {
@@ -4439,14 +4224,14 @@
 
   function scrollToMobileStageIndex(index) {
     if (!journey || !viewport) return false;
-    var stops = PROCESS_TUNING.mobileStageStops;
+    var stops = SITE_TUNING.mobileStageStops;
     var bounded = clamp(index, 0, stops.length - 1);
     var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
     var top = stops[bounded].progress * total;
     if (motionOn) glideScrollTo(top);
     else {
       cancelMobileGlide();
-      window.scrollTo({ top: journeyToDocumentY(top), left: 0, behavior: "auto" });
+      window.scrollTo({ top: top, left: 0, behavior: "auto" });
       sampleScroll();
     }
     return true;
@@ -4456,11 +4241,7 @@
     if (!isMobile() || mobileGlideLocked || !direction) return false;
     if (lightbox && lightbox.classList.contains("is-open")) return false;
     var current = mobileStageIndexAtProgress(computeProgress());
-    if (direction < 0 && current === 0 && window.ROOT_PORTFOLIO_PASSAGE) {
-      window.ROOT_PORTFOLIO_PASSAGE.goMobileStop(window.ROOT_PORTFOLIO_PASSAGE.stops.length - 1);
-      return true;
-    }
-    var next = clamp(current + (direction > 0 ? 1 : -1), 0, PROCESS_TUNING.mobileStageStops.length - 1);
+    var next = clamp(current + (direction > 0 ? 1 : -1), 0, SITE_TUNING.mobileStageStops.length - 1);
     if (next === current) return false;
     return scrollToMobileStageIndex(next);
   }
@@ -4473,7 +4254,7 @@
   }
 
   function mobileGestureAvailable() {
-    return isMobile() && journey && viewport && journeyOwnsViewport() && !(lightbox && lightbox.classList.contains("is-open"));
+    return isMobile() && journey && viewport && !(lightbox && lightbox.classList.contains("is-open"));
   }
 
   function onMobileTouchStart(e) {
@@ -4521,7 +4302,7 @@
       mobileTouchLastY = e.changedTouches[0].clientY;
     }
     var dy = mobileTouchLastY - mobileTouchStartY;
-    var qualifies = mobileTouchVertical && Math.abs(dy) >= PROCESS_TUNING.mobileSwipeThresholdPx;
+    var qualifies = mobileTouchVertical && Math.abs(dy) >= SITE_TUNING.mobileSwipeThresholdPx;
     resetMobileTouch();
     if (qualifies) advanceMobileStage(dy < 0 ? 1 : -1);
   }
@@ -4537,7 +4318,7 @@
       mobileWheelTriggered = false;
       mobileWheelDelta = 0;
       mobileWheelIdleTimer = 0;
-    }, PROCESS_TUNING.mobileWheelIdleMs);
+    }, SITE_TUNING.mobileWheelIdleMs);
   }
 
   function onMobileWheel(e) {
@@ -4551,7 +4332,7 @@
     }
     mobileWheelDelta += e.deltaY;
     closeMobileWheelGestureSoon();
-    if (mobileWheelTriggered || Math.abs(mobileWheelDelta) < PROCESS_TUNING.mobileWheelThresholdPx) return;
+    if (mobileWheelTriggered || Math.abs(mobileWheelDelta) < SITE_TUNING.mobileWheelThresholdPx) return;
     mobileWheelTriggered = true;
     if (!mobileGlideLocked) advanceMobileStage(mobileWheelDelta > 0 ? 1 : -1);
   }
@@ -4559,7 +4340,7 @@
   function scrollToArrival(behavior) {
     if (!journey || !viewport) return;
     cancelMobileGlide();
-    window.scrollTo({ top: journeyDocumentTop(), left: 0, behavior: behavior || "auto" });
+    window.scrollTo({ top: 0, left: 0, behavior: behavior || "auto" });
     sampleScroll();
   }
 
@@ -4569,26 +4350,26 @@
     var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
     var top;
     if (!motionOn && !isMobile()) {
-      var idx = PROCESS_STATION_ORDER.indexOf(id);
+      var idx = STATION_ORDER.indexOf(id);
       /* Motion-off: equal bands for Arrival + five commercial stations. */
-      top = ((idx + 1) / (PROCESS_STATION_ORDER.length + 1)) * total + 1;
+      top = ((idx + 1) / (STATION_ORDER.length + 1)) * total + 1;
     } else {
       /* Station centers are authored in commercial progress; map to world. */
       top = commercialToWorld(s.center) * total;
     }
     if (isMobile() && motionOn && behavior !== "auto") glideScrollTo(top);
-    else window.scrollTo({ top: journeyToDocumentY(top), left: 0, behavior: behavior || "auto" });
+    else window.scrollTo({ top: top, left: 0, behavior: behavior || "auto" });
     sampleScroll();
   }
 
   function scrollToMobileMethodStep(step) {
-    var spec = PROCESS_TUNING.mobileMethodSteps[step - 1];
+    var spec = SITE_TUNING.mobileMethodSteps[step - 1];
     if (!spec || !journey || !viewport) return;
     var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
     var top = commercialToWorld(spec.center) * total;
     if (motionOn) glideScrollTo(top);
     else {
-      window.scrollTo({ top: journeyToDocumentY(top), left: 0, behavior: "auto" });
+      window.scrollTo({ top: top, left: 0, behavior: "auto" });
       sampleScroll();
     }
   }
@@ -4640,7 +4421,7 @@
       cancelMobileGlide();
       var stageIndex = mobileStageIndexAtProgress(computeProgress());
       var total = Math.max(1, journey.offsetHeight - viewport.offsetHeight);
-      lightboxReturnTop = journeyToDocumentY(PROCESS_TUNING.mobileStageStops[stageIndex].progress * total);
+      lightboxReturnTop = SITE_TUNING.mobileStageStops[stageIndex].progress * total;
       window.scrollTo(0, lightboxReturnTop);
       progressCurrent = progressTarget = computeProgress();
       paint(progressCurrent);
@@ -4675,20 +4456,20 @@
     if (opener && typeof opener.focus === "function") {
       if (document.contains(opener) && opener.getAttribute("tabindex") !== "-1") opener.focus();
       else {
-        var consoleBtn = document.getElementById("process-console-screen");
+        var consoleBtn = document.getElementById("console-screen");
         if (consoleBtn && consoleBtn.getAttribute("tabindex") !== "-1") consoleBtn.focus();
       }
     }
   }
 
   function runIntro() {
-    root.style.setProperty("--process-intro-veil", "1");
-    root.style.setProperty("--process-world-opacity", "0");
-    window.setTimeout(function () { body.classList.add("is-ready"); }, PROCESS_TUNING.intro.readyDelayMs);
+    root.style.setProperty("--intro-veil", "1");
+    root.style.setProperty("--world-opacity", "0");
+    window.setTimeout(function () { body.classList.add("is-ready"); }, SITE_TUNING.intro.readyDelayMs);
 
     if (!motionOn) {
-      root.style.setProperty("--process-intro-veil", "0");
-      root.style.setProperty("--process-world-opacity", "1");
+      root.style.setProperty("--intro-veil", "0");
+      root.style.setProperty("--world-opacity", "1");
       introDone = true;
       dismissLoader();
       paint(progressCurrent);
@@ -4696,17 +4477,17 @@
     }
 
     window.setTimeout(function () {
-      root.style.setProperty("--process-world-opacity", "1");
-      root.style.setProperty("--process-signal-core", "0.45");
+      root.style.setProperty("--world-opacity", "1");
+      root.style.setProperty("--signal-core", "0.45");
     }, 60);
     window.setTimeout(function () {
-      root.style.setProperty("--process-intro-veil", "0");
+      root.style.setProperty("--intro-veil", "0");
     }, 120);
     window.setTimeout(function () {
       introDone = true;
       dismissLoader();
       sampleScroll();
-    }, PROCESS_TUNING.intro.veilMs);
+    }, SITE_TUNING.intro.veilMs);
   }
 
   /* Boot preload: forced ?station= center first (only), else opening neighborhood + stills. */
@@ -4718,107 +4499,35 @@
     }
     /* Normal homepage: open on frame 0 neighbourhood, then still keys, then idle rest */
     for (var i = 0; i < 24; i++) loadFrame(i, true);
-    var mobileStops = PROCESS_TUNING.mobileStageStops;
+    var mobileStops = SITE_TUNING.mobileStageStops;
     for (var m = 0; m < mobileStops.length; m++) {
       loadFrame(mobileProgressToFrame(mobileStops[m].progress), true);
     }
-    var keys = PROCESS_TUNING.stillFrames;
+    var keys = SITE_TUNING.stillFrames;
     for (var k in keys) loadFrame(keys[k], true);
     preloadCursor = 24;
     scheduleIdlePreload();
   }
 
-  function processActivationRequested() {
-    if (processActivated || !journey) return processActivated;
-    if (forcedStation || (window.location.hash || "").indexOf("#process-") === 0) return true;
-    var rect = journey.getBoundingClientRect();
-    var viewportHeight = Math.max(1, window.innerHeight || (viewport && viewport.offsetHeight) || 1);
-    return rect.top <= viewportHeight * 1.75 && rect.bottom >= 0;
-  }
-
-  function activateProcess() {
-    if (processActivated) return;
-    processActivated = true;
-    if (processActivationObserver) {
-      processActivationObserver.disconnect();
-      processActivationObserver = null;
-    }
-
-    bootPreload();
-    applyMotionPreference(motionOn, false);
-    if (forcedEntryFrame >= 0) showFrame(forcedEntryFrame);
-    else showFrame(0);
-
-    scheduleThresholdEmailFit();
-    if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === "function") {
-      document.fonts.ready.then(function () {
-        thresholdEmailFitLastTarget = -1;
-        scheduleThresholdEmailFit();
-      }).catch(function () {});
-    }
-
-    if (forcedStation) {
-      root.style.setProperty("--process-intro-veil", "0");
-      root.style.setProperty("--process-world-opacity", "1");
-      introDone = true;
-      dismissLoader();
-      syncArrivalMotion(1);
-      window.requestAnimationFrame(function () {
-        scrollToStation(forcedStation, "auto");
-        progressCurrent = progressTarget = computeProgress();
-        holdArrivalMotion = false;
-        paint(progressCurrent);
-        scheduleThresholdEmailFit();
-      });
-    } else {
-      progressCurrent = progressTarget = computeProgress();
-      paint(progressCurrent);
-      runIntro();
-    }
-  }
-
-  function maybeActivateProcess() {
-    if (processActivationRequested()) activateProcess();
-  }
-
-  function watchForProcessActivation() {
-    maybeActivateProcess();
-    if (processActivated || !journey || typeof IntersectionObserver !== "function") return;
-    processActivationObserver = new IntersectionObserver(function (entries) {
-      for (var i = 0; i < entries.length; i++) {
-        if (entries[i].isIntersecting || processActivationRequested()) {
-          activateProcess();
-          return;
-        }
-      }
-    }, { root: null, rootMargin: "175% 0px 175% 0px", threshold: 0 });
-    processActivationObserver.observe(journey);
-  }
-
   window.addEventListener("scroll", function () {
-    if (!processActivated) {
-      maybeActivateProcess();
-      return;
+    progressTarget = computeProgress();
+    if (!motionOn) {
+      progressCurrent = progressTarget;
+      paint(progressCurrent);
+    } else {
+      startRenderLoop();
+      syncArrivalMotion(progressTarget);
     }
-    sampleScroll();
   }, { passive: true });
 
   window.addEventListener("resize", function () {
     cancelMobileGlide();
-    if (!processActivated) {
-      maybeActivateProcess();
-      return;
-    }
     sampleScroll();
     scheduleThresholdEmailFit();
   });
 
   /* bfcache restore and soft navigations must re-sync the carrier to true Arrival state. */
   window.addEventListener("pageshow", function () {
-    if (!processActivated) {
-      maybeActivateProcess();
-      return;
-    }
     sampleScroll();
     syncArrivalMotion(progressCurrent);
   });
@@ -4843,14 +4552,9 @@
     });
   }
 
-  window.addEventListener("jw-motion-change", function (event) {
-    if (!event.detail || event.detail.source === "process") return;
-    if (motionOn !== !!event.detail.on) applyMotionPreference(!!event.detail.on, false);
-  });
-
   /* Work route: short authored exit, then navigate. Header + threshold invitations share one binding. */
   (function bindWorkExit() {
-    var workLinks = journey ? journey.querySelectorAll("#process-work-link, a[data-process-work-exit]") : [];
+    var workLinks = document.querySelectorAll("#work-link, a[data-work-exit]");
     if (!workLinks.length) return;
     var navigating = false;
     function onWorkExitClick(e) {
@@ -4864,7 +4568,7 @@
         window.location.href = href;
         return;
       }
-      root.setAttribute("data-process-work-exit", "on");
+      root.setAttribute("data-work-exit", "on");
       window.setTimeout(function () {
         window.location.href = href;
       }, 420);
@@ -4883,7 +4587,7 @@
     });
   }
   for (var g = 0; g < railTicks.length; g++) bindGo(railTicks[g]);
-  var goLinks = journey ? journey.querySelectorAll("[data-go]") : [];
+  var goLinks = document.querySelectorAll("[data-go]");
   for (var gl = 0; gl < goLinks.length; gl++) {
     if (!goLinks[gl].classList.contains("station-rail-tick")) bindGo(goLinks[gl]);
   }
@@ -4908,12 +4612,12 @@
   window.addEventListener("touchcancel", onMobileTouchCancel, { passive: true });
   window.addEventListener("wheel", onMobileWheel, { passive: false });
 
-  var planeButtons = journey ? journey.querySelectorAll("[data-lightbox]") : [];
+  var planeButtons = document.querySelectorAll("[data-lightbox]");
   for (var pi = 0; pi < planeButtons.length; pi++) {
     (function (btn) {
       btn.addEventListener("click", function () {
         if (btn.getAttribute("tabindex") === "-1") return;
-        var mount = btn.closest(".process-console-mount, .process-note-mount");
+        var mount = btn.closest(".console-mount, .note-mount");
         if (mount && !mount.classList.contains("is-live")) return;
         openLightbox(btn.getAttribute("data-lightbox"));
       });
@@ -4935,7 +4639,6 @@
   /* keyboard station nav when not in lightbox */
   document.addEventListener("keydown", function (e) {
     if (lightbox && lightbox.classList.contains("is-open")) return;
-    if (!journeyOwnsViewport()) return;
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "PageDown" && e.key !== "PageUp") return;
     if (e.target && (e.target.tagName === "INPUT" || e.target.tagName === "TEXTAREA" || e.target.isContentEditable)) return;
     if (isMobile()) {
@@ -4951,31 +4654,68 @@
       }
       return;
     }
-    var idx = PROCESS_STATION_ORDER.indexOf(activeStationId);
+    var idx = STATION_ORDER.indexOf(activeStationId);
     if (down) {
-      if (idx < PROCESS_STATION_ORDER.length - 1) {
+      if (idx < STATION_ORDER.length - 1) {
         e.preventDefault();
-        scrollToStation(PROCESS_STATION_ORDER[idx + 1], motionOn ? "smooth" : "auto");
+        scrollToStation(STATION_ORDER[idx + 1], motionOn ? "smooth" : "auto");
       }
     } else if (idx > 0) {
       e.preventDefault();
-      scrollToStation(PROCESS_STATION_ORDER[idx - 1], motionOn ? "smooth" : "auto");
+      scrollToStation(STATION_ORDER[idx - 1], motionOn ? "smooth" : "auto");
     } else if (idx === 0) {
       e.preventDefault();
       scrollToArrival(motionOn ? "smooth" : "auto");
     }
   });
 
-  var noJsRoute = document.getElementById("process-no-js-route");
+  var noJsRoute = document.getElementById("no-js-route");
   if (noJsRoute && noJsRoute.parentNode) noJsRoute.parentNode.removeChild(noJsRoute);
 
   bindArrivalMotionFallback(arrivalMotionVideo);
   if (holdArrivalMotion) pauseArrivalMotion(arrivalMotionVideo);
-  watchForProcessActivation();
 
-  window.PROCESS_TUNING = PROCESS_TUNING;
-  window.PROCESS_JOURNEY = {
-    get activated() { return processActivated; },
+  bootPreload();
+  applyMotionPreference(motionOn, false);
+  if (forcedEntryFrame >= 0) {
+    /* Desire and present the forced center immediately — never boot through frame 0 first. */
+    showFrame(forcedEntryFrame);
+  } else {
+    showFrame(0);
+  }
+
+  /* Fit threshold email ink after first layout; one fonts.ready re-fit when faces
+     swap so the independent probe reads real Bodoni / IBM Plex metrics. */
+  scheduleThresholdEmailFit();
+  if (document.fonts && document.fonts.ready && typeof document.fonts.ready.then === "function") {
+    document.fonts.ready.then(function () {
+      thresholdEmailFitLastTarget = -1;
+      scheduleThresholdEmailFit();
+    }).catch(function () {});
+  }
+
+  if (forcedStation) {
+    root.style.setProperty("--intro-veil", "0");
+    root.style.setProperty("--world-opacity", "1");
+    introDone = true;
+    dismissLoader();
+    /* Keep carrier suppressed until the commercial rest is actually scrolled. */
+    syncArrivalMotion(1);
+    window.requestAnimationFrame(function () {
+      scrollToStation(forcedStation, "auto");
+      progressCurrent = progressTarget = computeProgress();
+      holdArrivalMotion = false;
+      paint(progressCurrent);
+      scheduleThresholdEmailFit();
+    });
+  } else {
+    progressCurrent = progressTarget = 0;
+    paint(0);
+    runIntro();
+  }
+
+  window.SITE_TUNING = SITE_TUNING;
+  window.__CORRIDOR = {
     get progress() { return progressCurrent; },
     get target() { return progressTarget; },
     get station() { return activeStationId; },
@@ -4984,7 +4724,7 @@
     get desiredFrame() { return desiredFrame; },
     get framesReady() { return framesReadyCount; },
     get introDone() { return introDone; },
-    get mobileStage() { return PROCESS_TUNING.mobileStageStops[mobileStageIndexAtProgress(progressCurrent)].id; },
+    get mobileStage() { return SITE_TUNING.mobileStageStops[mobileStageIndexAtProgress(progressCurrent)].id; },
     get mobileGliding() { return mobileGlideLocked; },
     get arrivalMotion() { return arrivalMotionVisibility(progressCurrent); },
     go: scrollToStation,

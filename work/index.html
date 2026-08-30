@@ -3,29 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Conversion-Driven Website Portfolio | Jarrett Wroten, Las Vegas</title>
-<meta name="description" content="Explore conversion-driven restaurant, jewelry, and tattoo artist website concepts by Las Vegas web designer Jarrett Wroten.">
-<link rel="canonical" href="https://jarrettwroten.com/work/">
-<meta property="og:type" content="website">
-<meta property="og:site_name" content="Jarrett Wroten">
-<meta property="og:title" content="Conversion-Driven Website Portfolio | Jarrett Wroten">
-<meta property="og:description" content="A full-screen passage through Generations Kitchen, Pā‘ina Café, Rana Levy, and Dylan Prorok.">
-<meta property="og:url" content="https://jarrettwroten.com/work/">
-<meta property="og:image" content="https://jarrettwroten.com/assets/work/generations/hurricane-fries-desktop.jpg">
-<meta property="og:image:width" content="1728">
-<meta property="og:image:height" content="972">
-<meta property="og:image:alt" content="Hurricane fries being finished in the Generations Kitchen restaurant concept.">
-<meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Conversion-Driven Website Portfolio | Jarrett Wroten">
-<meta name="twitter:description" content="Restaurant, jewelry, and tattoo artist concepts from a Las Vegas conversion-focused web designer.">
-<meta name="twitter:image" content="https://jarrettwroten.com/assets/work/generations/hurricane-fries-desktop.jpg">
-<script type="application/ld+json">
-{"@context":"https://schema.org","@type":"CollectionPage","name":"Jarrett Wroten Website Portfolio","url":"https://jarrettwroten.com/work/","description":"Conversion-driven website concepts by Jarrett Wroten.","creator":{"@type":"Person","name":"Jarrett Wroten","url":"https://jarrettwroten.com/"},"hasPart":[{"@id":"https://jarrettwroten.com/work/generations-kitchen/"},{"@id":"https://jarrettwroten.com/work/paina-cafe/"},{"@id":"https://jarrettwroten.com/work/rana-levy/"},{"@id":"https://jarrettwroten.com/work/dylan-prorok/"}]}
-</script>
+<title>Work | Jarrett Wroten</title>
+<meta name="description" content="A continuous craft route through selected work — from the corridor into Rana Levy’s gem studio, through Dylan Prorok, then a clear next step.">
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
-<link rel="preload" as="image" href="../assets/work/generations/hurricane-fries-desktop.jpg" media="(min-width:721px)">
-<link rel="preload" as="image" href="../assets/work/generations/hurricane-fries-mobile.jpg" media="(max-width:720px)">
-<link rel="preload" as="image" href="../assets/work/paina/opening-mobile-entry-2p4.jpg" media="(max-width:720px)">
+<link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-000.webp">
 <link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-360.webp">
 <link rel="preload" as="image" href="../assets/work/rana/studio-opening.jpg">
 <link rel="preload" as="image" href="../assets/work/rana/studio-poster.jpg">
@@ -33,21 +14,32 @@
 <link rel="preload" as="image" href="../demos/dylan-prorok/dylan-portrait.jpg">
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/bodoni-moda-latin-variable.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="../assets/fonts/ibm-plex-sans-latin-variable.woff2" crossorigin>
-<script src="../assets/motion-bootstrap.js"></script>
 <script>
 (function () {
   try {
-    var params = new URLSearchParams(window.location.search);
-    if (params.get("identity") === "off") {
-      document.documentElement.setAttribute("data-identity", "off");
+    var stored = localStorage.getItem("jw-motion");
+    var on = stored === "off" ? false : true;
+    document.documentElement.setAttribute("data-motion", on ? "on" : "off");
+    if (stored === "on" || stored === "off") {
+      document.documentElement.setAttribute("data-motion-user", stored);
     }
-  } catch (error) {}
+  } catch (e) {
+    document.documentElement.setAttribute("data-motion", "on");
+  }
+  try {
+    var params = new URLSearchParams(window.location.search);
+    var mq = params.get("motion");
+    if (mq === "off" || mq === "on") {
+      document.documentElement.setAttribute("data-motion", mq);
+      document.documentElement.setAttribute("data-motion-user", mq);
+    }
+  } catch (e2) {}
   try {
     if (sessionStorage.getItem("jw-work-enter") === "1") {
       document.documentElement.setAttribute("data-work-enter", "1");
       sessionStorage.removeItem("jw-work-enter");
     }
-  } catch (error) {}
+  } catch (e3) {}
 })();
 </script>
 <style>
@@ -112,19 +104,15 @@
     --gutter:clamp(1.1rem,3.6vw,2.75rem);
     --top-chrome:clamp(2.9rem,5.2vh,3.4rem);
     --progress:0;
-    --generations-hold:1;
-    --paina-open:0;
-    --paina-side:0;
-    --paina-hold:0;
+    --corridor-dark:0;
     --rana-open:0;
     --rana-hold:0;
     --prorok-open:0;
     --prorok-hold:0;
     --ring-presence:0;
     --terminal-hold:0;
+    --entry-cue:1;
     --enter-veil:0;
-    --copy-generations:1;
-    --copy-paina:0;
     --copy-rana:0;
     --copy-prorok:0;
     --copy-terminal:0;
@@ -163,11 +151,11 @@
 
   .passage{
     position:relative;
-    /* Five full-screen worlds with authored rests and reversible handoffs. */
-    height:620svh;
+    /* Corridor → Rana craft → ProRok craft → terminal — enough depth for rests without dead scroll. */
+    height:460svh;
     background:var(--void);
   }
-  html[data-motion="off"] .passage{height:520svh}
+  html[data-motion="off"] .passage{height:400svh}
 
   .viewport{
     position:sticky;
@@ -189,25 +177,7 @@
 
   .mobile-scene-plate{
     display:none;
-    position:absolute;
-    inset:0;
-    z-index:10;
-    width:100%;
-    height:100%;
-    max-width:none;
-    object-fit:contain;
-    object-position:50% 50%;
-    background:var(--void);
-    opacity:0;
-    transition:opacity .12s linear;
-    pointer-events:none;
   }
-  html.mobile-plate-active .mobile-scene-plate,
-  html.source-swap-active .mobile-scene-plate{
-    display:block;
-    opacity:1;
-  }
-  html.source-swap-active .mobile-scene-plate{transition:none}
 
   .layer{
     position:absolute;
@@ -215,101 +185,119 @@
     overflow:hidden;
   }
 
-  /* ── Generations world: the served plate owns the cold frame ── */
-  .layer-generations{
+  /* ── Corridor lineage ── */
+  .layer-corridor{
     z-index:1;
-    background:#0b0806;
+    background:var(--void);
   }
-  .generations-media,
-  .paina-media{
-    position:absolute;
-    inset:0;
-  }
-  .generations-poster,
-  .generations-video,
-  .paina-poster,
-  .paina-video{
+  .corridor-frame{
     position:absolute;
     inset:0;
     width:100%;
     height:100%;
-    max-width:none;
-    object-fit:contain;
+    object-fit:cover;
+    object-position:center center;
+    transform:scale(calc(1 + var(--corridor-dark) * .06));
+    filter:
+      saturate(calc(1 - var(--corridor-dark) * .35))
+      brightness(calc(1 - var(--corridor-dark) * .72))
+      contrast(calc(1 + var(--corridor-dark) * .08));
+    will-change:transform,filter;
   }
-  .generations-poster,
-  .generations-video{object-position:50% 50%}
-  .generations-video,
-  .paina-video{
+  .corridor-poster{z-index:0}
+  .corridor-motion{
+    z-index:1;
     opacity:0;
-    transition:opacity .35s var(--ease-enter);
+    transition:opacity .45s var(--ease-enter);
   }
-  .generations-video.is-ready,
-  .paina-video.is-ready{opacity:1}
-  .generations-media{
-    transform:none;
-    filter:saturate(1.04) contrast(1.04) brightness(calc(.98 - (1 - var(--generations-hold)) * .08));
-    will-change:transform,filter;
-  }
-  .generations-wash{
+  .corridor-motion.is-ready{opacity:1}
+  .corridor-energy{
     position:absolute;
     inset:0;
     pointer-events:none;
+    opacity:calc(.55 * (1 - var(--rana-open) * .85));
     background:
-      linear-gradient(102deg, rgba(8,6,4,.64) 0%, rgba(8,6,4,.22) 28%, transparent 56%),
-      linear-gradient(180deg, rgba(8,6,4,.18) 0%, transparent 46%, rgba(8,6,4,.48) 100%);
+      radial-gradient(ellipse 42% 36% at 50% 54%, rgba(217,122,58,.28) 0%, transparent 62%),
+      radial-gradient(ellipse 70% 50% at 50% 50%, transparent 40%, rgba(4,10,12,.35) 100%);
+    mix-blend-mode:screen;
   }
-
-  /* ── Pā‘ina threshold: the served food opens into the kitchen making it ── */
-  .layer-paina{
+  /* Live doorway lightning — full-bleed, locked to 1280×720 corridor media.
+     Charge travels each bolt; path topology morphs. Not a whole-frame flicker. */
+  .corridor-lightning{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
     z-index:2;
-    visibility:hidden;
-    background:#07110f;
-    --paina-core:max(0.001, var(--paina-open));
-    --paina-join:max(0.001, var(--paina-side));
-    -webkit-mask-image:
-      radial-gradient(ellipse calc(var(--paina-core) * 94%) calc(var(--paina-core) * 76%) at 52% 68%, #000 0%, #000 48%, transparent 75%),
-      radial-gradient(ellipse calc(var(--paina-core) * 66%) calc(var(--paina-core) * 92%) at 45% 58%, #000 0%, #000 42%, transparent 70%),
-      radial-gradient(ellipse calc(var(--paina-core) * 72%) calc(var(--paina-core) * 64%) at 61% 76%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--paina-join) * 96%) calc(var(--paina-join) * 82%) at 18% 48%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--paina-join) * 92%) calc(var(--paina-join) * 88%) at 84% 50%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--paina-join) * 128%) calc(var(--paina-join) * 94%) at 50% 28%, #000 0%, #000 44%, transparent 74%),
-      radial-gradient(ellipse calc(var(--paina-join) * 180%) calc(var(--paina-join) * 165%) at 52% 58%, #000 0%, #000 62%, transparent 88%);
-    mask-image:
-      radial-gradient(ellipse calc(var(--paina-core) * 94%) calc(var(--paina-core) * 76%) at 52% 68%, #000 0%, #000 48%, transparent 75%),
-      radial-gradient(ellipse calc(var(--paina-core) * 66%) calc(var(--paina-core) * 92%) at 45% 58%, #000 0%, #000 42%, transparent 70%),
-      radial-gradient(ellipse calc(var(--paina-core) * 72%) calc(var(--paina-core) * 64%) at 61% 76%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--paina-join) * 96%) calc(var(--paina-join) * 82%) at 18% 48%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--paina-join) * 92%) calc(var(--paina-join) * 88%) at 84% 50%, #000 0%, #000 44%, transparent 72%),
-      radial-gradient(ellipse calc(var(--paina-join) * 128%) calc(var(--paina-join) * 94%) at 50% 28%, #000 0%, #000 44%, transparent 74%),
-      radial-gradient(ellipse calc(var(--paina-join) * 180%) calc(var(--paina-join) * 165%) at 52% 58%, #000 0%, #000 62%, transparent 88%);
-    -webkit-mask-composite:source-over;
-    mask-composite:add;
-    -webkit-mask-repeat:no-repeat;
-    mask-repeat:no-repeat;
-    -webkit-mask-size:100% 100%;
-    mask-size:100% 100%;
-    will-change:mask-image,-webkit-mask-image;
+    pointer-events:none;
+    overflow:hidden;
+    transform:scale(calc(1 + var(--corridor-dark) * .06));
+    transform-origin:center center;
+    opacity:calc((1 - var(--corridor-dark)) * (1 - var(--rana-open)) * .94);
+    mix-blend-mode:screen;
   }
-  .layer-paina.is-revealing{visibility:visible}
-  .paina-poster,
-  .paina-video{object-position:50% 50%}
-  .paina-media{
-    transform:none;
-    filter:saturate(calc(1.02 + var(--paina-hold) * .05)) contrast(1.04) brightness(calc(.92 + var(--paina-hold) * .06));
-    will-change:transform,filter;
+  .corridor-lightning .bolt-halo,
+  .corridor-lightning .bolt-core,
+  .corridor-lightning .bolt-charge,
+  .corridor-lightning .bolt-charge-soft{
+    fill:none;
+    stroke-linecap:round;
+    stroke-linejoin:round;
   }
-  .paina-wash{
+  .corridor-lightning .bolt-halo{
+    stroke:rgba(94,231,240,.26);
+    stroke-width:6.5;
+  }
+  .corridor-lightning .bolt-core{
+    stroke:rgba(168,248,255,.4);
+    stroke-width:1.3;
+  }
+  .corridor-lightning .bolt-charge-soft{
+    stroke:rgba(94,231,240,.5);
+    stroke-width:4.2;
+    stroke-dasharray:18 82;
+    animation:boltChargeTravel 2.4s linear infinite;
+  }
+  .corridor-lightning .bolt-charge{
+    stroke:#E8FFFF;
+    stroke-width:2.05;
+    stroke-dasharray:10 90;
+    animation:boltChargeTravel 1.82s linear infinite;
+  }
+  /* Restrained left/right asymmetry — not a metronomic blink. */
+  .corridor-lightning .bolt--left .bolt-charge{
+    animation-duration:1.82s;
+    animation-delay:0s;
+  }
+  .corridor-lightning .bolt--left .bolt-charge-soft{
+    animation-duration:2.4s;
+    animation-delay:-.42s;
+  }
+  .corridor-lightning .bolt--right .bolt-charge{
+    animation-duration:2.18s;
+    animation-delay:-.92s;
+  }
+  .corridor-lightning .bolt--right .bolt-charge-soft{
+    animation-duration:2.76s;
+    animation-delay:-1.55s;
+  }
+  @keyframes boltChargeTravel{
+    from{stroke-dashoffset:0}
+    to{stroke-dashoffset:-100}
+  }
+  .corridor-vignette{
     position:absolute;
     inset:0;
+    z-index:3;
     pointer-events:none;
     background:
-      linear-gradient(102deg, rgba(4,12,11,.64) 0%, rgba(4,12,11,.22) 28%, transparent 54%),
-      linear-gradient(180deg, rgba(4,12,11,.2) 0%, transparent 50%, rgba(4,12,11,.52) 100%);
+      radial-gradient(ellipse 78% 68% at 50% 48%, transparent 35%, rgba(4,10,12,.28) 72%, rgba(4,10,12,.78) 100%);
+    opacity:calc(1 - var(--rana-open) * .4);
   }
 
-  /* ── Rana world: inherited refractive material takeover ── */
+  /* ── Rana world: refractive material takeover from corridor amber core ── */
   .layer-rana{
-    z-index:3;
+    z-index:2;
     /* Hard zero-state gate: layer is completely absent until open begins.
        Chromium can treat multi-mask radial-gradient(0% 0% ...) as covering,
        so never rely on zero-radius masks alone to hide the layer. */
@@ -357,7 +345,7 @@
     inset:0;
     width:100%;
     height:100%;
-    object-fit:contain;
+    object-fit:cover;
   }
   .media-fill[data-video]{
     opacity:0;
@@ -366,8 +354,8 @@
   .media-fill[data-video].is-ready{opacity:1}
   .rana-studio{
     /* Full-bleed hero — center the subject so desktop and mobile cover crops keep gem + scale cue. */
-    object-position:50% 50%;
-    transform:none;
+    object-position:50% 46%;
+    transform:scale(calc(1.06 - var(--rana-hold) * .04));
     filter:saturate(1.08) contrast(1.08) brightness(calc(.94 + var(--rana-hold) * .08));
   }
   .rana-opening{
@@ -375,8 +363,8 @@
     inset:0;
     width:100%;
     height:100%;
-    object-fit:contain;
-    object-position:50% 50%;
+    object-fit:cover;
+    object-position:50% 48%;
     opacity:calc(max(0, 1 - var(--rana-hold) * 1.55) * .55);
     mix-blend-mode:screen;
     filter:brightness(1.05) contrast(1.06) saturate(1.05);
@@ -389,7 +377,9 @@
     width:min(56vw, 40rem);
     height:min(68vh, 38rem);
     opacity:calc(var(--ring-presence) * .42);
-    transform:none;
+    transform:
+      translate3d(calc((1 - var(--ring-presence)) * 6%), calc((1 - var(--ring-presence)) * 8%), 0)
+      scale(calc(.94 + var(--ring-presence) * .08));
     mix-blend-mode:screen;
     filter:saturate(1.2) contrast(1.05) brightness(1.18) blur(.35px);
     will-change:opacity,transform;
@@ -397,9 +387,18 @@
   }
   .rana-ring-stage .media-fill{
     border-radius:0;
-    object-position:50% 50%;
-    -webkit-mask-image:none;
-    mask-image:none;
+    object-position:48% 42%;
+    /* Irregular light residue — soft lobes, no hard circular sticker edge. */
+    -webkit-mask-image:
+      radial-gradient(ellipse 68% 58% at 42% 48%, #000 0%, #000 28%, transparent 68%),
+      radial-gradient(ellipse 48% 62% at 62% 58%, #000 0%, transparent 62%),
+      radial-gradient(ellipse 54% 40% at 36% 64%, #000 0%, transparent 58%);
+    mask-image:
+      radial-gradient(ellipse 68% 58% at 42% 48%, #000 0%, #000 28%, transparent 68%),
+      radial-gradient(ellipse 48% 62% at 62% 58%, #000 0%, transparent 62%),
+      radial-gradient(ellipse 54% 40% at 36% 64%, #000 0%, transparent 58%);
+    -webkit-mask-composite:source-over;
+    mask-composite:add;
   }
   .rana-bloom{
     position:absolute;
@@ -422,10 +421,10 @@
 
   /* ── ProRok threshold: organic multi-lobed ink / erasure reveal ── */
   .layer-prorok{
-    z-index:4;
+    z-index:3;
     background:var(--sumi);
     /* Hard zero-state gate: Sumi layer must not paint at progress 0.
-       Degenerate multi-mask zero-radius composition can occlude the prior world. */
+       Degenerate multi-mask zero-radius composition can occlude the corridor. */
     visibility:hidden;
     /* Nonzero floor so mask radii never collapse to degenerate 0% 0%. */
     --mask-open:max(0.001, var(--prorok-open));
@@ -462,9 +461,9 @@
   .prorok-ink{
     /* Actual watercolor media remapped into Sumi-black / vermilion night-ink. */
     z-index:1;
-    object-position:50% 50%;
+    object-position:48% 40%;
     filter:url(#gradeNightInk) contrast(1.1) saturate(1.08);
-    transform:none;
+    transform:scale(calc(1.1 - var(--prorok-hold) * .05));
     opacity:calc(.72 + var(--prorok-hold) * .28);
     mix-blend-mode:normal;
   }
@@ -476,11 +475,19 @@
     top:0;
     width:min(54vw, 42rem);
     height:100%;
-    object-fit:contain;
-    object-position:50% 50%;
+    object-fit:cover;
+    object-position:52% 16%;
     opacity:calc(.28 + var(--prorok-hold) * .78);
-    mask-image:none;
-    -webkit-mask-image:none;
+    mask-image:
+      radial-gradient(ellipse 72% 78% at 58% 42%, #000 0%, #000 42%, transparent 78%),
+      linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, #000 10%, #000 86%, transparent 100%);
+    -webkit-mask-image:
+      radial-gradient(ellipse 72% 78% at 58% 42%, #000 0%, #000 42%, transparent 78%),
+      linear-gradient(90deg, transparent 0%, #000 18%, #000 82%, transparent 100%),
+      linear-gradient(180deg, transparent 0%, #000 10%, #000 86%, transparent 100%);
+    -webkit-mask-composite:source-in, source-in;
+    mask-composite:intersect, intersect;
     filter:saturate(.88) contrast(1.1) brightness(.9);
     mix-blend-mode:normal;
   }
@@ -510,7 +517,7 @@
   /* ── Terminal rest: Jarrett arrives after both project worlds ──
      One connected spatial tear (not a viewport-ratio inset window or detached bands). */
   .layer-terminal{
-    z-index:5;
+    z-index:4;
     visibility:hidden;
     background:var(--void);
     pointer-events:none;
@@ -555,14 +562,18 @@
     -webkit-mask:none;
     mask:none;
   }
+  /* Maintained asset — canonical: work/index.html; consumer/activation: /work/ auto-loads
+     this earned human arrival; check: rendered terminal rests at wide + mobile viewports;
+     retire when the terminal portrait or its full-bleed carrier is replaced. */
   .terminal-return{
     position:absolute;
     inset:0;
     width:100%;
     height:100%;
-    object-fit:contain;
-    object-position:50% 50%;
-    transform:none;
+    object-fit:cover;
+    /* Preserve the complete head at wide viewports; the source already carries the close-up. */
+    object-position:45% 0%;
+    transform:scale(calc(1.08 - var(--terminal-hold) * .08));
     filter:
       saturate(calc(.94 + var(--terminal-hold) * .06))
       brightness(calc(.82 + var(--terminal-hold) * .18))
@@ -612,7 +623,7 @@
   .grain{
     position:absolute;
     inset:-20%;
-    z-index:6;
+    z-index:5;
     pointer-events:none;
     opacity:calc(.1 + var(--prorok-open) * .06 + var(--terminal-hold) * .04);
     background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.55'/%3E%3C/svg%3E");
@@ -622,7 +633,7 @@
   .enter-veil{
     position:absolute;
     inset:0;
-    z-index:7;
+    z-index:6;
     pointer-events:none;
     background:var(--void);
     opacity:var(--enter-veil);
@@ -692,6 +703,43 @@
     box-shadow:inset 0 -2px 0 rgba(94,231,240,.75);
   }
 
+  .scroll-invitation{
+    position:absolute;
+    z-index:24;
+    left:50%;
+    top:52%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    gap:.8rem;
+    color:var(--ink);
+    font-family:var(--display);
+    font-size:clamp(1.35rem, 1.1rem + 1vw, 2rem);
+    font-style:italic;
+    font-weight:450;
+    line-height:1;
+    letter-spacing:0;
+    text-shadow:0 2px 18px rgba(4,10,12,.9), 0 0 30px rgba(4,10,12,.55);
+    opacity:var(--entry-cue);
+    transform:translate3d(-50%, calc(-50% + (1 - var(--entry-cue)) * -1rem), 0);
+    pointer-events:none;
+    will-change:opacity,transform;
+  }
+  .scroll-invitation::after{
+    content:"";
+    display:block;
+    width:1px;
+    height:clamp(2.7rem, 6vh, 4rem);
+    background:linear-gradient(180deg, rgba(232,244,244,.92), rgba(94,231,240,0));
+    transform-origin:50% 0;
+    animation:scrollInvitation 1.8s var(--ease-enter) infinite;
+  }
+  @keyframes scrollInvitation{
+    0%,18%{transform:scaleY(.14); opacity:.25}
+    58%{transform:scaleY(1); opacity:1}
+    100%{transform:translateY(.6rem) scaleY(.38); opacity:0}
+  }
+
   .scene-copy{
     position:absolute;
     z-index:25;
@@ -699,17 +747,6 @@
     bottom:clamp(1.6rem,6vh,3.4rem);
     max-width:min(34rem, 86vw);
     color:var(--ink);
-  }
-  html[data-identity="off"] .scene-copy{display:none !important}
-  .scene-copy--generations{
-    opacity:var(--copy-generations);
-    transform:translate3d(0, calc((1 - var(--copy-generations)) * 1.4rem), 0);
-    filter:blur(calc((1 - var(--copy-generations)) * 4px));
-  }
-  .scene-copy--paina{
-    opacity:var(--copy-paina);
-    transform:translate3d(0, calc((1 - var(--copy-paina)) * 1.4rem), 0);
-    filter:blur(calc((1 - var(--copy-paina)) * 4px));
   }
   .scene-copy--rana{
     opacity:calc(var(--rana-hold) * (1 - var(--prorok-open) * 1.15));
@@ -870,8 +907,7 @@
 
   /* Motion-off: composed rests, no soft blur tails.
      Keep media grade on ProRok ink and terminal return — palette composition, not motion. */
-  html[data-motion="off"] .generations-media,
-  html[data-motion="off"] .paina-media,
+  html[data-motion="off"] .corridor-frame,
   html[data-motion="off"] .rana-studio,
   html[data-motion="off"] .rana-ring-stage,
   html[data-motion="off"] .scene-copy,
@@ -879,8 +915,7 @@
   html[data-motion="off"] .terminal-return{
     transition:none !important;
   }
-  html[data-motion="off"] .generations-media,
-  html[data-motion="off"] .paina-media,
+  html[data-motion="off"] .corridor-frame,
   html[data-motion="off"] .rana-studio,
   html[data-motion="off"] .rana-ring-stage,
   html[data-motion="off"] .scene-copy{
@@ -895,8 +930,12 @@
     filter:saturate(1) brightness(1) contrast(1.04);
     transform:scale(1);
   }
-  html[data-motion="off"] .generations-video,
-  html[data-motion="off"] .paina-video{display:none}
+  html[data-motion="off"] .corridor-motion{display:none}
+  /* Motion-off keeps baked lightning in the corridor still; hide only the live overlay. */
+  html[data-motion="off"] .corridor-lightning{
+    display:none;
+  }
+  html[data-motion="off"] .scroll-invitation::after{animation:none; opacity:.72}
   html[data-motion="off"] .rana-ring-stage{
     filter:none;
     mix-blend-mode:screen;
@@ -962,8 +1001,8 @@
 
   @media (max-width:720px){
     /* Mobile is a separately composed full-bleed passage, not scaled desktop. */
-    .passage{height:680svh}
-    html[data-motion="off"] .passage{height:560svh}
+    .passage{height:520svh}
+    html[data-motion="off"] .passage{height:460svh}
     html,body{overscroll-behavior-y:none}
     .passage,
     .viewport{
@@ -989,17 +1028,34 @@
     /* Wordmark is the clear back route; drop the redundant visible label. */
     .nav-link[data-role="back-home"]{display:none}
 
-    .generations-poster,
-    .generations-video{object-position:50% 50%}
-    .paina-poster,
-    .paina-video{object-position:50% 50%}
+    .corridor-frame{object-position:50% 48%}
+    /* Match corridor-frame object-position:50% 48% under cover crop so bolts hold the arch. */
+    .corridor-lightning{
+      top:-2%;
+      height:104%;
+    }
+    .scroll-invitation{
+      top:50%;
+      font-size:clamp(1.35rem, 7vw, 1.7rem);
+    }
     /* Mobile handoff: one real raster surface is authoritative. The legacy
        DOM worlds remain decoded below it as source material, but only this
        opaque canvas reaches the recipient. That removes independent video
        compositor planes—the source of Samsung's split bands and black cuts. */
     .mobile-scene-plate{
       display:block;
+      position:absolute;
+      inset:0;
+      z-index:10;
+      width:100%;
+      height:100%;
+      max-width:none;
+      background:var(--void);
+      opacity:0;
+      transition:opacity .12s linear;
+      pointer-events:none;
     }
+    html.mobile-plate-active .mobile-scene-plate{opacity:1}
     html.mobile-plate-active .world-stack{
       transform:none;
       will-change:auto;
@@ -1009,12 +1065,19 @@
     html.mobile-plate-active .world-stack > .enter-veil{
       visibility:hidden;
     }
-    .world-stack{transform:none;will-change:auto}
+    html.mobile-plate-active .world-stack > .corridor-lightning{
+      visibility:visible;
+      z-index:11;
+    }
+    .world-stack{
+      transform:translate3d(0, calc(var(--plate-shift) * 1%), 0) scale(var(--plate-scale));
+      transform-origin:50% 50%;
+      will-change:transform;
+    }
     html[data-motion="off"] .world-stack{
       transform:none;
       will-change:auto;
     }
-    .layer-paina,
     .layer-rana,
     .layer-prorok,
     .layer-terminal{
@@ -1023,20 +1086,9 @@
       -webkit-mask:none;
       mask:none;
     }
-    .layer-paina.is-revealing{opacity:var(--paina-open)}
     .layer-rana.is-revealing{opacity:var(--rana-open)}
     .layer-prorok.is-revealing{opacity:var(--prorok-open)}
     .layer-terminal.is-revealing{opacity:var(--terminal-hold)}
-    .scene-copy--generations{
-      opacity:var(--copy-generations);
-      transform:translate3d(0, calc((1 - var(--copy-generations)) * 1.4rem), 0);
-      filter:none;
-    }
-    .scene-copy--paina{
-      opacity:var(--copy-paina);
-      transform:translate3d(0, calc((1 - var(--copy-paina)) * 1.4rem), 0);
-      filter:none;
-    }
     .scene-copy--rana{
       opacity:var(--copy-rana);
       transform:translate3d(0, calc((1 - var(--copy-rana)) * 1.4rem), 0);
@@ -1056,11 +1108,11 @@
        material fields on the narrow strip. Square ring film is the subject carrier
        (same pattern as ProRok portrait) — full-bleed material world, not a badge. */
     .rana-studio{
-      object-position:50% 50%;
+      object-position:50% 42%;
       /* Atmospheric underlayer while the ring carrier holds the rest. */
       filter:saturate(1.04) contrast(1.05) brightness(calc(.86 + var(--rana-hold) * .06));
     }
-    .rana-opening{object-position:50% 50%}
+    .rana-opening{object-position:50% 48%}
     .rana-ring-stage{
       inset:0;
       right:auto;
@@ -1068,14 +1120,23 @@
       width:100%;
       height:100%;
       opacity:calc(var(--ring-presence) * .97);
-      transform:none;
+      transform:
+        translate3d(0, calc((1 - var(--ring-presence)) * 3%), 0)
+        scale(calc(1.02 + var(--ring-presence) * .02));
       mix-blend-mode:normal;
       filter:saturate(1.1) contrast(1.06) brightness(1.03);
     }
     .rana-ring-stage .media-fill{
-      object-position:50% 50%;
-      -webkit-mask-image:none;
-      mask-image:none;
+      object-position:48% 36%;
+      /* Soft full-bleed window only — no circular sticker edge. */
+      -webkit-mask-image:
+        radial-gradient(ellipse 130% 110% at 50% 40%, #000 0%, #000 58%, transparent 92%),
+        linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+      mask-image:
+        radial-gradient(ellipse 130% 110% at 50% 40%, #000 0%, #000 58%, transparent 92%),
+        linear-gradient(180deg, #000 0%, #000 72%, transparent 100%);
+      -webkit-mask-composite:source-in;
+      mask-composite:intersect;
     }
     .rana-wash{
       background:
@@ -1094,14 +1155,21 @@
       left:0;
       width:100%;
       height:100%;
-      object-position:50% 50%;
+      object-position:50% 14%;
       opacity:calc(var(--prorok-hold));
       filter:saturate(.94) contrast(1.14) brightness(1.06);
-      mask-image:none;
-      -webkit-mask-image:none;
+      /* Two soft masks only — three-way intersect was over-erasing the subject on portrait viewports. */
+      mask-image:
+        radial-gradient(ellipse 98% 78% at 50% 34%, #000 0%, #000 58%, transparent 88%),
+        linear-gradient(180deg, #000 0%, #000 62%, transparent 96%);
+      -webkit-mask-image:
+        radial-gradient(ellipse 98% 78% at 50% 34%, #000 0%, #000 58%, transparent 88%),
+        linear-gradient(180deg, #000 0%, #000 62%, transparent 96%);
+      -webkit-mask-composite:source-in;
+      mask-composite:intersect;
     }
     .prorok-ink{
-      object-position:50% 50%;
+      object-position:50% 42%;
       /* Ink world stays present but does not crush the subject zone to pure void. */
       opacity:calc(.48 + var(--prorok-hold) * .4);
     }
@@ -1118,8 +1186,8 @@
         linear-gradient(90deg, rgba(11,8,7,.42) 0%, rgba(11,8,7,.08) 48%, rgba(11,8,7,.3) 100%);
     }
     .terminal-return{
-      object-position:50% 50%;
-      transform:none;
+      object-position:45% 0%;
+      transform:scale(calc(1.08 - var(--terminal-hold) * .08));
     }
     .terminal-energy{
       background:
@@ -1223,79 +1291,130 @@
     <div class="no-js-stack">
       <p class="wordmark">Jarrett Wroten</p>
       <p><a href="../">Back to Jarrett</a> · Work</p>
-      <h1>Generations Kitchen</h1>
-      <p>Restaurant Concept</p>
-      <p>The concept lets the food lead before the menu.</p>
-      <img class="no-js-poster" src="../assets/work/generations/hurricane-fries-desktop.jpg" alt="Hurricane fries prepared for service at Generations Kitchen." width="1728" height="972">
-      <p><a href="https://generations.jarrettwroten.com/">Explore the restaurant concept</a></p>
-      <h2>Pā‘ina Café</h2>
-      <p>Restaurant Concept</p>
-      <p>Pā‘ina means gathering. The kitchen in motion—mochi, poke, and the handoff—becomes the invitation.</p>
-      <img class="no-js-poster" src="../assets/work/paina/opening-desktop-poster.jpg" alt="Pā‘ina Café food being prepared in the kitchen." width="1920" height="1080">
-      <p><a href="https://paina.jarrettwroten.com/">Explore the restaurant concept</a></p>
-      <h2>Rana Levy</h2>
-      <p>Pending Engagement</p>
-      <p>Rana cuts each stone by hand. So I built the concept around the hand, the cut, and the way a gem changes in the light.</p>
+      <h1>Rana Levy</h1>
+      <p>Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.</p>
       <p>Ready Now</p>
       <p>Made To Order</p>
       <p>Custom Consultation</p>
       <img class="no-js-poster" src="../assets/work/rana/studio-poster.jpg" alt="Hands wearing gold rings with cut gemstones in the light." width="1280" height="640">
-      <p><a href="https://rana.jarrettwroten.com/">Explore the concept</a></p>
+      <p><a href="https://rana.jarrettwroten.com/">Visit the live site</a></p>
       <h2>Dylan Prorok</h2>
       <p>A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.</p>
       <img class="no-js-poster" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="Dylan Prorok tattooing in the studio." width="617" height="849">
       <p><a href="https://prorok.jarrettwroten.com/">Visit the concept</a></p>
-      <p>Tattoo Artist - In Progress.</p>
-      <img class="no-js-poster" src="../assets/golden-arrival/frames/ga-360.webp" alt="Jarrett Wroten at the threshold to the process." width="1280" height="720">
-      <h2>See the process.</h2>
-      <p>Continue into the leak, the rebuild, and one result from the process.</p>
-      <p><a href="../#process-journey">Continue to the process</a></p>
+      <p>Work in progress — currently being revised with Dylan Prorok.</p>
+      <img class="no-js-poster" src="../assets/golden-arrival/frames/ga-360.webp" alt="Jarrett Wroten smiling in the corridor." width="1280" height="720">
+      <h2>Your site should feel like your work.</h2>
+      <p>Send me your site. I’ll find the first place the path breaks and show you what I’d change.</p>
+      <p><a href="mailto:Jarrett@JarrettWroten.com">Send me your site</a></p>
+      <p><a href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" rel="noopener">Book a call</a></p>
     </div>
   </main>
 
   <div class="passage" id="passage">
-    <div class="viewport" id="viewport" aria-label="Work passage through Generations Kitchen, Pā‘ina Café, Rana Levy, Dylan Prorok, and the process">
+    <div class="viewport" id="viewport" aria-label="Work passage from corridor through Rana and ProRok to the next step">
       <div class="world-stack" aria-hidden="true">
         <canvas class="mobile-scene-plate" id="mobile-scene-plate"></canvas>
-        <!-- Media stays isolated by project so a carrier can be replaced without rewriting the passage. -->
-        <div class="layer layer-generations" id="layer-generations">
-          <div class="generations-media">
-            <picture>
-              <source media="(max-width:720px)" srcset="../assets/work/generations/hurricane-fries-mobile.jpg">
-              <img class="generations-poster" id="generations-poster" src="../assets/work/generations/hurricane-fries-desktop.jpg" alt="" width="1728" height="972" decoding="async" fetchpriority="high">
-            </picture>
-            <video
-              class="generations-video"
-              id="generations-video"
-              data-video
-              data-once
-              muted playsinline preload="none"
-              width="1728" height="972">
-              <source media="(max-width:720px)" src="../assets/work/generations/hurricane-fries-mobile-3p6.mp4" type="video/mp4">
-              <source media="(min-width:721px)" src="../assets/work/generations/hurricane-fries-desktop-3p6.mp4" type="video/mp4">
-            </video>
-            <div class="generations-wash"></div>
-          </div>
-        </div>
-
-        <div class="layer layer-paina" id="layer-paina">
-          <div class="paina-media">
-            <picture>
-              <source media="(max-width:720px)" srcset="../assets/work/paina/opening-mobile-entry-2p4.jpg">
-              <img class="paina-poster" id="paina-poster" src="../assets/work/paina/opening-desktop-poster.jpg" alt="" width="1920" height="1080" decoding="async">
-            </picture>
-            <video
-              class="paina-video"
-              id="paina-video"
-              data-video
-              data-once
-              muted playsinline preload="none"
-              width="1920" height="1080">
-              <source media="(max-width:720px)" src="../assets/work/paina/opening-mobile-from-2p4.mp4" type="video/mp4">
-              <source media="(min-width:721px)" src="../assets/work/paina/opening-desktop.mp4" type="video/mp4">
-            </video>
-            <div class="paina-wash"></div>
-          </div>
+        <div class="layer layer-corridor" id="layer-corridor">
+          <img class="corridor-frame corridor-poster" id="corridor-poster" src="../assets/golden-arrival/frames/ga-000.webp" alt="" width="1280" height="720" decoding="async" fetchpriority="high">
+          <video
+            class="corridor-frame corridor-motion"
+            id="corridor-motion-video"
+            data-video
+            src="../assets/work/corridor-entry-loop.mp4"
+            poster="../assets/golden-arrival/frames/ga-000.webp"
+            autoplay muted loop playsinline preload="auto"
+            width="1280" height="720"></video>
+          <div class="corridor-energy"></div>
+          <!-- Geometry-locked live lightning: charge travels + bolt paths morph. Motion-off hides this; baked media lightning remains. -->
+          <svg
+            class="corridor-lightning"
+            id="corridor-lightning"
+            viewBox="0 0 1280 720"
+            preserveAspectRatio="xMidYMid slice"
+            aria-hidden="true"
+            focusable="false">
+            <defs>
+              <filter id="workBoltGlow" x="-40%" y="-40%" width="180%" height="180%" color-interpolation-filters="sRGB">
+                <feGaussianBlur in="SourceGraphic" stdDeviation="1.7" result="boltBlur"/>
+                <feMerge>
+                  <feMergeNode in="boltBlur"/>
+                  <feMergeNode in="SourceGraphic"/>
+                </feMerge>
+              </filter>
+            </defs>
+            <!-- Left bolt lineage ≈ (590,237) → upper-left diagonal → x≈545..560 @ y≈375 -->
+            <g class="bolt bolt--left" filter="url(#workBoltGlow)">
+              <path class="bolt-halo" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+                <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+              </path>
+              <path class="bolt-core" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+                <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+              </path>
+              <path class="bolt-charge-soft" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+                <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+              </path>
+              <path class="bolt-charge" pathLength="100" d="M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378">
+                <animate attributeName="d" dur="3.1s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.28;0.55;0.78;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L602 242 L580 250 L568 256 L558 262 L548 270 L554 278 L540 288 L550 298 L542 310 L550 320 L554 328 L548 340 L554 352 L546 362 L548 374 L544 378;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378;
+                  M616 236 L594 246 L586 250 L570 258 L564 264 L550 272 L558 280 L546 290 L544 300 L548 312 L544 322 L560 330 L556 342 L546 354 L554 364 L542 376 L550 380;
+                  M616 236 L598 244 L584 248 L572 254 L561 260 L552 268 L556 276 L543 286 L548 296 L545 308 L548 318 L557 326 L552 338 L549 350 L552 360 L544 372 L548 378"/>
+              </path>
+            </g>
+            <!-- Right bolt lineage ≈ (686,237) → upper-right diagonal → x≈720..735 @ y≈375 -->
+            <g class="bolt bolt--right" filter="url(#workBoltGlow)">
+              <path class="bolt-halo" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+                <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+              </path>
+              <path class="bolt-core" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+                <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+              </path>
+              <path class="bolt-charge-soft" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+                <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+              </path>
+              <path class="bolt-charge" pathLength="100" d="M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380">
+                <animate attributeName="d" dur="3.55s" repeatCount="indefinite" calcMode="spline" keyTimes="0;0.3;0.58;0.82;1" keySplines="0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1;0.4 0 0.2 1" values="
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L698 242 L700 248 L710 256 L722 264 L720 274 L728 282 L726 294 L732 306 L724 318 L732 330 L728 344 L734 356 L726 368 L732 378 L726 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380;
+                  M701 236 L690 246 L708 252 L716 260 L712 268 L724 276 L730 286 L724 298 L732 310 L728 322 L734 334 L726 346 L732 358 L728 370 L734 378 L728 382;
+                  M701 236 L694 244 L704 250 L713 258 L718 266 L726 274 L722 284 L730 294 L726 306 L730 318 L726 330 L732 342 L728 354 L732 366 L726 376 L730 380"/>
+              </path>
+            </g>
+          </svg>
+          <div class="corridor-vignette"></div>
         </div>
 
         <div class="layer layer-rana" id="layer-rana">
@@ -1307,7 +1426,7 @@
               data-video
               src="../assets/work/rana/studio-banner.mp4"
               poster="../assets/work/rana/studio-poster.jpg"
-              muted loop playsinline preload="none"
+              autoplay muted loop playsinline preload="auto"
               width="1280" height="640"></video>
             <img class="rana-opening" src="../assets/work/rana/studio-opening.jpg" alt="" width="1280" height="640" decoding="async">
             <div class="rana-ring-stage" id="rana-ring-stage">
@@ -1318,7 +1437,7 @@
                 data-video
                 src="../assets/work/rana/ring-alexandrite.mp4"
                 poster="../assets/work/rana/ring-poster.jpg"
-                muted loop playsinline preload="none"
+                autoplay muted loop playsinline preload="auto"
                 width="720" height="720"></video>
             </div>
             <div class="rana-bloom"></div>
@@ -1335,7 +1454,7 @@
               data-video
               src="../demos/dylan-prorok/sakura-ink-bloom.mp4"
               poster="../demos/dylan-prorok/dylan-portrait.jpg"
-              muted loop playsinline preload="none"
+              autoplay muted loop playsinline preload="auto"
               width="960" height="540"></video>
             <img class="prorok-portrait" id="prorok-portrait" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
             <div class="prorok-seal" aria-hidden="true"></div>
@@ -1376,51 +1495,52 @@
           </div>
         </header>
 
-        <div class="scene-copy scene-copy--generations" id="copy-generations">
-          <h1 class="scene-name"><a href="generations-kitchen/" aria-label="Read the Generations Kitchen case study">Generations Kitchen</a></h1>
-          <p class="scene-line">The concept lets the food lead before the menu.</p>
-          <a class="scene-link" href="https://generations.jarrettwroten.com/" rel="noopener">Explore the restaurant concept</a>
-          <p class="scene-disclosure">Restaurant Concept</p>
-        </div>
-
-        <div class="scene-copy scene-copy--paina" id="copy-paina">
-          <h2 class="scene-name"><a href="paina-cafe/" aria-label="Read the Pā‘ina Café case study">Pā‘ina Café</a></h2>
-          <p class="scene-line">Pā‘ina means gathering. The kitchen in motion—mochi, poke, and the handoff—becomes the invitation.</p>
-          <a class="scene-link" href="https://paina.jarrettwroten.com/" rel="noopener">Explore the restaurant concept</a>
-          <p class="scene-disclosure">Restaurant Concept</p>
-        </div>
+        <div class="scroll-invitation" id="scroll-invitation" aria-hidden="true"><span>Scroll</span></div>
 
         <div class="scene-copy scene-copy--rana" id="copy-rana">
-          <h2 class="scene-name"><a href="rana-levy/" aria-label="Read the Rana Levy case study">Rana Levy</a></h2>
-          <p class="scene-line">Rana cuts each stone by hand. So I built the concept around the hand, the cut, and the way a gem changes in the light.</p>
-          <ul class="scene-paths" aria-label="Paths in the Rana concept">
+          <h1 class="scene-name">Rana Levy</h1>
+          <p class="scene-line">Rana cuts each stone by hand. So I built the site around the hand, the cut, and the way a gem changes in the light.</p>
+          <ul class="scene-paths" aria-label="In-world paths on the live Rana site">
             <li>Ready Now</li>
             <li>Made To Order</li>
             <li>Custom Consultation</li>
           </ul>
-          <a class="scene-link" href="https://rana.jarrettwroten.com/" rel="noopener">Explore the concept</a>
-          <p class="scene-disclosure">Pending Engagement</p>
+          <a class="scene-link" href="https://rana.jarrettwroten.com/" rel="noopener">Visit the live site</a>
         </div>
 
         <div class="scene-copy scene-copy--prorok" id="copy-prorok">
-          <h2 class="scene-name"><a href="dylan-prorok/" aria-label="Read the Dylan Prorok case study">Dylan Prorok</a></h2>
+          <h2 class="scene-name">Dylan Prorok</h2>
           <p class="scene-line">A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.</p>
           <a class="scene-link" href="https://prorok.jarrettwroten.com/" rel="noopener">Visit the concept</a>
-          <p class="scene-disclosure">Tattoo Artist - In Progress.</p>
+          <p class="scene-disclosure">Work in progress — currently being revised with Dylan Prorok.</p>
         </div>
 
         <div class="scene-copy scene-copy--terminal" id="copy-terminal">
-          <h2 class="scene-name">See the process.</h2>
-          <p class="scene-line">Continue into the leak, the rebuild, and one result from the process.</p>
+          <h2 class="scene-name">Your site should feel like your work.</h2>
+          <p class="scene-line">Send me your site. I’ll find the first place the path breaks and show you what I’d change.</p>
           <div class="scene-actions">
-            <a class="scene-action" href="../#process-journey">Continue to the process</a>
+            <a class="scene-action" href="mailto:Jarrett@JarrettWroten.com">Send me your site</a>
+            <a class="scene-action" href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" rel="noopener">Book a call</a>
           </div>
         </div>
       </div>
     </div>
   </div>
 
-<!-- Mobile publishes only complete frames through one opaque canvas. -->
+<!-- Maintained asset — canonical: work/index.html Work passage script;
+     consumer/activation: /work/ auto-loads the mobile section-lock (max-width 720px)
+     so one vertical gesture lands on exactly one STILL rest. Mobile videos and
+     images remain private source material below one opaque 2D canvas; the next
+     complete beat is assembled in an off-DOM buffer and copied atomically to
+     the visible canvas. A late or failed draw therefore retains the last full
+     frame instead of exposing an independent hardware video plane or clearing
+     to black. Required destination media must be renderable before the 960ms
+     handoff starts, with an 8000ms hidden ceiling. Copy exits before the cut
+     and enters after; restrained camera push/shift remains continuous. Check:
+     node work-smoke-test.mjs plus a full forward/reverse rendered passage.
+     Recurrence: a real-phone recording of two worlds, a mixed-world band,
+     split-screen halves, a black dead interval, or more than one visible media
+     compositor surface; retire when the four-rest mobile passage is replaced. -->
 <script>
 (function () {
   "use strict";
@@ -1431,24 +1551,21 @@
   var passage = document.getElementById("passage");
   var viewport = document.getElementById("viewport");
   var motionToggle = document.getElementById("motion-toggle");
-  var copyGenerations = document.getElementById("copy-generations");
-  var copyPaina = document.getElementById("copy-paina");
   var copyRana = document.getElementById("copy-rana");
   var copyProrok = document.getElementById("copy-prorok");
   var copyTerminal = document.getElementById("copy-terminal");
 
-  var generationsVideo = document.getElementById("generations-video");
-  var painaVideo = document.getElementById("paina-video");
+  var corridorVideo = document.getElementById("corridor-motion-video");
   var studioVideo = document.getElementById("rana-studio-video");
   var ringVideo = document.getElementById("rana-ring-video");
   var inkVideo = document.getElementById("prorok-ink-video");
-  var generationsPoster = document.getElementById("generations-poster");
-  var painaPoster = document.getElementById("paina-poster");
+  var corridorPoster = document.getElementById("corridor-poster");
   var ringPoster = document.getElementById("ring-poster");
   var prorokPortrait = document.getElementById("prorok-portrait");
   var terminalReturn = document.getElementById("terminal-return");
   var mobileScenePlate = document.getElementById("mobile-scene-plate");
-  var layerPaina = document.getElementById("layer-paina");
+  var worldStack = document.querySelector(".world-stack");
+  var corridorLightning = document.getElementById("corridor-lightning");
   var layerRana = document.getElementById("layer-rana");
   var layerProrok = document.getElementById("layer-prorok");
   var layerTerminal = document.getElementById("layer-terminal");
@@ -1460,16 +1577,16 @@
   var lastFrameTs = 0;
   var videosArmed = false;
 
-  /* The new food passage occupies the first 30%; the inherited tail keeps its
-     internal timing through a local 0–1 clock. */
-  var TAIL_START = 0.30;
-  var INTRO = {
-    generationsOut: { a: 0.12, b: 0.27 },
-    painaOpen:       { a: 0.12, b: 0.27 },
-    painaSide:       { a: 0.18, b: 0.30 },
-    painaHold:       { a: 0.22, b: 0.27, c: 0.33, d: 0.40 }
-  };
+  /* Scroll map — continuous depth with composed rests.
+     0.00–0.12 corridor entry + amber threshold
+     0.10–0.28 corridor opens into Rana (faceted takeover)
+     0.24–0.46 Rana craft rest (hand, cut, light + paths)
+     0.44–0.62 Rana erases into ProRok (organic ink)
+     0.58–0.76 ProRok craft rest (scale, body flow)
+     0.81–1.00 terminal world after both projects
+     ProRok copy exits before terminal copy enters (no double-legible copy). */
   var MAP = {
+    corridorDark: { a: 0.06, b: 0.24 },
     ranaOpen:     { a: 0.10, b: 0.28 },
     ranaHold:     { a: 0.22, b: 0.30, c: 0.44, d: 0.56 },
     ring:         { a: 0.26, b: 0.34, c: 0.46, d: 0.56 },
@@ -1479,11 +1596,10 @@
   };
 
   var STILL = {
-    generations: 0.04,
-    paina: 0.26,
-    rana: 0.566,
-    prorok: 0.79,
-    process: 0.958
+    corridor: 0.04,
+    rana: 0.38,
+    prorok: 0.70,
+    terminal: 0.94
   };
 
   var MOBILE_BREAKPOINT_PX = 720;
@@ -1496,12 +1612,13 @@
   var MOBILE_CUT_PHASE = 0.5;
   var MOBILE_COPY_OUT_END = 0.34;
   var MOBILE_COPY_IN_START = 0.64;
+  var MOBILE_PLATE_PUSH = 0.035;
+  var MOBILE_PLATE_SHIFT = 0.8;
   var MOBILE_STOPS = [
-    { id: "generations", progress: STILL.generations },
-    { id: "paina", progress: STILL.paina },
+    { id: "corridor", progress: STILL.corridor },
     { id: "rana", progress: STILL.rana },
     { id: "prorok", progress: STILL.prorok },
-    { id: "process", progress: STILL.process }
+    { id: "invitation", progress: STILL.terminal }
   ];
   var mobileMq = window.matchMedia("(max-width:" + MOBILE_BREAKPOINT_PX + "px)");
   var mobileGlideLocked = false;
@@ -1533,17 +1650,7 @@
   var mobileMaskBufferCtx = null;
   var mobilePlateWidth = 0;
   var mobilePlateHeight = 0;
-  var lastMobileContainGeometry = null;
   var mobilePlateActive = false;
-  var breakpointModeMobile = !!mobileMq.matches;
-  var breakpointSwapActive = false;
-  var breakpointFallbackActive = false;
-  var breakpointFallbackOwnerIndex = -1;
-  var breakpointSwapTargetMobile = breakpointModeMobile;
-  var breakpointSwapGeneration = 0;
-  var breakpointSwapInterval = 0;
-  var breakpointSwapTimer = 0;
-  var breakpointSwapStopIndex = 0;
 
   function clamp(v, a, b) {
     return Math.max(a, Math.min(b, v));
@@ -1590,7 +1697,10 @@
     motionOn = !!on;
     root.setAttribute("data-motion", motionOn ? "on" : "off");
     if (persist) {
-      if (window.JW_MOTION) window.JW_MOTION.set(motionOn, "work", true);
+      try {
+        localStorage.setItem("jw-motion", motionOn ? "on" : "off");
+        root.setAttribute("data-motion-user", motionOn ? "on" : "off");
+      } catch (e) {}
     }
     setMotionUI();
     if (!motionOn) {
@@ -1614,42 +1724,20 @@
 
   function sceneValuesFromMap(p) {
     p = clamp(p, 0, 1);
-    var tailP = clamp((p - TAIL_START) / (1 - TAIL_START), 0, 1);
     return {
-      generationsHold: 1 - range(p, INTRO.generationsOut.a, INTRO.generationsOut.b),
-      painaOpen: range(p, INTRO.painaOpen.a, INTRO.painaOpen.b),
-      painaSide: range(p, INTRO.painaSide.a, INTRO.painaSide.b),
-      painaHold: plateau(p, INTRO.painaHold.a, INTRO.painaHold.b, INTRO.painaHold.c, INTRO.painaHold.d),
-      ranaOpen: range(tailP, MAP.ranaOpen.a, MAP.ranaOpen.b),
-      ranaHold: plateau(tailP, MAP.ranaHold.a, MAP.ranaHold.b, MAP.ranaHold.c, MAP.ranaHold.d),
-      ring: plateau(tailP, MAP.ring.a, MAP.ring.b, MAP.ring.c, MAP.ring.d),
-      prorokOpen: range(tailP, MAP.prorokOpen.a, MAP.prorokOpen.b),
-      prorokHold: plateau(tailP, MAP.prorokHold.a, MAP.prorokHold.b, MAP.prorokHold.c, MAP.prorokHold.d),
-      terminalHold: range(tailP, MAP.terminalHold.a, MAP.terminalHold.b)
+      corridorDark: range(p, MAP.corridorDark.a, MAP.corridorDark.b),
+      ranaOpen: range(p, MAP.ranaOpen.a, MAP.ranaOpen.b),
+      ranaHold: plateau(p, MAP.ranaHold.a, MAP.ranaHold.b, MAP.ranaHold.c, MAP.ranaHold.d),
+      ring: plateau(p, MAP.ring.a, MAP.ring.b, MAP.ring.c, MAP.ring.d),
+      prorokOpen: range(p, MAP.prorokOpen.a, MAP.prorokOpen.b),
+      prorokHold: plateau(p, MAP.prorokHold.a, MAP.prorokHold.b, MAP.prorokHold.c, MAP.prorokHold.d),
+      terminalHold: range(p, MAP.terminalHold.a, MAP.terminalHold.b),
+      entryCue: 1 - range(p, 0.015, 0.11)
     };
-  }
-
-  function completeSceneValuesForRest(index) {
-    index = clamp(index, 0, MOBILE_STOPS.length - 1);
-    var values;
-    if (index === 0) {
-      values = { generationsHold:1, painaOpen:0, painaSide:0, painaHold:0, ranaOpen:0, ranaHold:0, ring:0, prorokOpen:0, prorokHold:0, terminalHold:0 };
-    } else if (index === 1) {
-      values = { generationsHold:0, painaOpen:1, painaSide:1, painaHold:1, ranaOpen:0, ranaHold:0, ring:0, prorokOpen:0, prorokHold:0, terminalHold:0 };
-    } else if (index === 2) {
-      values = { generationsHold:0, painaOpen:1, painaSide:1, painaHold:0, ranaOpen:1, ranaHold:1, ring:1, prorokOpen:0, prorokHold:0, terminalHold:0 };
-    } else if (index === 3) {
-      values = { generationsHold:0, painaOpen:1, painaSide:1, painaHold:0, ranaOpen:1, ranaHold:.12, ring:0, prorokOpen:1, prorokHold:1, terminalHold:0 };
-    } else {
-      values = { generationsHold:0, painaOpen:1, painaSide:1, painaHold:0, ranaOpen:1, ranaHold:0, ring:0, prorokOpen:1, prorokHold:0, terminalHold:1 };
-    }
-    return withCopy(values, copyValuesFromWorld(values));
   }
 
   function copyValuesFromWorld(v) {
     return {
-      copyGenerations: Math.max(0, v.generationsHold * (1 - v.painaOpen * 1.2)),
-      copyPaina: Math.max(0, v.painaHold * (1 - v.ranaOpen * 1.2)),
       copyRana: Math.max(0, v.ranaHold * (1 - v.prorokOpen * 1.15)),
       copyProrok: v.prorokHold * Math.max(0, 1 - v.terminalHold * 2),
       copyTerminal: v.terminalHold
@@ -1657,8 +1745,6 @@
   }
 
   function withCopy(values, copy) {
-    values.copyGenerations = copy.copyGenerations;
-    values.copyPaina = copy.copyPaina;
     values.copyRana = copy.copyRana;
     values.copyProrok = copy.copyProrok;
     values.copyTerminal = copy.copyTerminal;
@@ -1681,8 +1767,18 @@
     };
   }
 
-  function mobilePlateCamera() {
-    return { plateScale: 1, plateShift: 0 };
+  function mobilePlateCamera(t, direction) {
+    t = clamp(t, 0, 1);
+    var energy = 0;
+    if (t > 0 && t < 1) {
+      if (t < MOBILE_CUT_PHASE) energy = smoothstep(t / MOBILE_CUT_PHASE);
+      else energy = 1 - smoothstep((t - MOBILE_CUT_PHASE) / (1 - MOBILE_CUT_PHASE));
+    }
+    var sign = direction < 0 ? -1 : 1;
+    return {
+      plateScale: 1 + MOBILE_PLATE_PUSH * energy,
+      plateShift: -sign * MOBILE_PLATE_SHIFT * energy
+    };
   }
 
   function mobileAuthoritativeIndex(fromIndex, toIndex, t) {
@@ -1700,24 +1796,21 @@
     if (t >= 1) return to;
     /* Single-plate match cut. One authored rest is authoritative: source
        before MOBILE_CUT_PHASE, destination at and after it. Copy leaves
-       before the cut and enters after. The complete source plate stays
-       geometrically fixed throughout. */
+       before the cut and enters after. Camera push/shift is the only
+       continuous plate motion. Do not mix complete rest objects. Do not
+       pass t through range(). */
     var world = t < MOBILE_CUT_PHASE ? from : to;
     var copy = mobileCopyWeights(t);
     var camera = mobilePlateCamera(t, toIndex - fromIndex);
     return {
-      generationsHold: world.generationsHold,
-      painaOpen: world.painaOpen,
-      painaSide: world.painaSide,
-      painaHold: world.painaHold,
+      corridorDark: world.corridorDark,
       ranaOpen: world.ranaOpen,
       ranaHold: world.ranaHold,
       ring: world.ring,
       prorokOpen: world.prorokOpen,
       prorokHold: world.prorokHold,
       terminalHold: world.terminalHold,
-      copyGenerations: from.copyGenerations * copy.outgoing + to.copyGenerations * copy.incoming,
-      copyPaina: from.copyPaina * copy.outgoing + to.copyPaina * copy.incoming,
+      entryCue: world.entryCue,
       copyRana: from.copyRana * copy.outgoing + to.copyRana * copy.incoming,
       copyProrok: from.copyProrok * copy.outgoing + to.copyProrok * copy.incoming,
       copyTerminal: from.copyTerminal * copy.outgoing + to.copyTerminal * copy.incoming,
@@ -1727,38 +1820,30 @@
   }
 
   function applySceneValues(values) {
-    var generationsHold = values.generationsHold;
-    var painaOpen = values.painaOpen;
-    var painaSide = values.painaSide;
-    var painaHold = values.painaHold;
+    var corridorDark = values.corridorDark;
     var ranaOpen = values.ranaOpen;
     var ranaHold = values.ranaHold;
     var ring = values.ring;
     var prorokOpen = values.prorokOpen;
     var prorokHold = values.prorokHold;
     var terminalHold = values.terminalHold;
-    root.style.setProperty("--generations-hold", generationsHold.toFixed(4));
-    root.style.setProperty("--paina-open", painaOpen.toFixed(4));
-    root.style.setProperty("--paina-side", painaSide.toFixed(4));
-    root.style.setProperty("--paina-hold", painaHold.toFixed(4));
+    var entryCue = values.entryCue;
+
+    root.style.setProperty("--corridor-dark", corridorDark.toFixed(4));
     root.style.setProperty("--rana-open", ranaOpen.toFixed(4));
     root.style.setProperty("--rana-hold", ranaHold.toFixed(4));
     root.style.setProperty("--ring-presence", ring.toFixed(4));
     root.style.setProperty("--prorok-open", prorokOpen.toFixed(4));
     root.style.setProperty("--prorok-hold", prorokHold.toFixed(4));
     root.style.setProperty("--terminal-hold", terminalHold.toFixed(4));
-    var copyGenerationsValue = values.copyGenerations;
-    var copyPainaValue = values.copyPaina;
+    root.style.setProperty("--entry-cue", entryCue.toFixed(4));
+
     var copyRanaValue = values.copyRana;
     var copyProrokValue = values.copyProrok;
     var copyTerminalValue = values.copyTerminal;
-    if (copyGenerationsValue == null) copyGenerationsValue = Math.max(0, generationsHold * (1 - painaOpen * 1.2));
-    if (copyPainaValue == null) copyPainaValue = Math.max(0, painaHold * (1 - ranaOpen * 1.2));
     if (copyRanaValue == null) copyRanaValue = Math.max(0, ranaHold * (1 - prorokOpen * 1.15));
     if (copyProrokValue == null) copyProrokValue = prorokHold * Math.max(0, 1 - terminalHold * 2);
     if (copyTerminalValue == null) copyTerminalValue = terminalHold;
-    root.style.setProperty("--copy-generations", Number(copyGenerationsValue).toFixed(4));
-    root.style.setProperty("--copy-paina", Number(copyPainaValue).toFixed(4));
     root.style.setProperty("--copy-rana", Number(copyRanaValue).toFixed(4));
     root.style.setProperty("--copy-prorok", Number(copyProrokValue).toFixed(4));
     root.style.setProperty("--copy-terminal", Number(copyTerminalValue).toFixed(4));
@@ -1769,7 +1854,6 @@
 
     /* Hard reveal gate: layers stay fully absent at open === 0 (visibility).
        Desktop unmasks spatially; mobile paints one rest plate at a time. */
-    if (layerPaina) layerPaina.classList.toggle("is-revealing", painaOpen > 0);
     if (layerRana) layerRana.classList.toggle("is-revealing", ranaOpen > 0);
     if (layerProrok) layerProrok.classList.toggle("is-revealing", prorokOpen > 0);
     if (layerTerminal) {
@@ -1778,8 +1862,6 @@
     }
 
     /* Focusability tracks authored visibility — hidden copy must not take Tab. */
-    setCopyAccess(copyGenerations, copyGenerationsValue > 0.55);
-    setCopyAccess(copyPaina, copyPainaValue > 0.55);
     setCopyAccess(copyRana, copyRanaValue > 0.55);
     setCopyAccess(copyProrok, copyProrokValue > 0.55);
     setCopyAccess(copyTerminal, copyTerminalValue > 0.55);
@@ -1787,50 +1869,6 @@
 
   function imageHasRenderableFrame(image) {
     return !!(image && image.complete && image.naturalWidth > 0 && image.naturalHeight > 0);
-  }
-
-  function sourcePathEndsWith(element, suffix) {
-    if (!element || !suffix) return false;
-    var src = element.currentSrc || element.src || "";
-    if (!src) return false;
-    try { return new URL(src, window.location.href).pathname.endsWith(suffix); }
-    catch (e) { return src.indexOf(suffix) >= 0; }
-  }
-
-  function expectedFoodVideoPath(video, mobile) {
-    if (video === generationsVideo) {
-      return mobile
-        ? "/assets/work/generations/hurricane-fries-mobile-3p6.mp4"
-        : "/assets/work/generations/hurricane-fries-desktop-3p6.mp4";
-    }
-    if (video === painaVideo) {
-      return mobile
-        ? "/assets/work/paina/opening-mobile-from-2p4.mp4"
-        : "/assets/work/paina/opening-desktop.mp4";
-    }
-    return "";
-  }
-
-  function expectedFoodPosterPath(image, mobile) {
-    if (image === generationsPoster) {
-      return mobile
-        ? "/assets/work/generations/hurricane-fries-mobile.jpg"
-        : "/assets/work/generations/hurricane-fries-desktop.jpg";
-    }
-    if (image === painaPoster) {
-      return mobile
-        ? "/assets/work/paina/opening-mobile-entry-2p4.jpg"
-        : "/assets/work/paina/opening-desktop-poster.jpg";
-    }
-    return "";
-  }
-
-  function foodVideoMatchesMode(video, mobile) {
-    return sourcePathEndsWith(video, expectedFoodVideoPath(video, mobile));
-  }
-
-  function foodPosterMatchesMode(image, mobile) {
-    return sourcePathEndsWith(image, expectedFoodPosterPath(image, mobile));
   }
 
   function mobileSource(video, poster) {
@@ -1847,24 +1885,17 @@
     return width > 0 && height > 0 ? { width: width, height: height } : null;
   }
 
-  function drawMobileContain(ctx, source) {
+  function drawMobileCover(ctx, source, focusX, focusY, overscale) {
     var size = mobileSourceSize(source);
     if (!ctx || !size) return false;
-    var scale = Math.min(mobilePlateWidth / size.width, mobilePlateHeight / size.height);
+    focusX = focusX == null ? 0.5 : focusX;
+    focusY = focusY == null ? 0.5 : focusY;
+    overscale = overscale == null ? 1 : overscale;
+    var scale = Math.max(mobilePlateWidth / size.width, mobilePlateHeight / size.height) * overscale;
     var width = size.width * scale;
     var height = size.height * scale;
-    var x = (mobilePlateWidth - width) * .5;
-    var y = (mobilePlateHeight - height) * .5;
-    lastMobileContainGeometry = {
-      sourceWidth: size.width,
-      sourceHeight: size.height,
-      plateWidth: mobilePlateWidth,
-      plateHeight: mobilePlateHeight,
-      x: x,
-      y: y,
-      width: width,
-      height: height
-    };
+    var x = (mobilePlateWidth - width) * focusX;
+    var y = (mobilePlateHeight - height) * focusY;
     try {
       ctx.drawImage(source, x, y, width, height);
       return true;
@@ -1910,7 +1941,7 @@
   }
 
   function initMobilePlate() {
-    if ((!isMobile() && !breakpointSwapActive && !breakpointFallbackActive) || !mobileScenePlate || typeof mobileScenePlate.getContext !== "function") return false;
+    if (!isMobile() || !mobileScenePlate || typeof mobileScenePlate.getContext !== "function") return false;
     if (!mobilePlateCtx) {
       try {
         mobilePlateCtx = mobileScenePlate.getContext("2d", { alpha: false, desynchronized: true });
@@ -1928,57 +1959,21 @@
   }
 
   function setMobilePlateActive(active) {
-    active = !!active && (isMobile() || breakpointSwapActive || breakpointFallbackActive);
+    active = !!active && isMobile();
     if (active === mobilePlateActive) return;
     mobilePlateActive = active;
     root.classList.toggle("mobile-plate-active", active);
-  }
-
-  function drawMobileGenerationsScene(ctx, sourceOverride) {
-    var source = sourceOverride || mobileSource(generationsVideo, generationsPoster);
-    if (!source) return false;
-    ctx.filter = "saturate(1.04) contrast(1.04) brightness(.98)";
-    var drawn = drawMobileContain(ctx, source);
-    ctx.filter = "none";
-    if (!drawn) return false;
-    fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
-      [0, "rgba(8,6,4,.12)"],
-      [.5, "rgba(8,6,4,0)"],
-      [1, "rgba(8,6,4,.66)"]
-    ]);
-    fillMobileLinearGradient(ctx, 0, 0, mobilePlateWidth, 0, [
-      [0, "rgba(8,6,4,.34)"],
-      [.62, "rgba(8,6,4,0)"],
-      [1, "rgba(8,6,4,.08)"]
-    ]);
-    return true;
-  }
-
-  function drawMobilePainaScene(ctx, sourceOverride) {
-    var source = sourceOverride || mobileSource(painaVideo, painaPoster);
-    if (!source) return false;
-    ctx.filter = "saturate(1.05) contrast(1.04) brightness(.98)";
-    var drawn = drawMobileContain(ctx, source);
-    ctx.filter = "none";
-    if (!drawn) return false;
-    fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
-      [0, "rgba(4,12,11,.12)"],
-      [.5, "rgba(4,12,11,0)"],
-      [1, "rgba(4,12,11,.68)"]
-    ]);
-    fillMobileLinearGradient(ctx, 0, 0, mobilePlateWidth, 0, [
-      [0, "rgba(4,12,11,.34)"],
-      [.62, "rgba(4,12,11,0)"],
-      [1, "rgba(4,12,11,.08)"]
-    ]);
-    return true;
+    if (corridorLightning) {
+      var parent = active ? worldStack : document.getElementById("layer-corridor");
+      if (parent && corridorLightning.parentNode !== parent) parent.appendChild(corridorLightning);
+    }
   }
 
   function drawMobileRanaScene(ctx) {
     var source = mobileSource(ringVideo, ringPoster);
     if (!source) return false;
     ctx.filter = "saturate(1.1) contrast(1.06) brightness(1.03)";
-    var drawn = drawMobileContain(ctx, source);
+    var drawn = drawMobileCover(ctx, source, 0.48, 0.36, 1.035);
     ctx.filter = "none";
     if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
@@ -2001,7 +1996,7 @@
     if (ink) {
       ctx.filter = "saturate(.9) contrast(1.08) brightness(.72)";
       ctx.globalAlpha = .72;
-      drawMobileContain(ctx, ink);
+      drawMobileCover(ctx, ink, .5, .42, 1.02);
       ctx.globalAlpha = 1;
       ctx.filter = "none";
     } else {
@@ -2012,9 +2007,24 @@
     mobileMaskBufferCtx.setTransform(1, 0, 0, 1, 0, 0);
     mobileMaskBufferCtx.clearRect(0, 0, mobilePlateWidth, mobilePlateHeight);
     mobileMaskBufferCtx.filter = "saturate(.94) contrast(1.14) brightness(1.06)";
-    var portraitDrawn = drawMobileContain(mobileMaskBufferCtx, portrait);
+    var portraitDrawn = drawMobileCover(mobileMaskBufferCtx, portrait, .5, .14, 1.01);
     mobileMaskBufferCtx.filter = "none";
     if (!portraitDrawn) return false;
+    mobileMaskBufferCtx.globalCompositeOperation = "destination-in";
+    fillMobileEllipseGradient(
+      mobileMaskBufferCtx,
+      mobilePlateWidth * .5,
+      mobilePlateHeight * .34,
+      mobilePlateWidth * .72,
+      mobilePlateHeight * .66,
+      [[0, "#000"], [.67, "#000"], [1, "rgba(0,0,0,0)"]]
+    );
+    fillMobileLinearGradient(mobileMaskBufferCtx, 0, 0, 0, mobilePlateHeight, [
+      [0, "#000"],
+      [.67, "#000"],
+      [1, "rgba(0,0,0,0)"]
+    ]);
+    mobileMaskBufferCtx.globalCompositeOperation = "source-over";
     ctx.drawImage(mobileMaskBuffer, 0, 0);
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
       [0, "rgba(11,8,7,.12)"],
@@ -2027,7 +2037,7 @@
   function drawMobileTerminalScene(ctx) {
     if (!imageHasRenderableFrame(terminalReturn)) return false;
     ctx.filter = "saturate(1) brightness(1) contrast(1.04)";
-    var drawn = drawMobileContain(ctx, terminalReturn);
+    var drawn = drawMobileCover(ctx, terminalReturn, .45, 0, 1.01);
     ctx.filter = "none";
     if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
@@ -2043,7 +2053,7 @@
     return true;
   }
 
-  function composeMobileScene(index, sourceOverride) {
+  function composeMobileScene(index) {
     var ctx = mobileSceneBufferCtx;
     if (!ctx) return false;
     ctx.setTransform(1, 0, 0, 1, 0, 0);
@@ -2052,51 +2062,41 @@
     ctx.filter = "none";
     ctx.fillStyle = "#040a0c";
     ctx.fillRect(0, 0, mobilePlateWidth, mobilePlateHeight);
-    if (index === 0) return drawMobileGenerationsScene(ctx, sourceOverride);
-    if (index === 1) return drawMobilePainaScene(ctx, sourceOverride);
-    if (index === 2) return drawMobileRanaScene(ctx);
-    if (index === 3) return drawMobileProrokScene(ctx);
+    if (index === 0) {
+      var corridor = mobileSource(corridorVideo, corridorPoster);
+      if (!corridor) return false;
+      ctx.filter = "saturate(1.02) contrast(1.04) brightness(.98)";
+      var corridorDrawn = drawMobileCover(ctx, corridor, .5, .48, 1.01);
+      ctx.filter = "none";
+      return corridorDrawn;
+    }
+    if (index === 1) return drawMobileRanaScene(ctx);
+    if (index === 2) return drawMobileProrokScene(ctx);
     return drawMobileTerminalScene(ctx);
   }
 
-  function renderMobilePlate(index, values, sourceOverride) {
+  function renderMobilePlate(index, values) {
     if (!initMobilePlate()) {
       setMobilePlateActive(false);
       return false;
     }
-    if (!composeMobileScene(index, sourceOverride)) return false;
+    if (!composeMobileScene(index)) return false;
+    var scale = values && values.plateScale != null ? values.plateScale : 1;
+    var shift = values && values.plateShift != null ? values.plateShift : 0;
     mobilePlateCtx.setTransform(1, 0, 0, 1, 0, 0);
     mobilePlateCtx.globalAlpha = 1;
     mobilePlateCtx.globalCompositeOperation = "source-over";
     mobilePlateCtx.filter = "none";
     mobilePlateCtx.fillStyle = "#040a0c";
     mobilePlateCtx.fillRect(0, 0, mobilePlateWidth, mobilePlateHeight);
+    mobilePlateCtx.save();
+    mobilePlateCtx.translate(mobilePlateWidth * .5, mobilePlateHeight * (.5 + shift / 100));
+    mobilePlateCtx.scale(scale, scale);
+    mobilePlateCtx.translate(-mobilePlateWidth * .5, -mobilePlateHeight * .5);
     mobilePlateCtx.drawImage(mobileSceneBuffer, 0, 0);
+    mobilePlateCtx.restore();
     setMobilePlateActive(true);
     return true;
-  }
-
-  function breakpointRawSource(video, poster) {
-    if (video && !video.error && video.readyState >= 2) return video;
-    if (imageHasRenderableFrame(poster)) return poster;
-    return null;
-  }
-
-  function preserveBreakpointPlate(index) {
-    var heldCanvas = null;
-    if (mobilePlateActive && mobileScenePlate && mobileScenePlate.width > 0 && mobileScenePlate.height > 0) {
-      heldCanvas = document.createElement("canvas");
-      heldCanvas.width = mobileScenePlate.width;
-      heldCanvas.height = mobileScenePlate.height;
-      var heldContext = heldCanvas.getContext("2d");
-      if (heldContext) heldContext.drawImage(mobileScenePlate, 0, 0);
-      else heldCanvas = null;
-    }
-    var source = null;
-    if (index === 0) source = breakpointRawSource(generationsVideo, generationsPoster);
-    if (index === 1) source = breakpointRawSource(painaVideo, painaPoster);
-    if (!source) source = heldCanvas;
-    return renderMobilePlate(index, mobileSceneValuesForRest(index), source);
   }
 
   function paintMobileRest(index) {
@@ -2113,7 +2113,6 @@
   }
 
   function paint(p) {
-    if (breakpointSwapActive) return;
     p = clamp(p, 0, 1);
     root.style.setProperty("--progress", p.toFixed(5));
 
@@ -2133,40 +2132,42 @@
       return;
     }
 
-    var values = sceneValuesFromMap(p);
+    var corridorDark = range(p, MAP.corridorDark.a, MAP.corridorDark.b);
+    var ranaOpen = range(p, MAP.ranaOpen.a, MAP.ranaOpen.b);
+    var ranaHold = plateau(p, MAP.ranaHold.a, MAP.ranaHold.b, MAP.ranaHold.c, MAP.ranaHold.d);
+    var ring = plateau(p, MAP.ring.a, MAP.ring.b, MAP.ring.c, MAP.ring.d);
+    var prorokOpen = range(p, MAP.prorokOpen.a, MAP.prorokOpen.b);
+    var prorokHold = plateau(p, MAP.prorokHold.a, MAP.prorokHold.b, MAP.prorokHold.c, MAP.prorokHold.d);
+    var terminalHold = range(p, MAP.terminalHold.a, MAP.terminalHold.b);
+    var entryCue = 1 - range(p, 0.015, 0.11);
 
-    if (breakpointFallbackActive && !isMobile() && breakpointFallbackOwnerIndex >= 0) {
-      var semanticIndex = mobileStopIndexAtProgress(p);
-      var semanticStop = MOBILE_STOPS[semanticIndex];
-      var showHeldFallback = semanticIndex === breakpointFallbackOwnerIndex ||
-        !semanticStop || !mobileDestinationReady(semanticStop.id);
-      if (showHeldFallback) {
-        setMobilePlateActive(true);
-        values = completeSceneValuesForRest(breakpointFallbackOwnerIndex);
-      } else {
-        setMobilePlateActive(false);
-        values = completeSceneValuesForRest(semanticIndex);
-      }
-      applySceneValues(values);
-      return;
-    }
-
-    /* Motion-off snaps to five authored full-screen rests. */
+    /* Motion-off snaps to four composed rests: corridor, Rana, ProRok, terminal */
     if (!motionOn) {
-      if (p < 0.15) {
-        values = { generationsHold:1, painaOpen:0, painaSide:0, painaHold:0, ranaOpen:0, ranaHold:0, ring:0, prorokOpen:0, prorokHold:0, terminalHold:0 };
-      } else if (p < 0.42) {
-        values = { generationsHold:0, painaOpen:1, painaSide:1, painaHold:1, ranaOpen:0, ranaHold:0, ring:0, prorokOpen:0, prorokHold:0, terminalHold:0 };
-      } else if (p < 0.68) {
-        values = { generationsHold:0, painaOpen:1, painaSide:1, painaHold:0, ranaOpen:1, ranaHold:1, ring:1, prorokOpen:0, prorokHold:0, terminalHold:0 };
-      } else if (p < 0.89) {
-        values = { generationsHold:0, painaOpen:1, painaSide:1, painaHold:0, ranaOpen:1, ranaHold:.12, ring:0, prorokOpen:1, prorokHold:1, terminalHold:0 };
+      if (p < 0.22) {
+        corridorDark = 0.08; ranaOpen = 0; ranaHold = 0; ring = 0;
+        prorokOpen = 0; prorokHold = 0; terminalHold = 0;
+      } else if (p < 0.48) {
+        corridorDark = 1; ranaOpen = 1; ranaHold = 1; ring = 1;
+        prorokOpen = 0; prorokHold = 0; terminalHold = 0;
+      } else if (p < 0.74) {
+        corridorDark = 1; ranaOpen = 1; ranaHold = 0.12; ring = 0;
+        prorokOpen = 1; prorokHold = 1; terminalHold = 0;
       } else {
-        values = { generationsHold:0, painaOpen:1, painaSide:1, painaHold:0, ranaOpen:1, ranaHold:0, ring:0, prorokOpen:1, prorokHold:0, terminalHold:1 };
+        corridorDark = 1; ranaOpen = 1; ranaHold = 0; ring = 0;
+        prorokOpen = 1; prorokHold = 0; terminalHold = 1;
       }
     }
 
-    applySceneValues(withCopy(values, copyValuesFromWorld(values)));
+    applySceneValues({
+      corridorDark: corridorDark,
+      ranaOpen: ranaOpen,
+      ranaHold: ranaHold,
+      ring: ring,
+      prorokOpen: prorokOpen,
+      prorokHold: prorokHold,
+      terminalHold: terminalHold,
+      entryCue: entryCue
+    });
   }
 
   function setCopyAccess(el, active) {
@@ -2219,7 +2220,6 @@
   }
 
   function sampleScroll() {
-    if (breakpointSwapActive) return;
     progressTarget = computeProgress();
     if (!motionOn || isMobile()) {
       progressCurrent = progressTarget;
@@ -2237,7 +2237,6 @@
 
   function playSafe(video) {
     if (!video) return;
-    if (video.hasAttribute("data-once") && video.ended) return;
     var p = video.play();
     if (p && typeof p.catch === "function") p.catch(function () {});
   }
@@ -2258,45 +2257,46 @@
       if (video.readyState < 2) fail();
     });
     video.addEventListener("loadeddata", function () {
-      if ((video === generationsVideo || video === painaVideo) && !foodVideoMatchesMode(video, isMobile())) {
-        fail();
-        return;
-      }
       video.classList.add("is-ready");
       video.style.opacity = "";
     });
-    if (video.readyState >= 2 && (!(video === generationsVideo || video === painaVideo) || foodVideoMatchesMode(video, isMobile()))) {
+    if (video.readyState >= 2) {
       video.classList.add("is-ready");
       video.style.opacity = "";
     }
   }
 
   function videosForMobileStop(id) {
-    if (id === "generations") return [generationsVideo];
-    if (id === "paina") return [painaVideo];
+    if (id === "corridor") return [corridorVideo];
     if (id === "rana") return [ringVideo];
     if (id === "prorok") return [inkVideo];
-    /* Process is image-backed; image readiness is checked separately. */
+    /* Invitation is image-backed; image readiness is checked separately. */
     return [];
   }
 
   function imagesForMobileStop(id) {
-    if (id === "generations") return [generationsPoster];
-    if (id === "paina") return [painaPoster];
-    if (id === "rana") return [ringPoster];
     if (id === "prorok") return [prorokPortrait];
-    if (id === "process") return [terminalReturn];
+    if (id === "invitation") return [terminalReturn];
     return [];
   }
 
-  function requestMobileVideo(video, shouldPlay) {
+  function videoIsPreparedDestination(video) {
+    if (!mobileDestinationId || !video) return false;
+    var prepared = videosForMobileStop(mobileDestinationId);
+    var i;
+    for (i = 0; i < prepared.length; i++) {
+      if (prepared[i] === video) return true;
+    }
+    return false;
+  }
+
+  function requestMobileVideo(video) {
     if (!video) return;
     try { video.preload = "auto"; } catch (e) {}
-    if (shouldPlay) {
-      playSafe(video);
-    } else if (video.readyState < 1) {
+    if (video.readyState < 1) {
       try { video.load(); } catch (e2) {}
     }
+    playSafe(video);
   }
 
   function resetVideoReadinessState(video) {
@@ -2377,7 +2377,6 @@
 
   function noteDecodedVideoFrame(video) {
     if (!video || video.error || video.readyState < 2) return false;
-    if ((video === generationsVideo || video === painaVideo) && !foodVideoMatchesMode(video, isMobile())) return false;
     video.jwDecodedFrame = true;
     if (typeof mobileReadinessPulse === "function") mobileReadinessPulse();
     if (typeof window !== "undefined" && isMobile()) {
@@ -2423,41 +2422,34 @@
   function videoHasRenderableFrame(video) {
     if (!video || video.error) return false;
     if (video.readyState < 2) return false;
-    if ((video === generationsVideo || video === painaVideo) && !foodVideoMatchesMode(video, isMobile())) return false;
     if (video.jwDecodedFrame === true) return true;
     if (typeof video.requestVideoFrameCallback !== "function") return true;
     return proveHiddenVideoFrame(video);
   }
 
-  function imageHasFailed(image) {
-    return !!(image && image.complete && image.naturalWidth === 0);
-  }
-
-  function destinationRepresentationReady(video, image) {
-    return videoHasRenderableFrame(video) || imageHasRenderableFrame(image);
-  }
-
-  function destinationRepresentationFailed(video, image) {
-    var videoFailed = !video || !!video.error;
-    var imageFailed = !image || imageHasFailed(image);
-    return videoFailed && imageFailed;
-  }
-
   function mobileDestinationReady(id) {
-    if (id === "generations") return destinationRepresentationReady(generationsVideo, generationsPoster);
-    if (id === "paina") return destinationRepresentationReady(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationReady(ringVideo, ringPoster);
-    if (id === "prorok") return destinationRepresentationReady(inkVideo, prorokPortrait);
-    if (id === "process") return imageHasRenderableFrame(terminalReturn);
-    return false;
+    var videos = videosForMobileStop(id);
+    var images = imagesForMobileStop(id);
+    var i;
+    for (i = 0; i < videos.length; i++) {
+      if (!videoHasRenderableFrame(videos[i])) return false;
+    }
+    for (i = 0; i < images.length; i++) {
+      if (!imageHasRenderableFrame(images[i])) return false;
+    }
+    return true;
   }
 
   function mobileDestinationFailed(id) {
-    if (id === "generations") return destinationRepresentationFailed(generationsVideo, generationsPoster);
-    if (id === "paina") return destinationRepresentationFailed(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationFailed(ringVideo, ringPoster);
-    if (id === "prorok") return destinationRepresentationFailed(inkVideo, prorokPortrait);
-    if (id === "process") return imageHasFailed(terminalReturn);
+    var videos = videosForMobileStop(id);
+    var images = imagesForMobileStop(id);
+    var i;
+    for (i = 0; i < videos.length; i++) {
+      if (videos[i] && videos[i].error) return true;
+    }
+    for (i = 0; i < images.length; i++) {
+      if (images[i] && images[i].complete && images[i].naturalWidth === 0) return true;
+    }
     return false;
   }
 
@@ -2527,7 +2519,13 @@
 
   function warmMobileBeatVideos() {
     if (!motionOn || !isMobile()) return;
-    requestMobileVideo(generationsVideo, true);
+    requestMobileVideo(corridorVideo);
+    requestMobileVideo(ringVideo);
+    requestMobileVideo(inkVideo);
+  }
+
+  function videoNeedsHiddenWarm(video) {
+    return isMobile() && motionOn && !!video && !video.error && !videoHasRenderableFrame(video);
   }
 
   function prepareMobileDestination(index) {
@@ -2539,7 +2537,7 @@
     mobileDestinationId = stop ? stop.id : "";
     var videos = videosForMobileStop(mobileDestinationId);
     var i;
-    for (i = 0; i < videos.length; i++) requestMobileVideo(videos[i], false);
+    for (i = 0; i < videos.length; i++) requestMobileVideo(videos[i]);
   }
 
   function clearMobileDestination() {
@@ -2547,14 +2545,8 @@
   }
 
   function syncVideos(p) {
-    if (breakpointSwapActive) {
-      pauseSafe(generationsVideo);
-      pauseSafe(painaVideo);
-      return;
-    }
     if (!motionOn) {
-      pauseSafe(generationsVideo);
-      pauseSafe(painaVideo);
+      pauseSafe(corridorVideo);
       pauseSafe(studioVideo);
       pauseSafe(ringVideo);
       pauseSafe(inkVideo);
@@ -2571,26 +2563,22 @@
         for (var i = 0; i < activeVideos.length; i++) if (activeVideos[i] === video) return true;
         return false;
       }
-      if (isActive(generationsVideo)) playSafe(generationsVideo);
-      else pauseSafe(generationsVideo);
-      if (isActive(painaVideo)) playSafe(painaVideo);
-      else pauseSafe(painaVideo);
+      if (isActive(corridorVideo) || videoIsPreparedDestination(corridorVideo) || videoNeedsHiddenWarm(corridorVideo)) playSafe(corridorVideo);
+      else pauseSafe(corridorVideo);
       pauseSafe(studioVideo);
-      if (isActive(ringVideo)) playSafe(ringVideo);
+      if (isActive(ringVideo) || videoIsPreparedDestination(ringVideo) || videoNeedsHiddenWarm(ringVideo)) playSafe(ringVideo);
       else pauseSafe(ringVideo);
-      if (isActive(inkVideo)) playSafe(inkVideo);
+      if (isActive(inkVideo) || videoIsPreparedDestination(inkVideo) || videoNeedsHiddenWarm(inkVideo)) playSafe(inkVideo);
       else pauseSafe(inkVideo);
       return;
     }
-    if (p < 0.28) playSafe(generationsVideo);
-    else pauseSafe(generationsVideo);
-    if (p > 0.08 && p < 0.45) playSafe(painaVideo);
-    else pauseSafe(painaVideo);
-    if (p > 0.39 && p < 0.74) playSafe(studioVideo);
+    if (p < 0.16 || videoIsPreparedDestination(corridorVideo) || videoNeedsHiddenWarm(corridorVideo)) playSafe(corridorVideo);
+    else pauseSafe(corridorVideo);
+    if ((p > 0.14 && p < 0.62) || videoIsPreparedDestination(studioVideo) || videoNeedsHiddenWarm(studioVideo)) playSafe(studioVideo);
     else pauseSafe(studioVideo);
-    if (p > 0.48 && p < 0.70) playSafe(ringVideo);
+    if ((p > 0.26 && p < 0.56) || videoIsPreparedDestination(ringVideo) || videoNeedsHiddenWarm(ringVideo)) playSafe(ringVideo);
     else pauseSafe(ringVideo);
-    if (p > 0.62 && p < 0.95) playSafe(inkVideo);
+    if ((p > 0.48 && p < 0.92) || videoIsPreparedDestination(inkVideo) || videoNeedsHiddenWarm(inkVideo)) playSafe(inkVideo);
     else pauseSafe(inkVideo);
   }
 
@@ -2611,7 +2599,7 @@
   }
 
   function mobileNavigationBusy() {
-    return mobileGlideLocked || mobileWaiting || breakpointSwapActive;
+    return mobileGlideLocked || mobileWaiting;
   }
 
   function nowMs() {
@@ -2914,146 +2902,16 @@
     if (!mobileNavigationBusy()) advanceMobileStop(mobileWheelDelta > 0 ? 1 : -1);
   }
 
-  function clearBreakpointSwapWatch() {
-    if (breakpointSwapInterval) window.clearInterval(breakpointSwapInterval);
-    if (breakpointSwapTimer) window.clearTimeout(breakpointSwapTimer);
-    breakpointSwapInterval = 0;
-    breakpointSwapTimer = 0;
-  }
-
-  function breakpointWorldReady(video, poster, targetMobile) {
-    var videoReady = foodVideoMatchesMode(video, targetMobile) && videoHasRenderableFrame(video);
-    var posterReady = foodPosterMatchesMode(poster, targetMobile) && imageHasRenderableFrame(poster);
-    return videoReady || posterReady;
-  }
-
-  function breakpointFoodReady(targetMobile) {
-    return breakpointWorldReady(generationsVideo, generationsPoster, targetMobile) &&
-      breakpointWorldReady(painaVideo, painaPoster, targetMobile);
-  }
-
-  function reloadFoodVideoForBreakpoint(video) {
-    pauseSafe(video);
-    resetVideoReadinessState(video);
-    video.classList.remove("is-ready");
-    video.style.opacity = "0";
-    try { video.load(); } catch (e) {}
-  }
-
-  function requestFoodPosterForBreakpoint(image, pulse) {
-    if (!image || typeof image.decode !== "function") return;
-    try {
-      var decoded = image.decode();
-      if (decoded && typeof decoded.then === "function") decoded.then(pulse, pulse);
-    } catch (e) {}
-  }
-
-  function setBreakpointProgress(index) {
-    var stop = MOBILE_STOPS[clamp(index, 0, MOBILE_STOPS.length - 1)];
-    var progress = stop ? stop.progress : 0;
-    window.scrollTo(0, progress * passageScrollTotal());
-    progressTarget = progressCurrent = progress;
-    return progress;
-  }
-
-  function finishBreakpointSwap(token, targetMobile, index, targetReady) {
-    if (token !== breakpointSwapGeneration) return false;
-    if (targetMobile !== isMobile()) {
-      beginBreakpointSwap(isMobile());
-      return false;
-    }
-
-    clearBreakpointSwapWatch();
-    var progress = setBreakpointProgress(index);
-    breakpointModeMobile = targetMobile;
-    breakpointSwapTargetMobile = targetMobile;
-    breakpointFallbackActive = !targetReady;
-    breakpointFallbackOwnerIndex = targetReady ? -1 : index;
-    breakpointSwapActive = false;
-
-    if (targetReady) {
-      if (targetMobile) {
-        paintMobileRest(index);
-        setMobilePlateActive(true);
-      } else {
-        paint(progress);
-        setMobilePlateActive(false);
-      }
-    } else if (!mobilePlateActive && targetMobile) {
-      preserveBreakpointPlate(index);
-    }
-
-    root.classList.remove("source-swap-active");
-    syncVideos(progressCurrent);
-    if (motionOn) startRenderLoop();
-    return true;
-  }
-
-  function beginBreakpointSwap(targetMobile) {
-    targetMobile = !!targetMobile;
-    if (breakpointSwapActive && breakpointSwapTargetMobile === targetMobile) return;
-    if (!breakpointSwapActive && breakpointModeMobile === targetMobile && !breakpointFallbackActive) return;
-
-    var token = ++breakpointSwapGeneration;
-    clearBreakpointSwapWatch();
-    breakpointSwapActive = true;
-    breakpointSwapTargetMobile = targetMobile;
-    breakpointSwapStopIndex = mobileStopIndexAtProgress(progressCurrent);
-    cancelMobileGlide();
-    resetMobileTouch();
-    resetMobileWheel();
-    pauseSafe(generationsVideo);
-    pauseSafe(painaVideo);
-
-    /* Preserve a complete prior rest while target representations load. */
-    preserveBreakpointPlate(breakpointSwapStopIndex);
-    if (mobilePlateActive) root.classList.add("source-swap-active");
-    breakpointFallbackActive = false;
-    breakpointFallbackOwnerIndex = -1;
-
-    reloadFoodVideoForBreakpoint(generationsVideo);
-    reloadFoodVideoForBreakpoint(painaVideo);
-
-    function pulse() {
-      if (token !== breakpointSwapGeneration) return;
-      if (targetMobile !== isMobile()) {
-        beginBreakpointSwap(isMobile());
-        return;
-      }
-      if (breakpointFoodReady(targetMobile)) {
-        finishBreakpointSwap(token, targetMobile, breakpointSwapStopIndex, true);
-      }
-    }
-
-    requestFoodPosterForBreakpoint(generationsPoster, pulse);
-    requestFoodPosterForBreakpoint(painaPoster, pulse);
-    breakpointSwapInterval = window.setInterval(pulse, 40);
-    breakpointSwapTimer = window.setTimeout(function () {
-      if (token !== breakpointSwapGeneration) return;
-      finishBreakpointSwap(token, targetMobile, breakpointSwapStopIndex, false);
-    }, MOBILE_READINESS_MS);
-    pulse();
-  }
-
   function onMobileViewportChange() {
-    if (isMobile() !== breakpointModeMobile || breakpointSwapActive || breakpointFallbackActive) {
-      beginBreakpointSwap(isMobile());
-      return;
-    }
     cancelMobileGlide();
     resetMobileTouch();
     resetMobileWheel();
-    if (!isMobile() && !breakpointFallbackActive) setMobilePlateActive(false);
+    if (!isMobile()) setMobilePlateActive(false);
     if (motionOn && isMobile()) {
-      paintMobileRest(mobileStopIndexAtProgress(progressCurrent));
       warmMobileBeatVideos();
       startRenderLoop();
     }
     sampleScroll();
-  }
-
-  function onMobileBreakpointChange(event) {
-    beginBreakpointSwap(!!event.matches);
   }
 
   /* Keyboard depth without trapping — page still scrolls freely */
@@ -3082,11 +2940,6 @@
     });
   }
 
-  window.addEventListener("jw-motion-change", function (event) {
-    if (!event.detail || event.detail.source === "work") return;
-    if (motionOn !== !!event.detail.on) applyMotionPreference(!!event.detail.on, false);
-  });
-
   window.addEventListener("scroll", function () {
     sampleScroll();
   }, { passive: true });
@@ -3097,18 +2950,14 @@
     cancelMobileGlide();
     resetMobileTouch();
     resetMobileWheel();
-    if (isMobile() !== breakpointModeMobile) {
-      beginBreakpointSwap(isMobile());
-      return;
-    }
     if (motionOn && isMobile()) warmMobileBeatVideos();
     sampleScroll();
   });
 
   if (typeof mobileMq.addEventListener === "function") {
-    mobileMq.addEventListener("change", onMobileBreakpointChange);
+    mobileMq.addEventListener("change", onMobileViewportChange);
   } else if (typeof mobileMq.addListener === "function") {
-    mobileMq.addListener(onMobileBreakpointChange);
+    mobileMq.addListener(onMobileViewportChange);
   }
 
   window.addEventListener("touchstart", onMobileTouchStart, { passive: true });
@@ -3117,23 +2966,20 @@
   window.addEventListener("touchcancel", onMobileTouchCancel, { passive: true });
   window.addEventListener("wheel", onMobileWheel, { passive: false });
 
-  bindPosterFallback(generationsVideo, generationsPoster);
-  bindPosterFallback(painaVideo, painaPoster);
+  bindPosterFallback(corridorVideo, document.getElementById("corridor-poster"));
   bindPosterFallback(studioVideo, document.getElementById("rana-poster"));
   bindPosterFallback(ringVideo, document.getElementById("ring-poster"));
   bindPosterFallback(inkVideo, document.getElementById("prorok-poster"));
-  bindVideoReadiness(generationsVideo);
-  bindVideoReadiness(painaVideo);
+  bindVideoReadiness(corridorVideo);
   bindVideoReadiness(studioVideo);
   bindVideoReadiness(ringVideo);
   bindVideoReadiness(inkVideo);
-  bindImageReadiness(generationsPoster);
-  bindImageReadiness(painaPoster);
+  bindImageReadiness(corridorPoster);
   bindImageReadiness(ringPoster);
   bindImageReadiness(prorokPortrait);
   bindImageReadiness(terminalReturn);
 
-  /* Enter from homepage exit: a brief veil, then Generations is already moving. */
+  /* Enter from homepage exit: brief void veil, then corridor present */
   var enterFromHome = root.getAttribute("data-work-enter") === "1";
   if (enterFromHome && motionOn) {
     root.style.setProperty("--enter-veil", "1");
@@ -3177,24 +3023,6 @@
     get mobileDestination() { return mobileDestinationId; },
     get mobilePlateActive() { return mobilePlateActive; },
     get mobilePlateSize() { return { width: mobilePlateWidth, height: mobilePlateHeight }; },
-    get mobileContainGeometry() { return lastMobileContainGeometry; },
-    get breakpointSwapActive() { return breakpointSwapActive; },
-    get breakpointFallbackActive() { return breakpointFallbackActive; },
-    get breakpointFallbackOwnerIndex() { return breakpointFallbackOwnerIndex; },
-    get breakpointFallbackOwner() {
-      return breakpointFallbackOwnerIndex >= 0 && MOBILE_STOPS[breakpointFallbackOwnerIndex]
-        ? MOBILE_STOPS[breakpointFallbackOwnerIndex].id
-        : "";
-    },
-    get navigationBusy() { return mobileNavigationBusy(); },
-    get breakpointMode() { return breakpointModeMobile ? "mobile" : "desktop"; },
-    get breakpointTarget() { return breakpointSwapTargetMobile ? "mobile" : "desktop"; },
-    get foodSources() {
-      return {
-        generations: { src: generationsVideo.currentSrc, width: generationsVideo.videoWidth, height: generationsVideo.videoHeight },
-        paina: { src: painaVideo.currentSrc, width: painaVideo.videoWidth, height: painaVideo.videoHeight }
-      };
-    },
     get mobileTransition() {
       return mobileTransition
         ? { fromIndex: mobileTransition.fromIndex, toIndex: mobileTransition.toIndex, t: mobileTransition.t }
@@ -3202,8 +3030,7 @@
     },
     get videoReadiness() {
       return {
-        generations: videoHasRenderableFrame(generationsVideo),
-        paina: videoHasRenderableFrame(painaVideo),
+        corridor: videoHasRenderableFrame(corridorVideo),
         studio: videoHasRenderableFrame(studioVideo),
         ring: videoHasRenderableFrame(ringVideo),
         ink: videoHasRenderableFrame(inkVideo)

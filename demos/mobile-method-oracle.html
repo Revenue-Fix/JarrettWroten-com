@@ -1,0 +1,523 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Jarrett Wroten — Mobile Method Oracle</title>
+  <style>
+    @font-face{
+      font-family:"Bodoni Moda";
+      src:url("../assets/fonts/bodoni-moda-latin-variable.woff2") format("woff2");
+      font-style:normal;
+      font-weight:400 900;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Rana Reader Fallback";
+      src:url("../assets/fonts/rana-reader-fallback-roman.woff2") format("woff2");
+      font-style:normal;
+      font-weight:400;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"Rana Reader Fallback";
+      src:url("../assets/fonts/rana-reader-fallback-italic.woff2") format("woff2");
+      font-style:italic;
+      font-weight:400;
+      font-display:swap;
+    }
+    @font-face{
+      font-family:"IBM Plex Sans";
+      src:url("../assets/fonts/ibm-plex-sans-latin-variable.woff2") format("woff2");
+      font-style:normal;
+      font-weight:100 900;
+      font-display:swap;
+    }
+
+    :root{
+      color-scheme:dark;
+      --void:#03090b;
+      --ink:#edf5f2;
+      --ink-soft:#cbd8d6;
+      --ink-mute:#879a9a;
+      --cyan:#5ee7f0;
+      --amber:#ffad45;
+      --display:"Bodoni Moda", "Iowan Old Style", Georgia, serif;
+      --reading:Georgia, "Rana Reader Fallback", "Times New Roman", serif;
+      --text:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+      --gutter:max(1.1rem, env(safe-area-inset-left));
+      --ease:cubic-bezier(.16,1,.3,1);
+    }
+
+    *{box-sizing:border-box}
+    html{background:var(--void);scrollbar-width:none}
+    html::-webkit-scrollbar{display:none}
+    body{
+      margin:0;
+      min-width:320px;
+      background:var(--void);
+      color:var(--ink);
+      font-family:var(--reading);
+      overscroll-behavior-y:none;
+    }
+    button{font:inherit;color:inherit;border:0;background:none;padding:0}
+
+    .journey{height:400svh}
+    .scene{
+      position:sticky;
+      top:0;
+      width:100%;
+      height:100svh;
+      min-height:36rem;
+      overflow:hidden;
+      isolation:isolate;
+      background:var(--void);
+    }
+
+    .world{
+      position:absolute;
+      inset:0;
+      z-index:0;
+      overflow:hidden;
+      background:#061014;
+    }
+    .world-frame{
+      position:absolute;
+      inset:-1%;
+      width:102%;
+      height:102%;
+      object-fit:cover;
+      object-position:50% 50%;
+      transform:scale(1.018);
+      filter:saturate(.96) contrast(1.04) brightness(.84);
+    }
+    .world::before{
+      content:"";
+      position:absolute;
+      inset:0;
+      z-index:1;
+      pointer-events:none;
+      background:
+        linear-gradient(180deg, rgba(2,8,10,.50) 0%, transparent 22%),
+        linear-gradient(180deg, transparent 36%, rgba(2,8,10,.20) 48%, rgba(2,8,10,.92) 78%, #03090b 100%),
+        radial-gradient(ellipse 95% 55% at 50% 43%, transparent 30%, rgba(2,8,10,.35) 100%);
+    }
+    .progress-line{
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      z-index:10;
+      height:3px;
+      background:rgba(237,245,242,.10);
+    }
+    .progress-line span{
+      display:block;
+      width:calc(var(--progress, 0) * 100%);
+      height:100%;
+      background:linear-gradient(90deg,var(--cyan),var(--amber));
+      box-shadow:0 0 12px rgba(94,231,240,.42);
+    }
+
+    .header{
+      position:absolute;
+      z-index:9;
+      top:0;
+      left:0;
+      right:0;
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      padding:calc(.95rem + env(safe-area-inset-top)) var(--gutter) 0;
+      font-family:var(--text);
+      font-size:.875rem;
+      line-height:1;
+    }
+    .wordmark{font-weight:600;letter-spacing:.01em}
+    .chapter{font-weight:500;color:var(--ink-soft)}
+
+    .copy-stage{
+      position:absolute;
+      z-index:6;
+      left:var(--gutter);
+      right:var(--gutter);
+      bottom:calc(7.2rem + env(safe-area-inset-bottom));
+      min-height:13.4rem;
+    }
+    .chapter-name{
+      margin:0 0 .55rem;
+      font-family:var(--reading);
+      font-style:italic;
+      font-size:1.08rem;
+      line-height:1.35;
+      letter-spacing:0;
+      color:var(--cyan);
+    }
+    .movement{
+      position:absolute;
+      inset:0;
+      display:flex;
+      flex-direction:column;
+      justify-content:flex-end;
+      opacity:0;
+      visibility:hidden;
+      transform:translateY(1.6rem);
+      transition:
+        opacity .36s linear,
+        transform .72s var(--ease),
+        visibility 0s linear .36s;
+    }
+    .movement.is-active{
+      opacity:1;
+      visibility:visible;
+      transform:none;
+      transition:
+        opacity .42s linear,
+        transform .72s var(--ease),
+        visibility 0s;
+    }
+    .movement.is-leaving{
+      opacity:0;
+      visibility:visible;
+      transform:translateY(-.65rem);
+      transition:
+        opacity .18s linear,
+        transform .34s var(--ease),
+        visibility 0s linear .2s;
+    }
+    .movement-title{
+      margin:0;
+      font-family:var(--display);
+      font-weight:400;
+      font-optical-sizing:auto;
+      font-size:clamp(3rem, 13.4vw, 3.45rem);
+      line-height:.92;
+      letter-spacing:0;
+      color:var(--ink);
+      text-wrap:balance;
+    }
+    .movement[data-step="2"] .movement-title{
+      font-size:clamp(2.78rem, 12.5vw, 3.25rem);
+      white-space:nowrap;
+    }
+    .movement-body{
+      margin:.85rem 0 0;
+      max-width:31ch;
+      font-family:var(--reading);
+      font-weight:400;
+      font-size:clamp(1.08rem,4.65vw,1.2rem);
+      line-height:1.42;
+      letter-spacing:0;
+      color:var(--ink-soft);
+      text-wrap:pretty;
+    }
+
+    .step-nav{
+      position:absolute;
+      z-index:9;
+      left:var(--gutter);
+      right:var(--gutter);
+      bottom:calc(1rem + env(safe-area-inset-bottom));
+      display:grid;
+      grid-template-columns:repeat(3,1fr);
+      gap:.45rem;
+    }
+    .step-nav button{
+      position:relative;
+      min-height:3.2rem;
+      padding-top:.75rem;
+      font-family:var(--text);
+      font-size:.8rem;
+      font-weight:550;
+      line-height:1;
+      text-align:left;
+      color:var(--ink-mute);
+      cursor:pointer;
+    }
+    .step-nav button::before{
+      content:"";
+      position:absolute;
+      top:0;
+      left:0;
+      right:0;
+      height:1px;
+      background:rgba(237,245,242,.22);
+    }
+    .step-nav button::after{
+      content:"";
+      position:absolute;
+      top:-1px;
+      left:0;
+      width:0;
+      height:3px;
+      background:var(--cyan);
+      box-shadow:0 0 8px rgba(94,231,240,.4);
+      transition:width .45s var(--ease), background .3s ease;
+    }
+    .step-nav button.is-past{color:var(--ink-soft)}
+    .step-nav button.is-past::after{width:100%;background:rgba(94,231,240,.55)}
+    .step-nav button.is-active{color:var(--ink)}
+    .step-nav button.is-active::after{width:100%;background:var(--amber)}
+    .step-nav button:focus-visible{
+      outline:none;
+      color:var(--ink);
+      text-decoration:underline;
+      text-decoration-thickness:1px;
+      text-underline-offset:.35rem;
+    }
+
+    .scroll-cue{
+      position:absolute;
+      z-index:8;
+      right:var(--gutter);
+      bottom:calc(4.65rem + env(safe-area-inset-bottom));
+      margin:0;
+      font-family:var(--reading);
+      font-style:italic;
+      font-size:.95rem;
+      line-height:1;
+      color:var(--ink-soft);
+      opacity:calc(1 - min(1, var(--progress, 0) * 8));
+      transition:opacity .3s ease;
+    }
+
+    .loader{
+      position:absolute;
+      inset:0;
+      z-index:20;
+      display:grid;
+      place-items:center;
+      background:var(--void);
+      font-family:var(--text);
+      font-size:.95rem;
+      color:var(--ink-soft);
+      transition:opacity .55s ease, visibility .55s ease;
+    }
+    .loader.is-done{opacity:0;visibility:hidden}
+
+    @media (min-width:721px){
+      body::before{
+        content:"This oracle is authored for a mobile viewport.";
+        position:fixed;
+        inset:0;
+        z-index:100;
+        display:grid;
+        place-items:center;
+        padding:2rem;
+        background:var(--void);
+        color:var(--ink);
+        font:500 1rem/1.5 var(--text);
+        text-align:center;
+      }
+    }
+  </style>
+</head>
+<body>
+  <main class="journey" id="journey">
+    <section class="scene" aria-label="How I work — mobile visual oracle">
+      <div class="world" aria-hidden="true">
+        <img class="world-frame" id="world-frame" src="../assets/golden-arrival/frames/ga-072.webp" alt="">
+      </div>
+
+      <div class="progress-line" aria-hidden="true"><span></span></div>
+
+      <header class="header">
+        <span class="wordmark">Jarrett Wroten</span>
+        <span class="chapter">How I work</span>
+      </header>
+
+      <div class="copy-stage" aria-live="polite">
+        <p class="chapter-name">Follow the real path</p>
+
+        <article class="movement is-active" data-step="1">
+          <h1 class="movement-title">Look.</h1>
+          <p class="movement-body">I walk through your site like a real customer.</p>
+        </article>
+
+        <article class="movement" data-step="2" aria-hidden="true">
+          <h1 class="movement-title">Find The Leak.</h1>
+          <p class="movement-body">I find the first key step where the path breaks.</p>
+        </article>
+
+        <article class="movement" data-step="3" aria-hidden="true">
+          <h1 class="movement-title">Build The Fix.</h1>
+          <p class="movement-body">I build the page, form, or follow-up that fixes it.</p>
+        </article>
+      </div>
+
+      <p class="scroll-cue">Swipe to follow</p>
+
+      <nav class="step-nav" aria-label="Method movements">
+        <button type="button" class="is-active" data-go="1" aria-current="step">Look</button>
+        <button type="button" data-go="2">Find</button>
+        <button type="button" data-go="3">Build</button>
+      </nav>
+
+      <div class="loader" id="loader">Opening the path</div>
+    </section>
+  </main>
+
+  <script>
+    (function () {
+      "use strict";
+
+      var root = document.documentElement;
+      var frame = document.getElementById("world-frame");
+      var loader = document.getElementById("loader");
+      var movements = Array.prototype.slice.call(document.querySelectorAll(".movement"));
+      var nav = Array.prototype.slice.call(document.querySelectorAll(".step-nav button"));
+      var START_FRAME = 72;
+      var END_FRAME = 156;
+      var images = Object.create(null);
+      var currentFrame = START_FRAME;
+      var targetStep = 1;
+      var movementTimer = 0;
+      var ticking = false;
+      var scrollAnimation = 0;
+
+      function clamp(value, min, max) {
+        return Math.max(min, Math.min(max, value));
+      }
+
+      function frameUrl(index) {
+        return "../assets/golden-arrival/frames/ga-" + String(index).padStart(3, "0") + ".webp";
+      }
+
+      function preload(index) {
+        index = clamp(index | 0, START_FRAME, END_FRAME);
+        if (images[index]) return images[index];
+        var img = new Image();
+        img.decoding = "async";
+        img.src = frameUrl(index);
+        images[index] = img;
+        return img;
+      }
+
+      function showFrame(index) {
+        index = clamp(index | 0, START_FRAME, END_FRAME);
+        if (index === currentFrame) return;
+        currentFrame = index;
+        var img = preload(index);
+        if (img.complete) frame.src = img.src;
+        else img.onload = function () {
+          if (currentFrame === index) frame.src = img.src;
+        };
+        for (var n = 1; n <= 6; n++) {
+          preload(index - n);
+          preload(index + n);
+        }
+      }
+
+      function stepForProgress(progress) {
+        if (progress < .285) return 1;
+        if (progress < .64) return 2;
+        return 3;
+      }
+
+      function renderStep(step) {
+        if (step === targetStep) return;
+        targetStep = step;
+        if (movementTimer) window.clearTimeout(movementTimer);
+        movements.forEach(function (movement, index) {
+          var number = index + 1;
+          if (movement.classList.contains("is-active") && number !== step) {
+            movement.classList.remove("is-active");
+            movement.classList.add("is-leaving");
+            movement.setAttribute("aria-hidden", "true");
+          }
+        });
+        nav.forEach(function (button, index) {
+          var number = index + 1;
+          button.classList.toggle("is-active", number === step);
+          button.classList.toggle("is-past", number < step);
+          if (number === step) button.setAttribute("aria-current", "step");
+          else button.removeAttribute("aria-current");
+        });
+        movementTimer = window.setTimeout(function () {
+          movements.forEach(function (movement, index) {
+            var on = index + 1 === targetStep;
+            movement.classList.remove("is-leaving");
+            movement.classList.toggle("is-active", on);
+            movement.setAttribute("aria-hidden", on ? "false" : "true");
+          });
+          movementTimer = 0;
+        }, 210);
+      }
+
+      function progress() {
+        var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        return clamp(window.scrollY / max, 0, 1);
+      }
+
+      function paint() {
+        ticking = false;
+        var p = progress();
+        root.style.setProperty("--progress", p.toFixed(4));
+        showFrame(Math.round(START_FRAME + (END_FRAME - START_FRAME) * p));
+        renderStep(stepForProgress(p));
+      }
+
+      function requestPaint() {
+        if (ticking) return;
+        ticking = true;
+        requestAnimationFrame(paint);
+      }
+
+      function scrollToStep(step, immediate) {
+        var targets = { 1: .08, 2: .44, 3: .78 };
+        var max = Math.max(1, document.documentElement.scrollHeight - window.innerHeight);
+        var target = max * targets[step];
+        if (scrollAnimation) cancelAnimationFrame(scrollAnimation);
+        if (immediate) {
+          window.scrollTo(0, target);
+          requestPaint();
+          return;
+        }
+        var start = window.scrollY;
+        var distance = target - start;
+        var started = performance.now();
+        var duration = 760;
+        function glide(now) {
+          var elapsed = clamp((now - started) / duration, 0, 1);
+          var eased = 1 - Math.pow(1 - elapsed, 4);
+          window.scrollTo(0, start + distance * eased);
+          if (elapsed < 1) scrollAnimation = requestAnimationFrame(glide);
+          else scrollAnimation = 0;
+        }
+        scrollAnimation = requestAnimationFrame(glide);
+      }
+
+      nav.forEach(function (button) {
+        button.addEventListener("click", function () {
+          scrollToStep(Number(button.getAttribute("data-go")) || 1);
+        });
+        button.addEventListener("pointerup", function () {
+          button.blur();
+        });
+      });
+
+      if (frame.complete && frame.naturalWidth) {
+        loader.classList.add("is-done");
+      } else {
+        frame.addEventListener("load", function () {
+          loader.classList.add("is-done");
+        }, { once:true });
+      }
+
+      window.addEventListener("scroll", requestPaint, { passive:true });
+      window.addEventListener("resize", requestPaint);
+
+      preload(START_FRAME);
+      for (var i = START_FRAME; i <= END_FRAME; i += 4) preload(i);
+
+      var requested = Number(new URLSearchParams(location.search).get("step"));
+      if (requested >= 1 && requested <= 3) {
+        requestAnimationFrame(function () {
+          scrollToStep(requested, true);
+        });
+      }
+      paint();
+    }());
+  </script>
+</body>
+</html>
