@@ -1184,24 +1184,22 @@ ok(
   /*
    * FOCUSED TRIPWIRE — secondary booking CTA on Start/threshold.
    * Canonical path: smoke-test.mjs booking block below.
-   * Future consumer: maintainer editing the free-fix invite or calendar URL.
+   * Future consumer: maintainer editing the free-fix invite or booking route.
    * Activation: execute — `node smoke-test.mjs`.
-   * Behavioral check: desktop .threshold-bottom and mobile threshold beat both
-   *   carry the exact Google Calendar URL, target=_blank + rel=noopener noreferrer,
-   *   and exact outward copy with only "Book a call." linked. Source-shape only —
+   * Behavioral check: the portfolio terminal, desktop threshold, mobile threshold,
+   *   and no-JS path all carry the local /book/ route with exact outward copy.
    *   does not prove rendered geometry, focus rings, or 44px hit boxes; Codex
    *   exercises those on pixels independently.
    * Retirement: retire only when booking is intentionally removed or relocated
    *   and an equal consumer-facing conversion check supersedes this block.
    */
   {
-    const BOOKING_URL = 'https://calendar.app.google/rTkdNoWpm6iRrXhB7';
-    const urlEsc = BOOKING_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    const urlCount = (html.match(new RegExp(urlEsc, 'g')) || []).length;
-    ok(urlCount === 4, 'booking URL appears in both portfolio terminal paths and both Process contact paths (got ' + urlCount + ')');
+    const BOOKING_PATH = 'book/';
+    const pathCount = (html.match(/href="book\/"/g) || []).length;
+    ok(pathCount === 4, 'all four homepage booking actions route through /book/ (got ' + pathCount + ')');
     ok(
-      /class="portfolio-terminal-book"[\s\S]*?Want a free concept for your site\?[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?class="portfolio-scene-action portfolio-terminal-book-action"[^>]*href="https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/.test(html),
-      'portfolio terminal carries the complete free-concept booking offer and real Calendar action'
+      /class="portfolio-terminal-book"[\s\S]*?Want a free concept for your site\?[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?class="portfolio-scene-action portfolio-terminal-book-action"[^>]*href="book\/"/.test(html),
+      'portfolio terminal carries the complete free-concept offer into the local booking page'
     );
 
     // Extract full threshold-bottom by start index through invite-book close.
@@ -1213,13 +1211,11 @@ ok(
         ? desktopSrc.slice(bottomStart, bookClose + 4)
         : '';
     const desktopBookRe =
-      /<p class="invite-book">Want to talk first\? <a class="invite-book-link" href="https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call\.<\/a><\/p>/;
+      /<p class="invite-book">Want to talk first\? <a class="invite-book-link" href="book\/">Book a call\.<\/a><\/p>/;
     ok(desktopBookRe.test(bottomSrc), 'desktop threshold-bottom has exact booking line with linked phrase');
     ok(
-      bottomSrc.includes(BOOKING_URL) &&
-        (/class="invite-book-link"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/.test(bottomSrc) ||
-          /class="invite-book-link"[^>]*rel="noopener noreferrer"[^>]*target="_blank"/.test(bottomSrc)),
-      'desktop booking anchor uses _blank + noopener noreferrer inside threshold-bottom'
+      bottomSrc.includes('class="invite-book-link" href="' + BOOKING_PATH + '"'),
+      'desktop booking anchor uses the local booking route inside threshold-bottom'
     );
     // Desktop bottom order: diagnosis → booking (email in threshold-top; whisper retired).
     {
@@ -1257,13 +1253,11 @@ ok(
     );
     const mobileThresholdSrc = mobileThreshold ? mobileThreshold[0] : '';
     const mobileBookRe =
-      /<p class="mobile-book">Want to talk first\? <a class="mobile-book-link" href="https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book a call\.<\/a><\/p>/;
+      /<p class="mobile-book">Want to talk first\? <a class="mobile-book-link" href="book\/">Book a call\.<\/a><\/p>/;
     ok(mobileBookRe.test(mobileThresholdSrc), 'mobile threshold beat has exact booking line with linked phrase');
     ok(
-      mobileThresholdSrc.includes(BOOKING_URL) &&
-        (/class="mobile-book-link"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/.test(mobileThresholdSrc) ||
-          /class="mobile-book-link"[^>]*rel="noopener noreferrer"[^>]*target="_blank"/.test(mobileThresholdSrc)),
-      'mobile booking anchor uses _blank + noopener noreferrer inside threshold beat'
+      mobileThresholdSrc.includes('class="mobile-book-link" href="' + BOOKING_PATH + '"'),
+      'mobile booking anchor uses the local booking route inside threshold beat'
     );
     {
       const headingAt = mobileThresholdSrc.indexOf('class="mobile-title"');

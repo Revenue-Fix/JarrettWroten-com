@@ -79,7 +79,7 @@ const requiredPhrases = [
 for (const phrase of requiredPhrases) {
   ok(workHtml.includes(phrase), 'work copy: ' + phrase);
 }
-ok((workHtml.match(/https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7/g) || []).length === 2, 'Work exposes the real Calendar action in scripted and no-JS terminal paths');
+ok((workHtml.match(/href="\.\.\/book\/"/g) || []).length === 2, 'Work routes scripted and no-JS booking actions through the local booking page');
 ok(/class="terminal-book"[\s\S]*?class="scene-action terminal-book-action"/.test(workHtml), 'scripted Work keeps booking inside the existing terminal rest');
 ok(!workHtml.includes('Explore the final draft'), 'superseded restaurant action wording is absent');
 ok((workHtml.match(/Restaurant Concept/g) || []).length >= 4, 'restaurant status is visible in scripted and no-JS Work consumers');

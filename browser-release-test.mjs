@@ -67,6 +67,9 @@ async function renderRoute(route, viewport, label) {
   page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
   const response = await page.goto(BASE + route, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(900);
+  if (route === '/book/') {
+    await page.frameLocator('iframe.booking-frame').getByRole('heading', { name: 'Select an appointment time', exact: true }).waitFor({ state: 'visible', timeoutMs: 15000 });
+  }
   const state = await page.evaluate(() => ({
     title: document.title,
     canonical: document.querySelector('link[rel="canonical"]')?.href || '',
@@ -84,9 +87,35 @@ async function renderRoute(route, viewport, label) {
   await context.close();
 }
 
-for (const route of ['/', '/work/', '/work/generations-kitchen/', '/work/paina-cafe/', '/work/rana-levy/', '/work/dylan-prorok/', '/privacy/']) {
+for (const route of ['/', '/work/', '/work/generations-kitchen/', '/work/paina-cafe/', '/work/rana-levy/', '/work/dylan-prorok/', '/book/', '/privacy/']) {
   await renderRoute(route, { width: 1280, height: 720 }, 'desktop');
   await renderRoute(route, { width: 390, height: 844 }, 'mobile');
+}
+
+{
+  const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+  const page = await context.newPage();
+  const response = await page.goto(BASE + '/book/', { waitUntil: 'domcontentloaded' });
+  const scheduler = page.frameLocator('iframe.booking-frame');
+  await scheduler.getByRole('heading', { name: 'Select an appointment time', exact: true }).waitFor({ state: 'visible', timeoutMs: 15000 });
+  const state = await page.evaluate(() => {
+    const intro = document.querySelector('.booking-intro').getBoundingClientRect();
+    const panel = document.querySelector('.booking-panel').getBoundingClientRect();
+    const frame = document.querySelector('.booking-frame');
+    return {
+      h1: document.querySelector('h1').textContent.trim(),
+      intro: { left: intro.left, right: intro.right, top: intro.top, bottom: intro.bottom },
+      panel: { left: panel.left, right: panel.right, top: panel.top, bottom: panel.bottom },
+      frameSrc: frame.src,
+      noindex: document.querySelector('meta[name="robots"]')?.content || '',
+    };
+  });
+  check(response && response.status() === 200 && state.h1 === 'Pick a time. I’ll bring the first idea.', 'booking page opens with the approved free-concept invitation');
+  check(state.intro.right <= state.panel.left + 1 && state.panel.right <= 1281, 'desktop booking page keeps the introduction and scheduler in their own complete regions');
+  check(/calendar\.google\.com\/calendar\/appointments\/schedules\//.test(state.frameSrc) && /gv=true/.test(state.frameSrc), 'booking page loads the real Google appointment schedule inline');
+  check(state.noindex === 'noindex,follow', 'booking utility stays out of the public search index');
+  await page.screenshot({ path: path.join(EVIDENCE, 'booking-desktop-live-frame.png') });
+  await context.close();
 }
 
 report.dylanPrinciples = [];
@@ -212,7 +241,7 @@ async function readPassageMotion(page, route) {
     const overlap = !(process.right <= book.left || book.right <= process.left || process.bottom <= book.top || book.bottom <= process.top);
     return { overlap, href: link.href, tabIndex: link.tabIndex, bookBottom: book.bottom, viewportHeight: innerHeight };
   });
-  check(!terminalChoices.overlap && terminalChoices.bookBottom <= terminalChoices.viewportHeight && terminalChoices.tabIndex === 0 && /calendar\.app\.google/.test(terminalChoices.href), 'standalone Work terminal shows a separate, reachable Book a Call offer');
+  check(!terminalChoices.overlap && terminalChoices.bookBottom <= terminalChoices.viewportHeight && terminalChoices.tabIndex === 0 && /\/book\/$/.test(terminalChoices.href), 'standalone Work terminal shows a separate, reachable Book a Call offer');
   await page.click('.scene-copy--terminal .scene-action');
   await page.waitForURL(BASE + '/#process-journey');
   await page.waitForTimeout(1100);
@@ -445,7 +474,7 @@ async function readPassageMotion(page, route) {
     await page.screenshot({ path: path.join(EVIDENCE, 'root-desktop-' + name + '.png') });
     check(state.visibleCopy.length === 1, 'desktop ' + name + ' rest shows one copy block');
     check(new Set(state.focusable).size === 1 && state.focusable[0] === state.visibleCopy[0], 'desktop ' + name + ' rest focus follows visible copy');
-    if (name === 'process') check(state.terminalBook.bottom <= 720 && state.terminalBook.tabIndex === 0 && /calendar\.app\.google/.test(state.terminalBook.href), 'desktop portfolio terminal exposes the complete booking path inside the viewport');
+    if (name === 'process') check(state.terminalBook.bottom <= 720 && state.terminalBook.tabIndex === 0 && /\/book\/$/.test(state.terminalBook.href), 'desktop portfolio terminal exposes the complete booking path inside the viewport');
     forward.push({ name, ...state });
   }
 
@@ -600,7 +629,7 @@ async function readPassageMotion(page, route) {
     check(state.plateActive && state.plate.width >= 390 && state.plate.height >= 844, 'mobile ' + state.stop + ' uses one complete opaque plate');
     check(state.visibleCopy.length === 1, 'mobile ' + state.stop + ' shows one copy block');
     check(state.stop === ['generations', 'paina', 'rana', 'prorok', 'process'][i], 'mobile passage lands on requested ' + ['generations', 'paina', 'rana', 'prorok', 'process'][i] + ' rest');
-    if (state.stop === 'process') check(state.terminalBook.bottom <= 844 && state.terminalBook.tabIndex === 0 && /calendar\.app\.google/.test(state.terminalBook.href), 'mobile portfolio terminal exposes the complete booking path inside the viewport');
+    if (state.stop === 'process') check(state.terminalBook.bottom <= 844 && state.terminalBook.tabIndex === 0 && /\/book\/$/.test(state.terminalBook.href), 'mobile portfolio terminal exposes the complete booking path inside the viewport');
     const g = state.contain;
     const ratioError = g ? Math.abs((g.width / g.height) - (g.sourceWidth / g.sourceHeight)) : Infinity;
     const centeredX = g && Math.abs((g.x * 2 + g.width) - g.plateWidth) < 1.1;

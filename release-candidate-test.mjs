@@ -25,6 +25,7 @@ const routeFiles = {
 };
 const pages = Object.fromEntries(Object.entries(routeFiles).map(([route, rel]) => [route, read(rel)]));
 const privacy = read('privacy/index.html');
+const book = read('book/index.html');
 const root = pages['/'];
 const work = pages['/work/'];
 const portfolioCss = read('assets/portfolio-root.css');
@@ -54,6 +55,9 @@ for (const [route, html] of Object.entries(pages)) {
 ok(/name="robots" content="noindex,follow"/.test(privacy), 'privacy is noindex,follow');
 ok(privacy.includes('<link rel="canonical" href="https://jarrettwroten.com/privacy/">'), 'privacy has a self canonical');
 ok(!sitemap.includes('/privacy/'), 'privacy is omitted from sitemap');
+ok(/name="robots" content="noindex,follow"/.test(book), 'booking utility is noindex,follow');
+ok(book.includes('<link rel="canonical" href="https://jarrettwroten.com/book/">'), 'booking utility has a self canonical');
+ok(!sitemap.includes('/book/'), 'booking utility is omitted from sitemap');
 ok(!fs.existsSync(path.join(ROOT, 'las-vegas-web-design')), 'unapproved Las Vegas landing route remains absent');
 
 const expectedIndex = Object.keys(routeFiles).map((route) => 'https://jarrettwroten.com' + route);
@@ -74,17 +78,26 @@ for (const rel of [
 ok(fs.existsSync(path.join(ROOT, 'demos/dylan-prorok/healed-montage-desktop-854d3384.mp4')), 'Dylan desktop Healed carrier remains available');
 ok(fs.existsSync(path.join(ROOT, 'demos/dylan-prorok/healed-montage-mobile-18bdbd22.mp4')), 'Dylan mobile Healed carrier remains available');
 
-const allRuntime = [...Object.values(pages), privacy].join('\n');
+const allRuntime = [...Object.values(pages), privacy, book].join('\n');
 ok(!/<form\b/i.test(allRuntime), 'runtime adds no contact form');
 ok(!/googletagmanager|google-analytics|\bgtag\s*\(|GTM-|generate_lead/i.test(allRuntime), 'runtime adds no analytics or lead event code');
 ok(!/\bCRM\b/i.test(allRuntime), 'runtime makes no CRM claim');
-ok(root.includes('mailto:Jarrett@JarrettWroten.com') && root.includes('https://calendar.app.google/'), 'contact remains email plus Google Calendar');
+ok(root.includes('mailto:Jarrett@JarrettWroten.com') && root.includes('href="book/"') && book.includes('https://calendar.google.com/calendar/appointments/schedules/'), 'contact remains email plus the local Google-backed booking page');
 ok(
   /class="portfolio-terminal-book"[\s\S]*?Want a free concept for your site\?[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?portfolio-terminal-book-action/.test(root) &&
     /class="terminal-book"[\s\S]*?Want a free concept for your site\?[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?terminal-book-action/.test(work),
   'root and Work add the free-concept booking path inside the existing terminal rest'
 );
 ok(root.includes('href="privacy/"'), 'root final footer links quietly to privacy');
+ok(
+  book.includes('class="booking-frame"') &&
+    book.includes('title="Choose a time for a free website concept call"') &&
+    /src="https:\/\/calendar\.google\.com\/calendar\/appointments\/schedules\/[A-Za-z0-9_-]+\?gv=true"/.test(book) &&
+    book.includes('Choose any open time at least 24 hours from now.') &&
+    book.includes('Add your current website to the booking form') &&
+    book.includes('I’ll make a free concept for our call.'),
+  'booking page embeds the real schedule and states the 24-hour free-concept contract'
+);
 
 const caseRequirements = [
   ['/work/generations-kitchen/', 'Restaurant Concept', 'gk-runway'],
