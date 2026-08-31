@@ -720,6 +720,49 @@
     line-height:.96;
     letter-spacing:0;
   }
+  .portfolio-scene-name > a{
+    display:inline-block;
+    text-shadow:0 2px 18px rgba(0,0,0,.72);
+  }
+  .portfolio-scene-copy--generations .portfolio-scene-name > a{color:#ffb515}
+  .portfolio-scene-copy--paina .portfolio-title-p{color:#1f8588}
+  .portfolio-scene-copy--paina .portfolio-title-a-macron{color:#75cbc0}
+  .portfolio-scene-copy--paina .portfolio-title-i{color:#fbbd4e}
+  .portfolio-scene-copy--paina .portfolio-title-n{color:#f48148}
+  .portfolio-scene-copy--paina .portfolio-title-a{color:#9ed083}
+  .portfolio-scene-copy--paina .portfolio-title-c{color:#1f8588}
+  .portfolio-scene-copy--paina .portfolio-title-cafe-a{color:#75cbc0}
+  .portfolio-scene-copy--paina .portfolio-title-f{color:#fbbd4e}
+  .portfolio-scene-copy--paina .portfolio-title-e{color:#f48148}
+  .portfolio-scene-copy--rana .portfolio-scene-name > a{color:#f4ddb0}
+  .portfolio-scene-copy--prorok .portfolio-scene-name > a{color:#e3b94f}
+  @supports ((-webkit-background-clip:text) or (background-clip:text)){
+    .portfolio-scene-copy--rana .portfolio-scene-name > a,
+    .portfolio-scene-copy--prorok .portfolio-scene-name > a{
+      background-repeat:no-repeat;
+      -webkit-background-clip:text;
+      background-clip:text;
+      color:transparent;
+      -webkit-text-fill-color:transparent;
+    }
+    .portfolio-scene-copy--rana .portfolio-scene-name > a{
+      background-image:linear-gradient(105deg,#d7b9ff 0%,#a98cff 28%,#ff9cc9 58%,#f4ddb0 100%);
+      background-size:180% 100%;
+      background-position:18% 50%;
+    }
+    .portfolio-scene-copy--prorok .portfolio-scene-name > a{
+      background-image:linear-gradient(90deg,#e3b94f 0%,#b23a2c 100%);
+    }
+  }
+  @media (forced-colors:active){
+    .portfolio-scene-name > a,
+    .portfolio-scene-copy--paina .portfolio-scene-name > a span{
+      background:none;
+      color:CanvasText;
+      -webkit-text-fill-color:CanvasText;
+      text-shadow:none;
+    }
+  }
   .portfolio-scene-copy--prorok .portfolio-scene-name{
     font-size:clamp(2.15rem, 4.8vw, 3.6rem);
     margin-bottom:.7rem;

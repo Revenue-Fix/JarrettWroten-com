@@ -263,10 +263,10 @@ for (const sel of ['.wordmark', '.loader-label', '.station-rail-tick span', '.di
 }
 for (const phrase of [
   'Follow the real path',
-  '01 — Look',
-  '02 — Find the break',
-  '03 — Build the fix',
-  '1 of 5 — The Leak',
+  '01. Look',
+  '02. Find the break',
+  '03. Build the fix',
+  '1 of 5 · The Leak',
   'Work with me',
 ]) {
   ok(html.includes(phrase), 'human-facing microcopy present: ' + phrase);
@@ -518,12 +518,12 @@ ok(!html.includes('id="world-frame"'), 'no single world-frame id');
 // Work passage: Dylan disclosure may update with owner truth; ProRok demo bytes stay frozen.
 {
   const workHtmlNow = fs.readFileSync(path.join(ROOT, 'work/index.html'), 'utf8');
-  const DYLAN_TRUTH = 'Tattoo Artist - In Progress.';
+  const DYLAN_TRUTH = 'Tattoo Artist - In Progress';
   const DYLAN_OLD = 'Independent redesign concept—not commissioned or approved by Dylan Prorok.';
   ok(workHtmlNow.includes(DYLAN_TRUTH), 'work/index.html carries exact Dylan revision truth');
   ok(!workHtmlNow.includes(DYLAN_OLD), 'work/index.html retires old Dylan independent-disclaimer');
   ok(
-    (workHtmlNow.match(/Tattoo Artist - In Progress\./g) || []).length >= 2,
+    (workHtmlNow.match(/Tattoo Artist - In Progress/g) || []).length >= 2,
     'Dylan truth present in both Work consumers (scripted + no-JS)'
   );
   // Demo / media identity under demos/dylan-prorok must remain byte-identical to HEAD parent.
@@ -642,9 +642,7 @@ ok(html.includes('Your first look is free'), 'threshold free-look kicker');
 ok(!html.includes('Your first fix is free'), 'retired free-fix kicker absent from active page');
 ok(!html.includes('I’ll build the first fix, and you keep it.'), 'retired free-fix keep-it promise absent from active page');
 ok(
-  html.includes(
-    'I follow the path from first click to sale, find where people drop out, and build the finished fix.'
-  ),
+  (html.match(/I walk the same path your customers take\. When I find the place they leave, I fix it\./g) || []).length === 2,
   'desktop/no-js opening support exact free-diagnosis contract'
 );
 ok(
@@ -653,25 +651,25 @@ ok(
 );
 ok(
   html.includes(
-    'Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.'
+    'Send me your site and tell me what you want it to do better. I’ll show you where people get stuck and what I would change.'
   ),
   'threshold free-look body exact contract'
 );
 ok(
-  /name="description" content="Jarrett Wroten designs conversion-driven websites and improves the path from first click to sale for businesses in Las Vegas\."/.test(sourceHtml) &&
-    /property="og:description" content="See the work first, then follow the process Jarrett uses to find where a customer path breaks and build the fix\."/.test(sourceHtml),
+  /name="description" content="Jarrett Wroten builds websites and fixes the places where customers get stuck for businesses in Las Vegas\."/.test(sourceHtml) &&
+    /property="og:description" content="See my work first\. Then see how I find where customers leave and build the fix\."/.test(sourceHtml),
   'standard and Open Graph descriptions describe the portfolio-first Las Vegas offer'
 );
 ok(html.includes('SEND ME') && html.includes('YOUR SITE.'), 'threshold claim lines present');
 ok(!html.includes('If I find nothing worth fixing'), 'retired no-leak truth line absent from all page surfaces');
 ok(html.includes('subject=Take%20a%20look%20at%20my%20site'), 'mailto subject prefilled');
 ok(html.includes('body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A'), 'mailto body prompts prefilled');
-ok(html.includes('01 — Look') && html.includes('02 — Find the break') && html.includes('03 — Build the fix'), 'method step labels present');
+ok(html.includes('01. Look') && html.includes('02. Find the break') && html.includes('03. Build the fix'), 'method step labels present');
 ok(html.includes('I walk through your site like a real customer.'), 'method step 1 copy');
 ok(
   html.includes('no-js-route') &&
     html.includes('Follow the real path') &&
-    (html.match(/01 — Look/g) || []).length >= 2,
+    (html.match(/01\. Look/g) || []).length >= 2,
   'no-js route carries method steps'
 );
 
@@ -1001,11 +999,11 @@ ok(
 // Terminal Services composition — mobile beat, desktop threshold right side, no-js fallback.
 {
   const serviceItems = [
-    'Custom Website Design',
-    'AI Systems & Automation',
-    'Revenue Pipeline Optimization',
-    'Lead Generation & SEO',
-    'Landing Pages & Follow-Up Systems'
+    'Website Design',
+    'AI and Automation',
+    'Sales and Follow-Up',
+    'SEO and Lead Generation',
+    'Landing Pages'
   ];
   const orderedServiceRe = new RegExp(
     serviceItems
@@ -1025,10 +1023,10 @@ ok(
   );
   ok(
     mobileServices &&
-      mobileServices[0].includes('AI Systems &amp; Automation') &&
-      mobileServices[0].includes('Lead Generation &amp; SEO') &&
+      mobileServices[0].includes('AI and Automation') &&
+      mobileServices[0].includes('SEO and Lead Generation') &&
       !mobileServices[0].includes('Customer Journey Audits'),
-    'mobile Services includes AI/SEO rows and drops Customer Journey Audits'
+    'mobile Services uses the plain AI and SEO service names'
   );
   ok(
     mobileServices &&
@@ -1048,16 +1046,16 @@ ok(
     'desktop threshold carries Services label and ordered list'
   );
   ok(
-    desktopSrc.includes('AI Systems &amp; Automation') &&
-      desktopSrc.includes('Lead Generation &amp; SEO') &&
+    desktopSrc.includes('AI and Automation') &&
+      desktopSrc.includes('SEO and Lead Generation') &&
       !desktopSrc.includes('Customer Journey Audits'),
-    'desktop Services includes AI/SEO rows and drops Customer Journey Audits'
+    'desktop Services uses the plain AI and SEO service names'
   );
   // Free-look threshold kicker + body present for desktop and mobile consumers.
   ok(
     /class="station-kicker">Your first look is free</.test(desktopSrc) &&
       desktopSrc.includes(
-        'Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.'
+        'Send me your site and tell me what you want it to do better. I’ll show you where people get stuck and what I would change.'
       ),
     'desktop threshold free-look kicker and body exact'
   );
@@ -1066,7 +1064,7 @@ ok(
     mobileThreshold &&
       /class="mobile-kicker">Your first look is free</.test(mobileThreshold[0]) &&
       mobileThreshold[0].includes(
-        'Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.'
+        'Send me your site and tell me what you want it to do better. I’ll show you where people get stuck and what I would change.'
       ),
     'mobile threshold free-look kicker and body exact'
   );
@@ -1441,7 +1439,7 @@ ok(
       'header My Work route preserved (id=work-link, href=work/)'
     );
     ok(
-      /class="no-js-route"[\s\S]*?Conversion-driven websites built around the next decision\.[\s\S]*?href="work\/generations-kitchen\/"/.test(html),
+      /class="no-js-route"[\s\S]*?I build websites that help people take the next step\.[\s\S]*?href="work\/generations-kitchen\/"/.test(html),
       'no-JS route opens with crawlable portfolio work'
     );
     // Modified-click passthrough preserved in shared binding.
@@ -1461,18 +1459,18 @@ ok(
     noJsSrc.includes('>Services<') &&
       orderedServiceRe.test(noJsSrc) &&
       (noJsSrc.match(/<li>/g) || []).length === 5 &&
-      noJsSrc.includes('AI Systems &amp; Automation') &&
-      noJsSrc.includes('Lead Generation &amp; SEO') &&
+      noJsSrc.includes('AI and Automation') &&
+      noJsSrc.includes('SEO and Lead Generation') &&
       !noJsSrc.includes('Customer Journey Audits'),
     'no-js fallback presents the service offering'
   );
   ok(
     noJsSrc.includes(
-      'I follow the path from first click to sale, find where people drop out, and build the finished fix.'
+      'I walk the same path your customers take. When I find the place they leave, I fix it.'
     ) &&
       /class="station-kicker">Your first look is free</.test(noJsSrc) &&
       noJsSrc.includes(
-        'Tell me what you want more of. I’ll show you the first place the path breaks and what I’d change. If it’s worth fixing, we can build it together.'
+        'Send me your site and tell me what you want it to do better. I’ll show you where people get stuck and what I would change.'
       ),
     'no-js free-look opening support, kicker, and body exact'
   );

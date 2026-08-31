@@ -153,11 +153,11 @@ ok(
   'portfolio, Process, and case studies consume one deterministic motion owner'
 );
 ok(root.includes('watchForProcessActivation') && /id="process-arrival-motion-video"[\s\S]*?preload="none"/.test(root), 'process media boot stays deferred on portfolio cold load');
-ok(root.includes('one result from the process') && work.includes('one result from the process') && !/result behind the work/.test(root + work), 'anonymous process proof is separated from the named concepts');
+ok(root.includes('show one result') && work.includes('show one result') && !/result behind the work/.test(root + work), 'anonymous process proof is separated from the named concepts');
 
-ok(privacy.includes('I use what you send to respond, prepare, set the time, and follow up.'), 'privacy states how contact and booking data is used');
-ok(privacy.includes('Google handles that data in its own service.'), 'privacy states Google Calendar handling');
-ok(privacy.includes('only as long as I need it') && privacy.includes('normal business records'), 'privacy states a bounded retention purpose');
+ok(privacy.includes('I use what you send to answer you, get ready for the call, and follow up.'), 'privacy states how contact and booking data is used');
+ok(privacy.includes('Google Calendar also receives the details you enter.'), 'privacy states Google Calendar handling');
+ok(privacy.includes('while I need it to handle your request') && privacy.includes('normal business records'), 'privacy states a bounded retention purpose');
 ok(privacy.includes('fix or delete your information') && privacy.includes('Jarrett@JarrettWroten.com'), 'privacy gives correction and deletion contact');
 ok(privacy.includes('Do not send sensitive information'), 'privacy warns against sensitive information');
 ok(privacy.includes('does not use analytics or tracking now') && privacy.includes('before I turn either one on'), 'privacy states current measurement is off and promises notice first');
@@ -168,8 +168,8 @@ ok(!/live Rana site|I built the site around the hand/.test(root + work), 'Rana s
 ok(!/currently being revised (?:with|by) Dylan Prorok/.test(root + work), 'Dylan copy makes no unsupported collaboration claim');
 ok(
   root.includes('<a href="https://paina.jarrettwroten.com/" rel="noopener">Open the Pā‘ina Café website</a>') &&
-    root.includes('<a href="https://paina.jarrettwroten.com/" rel="noopener" aria-label="Open the Pā‘ina Café website">Pā‘ina Café</a>') &&
-    work.includes('<a href="https://paina.jarrettwroten.com/" rel="noopener" aria-label="Open the Pā‘ina Café website">Pā‘ina Café</a>'),
+    root.includes('href="https://paina.jarrettwroten.com/" rel="noopener" aria-label="Open the Pā‘ina Café website"') &&
+    work.includes('href="https://paina.jarrettwroten.com/" rel="noopener" aria-label="Open the Pā‘ina Café website"'),
   'Pā‘ina no-JS action and both portfolio titles open the live website directly'
 );
 ok(
@@ -178,6 +178,52 @@ ok(
     !/aria-label="[^"]*Pā‘ina Café case study"/.test(root + work),
   'visitor-facing Pā‘ina navigation does not route through the case-study page'
 );
+ok(
+  portfolioCss.includes('.portfolio-scene-copy--generations .portfolio-scene-name > a{color:#ffb515}') &&
+    portfolioCss.includes('.portfolio-title-p{color:#1f8588}') &&
+    portfolioCss.includes('.portfolio-title-a-macron{color:#75cbc0}') &&
+    portfolioCss.includes('.portfolio-title-i{color:#fbbd4e}') &&
+    portfolioCss.includes('.portfolio-title-n{color:#f48148}') &&
+    portfolioCss.includes('.portfolio-title-a{color:#9ed083}') &&
+    portfolioCss.includes('.portfolio-title-c{color:#1f8588}') &&
+    portfolioCss.includes('.portfolio-title-cafe-a{color:#75cbc0}') &&
+    portfolioCss.includes('.portfolio-title-f{color:#fbbd4e}') &&
+    portfolioCss.includes('.portfolio-title-e{color:#f48148}') &&
+    portfolioCss.includes('linear-gradient(105deg,#d7b9ff 0%,#a98cff 28%,#ff9cc9 58%,#f4ddb0 100%)') &&
+    portfolioCss.includes('linear-gradient(90deg,#e3b94f 0%,#b23a2c 100%)') &&
+    work.includes('.scene-copy--generations .scene-name > a{color:#ffb515}') &&
+    work.includes('linear-gradient(105deg,#d7b9ff 0%,#a98cff 28%,#ff9cc9 58%,#f4ddb0 100%)') &&
+    work.includes('linear-gradient(90deg,#e3b94f 0%,#b23a2c 100%)'),
+  'homepage and Work titles use the exact Generations, Pā‘ina, Rana, and Dylan brand palettes'
+);
+ok(
+  root.includes('class="portfolio-title-p"') && root.includes('class="portfolio-title-e"') &&
+    work.includes('class="title-p"') && work.includes('class="title-e"'),
+  'Pā‘ina and Café title letters carry the live brand color sequence on both portfolio surfaces'
+);
+
+function visibleCopy(html) {
+  return html
+    .replace(/<!--[\s\S]*?-->/g, '')
+    .replace(/<style\b[\s\S]*?<\/style>/gi, '')
+    .replace(/<script\b[\s\S]*?<\/script>/gi, '');
+}
+const outwardCopy = [root, work, ...caseRequirements.map(([route]) => pages[route]), privacy, book]
+  .map(visibleCopy)
+  .join('\n');
+const retiredAiCopy = [
+  'The concept lets the food lead before the menu.',
+  'The organizing idea',
+  'Let appetite do the explaining.',
+  'Information architecture',
+  'Three intentions. Three clear paths.',
+  'The design problem',
+  'The information sequence',
+  'Revenue Pipeline Optimization',
+  'The direction is here. The work is still moving.'
+];
+ok(retiredAiCopy.every((phrase) => !outwardCopy.includes(phrase)), 'Ring True removes the retired AI rationale and consultant language');
+ok(!outwardCopy.includes('—'), 'rendered outward copy uses spoken punctuation without em dashes');
 
 ok(
   root.includes('<script src="assets/motion-bootstrap.js?v=c9b843c9"></script>') &&

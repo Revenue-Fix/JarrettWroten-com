@@ -54,22 +54,22 @@ const requiredPhrases = [
   'Jarrett Wroten',
   'Work',
   'Generations Kitchen',
-  'The concept lets the food lead before the menu.',
+  'I show the food first. The menu comes next.',
   'Pā‘ina Café',
-  'Pā‘ina means gathering. The kitchen in motion—mochi, poke, and the handoff—becomes the invitation.',
+  'Pā‘ina means gathering. I follow the food from the kitchen into someone’s hands.',
   'Explore the restaurant concept',
   'Rana Levy',
-  'Rana cuts each stone by hand. So I built the concept around the hand, the cut, and the way a gem changes in the light.',
+  'Rana cuts each stone by hand. I show her hands first, then the stone changing color in the light.',
   'Ready Now',
   'Made To Order',
   'Custom Consultation',
   'Explore the concept',
   'Dylan Prorok',
-  'A large tattoo has to work with the body and still read from across the room. I built the concept around scale, body flow, and the choice to start a long project.',
-  'Tattoo Artist - In Progress.',
+  'A large tattoo has to fit the body and still read from across the room. I made sure you can see both.',
+  'Tattoo Artist - In Progress',
   'Visit the concept',
   'See the process.',
-  'Continue into the leak, the rebuild, and one result from the process.',
+  'Next, see how I find the leak, build the fix, and show one result.',
   'Continue to the process',
   'Get a free concept for your site.',
   'Book at least 24 hours ahead. Add your current website to the form, and I’ll build your concept before our call.',
@@ -107,7 +107,7 @@ ok(
   'Rana not labeled redesign/concept'
 );
 // ProRok honesty: current collaboration-in-revision truth; no stronger status claims.
-const DYLAN_TRUTH = 'Tattoo Artist - In Progress.';
+const DYLAN_TRUTH = 'Tattoo Artist - In Progress';
 const DYLAN_OLD = 'Independent redesign concept—not commissioned or approved by Dylan Prorok.';
 ok(workHtml.includes(DYLAN_TRUTH), 'rendered Work page carries exact Dylan revision truth');
 ok(!workHtml.includes(DYLAN_OLD), 'old Dylan independent-disclaimer is retired');
@@ -157,7 +157,7 @@ if (noJsMatch) {
     'https://rana.jarrettwroten.com/',
     'Dylan Prorok',
     'https://prorok.jarrettwroten.com/',
-    'Tattoo Artist - In Progress.',
+    'Tattoo Artist - In Progress',
     '../assets/golden-arrival/frames/ga-360.webp',
     'See the process.',
     'Continue to the process',
