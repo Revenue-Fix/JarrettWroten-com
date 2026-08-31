@@ -57,6 +57,32 @@ async function touchSwipe(page, fromY, toY) {
   await client.detach();
 }
 
+async function proveVideoLoops(page, id) {
+  await page.waitForFunction((videoId) => {
+    const video = document.getElementById(videoId);
+    return video && video.readyState >= 2 && Number.isFinite(video.duration) && !video.paused;
+  }, id, { timeout: 8000 });
+  await page.evaluate((videoId) => {
+    const video = document.getElementById(videoId);
+    video.__jwLoopWrapped = false;
+    function observeWrap() {
+      if (video.currentTime >= 1) return;
+      video.__jwLoopWrapped = true;
+      video.removeEventListener('seeking', observeWrap);
+    }
+    video.addEventListener('seeking', observeWrap);
+    video.currentTime = Math.max(0, video.duration - .2);
+  }, id);
+  await page.waitForFunction((videoId) => {
+    const video = document.getElementById(videoId);
+    return video && video.__jwLoopWrapped === true && !video.ended && !video.paused;
+  }, id, { timeout: 5000 });
+  return page.evaluate((videoId) => {
+    const video = document.getElementById(videoId);
+    return { loop: video.loop, once: video.hasAttribute('data-once'), wrapped: video.__jwLoopWrapped, ended: video.ended, paused: video.paused, currentTime: video.currentTime, duration: video.duration };
+  }, id);
+}
+
 const browser = await chromium.launch({ headless: true, executablePath: EDGE });
 
 async function renderRoute(route, viewport, label) {
@@ -208,6 +234,30 @@ async function readPassageMotion(page, route) {
   check(explicitHeld.value === 'off' && explicitHeld.portfolio === false && explicitHeld.process === false && explicitHeld.controls.length === 0, 'hidden query choice is not overwritten by later OS changes and adds no control');
   report.motionOsChange = { osUpdated, explicitHeld };
   await context.close();
+}
+
+{
+  const loopSurfaces = [
+    { route: '/', videoId: 'portfolio-paina-video', passageId: 'portfolio-passage', viewportId: 'portfolio-viewport', controller: 'ROOT_PORTFOLIO_PASSAGE', label: 'homepage' },
+    { route: '/work/', videoId: 'paina-video', passageId: 'passage', viewportId: 'viewport', controller: 'WORK_PASSAGE', label: 'standalone Work' },
+  ];
+  report.painaLoops = [];
+  for (const surface of loopSurfaces) {
+    const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
+    const page = await context.newPage();
+    await page.goto(BASE + surface.route, { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(700);
+    await page.evaluate((config) => {
+      const passage = document.getElementById(config.passageId);
+      const viewport = document.getElementById(config.viewportId);
+      const controller = window[config.controller];
+      window.scrollTo(0, controller.still.paina * (passage.offsetHeight - viewport.offsetHeight));
+    }, surface);
+    const loopState = await proveVideoLoops(page, surface.videoId);
+    check(loopState.loop && !loopState.once && loopState.wrapped && !loopState.ended && !loopState.paused, surface.label + ' Pā‘ina preview wraps and keeps playing');
+    report.painaLoops.push({ ...surface, ...loopState });
+    await context.close();
+  }
 }
 
 {

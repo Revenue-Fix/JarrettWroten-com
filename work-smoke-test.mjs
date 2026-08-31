@@ -190,18 +190,19 @@ ok(workHtml.includes('../demos/dylan-prorok/healed-montage-desktop-854d3384.mp4'
 ok(workHtml.includes('../demos/dylan-prorok/healed-montage-mobile-18bdbd22.mp4'), 'Dylan portrait Healed montage path');
 ok(
   /<video\b[^>]*\bid="generations-video"[^>]*\bloop\b[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
-    /<video\b[^>]*\bid="paina-video"[^>]*\bdata-once\b[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
+    /<video\b[^>]*\bid="paina-video"[^>]*\bloop\b[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
+    !/<video\b[^>]*\bid="paina-video"[^>]*\bdata-once\b/.test(workHtml) &&
     /<video\b[^>]*\bid="rana-studio-video"[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
     !/<video\b[^>]*\bid="rana-studio-video"[^>]*\bloop\b/.test(workHtml) &&
     /<video\b[^>]*\bid="rana-ring-video"[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
     /<video\b[^>]*\bid="prorok-ink-video"[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
     !/id="(?:paina-video|rana-studio-video|rana-ring-video|prorok-ink-video)"[\s\S]{0,260}\bautoplay\b/.test(workHtml),
-  'Rana master plays once, follow-up and Healed loop, and every downstream carrier defers cold autoplay'
+  'Pā‘ina, the Rana follow-up, and Healed loop while the Rana master still hands off once and downstream carriers defer cold autoplay'
 );
 ok(
   /<video\b[^>]*\bid="generations-video"[^>]*\bloop\b/.test(workHtml) &&
-    !/<video\b[^>]*\bid="paina-video"[^>]*\bloop\b/.test(workHtml),
-  'Loco Moco keeps moving while Pā‘ina retains its authored one-shot carrier'
+    /<video\b[^>]*\bid="paina-video"[^>]*\bloop\b/.test(workHtml),
+  'Loco Moco and Pā‘ina both keep moving while their scenes remain active'
 );
 ok(!/corridor-motion-video|corridor-entry-loop|layer-corridor/.test(workHtml), 'corridor is absent from Work markup and routing');
 ok(
