@@ -103,7 +103,15 @@
     inset:0;
   }
   .portfolio-generations-poster,
-  .portfolio-generations-video,
+  .portfolio-generations-video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    max-width:none;
+    object-fit:cover;
+    object-position:50% 50%;
+  }
   .portfolio-paina-poster,
   .portfolio-paina-video{
     position:absolute;
@@ -111,11 +119,13 @@
     width:100%;
     height:100%;
     max-width:none;
-    object-fit:contain;
+    object-fit:cover;
+    object-position:50% 50%;
   }
-  .portfolio-generations-poster,
-  .portfolio-generations-video{object-position:50% 50%}
-  .portfolio-generations-video,
+  .portfolio-generations-video{
+    opacity:0;
+    transition:none;
+  }
   .portfolio-paina-video{
     opacity:0;
     transition:opacity .35s var(--portfolio-ease-enter);
@@ -124,6 +134,52 @@
   .portfolio-paina-video.portfolio-is-ready{opacity:1}
   .portfolio-generations-media{
     transform:none;
+  }
+
+  .portfolio-generations-site-chrome{
+    position:absolute;
+    inset:0;
+    z-index:10;
+    opacity:calc(var(--portfolio-generations-hold) * max(0, 1 - var(--portfolio-paina-open) * 2));
+    color:#ffb515;
+    pointer-events:none;
+  }
+  .portfolio-generations-site-logo{
+    position:absolute;
+    top:calc(var(--portfolio-top-chrome) + .7rem);
+    left:var(--portfolio-gutter);
+    width:clamp(7.5rem,12vw,11rem);
+    height:auto;
+  }
+  .portfolio-generations-site-title{
+    position:absolute;
+    right:var(--portfolio-gutter);
+    bottom:clamp(4.5rem,8vh,6rem);
+    font-family:"Arial Black","Helvetica Neue",Arial,sans-serif;
+    font-size:clamp(3.8rem,8.6vw,8.2rem);
+    font-weight:950;
+    letter-spacing:-.075em;
+    line-height:.76;
+    text-align:right;
+  }
+  .portfolio-generations-site-order{
+    position:absolute;
+    left:50%;
+    bottom:clamp(1.15rem,2.2vh,2rem);
+    transform:translateX(-50%);
+    display:inline-flex;
+    align-items:center;
+    min-height:2.55rem;
+    padding:.55rem 1.15rem;
+    border-radius:999px;
+    background:#ffb515;
+    color:#140b04;
+    font-family:"Arial Black","Helvetica Neue",Arial,sans-serif;
+    font-size:clamp(.72rem,.65rem + .25vw,.9rem);
+    font-weight:950;
+    letter-spacing:-.035em;
+    line-height:1;
+    white-space:nowrap;
   }
 
   /* ── Pā‘ina threshold: the served food opens into the kitchen making it ── */
@@ -231,12 +287,12 @@
     transition:opacity .35s var(--portfolio-ease-enter);
   }
   .portfolio-media-fill[data-video].portfolio-is-ready{opacity:1}
-  #portfolio-prorok-ink-video{display:none !important}
   .portfolio-rana-studio{
-    /* Full-bleed hero — center the subject so desktop and mobile cover crops keep gem + scale cue. */
+    /* Rana enters on the complete all-rings master. */
+    object-fit:cover;
     object-position:50% 50%;
     transform:none;
-    filter:saturate(1.08) contrast(1.08) brightness(calc(.94 + var(--portfolio-rana-hold) * .08));
+    filter:none;
   }
   .portfolio-rana-opening{
     position:absolute;
@@ -250,21 +306,23 @@
     filter:brightness(1.05) contrast(1.06) saturate(1.05);
   }
   .portfolio-rana-ring-stage{
-    /* Subordinate refraction / light residue — not a circular badge or second photo. */
+    /* The Alexandrite film follows only after the all-rings master naturally ends. */
     position:absolute;
-    right:clamp(-10%, -2vw, 4%);
-    bottom:clamp(-14%, -2vh, 4%);
-    width:min(56vw, 40rem);
-    height:min(68vh, 38rem);
-    opacity:calc(var(--portfolio-ring-presence) * .42);
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0;
     transform:none;
-    mix-blend-mode:screen;
-    filter:saturate(1.2) contrast(1.05) brightness(1.18) blur(.35px);
+    mix-blend-mode:normal;
+    filter:none;
+    transition:opacity .28s var(--portfolio-ease-enter);
     will-change:opacity,transform;
     pointer-events:none;
   }
+  html.portfolio-rana-sequence-secondary .portfolio-rana-ring-stage{opacity:1}
   .portfolio-rana-ring-stage .portfolio-media-fill{
     border-radius:0;
+    object-fit:cover;
     object-position:50% 50%;
     -webkit-mask-image:none;
     mask-image:none;
@@ -336,6 +394,14 @@
     opacity:calc(.72 + var(--portfolio-prorok-hold) * .28);
     mix-blend-mode:normal;
   }
+  .portfolio-prorok-healed{
+    object-fit:contain;
+    object-position:50% 50%;
+    filter:none;
+    mix-blend-mode:normal;
+    transform:none;
+  }
+  .portfolio-prorok-healed-fallback{display:none}
   .portfolio-prorok-portrait{
     /* Subject carrier above graded ink — must remain legible when the live MP4 is black paper. */
     position:absolute;
@@ -603,14 +669,48 @@
   }
   .portfolio-scene-copy--terminal{
     color:var(--portfolio-ink);
-    left:var(--portfolio-gutter);
-    right:var(--portfolio-gutter);
-    bottom:clamp(2rem, 9vh, 4.6rem);
-    max-width:min(36rem, 90vw);
+    inset:0;
+    max-width:none;
     opacity:var(--portfolio-terminal-hold);
     transform:translate3d(0, calc((1 - var(--portfolio-terminal-hold)) * 1.2rem), 0);
     filter:blur(calc((1 - var(--portfolio-terminal-hold)) * 3px));
   }
+  .portfolio-terminal-process,
+  .portfolio-terminal-book{
+    position:absolute;
+  }
+  .portfolio-terminal-process{
+    left:var(--portfolio-gutter);
+    bottom:clamp(2rem, 9vh, 4.6rem);
+    max-width:min(36rem, 46vw);
+  }
+  .portfolio-terminal-book{
+    top:clamp(5.4rem, 12vh, 7.2rem);
+    right:var(--portfolio-gutter);
+    width:min(25rem, 31vw);
+  }
+  .portfolio-terminal-book-title{
+    margin:0 0 .55rem;
+    max-width:13ch;
+    font-family:var(--portfolio-display);
+    font-weight:400;
+    font-optical-sizing:auto;
+    font-size:clamp(1.8rem, 2.8vw, 2.7rem);
+    line-height:1;
+    letter-spacing:0;
+  }
+  .portfolio-terminal-book-line{
+    margin:0 0 .75rem;
+    max-width:31ch;
+    font-family:var(--portfolio-reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(1rem, 1rem + .16vw, 1.1rem);
+    line-height:1.45;
+    letter-spacing:0;
+    color:var(--portfolio-ink-soft);
+  }
+  .portfolio-terminal-book-action{border-bottom-color:rgba(94,231,240,.72)}
   .portfolio-scene-name{
     margin:0 0 .55rem;
     font-family:var(--portfolio-display);
@@ -772,7 +872,7 @@
   html[data-motion="off"] .portfolio-paina-video{display:none}
   html[data-motion="off"] .portfolio-rana-ring-stage{
     filter:none;
-    mix-blend-mode:screen;
+    mix-blend-mode:normal;
   }
   html[data-motion="off"] .portfolio-scene-copy{
     transform:none;
@@ -899,6 +999,27 @@
     .portfolio-layer-rana.portfolio-is-revealing{opacity:var(--portfolio-rana-open)}
     .portfolio-layer-prorok.portfolio-is-revealing{opacity:var(--portfolio-prorok-open)}
     .portfolio-layer-terminal.portfolio-is-revealing{opacity:var(--portfolio-terminal-hold)}
+    .portfolio-generations-site-logo{
+      top:calc(var(--portfolio-top-chrome) + .55rem);
+      width:6.6rem;
+    }
+    .portfolio-generations-site-title{
+      top:35%;
+      right:var(--portfolio-gutter);
+      bottom:auto;
+      font-size:clamp(3.2rem,16vw,4.45rem);
+    }
+    .portfolio-generations-site-order{
+      top:51%;
+      right:var(--portfolio-gutter);
+      bottom:auto;
+      left:auto;
+      transform:none;
+    }
+    html.portfolio-generations-human-beat .portfolio-generations-site-title,
+    html.portfolio-generations-human-beat .portfolio-generations-site-order{
+      opacity:0;
+    }
     .portfolio-scene-copy--generations{
       opacity:var(--portfolio-copy-generations);
       transform:translate3d(0, calc((1 - var(--portfolio-copy-generations)) * 1.4rem), 0);
@@ -920,17 +1041,16 @@
       filter:none;
     }
     .portfolio-scene-copy--terminal{
+      inset:0;
       opacity:var(--portfolio-copy-terminal);
       transform:translate3d(0, calc((1 - var(--portfolio-copy-terminal)) * 1.2rem), 0);
       filter:none;
     }
-    /* Live mobile Rana: landscape studio cover crops can lose the gem into dark
-       material fields on the narrow strip. Square ring film is the subject carrier
-       (same pattern as ProRok portrait) — full-bleed material world, not a badge. */
+    /* Mobile uses the responsive all-rings master, then the responsive Alexandrite film. */
     .portfolio-rana-studio{
       object-position:50% 50%;
-      /* Atmospheric underlayer while the ring carrier holds the rest. */
-      filter:saturate(1.04) contrast(1.05) brightness(calc(.86 + var(--portfolio-rana-hold) * .06));
+      object-fit:cover;
+      filter:none;
     }
     .portfolio-rana-opening{object-position:50% 50%}
     .portfolio-rana-ring-stage{
@@ -939,12 +1059,14 @@
       bottom:auto;
       width:100%;
       height:100%;
-      opacity:calc(var(--portfolio-ring-presence) * .97);
+      opacity:0;
       transform:none;
       mix-blend-mode:normal;
-      filter:saturate(1.1) contrast(1.06) brightness(1.03);
+      filter:none;
     }
+    html.portfolio-rana-sequence-secondary .portfolio-rana-ring-stage{opacity:1}
     .portfolio-rana-ring-stage .portfolio-media-fill{
+      object-fit:cover;
       object-position:50% 50%;
       -webkit-mask-image:none;
       mask-image:none;
@@ -957,7 +1079,7 @@
     /* Motion-off must not reapply desktop residual screen-blend on the carrier. */
     html[data-motion="off"] .portfolio-rana-ring-stage{
       mix-blend-mode:normal;
-      filter:saturate(1.08) contrast(1.05) brightness(1.02);
+      filter:none;
     }
     /* Live mobile ProRok: portrait is the subject carrier. Graded sakura paper is near-black;
        without a strong portrait stack the rest collapses to an empty sumi field. */
@@ -1021,6 +1143,31 @@
     .portfolio-scene-copy--terminal{
       max-width:none;
     }
+    .portfolio-terminal-process{
+      left:var(--portfolio-gutter);
+      right:var(--portfolio-gutter);
+      bottom:calc(1.2rem + env(safe-area-inset-bottom));
+      max-width:none;
+    }
+    .portfolio-terminal-book{
+      top:calc(4.8rem + env(safe-area-inset-top));
+      right:var(--portfolio-gutter);
+      left:var(--portfolio-gutter);
+      width:auto;
+      max-width:22rem;
+    }
+    .portfolio-terminal-book-title{
+      margin-bottom:.4rem;
+      max-width:15ch;
+      font-size:clamp(1.55rem, 7vw, 1.85rem);
+      line-height:1.02;
+    }
+    .portfolio-terminal-book-line{
+      margin-bottom:.45rem;
+      max-width:33ch;
+      font-size:1rem;
+      line-height:1.38;
+    }
     .portfolio-scene-name{
       font-size:clamp(2.05rem,10vw,2.7rem);
     }
@@ -1055,6 +1202,31 @@
     .portfolio-scene-action{
       min-height:2.75rem;
       font-size:1rem;
+    }
+  }
+
+  @media (min-width:721px) and (max-aspect-ratio:1/1){
+    .portfolio-generations-site-title{
+      top:35%;
+      right:var(--portfolio-gutter);
+      bottom:auto;
+      font-size:clamp(3.35rem,10vw,5rem);
+    }
+    .portfolio-generations-site-order{
+      top:52%;
+      right:var(--portfolio-gutter);
+      bottom:auto;
+      left:auto;
+      transform:none;
+    }
+    html.portfolio-generations-human-beat .portfolio-generations-site-title,
+    html.portfolio-generations-human-beat .portfolio-generations-site-order{
+      opacity:0;
+    }
+    .portfolio-terminal-book{
+      right:auto;
+      left:var(--portfolio-gutter);
+      width:min(22rem, 44vw);
     }
   }
 

@@ -71,14 +71,19 @@ for (const rel of [
 ]) {
   ok(!fs.existsSync(path.join(ROOT, rel)), 'retired HTML route is absent: ' + rel);
 }
-ok(fs.existsSync(path.join(ROOT, 'demos/dylan-prorok/dylan-portrait.jpg')), 'Dylan portrait carrier remains available');
-ok(fs.existsSync(path.join(ROOT, 'demos/dylan-prorok/sakura-ink-bloom.mp4')), 'Dylan motion carrier remains available');
+ok(fs.existsSync(path.join(ROOT, 'demos/dylan-prorok/healed-montage-desktop-854d3384.mp4')), 'Dylan desktop Healed carrier remains available');
+ok(fs.existsSync(path.join(ROOT, 'demos/dylan-prorok/healed-montage-mobile-18bdbd22.mp4')), 'Dylan mobile Healed carrier remains available');
 
 const allRuntime = [...Object.values(pages), privacy].join('\n');
 ok(!/<form\b/i.test(allRuntime), 'runtime adds no contact form');
 ok(!/googletagmanager|google-analytics|\bgtag\s*\(|GTM-|generate_lead/i.test(allRuntime), 'runtime adds no analytics or lead event code');
 ok(!/\bCRM\b/i.test(allRuntime), 'runtime makes no CRM claim');
 ok(root.includes('mailto:Jarrett@JarrettWroten.com') && root.includes('https://calendar.app.google/'), 'contact remains email plus Google Calendar');
+ok(
+  /class="portfolio-terminal-book"[\s\S]*?Want a free concept for your site\?[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?portfolio-terminal-book-action/.test(root) &&
+    /class="terminal-book"[\s\S]*?Want a free concept for your site\?[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?terminal-book-action/.test(work),
+  'root and Work add the free-concept booking path inside the existing terminal rest'
+);
 ok(root.includes('href="privacy/"'), 'root final footer links quietly to privacy');
 
 const caseRequirements = [
@@ -168,11 +173,13 @@ ok(
   'no outward route renders a Motion On or Off button'
 );
 ok(
-  root.includes('loco-moco-site-desktop-a3073c1c.mp4') &&
-    root.includes('loco-moco-site-mobile-1f14c4e8.mp4') &&
-    work.includes('loco-moco-site-desktop-a3073c1c.mp4') &&
-    work.includes('loco-moco-site-mobile-1f14c4e8.mp4'),
-  'root and Work use the responsive high-quality Loco Moco website scene'
+  root.includes('loco-moco-natural-desktop-dc59bdf1.mp4') &&
+    root.includes('loco-moco-natural-mobile-fc141d42.mp4') &&
+    work.includes('loco-moco-natural-desktop-dc59bdf1.mp4') &&
+    work.includes('loco-moco-natural-mobile-fc141d42.mp4') &&
+    root.includes('generations-kitchen-logo-03eee381.png') &&
+    work.includes('generations-kitchen-logo-03eee381.png'),
+  'root and Work use the uninterrupted full-bleed Loco Moco scene with its real brand mark'
 );
 ok(
   !portfolioCss.includes('.portfolio-generations-wash') &&
@@ -184,25 +191,52 @@ ok(
 );
 ok(
   portfolioCss.includes('html.portfolio-generations-human-beat .portfolio-scene-copy--generations') &&
-    portfolioJs.includes('t >= 0.2 && t < 1.9') &&
+    portfolioJs.includes('t >= 0 && t < 0.5') &&
     portfolioJs.includes('portfolio-generations-human-beat') &&
     work.includes('html.generations-human-beat .scene-copy--generations') &&
     work.includes('root.classList.toggle("generations-human-beat", active)'),
-  'duplicate portfolio copy yields during the extended human beat without grading the footage'
+  'duplicate portfolio copy yields only while the natural source contains the woman'
 );
 ok((work.match(/href="\.\.\/#process-journey"/g) || []).length === 2, 'scripted and no-JS Work terminal actions target homepage Process Arrival');
 ok(portfolioJs.includes('function glideToProcessArrival()') && portfolioJs.includes('current === MOBILE_STOPS.length - 1'), 'homepage mobile terminal has an explicit forward Process boundary');
 ok(root.includes('direction < 0 && current === 0 && window.ROOT_PORTFOLIO_PASSAGE'), 'Process Arrival has an explicit reverse portfolio boundary');
 
-ok(!portfolioCss.includes('object-fit:cover') && !work.includes('object-fit:cover'), 'approved portfolio CSS contains no cover crop');
-ok(!portfolioJs.includes('drawMobileCover') && !work.includes('drawMobileCover'), 'both mobile renderers retire cover geometry');
+ok(
+  /\.portfolio-generations-poster,[\s\S]*?\.portfolio-generations-video\{[\s\S]*?object-fit:cover/.test(portfolioCss) &&
+    /\.portfolio-paina-poster,[\s\S]*?\.portfolio-paina-video\{[\s\S]*?object-fit:cover/.test(portfolioCss) &&
+    /\.generations-poster,[\s\S]*?\.generations-video\{[\s\S]*?object-fit:cover/.test(work) &&
+    /\.paina-poster,[\s\S]*?\.paina-video\{[\s\S]*?object-fit:cover/.test(work),
+  'Generations and Pā‘ina give the viewport edge-to-edge frame authority'
+);
+ok(
+  /function drawMobileGenerationsScene\(ctx, sourceOverride\)[\s\S]*?return drawMobileCover\(ctx, source\)/.test(portfolioJs) &&
+    /function drawMobilePainaScene\(ctx, sourceOverride\)[\s\S]*?drawMobileCover\(ctx, source\)/.test(portfolioJs) &&
+    /function drawMobileRanaScene\(ctx\)[\s\S]*?drawMobileCover\(ctx, source\)/.test(portfolioJs) &&
+    /function drawMobileProrokScene\(ctx\)[\s\S]*?drawMobileHealedDisplay\(ctx, source\)/.test(portfolioJs),
+  'mobile uses full-bleed cover for Generations, Pā‘ina, and Rana while preserving the complete Healed display'
+);
 ok(
   portfolioJs.includes('function drawMobileContain(ctx, source)') &&
     portfolioJs.includes('Math.min(mobilePlateWidth / size.width, mobilePlateHeight / size.height)') &&
     work.includes('function drawMobileContain(ctx, source)') &&
     !portfolioJs.includes('mobilePlateCtx.scale(') &&
     !work.includes('mobilePlateCtx.scale('),
-  'root and Work center complete mobile plates without overscale or focus shift'
+  'root and Work retain the centered contain helper for source-authoritative terminal media'
+);
+ok(
+  root.includes('all-rings-desktop-45b16c5d.mp4') &&
+    root.includes('alexandrite-desktop-cedccbe9.mp4') &&
+    portfolioJs.includes('studioVideo.addEventListener("ended"') &&
+    portfolioJs.includes('setRanaSequenceSecondary(true)') &&
+    root.includes('healed-montage-desktop-854d3384.mp4') &&
+    root.includes('healed-montage-mobile-18bdbd22.mp4'),
+  'Rana sequences all rings before Alexandrite and Dylan uses the exact responsive Healed montage'
+);
+ok(
+  !/\.portfolio-rana-ring-stage\{[^}]*width:min\(/.test(portfolioCss) &&
+    !/\.portfolio-rana-ring-stage\{[^}]*mix-blend-mode:screen/.test(portfolioCss) &&
+    /\.portfolio-rana-ring-stage\{[^}]*inset:0[^}]*width:100%[^}]*height:100%/.test(portfolioCss),
+  'Rana has no translucent boxed ring overlay; Alexandrite replaces the full frame'
 );
 ok(
   /id="portfolio-paina-video"[\s\S]*?preload="none"/.test(root) &&

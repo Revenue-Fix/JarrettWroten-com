@@ -22,6 +22,7 @@
   var inkVideo = document.getElementById("portfolio-prorok-ink-video");
   var generationsPoster = document.getElementById("portfolio-generations-poster");
   var painaPoster = document.getElementById("portfolio-paina-poster");
+  var ranaPoster = document.getElementById("portfolio-rana-poster");
   var ringPoster = document.getElementById("portfolio-ring-poster");
   var prorokPortrait = document.getElementById("portfolio-prorok-portrait");
   var terminalReturn = document.getElementById("portfolio-terminal-return");
@@ -37,6 +38,9 @@
   var renderRaf = 0;
   var lastFrameTs = 0;
   var videosArmed = false;
+  var ranaSequenceOwned = false;
+  var ranaSequenceSecondary = false;
+  var prorokSequenceOwned = false;
 
   /* The new food passage occupies the first 30%; the inherited tail keeps its
      internal timing through a local 0–1 clock. */
@@ -385,8 +389,8 @@
   function expectedFoodVideoPath(video, mobile) {
     if (video === generationsVideo) {
       return mobile
-        ? "/assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4"
-        : "/assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4";
+        ? "/assets/work/generations/loco-moco-natural-mobile-fc141d42.mp4"
+        : "/assets/work/generations/loco-moco-natural-desktop-dc59bdf1.mp4";
     }
     if (video === painaVideo) {
       return mobile
@@ -399,8 +403,8 @@
   function expectedFoodPosterPath(image, mobile) {
     if (image === generationsPoster) {
       return mobile
-        ? "/assets/work/generations/loco-moco-site-mobile-1075c858.jpg"
-        : "/assets/work/generations/loco-moco-site-desktop-df266fa6.jpg";
+        ? "/assets/work/generations/loco-moco-natural-mobile-1d88178b.jpg"
+        : "/assets/work/generations/loco-moco-natural-desktop-0433595d.jpg";
     }
     if (image === painaPoster) {
       return mobile
@@ -449,6 +453,62 @@
       y: y,
       width: width,
       height: height
+    };
+    try {
+      ctx.drawImage(source, x, y, width, height);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function drawMobileCover(ctx, source) {
+    var size = mobileSourceSize(source);
+    if (!ctx || !size) return false;
+    var scale = Math.max(mobilePlateWidth / size.width, mobilePlateHeight / size.height);
+    var width = size.width * scale;
+    var height = size.height * scale;
+    var x = (mobilePlateWidth - width) * .5;
+    var y = (mobilePlateHeight - height) * .5;
+    lastMobileContainGeometry = {
+      sourceWidth: size.width,
+      sourceHeight: size.height,
+      plateWidth: mobilePlateWidth,
+      plateHeight: mobilePlateHeight,
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      fit: "cover"
+    };
+    try {
+      ctx.drawImage(source, x, y, width, height);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function drawMobileHealedDisplay(ctx, source) {
+    var size = mobileSourceSize(source);
+    if (!ctx || !size) return false;
+    var maxWidth = mobilePlateWidth * .9;
+    var maxHeight = mobilePlateHeight * .58;
+    var scale = Math.min(maxWidth / size.width, maxHeight / size.height);
+    var width = size.width * scale;
+    var height = size.height * scale;
+    var x = (mobilePlateWidth - width) * .5;
+    var y = mobilePlateHeight * .095;
+    lastMobileContainGeometry = {
+      sourceWidth: size.width,
+      sourceHeight: size.height,
+      plateWidth: mobilePlateWidth,
+      plateHeight: mobilePlateHeight,
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      fit: "contain-top"
     };
     try {
       ctx.drawImage(source, x, y, width, height);
@@ -522,14 +582,14 @@
   function drawMobileGenerationsScene(ctx, sourceOverride) {
     var source = sourceOverride || mobileSource(generationsVideo, generationsPoster);
     if (!source) return false;
-    return drawMobileContain(ctx, source);
+    return drawMobileCover(ctx, source);
   }
 
   function drawMobilePainaScene(ctx, sourceOverride) {
     var source = sourceOverride || mobileSource(painaVideo, painaPoster);
     if (!source) return false;
     ctx.filter = "saturate(1.05) contrast(1.04) brightness(.98)";
-    var drawn = drawMobileContain(ctx, source);
+    var drawn = drawMobileCover(ctx, source);
     ctx.filter = "none";
     if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
@@ -546,11 +606,11 @@
   }
 
   function drawMobileRanaScene(ctx) {
-    var source = mobileSource(ringVideo, ringPoster);
+    var source = ranaSequenceSecondary
+      ? mobileSource(ringVideo, ringPoster)
+      : mobileSource(studioVideo, ranaPoster);
     if (!source) return false;
-    ctx.filter = "saturate(1.1) contrast(1.06) brightness(1.03)";
-    var drawn = drawMobileContain(ctx, source);
-    ctx.filter = "none";
+    var drawn = drawMobileCover(ctx, source);
     if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
       [0, "rgba(4,10,12,.18)"],
@@ -566,27 +626,10 @@
   }
 
   function drawMobileProrokScene(ctx) {
-    var portrait = imageHasRenderableFrame(prorokPortrait) ? prorokPortrait : null;
-    if (!portrait) return false;
-    var ink = null;
-    if (ink) {
-      ctx.filter = "saturate(.9) contrast(1.08) brightness(.72)";
-      ctx.globalAlpha = .72;
-      drawMobileContain(ctx, ink);
-      ctx.globalAlpha = 1;
-      ctx.filter = "none";
-    } else {
-      ctx.fillStyle = "#0b0807";
-      ctx.fillRect(0, 0, mobilePlateWidth, mobilePlateHeight);
-    }
-
-    mobileMaskBufferCtx.setTransform(1, 0, 0, 1, 0, 0);
-    mobileMaskBufferCtx.clearRect(0, 0, mobilePlateWidth, mobilePlateHeight);
-    mobileMaskBufferCtx.filter = "saturate(.94) contrast(1.14) brightness(1.06)";
-    var portraitDrawn = drawMobileContain(mobileMaskBufferCtx, portrait);
-    mobileMaskBufferCtx.filter = "none";
-    if (!portraitDrawn) return false;
-    ctx.drawImage(mobileMaskBuffer, 0, 0);
+    var source = mobileSource(inkVideo, prorokPortrait);
+    if (!source) return false;
+    var drawn = drawMobileHealedDisplay(ctx, source);
+    if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
       [0, "rgba(11,8,7,.12)"],
       [.55, "rgba(11,8,7,.08)"],
@@ -809,8 +852,11 @@
   function playSafe(video) {
     if (!video) return;
     if (video.hasAttribute("data-once") && video.ended) return;
+    if (video === generationsVideo && motionOn && (video.currentTime || 0) < 0.5) {
+      root.classList.add("portfolio-generations-human-beat");
+    }
     var p = video.play();
-    if (p && typeof p.catch === "function") p.catch(function () {});
+    if (p && typeof p.catch === "function") p.catch(function () { syncGenerationsHumanBeat(); });
   }
   function pauseSafe(video) {
     if (!video) return;
@@ -842,11 +888,60 @@
     }
   }
 
+  function resetVideoToStart(video) {
+    if (!video || video.readyState < 1) return;
+    try { video.currentTime = 0; } catch (error) {}
+  }
+
+  function setRanaSequenceSecondary(secondary) {
+    ranaSequenceSecondary = !!secondary;
+    root.classList.toggle("portfolio-rana-sequence-secondary", ranaSequenceSecondary);
+    if (isMobile()) paint(progressCurrent);
+  }
+
+  function enterRanaSequence() {
+    if (!ranaSequenceOwned) {
+      ranaSequenceOwned = true;
+      setRanaSequenceSecondary(false);
+      resetVideoToStart(studioVideo);
+      resetVideoToStart(ringVideo);
+    }
+    requestMobileVideo(ringVideo, false);
+    if (ranaSequenceSecondary) {
+      pauseSafe(studioVideo);
+      playSafe(ringVideo);
+    } else {
+      pauseSafe(ringVideo);
+      playSafe(studioVideo);
+    }
+  }
+
+  function leaveRanaSequence() {
+    if (!ranaSequenceOwned) return;
+    ranaSequenceOwned = false;
+    pauseSafe(studioVideo);
+    pauseSafe(ringVideo);
+  }
+
+  function enterProrokSequence() {
+    if (!prorokSequenceOwned) {
+      prorokSequenceOwned = true;
+      resetVideoToStart(inkVideo);
+    }
+    playSafe(inkVideo);
+  }
+
+  function leaveProrokSequence() {
+    if (!prorokSequenceOwned) return;
+    prorokSequenceOwned = false;
+    pauseSafe(inkVideo);
+  }
+
   function videosForMobileStop(id) {
     if (id === "generations") return [generationsVideo];
     if (id === "paina") return [painaVideo];
-    if (id === "rana") return [ringVideo];
-    if (id === "prorok") return [];
+    if (id === "rana") return [studioVideo];
+    if (id === "prorok") return [inkVideo];
     /* Process is image-backed; image readiness is checked separately. */
     return [];
   }
@@ -854,7 +949,7 @@
   function imagesForMobileStop(id) {
     if (id === "generations") return [generationsPoster];
     if (id === "paina") return [painaPoster];
-    if (id === "rana") return [ringPoster];
+    if (id === "rana") return [ranaPoster];
     if (id === "prorok") return [prorokPortrait];
     if (id === "process") return [terminalReturn];
     return [];
@@ -1017,8 +1112,8 @@
   function mobileDestinationReady(id) {
     if (id === "generations") return destinationRepresentationReady(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationReady(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationReady(ringVideo, ringPoster);
-    if (id === "prorok") return imageHasRenderableFrame(prorokPortrait);
+    if (id === "rana") return destinationRepresentationReady(studioVideo, ranaPoster);
+    if (id === "prorok") return destinationRepresentationReady(inkVideo, prorokPortrait);
     if (id === "process") return imageHasRenderableFrame(terminalReturn);
     return false;
   }
@@ -1026,8 +1121,8 @@
   function mobileDestinationFailed(id) {
     if (id === "generations") return destinationRepresentationFailed(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationFailed(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationFailed(ringVideo, ringPoster);
-    if (id === "prorok") return imageHasFailed(prorokPortrait);
+    if (id === "rana") return destinationRepresentationFailed(studioVideo, ranaPoster);
+    if (id === "prorok") return destinationRepresentationFailed(inkVideo, prorokPortrait);
     if (id === "process") return imageHasFailed(terminalReturn);
     return false;
   }
@@ -1111,6 +1206,7 @@
     var videos = videosForMobileStop(mobileDestinationId);
     var i;
     for (i = 0; i < videos.length; i++) requestMobileVideo(videos[i], false);
+    if (mobileDestinationId === "rana") requestMobileVideo(ringVideo, false);
   }
 
   function clearMobileDestination() {
@@ -1121,6 +1217,8 @@
     if (breakpointSwapActive) {
       pauseSafe(generationsVideo);
       pauseSafe(painaVideo);
+      leaveRanaSequence();
+      leaveProrokSequence();
       return;
     }
     if (!motionOn) {
@@ -1129,6 +1227,9 @@
       pauseSafe(studioVideo);
       pauseSafe(ringVideo);
       pauseSafe(inkVideo);
+      ranaSequenceOwned = false;
+      prorokSequenceOwned = false;
+      setRanaSequenceSecondary(false);
       return;
     }
     armVideos();
@@ -1146,28 +1247,27 @@
       else pauseSafe(generationsVideo);
       if (isActive(painaVideo)) playSafe(painaVideo);
       else pauseSafe(painaVideo);
-      pauseSafe(studioVideo);
-      if (isActive(ringVideo)) playSafe(ringVideo);
-      else pauseSafe(ringVideo);
-      pauseSafe(inkVideo);
+      if (activeId === "rana") enterRanaSequence();
+      else leaveRanaSequence();
+      if (activeId === "prorok") enterProrokSequence();
+      else leaveProrokSequence();
       return;
     }
     if (p < 0.28) playSafe(generationsVideo);
     else pauseSafe(generationsVideo);
     if (p > 0.08 && p < 0.45) playSafe(painaVideo);
     else pauseSafe(painaVideo);
-    if (p > 0.39 && p < 0.74) playSafe(studioVideo);
-    else pauseSafe(studioVideo);
-    if (p > 0.48 && p < 0.70) playSafe(ringVideo);
-    else pauseSafe(ringVideo);
-    pauseSafe(inkVideo);
+    if (p >= 0.50 && p < 0.68) enterRanaSequence();
+    else leaveRanaSequence();
+    if (p >= 0.68 && p < 0.985) enterProrokSequence();
+    else leaveProrokSequence();
   }
 
   function syncGenerationsHumanBeat() {
     var t = generationsVideo ? generationsVideo.currentTime || 0 : 0;
     var active = !!(
-      generationsVideo && motionOn && !isMobile() && !generationsVideo.paused &&
-      t >= 0.2 && t < 1.9
+      generationsVideo && motionOn && !generationsVideo.paused &&
+      t >= 0 && t < 0.5
     );
     root.classList.toggle("portfolio-generations-human-beat", active);
   }
@@ -1176,7 +1276,7 @@
   function queueGenerationsHumanBeatFrame() {
     if (
       generationsHumanBeatFrame || !generationsVideo || generationsVideo.paused ||
-      !motionOn || isMobile() || typeof generationsVideo.requestVideoFrameCallback !== "function"
+      !motionOn || typeof generationsVideo.requestVideoFrameCallback !== "function"
     ) return;
     generationsHumanBeatFrame = generationsVideo.requestVideoFrameCallback(function () {
       generationsHumanBeatFrame = 0;
@@ -1707,7 +1807,7 @@
     if (motionOn !== !!event.detail.on) applyMotionPreference(!!event.detail.on, false);
   });
 
-  ["playing", "timeupdate", "seeked"].forEach(function (type) {
+  ["play", "playing", "timeupdate", "seeked"].forEach(function (type) {
     generationsVideo.addEventListener(type, function () {
       syncGenerationsHumanBeat();
       queueGenerationsHumanBeatFrame();
@@ -1721,8 +1821,7 @@
   });
   window.addEventListener("resize", function () {
     syncGenerationsHumanBeat();
-    if (isMobile()) stopGenerationsHumanBeatFrame();
-    else queueGenerationsHumanBeatFrame();
+    queueGenerationsHumanBeatFrame();
   });
 
   window.addEventListener("scroll", function () {
@@ -1755,6 +1854,14 @@
   window.addEventListener("touchcancel", onMobileTouchCancel, { passive: true });
   window.addEventListener("wheel", onMobileWheel, { passive: false });
 
+  studioVideo.addEventListener("ended", function () {
+    if (!motionOn || !ranaSequenceOwned) return;
+    setRanaSequenceSecondary(true);
+    resetVideoToStart(ringVideo);
+    pauseSafe(studioVideo);
+    playSafe(ringVideo);
+  });
+
   bindPosterFallback(generationsVideo, generationsPoster);
   bindPosterFallback(painaVideo, painaPoster);
   bindPosterFallback(studioVideo, document.getElementById("portfolio-rana-poster"));
@@ -1767,6 +1874,7 @@
   bindVideoReadiness(inkVideo);
   bindImageReadiness(generationsPoster);
   bindImageReadiness(painaPoster);
+  bindImageReadiness(ranaPoster);
   bindImageReadiness(ringPoster);
   bindImageReadiness(prorokPortrait);
   bindImageReadiness(terminalReturn);
@@ -1816,6 +1924,9 @@
     get mobilePlateActive() { return mobilePlateActive; },
     get mobilePlateSize() { return { width: mobilePlateWidth, height: mobilePlateHeight }; },
     get mobileContainGeometry() { return lastMobileContainGeometry; },
+    get ranaSequenceOwned() { return ranaSequenceOwned; },
+    get ranaSequencePhase() { return ranaSequenceSecondary ? "alexandrite" : "all-rings"; },
+    get prorokSequenceOwned() { return prorokSequenceOwned; },
     get breakpointSwapActive() { return breakpointSwapActive; },
     get breakpointFallbackActive() { return breakpointFallbackActive; },
     get breakpointFallbackOwnerIndex() { return breakpointFallbackOwnerIndex; },

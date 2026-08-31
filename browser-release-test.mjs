@@ -186,19 +186,33 @@ async function readPassageMotion(page, route) {
   await page.goto(BASE + '/work/', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(700);
   const framing = await page.evaluate(() => {
-    const ids = ['generations-poster','generations-video','paina-poster','paina-video','rana-poster','rana-studio-video','ring-poster','rana-ring-video','prorok-poster','prorok-ink-video','prorok-portrait','terminal-return'];
+    const ids = ['generations-poster','generations-video','paina-poster','paina-video','rana-poster','rana-studio-video','ring-poster','rana-ring-video','prorok-poster','prorok-ink-video','terminal-return'];
     return ids.map((id) => {
       const style = getComputedStyle(document.getElementById(id));
       return { id, objectFit: style.objectFit, objectPosition: style.objectPosition, transform: style.transform };
     });
   });
-  check(framing.every((item) => item.objectFit === 'contain' && item.objectPosition === '50% 50%' && item.transform === 'none'), 'standalone Work desktop preserves complete centered source plates');
+  check(
+    framing.every((item) => {
+      const expectedFit = item.id.startsWith('prorok-') || item.id === 'terminal-return' ? 'contain' : 'cover';
+      return item.objectFit === expectedFit && item.objectPosition === '50% 50%' && item.transform === 'none';
+    }),
+    'standalone Work gives Generations, Pā‘ina, and Rana full-bleed framing while Healed preserves its landscape display'
+  );
   await page.evaluate(() => {
     const passage = document.getElementById('passage');
     const viewport = document.getElementById('viewport');
     window.scrollTo(0, window.WORK_PASSAGE.still.process * (passage.offsetHeight - viewport.offsetHeight));
   });
   await page.waitForTimeout(1300);
+  const terminalChoices = await page.evaluate(() => {
+    const process = document.querySelector('.terminal-process').getBoundingClientRect();
+    const book = document.querySelector('.terminal-book').getBoundingClientRect();
+    const link = document.querySelector('.terminal-book-action');
+    const overlap = !(process.right <= book.left || book.right <= process.left || process.bottom <= book.top || book.bottom <= process.top);
+    return { overlap, href: link.href, tabIndex: link.tabIndex, bookBottom: book.bottom, viewportHeight: innerHeight };
+  });
+  check(!terminalChoices.overlap && terminalChoices.bookBottom <= terminalChoices.viewportHeight && terminalChoices.tabIndex === 0 && /calendar\.app\.google/.test(terminalChoices.href), 'standalone Work terminal shows a separate, reachable Book a Call offer');
   await page.click('.scene-copy--terminal .scene-action');
   await page.waitForURL(BASE + '/#process-journey');
   await page.waitForTimeout(1100);
@@ -228,10 +242,71 @@ async function readPassageMotion(page, route) {
     const ratioError = g ? Math.abs((g.width / g.height) - (g.sourceWidth / g.sourceHeight)) : Infinity;
     const centered = g && Math.abs((g.x * 2 + g.width) - g.plateWidth) < 1.1 && Math.abs((g.y * 2 + g.height) - g.plateHeight) < 1.1;
     const contained = g && g.x >= -.1 && g.y >= -.1 && g.x + g.width <= g.plateWidth + .1 && g.y + g.height <= g.plateHeight + .1;
-    check(contained && centered && ratioError < .0001, 'standalone Work mobile ' + state.stop + ' preserves the complete centered source aspect ratio');
+    const covered = g && g.x <= .1 && g.y <= .1 && g.x + g.width >= g.plateWidth - .1 && g.y + g.height >= g.plateHeight - .1;
+    const fitOk = state.stop === 'process' ? contained : covered && g.fit === 'cover';
+    check(fitOk && centered && ratioError < .0001, 'standalone Work mobile ' + state.stop + (state.stop === 'process' ? ' preserves the complete centered source aspect ratio' : ' fills the plate edge to edge'));
     await page.screenshot({ path: path.join(EVIDENCE, 'work-mobile-framing-' + state.stop + '.png') });
     report.workMobileFraming.push(state);
   }
+  await context.close();
+}
+
+{
+  const context = await browser.newContext({
+    viewport: { width: 739, height: 864 },
+    recordVideo: { dir: EVIDENCE, size: { width: 739, height: 864 } },
+  });
+  const page = await context.newPage();
+  const videoRecording = page.video();
+  const errors = [];
+  page.on('pageerror', (error) => errors.push(error.message));
+  page.on('console', (message) => { if (message.type() === 'error') errors.push(message.text()); });
+  await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+  await page.waitForFunction(() => document.getElementById('portfolio-generations-video')?.readyState >= 2);
+  await page.evaluate(async () => {
+    const video = document.getElementById('portfolio-generations-video');
+    video.currentTime = .08;
+    await video.play();
+  });
+  await page.waitForFunction(() => {
+    const t = document.getElementById('portfolio-generations-video')?.currentTime || 0;
+    return t >= .12 && t <= .42;
+  });
+  const girl = await page.evaluate(() => {
+    const video = document.getElementById('portfolio-generations-video');
+    const rect = video.getBoundingClientRect();
+    return {
+      time: video.currentTime,
+      fit: getComputedStyle(video).objectFit,
+      rect: { left: rect.left, top: rect.top, width: rect.width, height: rect.height },
+      copyOpacity: Number(getComputedStyle(document.querySelector('.portfolio-scene-copy--generations')).opacity),
+      titleOpacity: Number(getComputedStyle(document.querySelector('.portfolio-generations-site-title')).opacity),
+      orderOpacity: Number(getComputedStyle(document.querySelector('.portfolio-generations-site-order')).opacity),
+    };
+  });
+  check(
+    girl.fit === 'cover' && girl.rect.left === 0 && girl.rect.top === 0 && girl.rect.width === 739 && girl.rect.height === 864,
+    'tall desktop Generations carrier fills the viewport edge to edge'
+  );
+  check(girl.copyOpacity < .01 && girl.titleOpacity < .01 && girl.orderOpacity < .01, 'tall desktop leaves the natural woman shot unobstructed');
+  await page.screenshot({ path: path.join(EVIDENCE, 'root-tall-generations-girl.png') });
+  await page.waitForFunction(() => {
+    const t = document.getElementById('portfolio-generations-video')?.currentTime || 0;
+    return t >= .75 && t <= 1.3;
+  });
+  const food = await page.evaluate(() => ({
+    copyOpacity: Number(getComputedStyle(document.querySelector('.portfolio-scene-copy--generations')).opacity),
+    titleOpacity: Number(getComputedStyle(document.querySelector('.portfolio-generations-site-title')).opacity),
+    orderOpacity: Number(getComputedStyle(document.querySelector('.portfolio-generations-site-order')).opacity),
+  }));
+  check(food.copyOpacity > .9 && food.titleOpacity > .9 && food.orderOpacity > .9, 'tall desktop restores the website identity on the food cut');
+  check(errors.length === 0, 'tall desktop Generations sequence has no browser errors');
+  await page.screenshot({ path: path.join(EVIDENCE, 'root-tall-generations-food.png') });
+  await page.close();
+  const generatedVideo = await videoRecording.path();
+  const finalVideo = path.join(EVIDENCE, 'root-tall-generations.webm');
+  fs.copyFileSync(generatedVideo, finalVideo);
+  report.rootTall = { girl, food, errors, recording: finalVideo };
   await context.close();
 }
 
@@ -262,9 +337,9 @@ async function readPassageMotion(page, route) {
     const entries = performance.getEntriesByType('resource').filter((entry) => /\.(?:mp4|jpe?g|png|webp)(?:$|\?)/i.test(entry.name));
     return { paths: entries.map((entry) => new URL(entry.name).pathname), bytes: entries.reduce((sum, entry) => sum + (entry.transferSize || 0), 0) };
   });
-  const downstreamVideo = /opening-desktop\.mp4|studio-banner\.mp4|ring-alexandrite\.mp4|sakura-ink-bloom\.mp4/;
+  const downstreamVideo = /(?:opening-desktop|all-rings-|alexandrite-desktop|healed-montage-desktop).*\.mp4$/;
   check(!coldResources.paths.some((item) => downstreamVideo.test(item)), 'desktop cold load requests no downstream project video');
-  check(coldResources.bytes <= 5800000, 'desktop native-1080p cold media transfer stays within 5.8 MB');
+  check(coldResources.bytes <= 4700000, 'desktop cold media transfer stays within 4.7 MB with the new authored posters');
   const generationsQuality = await page.evaluate(() => {
     const video = document.getElementById('portfolio-generations-video');
     const media = document.querySelector('.portfolio-generations-media');
@@ -280,8 +355,8 @@ async function readPassageMotion(page, route) {
     };
   });
   check(
-    generationsQuality.width === 1920 && generationsQuality.height === 1080 && generationsQuality.duration > 5.3,
-    'desktop Generations uses the native-1080p extended-girl carrier'
+    generationsQuality.width === 1920 && generationsQuality.height === 968 && Math.abs(generationsQuality.duration - 6.4) < .02,
+    'desktop Generations uses the uninterrupted native source carrier'
   );
   check(
     generationsQuality.mediaFilter === 'none' && generationsQuality.washCount === 0 && generationsQuality.grainOpacity < .01,
@@ -289,16 +364,16 @@ async function readPassageMotion(page, route) {
   );
   await page.waitForFunction(() => {
     const t = document.getElementById('portfolio-generations-video')?.currentTime || 0;
-    return t >= .55 && t <= 1.65;
+    return t >= .12 && t <= .42;
   });
   const humanBeat = await page.evaluate(() => ({
     active: document.documentElement.classList.contains('portfolio-generations-human-beat'),
     copyOpacity: Number(getComputedStyle(document.querySelector('.portfolio-scene-copy--generations')).opacity),
   }));
-  check(humanBeat.active && humanBeat.copyOpacity < .01, 'desktop extended girl beat is clean of duplicate portfolio copy');
+  check(humanBeat.active && humanBeat.copyOpacity < .01, 'desktop natural woman shot is clean of duplicate portfolio copy');
   await page.waitForFunction(() => {
     const t = document.getElementById('portfolio-generations-video')?.currentTime || 0;
-    return t >= 2.05 && t <= 2.8;
+    return t >= .75 && t <= 2.8;
   });
   const foodBeat = await page.evaluate(() => ({
     active: document.documentElement.classList.contains('portfolio-generations-human-beat'),
@@ -313,7 +388,7 @@ async function readPassageMotion(page, route) {
       'portfolio-rana-poster', 'portfolio-rana-studio-video',
       'portfolio-ring-poster', 'portfolio-rana-ring-video',
       'portfolio-prorok-poster', 'portfolio-prorok-ink-video',
-      'portfolio-prorok-portrait', 'portfolio-terminal-return'
+      'portfolio-terminal-return'
     ];
     return ids.map((id) => {
       const element = document.getElementById(id);
@@ -321,7 +396,13 @@ async function readPassageMotion(page, route) {
       return { id, objectFit: style.objectFit, objectPosition: style.objectPosition, transform: style.transform };
     });
   });
-  check(desktopFraming.every((item) => item.objectFit === 'contain' && item.objectPosition === '50% 50%' && item.transform === 'none'), 'desktop project carriers preserve complete centered source plates');
+  check(
+    desktopFraming.every((item) => {
+      const expectedFit = item.id.startsWith('portfolio-prorok-') || item.id === 'portfolio-terminal-return' ? 'contain' : 'cover';
+      return item.objectFit === expectedFit && item.objectPosition === '50% 50%' && item.transform === 'none';
+    }),
+    'desktop gives Generations, Pā‘ina, and Rana full-bleed framing while Healed preserves its landscape display'
+  );
 
   const portfolioGeometry = await page.evaluate(() => {
     const passage = document.getElementById('portfolio-passage');
@@ -346,7 +427,7 @@ async function readPassageMotion(page, route) {
       await page.waitForFunction(() => {
         const video = document.getElementById('portfolio-generations-video');
         return !document.documentElement.classList.contains('portfolio-generations-human-beat') &&
-          video && video.currentTime >= 2.05 && video.currentTime <= 4.9;
+          video && video.currentTime >= .75 && video.currentTime <= 6.2;
       }, null, { timeout: 6000 });
     }
     await page.waitForTimeout(120);
@@ -354,10 +435,17 @@ async function readPassageMotion(page, route) {
       progress: window.ROOT_PORTFOLIO_PASSAGE.progress,
       visibleCopy: [...document.querySelectorAll('.portfolio-scene-copy')].filter((el) => Number(getComputedStyle(el).opacity) > .05).map((el) => el.id),
       focusable: [...document.querySelectorAll('.portfolio-scene-copy a')].filter((el) => el.tabIndex >= 0).map((el) => el.closest('.portfolio-scene-copy')?.id),
+      terminalBook: (() => {
+        const element = document.querySelector('.portfolio-terminal-book');
+        const box = element.getBoundingClientRect();
+        const link = element.querySelector('a');
+        return { bottom: box.bottom, href: link.href, tabIndex: link.tabIndex };
+      })(),
     }));
     await page.screenshot({ path: path.join(EVIDENCE, 'root-desktop-' + name + '.png') });
     check(state.visibleCopy.length === 1, 'desktop ' + name + ' rest shows one copy block');
     check(new Set(state.focusable).size === 1 && state.focusable[0] === state.visibleCopy[0], 'desktop ' + name + ' rest focus follows visible copy');
+    if (name === 'process') check(state.terminalBook.bottom <= 720 && state.terminalBook.tabIndex === 0 && /calendar\.app\.google/.test(state.terminalBook.href), 'desktop portfolio terminal exposes the complete booking path inside the viewport');
     forward.push({ name, ...state });
   }
 
@@ -434,26 +522,60 @@ async function readPassageMotion(page, route) {
 }
 
 {
-  const context = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  const context = await browser.newContext({
+    viewport: { width: 390, height: 844 },
+    hasTouch: true,
+    isMobile: true,
+    recordVideo: { dir: EVIDENCE, size: { width: 390, height: 844 } },
+  });
   const page = await context.newPage();
+  const video = page.video();
   const errors = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
-  await page.waitForTimeout(1600);
+  await page.waitForFunction(() => document.getElementById('portfolio-generations-video')?.readyState >= 2);
+  await page.evaluate(async () => {
+    const video = document.getElementById('portfolio-generations-video');
+    video.currentTime = .08;
+    await video.play();
+  });
+  await page.waitForFunction(() => {
+    const t = document.getElementById('portfolio-generations-video')?.currentTime || 0;
+    return t >= .12 && t <= .42;
+  });
+  const girlFrame = await page.evaluate(() => ({
+    copyOpacity: Number(getComputedStyle(document.querySelector('.portfolio-scene-copy--generations')).opacity),
+    titleOpacity: Number(getComputedStyle(document.querySelector('.portfolio-generations-site-title')).opacity),
+    orderOpacity: Number(getComputedStyle(document.querySelector('.portfolio-generations-site-order')).opacity),
+  }));
+  check(girlFrame.copyOpacity < .01 && girlFrame.titleOpacity < .01 && girlFrame.orderOpacity < .01, 'mobile leaves the natural woman shot unobstructed');
+  await page.screenshot({ path: path.join(EVIDENCE, 'root-mobile-generations-girl.png') });
+  await page.waitForFunction(() => {
+    const t = document.getElementById('portfolio-generations-video')?.currentTime || 0;
+    return t >= .75 && t <= 1.3;
+  });
+  const foodFrame = await page.evaluate(() => ({
+    copyOpacity: Number(getComputedStyle(document.querySelector('.portfolio-scene-copy--generations')).opacity),
+    titleOpacity: Number(getComputedStyle(document.querySelector('.portfolio-generations-site-title')).opacity),
+    orderOpacity: Number(getComputedStyle(document.querySelector('.portfolio-generations-site-order')).opacity),
+  }));
+  check(foodFrame.copyOpacity > .9 && foodFrame.titleOpacity > .9 && foodFrame.orderOpacity > .9, 'mobile restores the website identity on the food cut');
+  await page.screenshot({ path: path.join(EVIDENCE, 'root-mobile-generations-food.png') });
+  await page.waitForTimeout(400);
   const coldResources = await page.evaluate(() => {
     const entries = performance.getEntriesByType('resource').filter((entry) => /\.(?:mp4|jpe?g|png|webp)(?:$|\?)/i.test(entry.name));
     return { paths: entries.map((entry) => new URL(entry.name).pathname), bytes: entries.reduce((sum, entry) => sum + (entry.transferSize || 0), 0) };
   });
-  const downstreamVideo = /opening-mobile-from-2p4\.mp4|studio-banner\.mp4|ring-alexandrite\.mp4|sakura-ink-bloom\.mp4/;
+  const downstreamVideo = /(?:opening-mobile-from-2p4|all-rings-|alexandrite-mobile|healed-montage-mobile).*\.mp4$/;
   check(!coldResources.paths.some((item) => downstreamVideo.test(item)), 'mobile cold load requests no downstream project video');
-  check(coldResources.bytes <= 1700000, 'mobile high-quality cold media transfer stays within 1.7 MB');
+  check(coldResources.bytes <= 2500000, 'mobile direct-master CRF14 cold media transfer stays within 2.5 MB');
   const generationsQuality = await page.evaluate(() => {
     const video = document.getElementById('portfolio-generations-video');
     return { width: video.videoWidth, height: video.videoHeight, duration: video.duration, source: video.currentSrc };
   });
   check(
-    generationsQuality.width === 720 && generationsQuality.height === 1280 && generationsQuality.duration >= 5.09,
-    'mobile Generations uses the high-quality portrait extended-girl carrier'
+    generationsQuality.width === 448 && generationsQuality.height === 968 && Math.abs(generationsQuality.duration - 6.4) < .02,
+    'mobile Generations uses the uninterrupted direct-master art-directed portrait carrier'
   );
   const stops = [];
   for (let i = 0; i < 5; i++) {
@@ -467,16 +589,28 @@ async function readPassageMotion(page, route) {
       plate: window.ROOT_PORTFOLIO_PASSAGE.mobilePlateSize,
       contain: window.ROOT_PORTFOLIO_PASSAGE.mobileContainGeometry,
       visibleCopy: [...document.querySelectorAll('.portfolio-scene-copy')].filter((el) => Number(getComputedStyle(el).opacity) > .05).map((el) => el.id),
+      terminalBook: (() => {
+        const element = document.querySelector('.portfolio-terminal-book');
+        const box = element.getBoundingClientRect();
+        const link = element.querySelector('a');
+        return { bottom: box.bottom, href: link.href, tabIndex: link.tabIndex };
+      })(),
     }));
     await page.screenshot({ path: path.join(EVIDENCE, 'root-mobile-' + state.stop + '.png') });
     check(state.plateActive && state.plate.width >= 390 && state.plate.height >= 844, 'mobile ' + state.stop + ' uses one complete opaque plate');
     check(state.visibleCopy.length === 1, 'mobile ' + state.stop + ' shows one copy block');
     check(state.stop === ['generations', 'paina', 'rana', 'prorok', 'process'][i], 'mobile passage lands on requested ' + ['generations', 'paina', 'rana', 'prorok', 'process'][i] + ' rest');
+    if (state.stop === 'process') check(state.terminalBook.bottom <= 844 && state.terminalBook.tabIndex === 0 && /calendar\.app\.google/.test(state.terminalBook.href), 'mobile portfolio terminal exposes the complete booking path inside the viewport');
     const g = state.contain;
     const ratioError = g ? Math.abs((g.width / g.height) - (g.sourceWidth / g.sourceHeight)) : Infinity;
-    const centered = g && Math.abs((g.x * 2 + g.width) - g.plateWidth) < 1.1 && Math.abs((g.y * 2 + g.height) - g.plateHeight) < 1.1;
+    const centeredX = g && Math.abs((g.x * 2 + g.width) - g.plateWidth) < 1.1;
+    const centeredY = g && Math.abs((g.y * 2 + g.height) - g.plateHeight) < 1.1;
     const contained = g && g.x >= -.1 && g.y >= -.1 && g.x + g.width <= g.plateWidth + .1 && g.y + g.height <= g.plateHeight + .1;
-    check(contained && centered && ratioError < .0001, 'mobile ' + state.stop + ' preserves the complete centered source aspect ratio');
+    const covered = g && g.x <= .1 && g.y <= .1 && g.x + g.width >= g.plateWidth - .1 && g.y + g.height >= g.plateHeight - .1;
+    const sourceOwnsFrame = state.stop === 'prorok' || state.stop === 'process';
+    const fitOk = sourceOwnsFrame ? contained : covered && g.fit === 'cover';
+    const alignmentOk = state.stop === 'prorok' ? centeredX && g.fit === 'contain-top' : centeredX && centeredY;
+    check(fitOk && alignmentOk && ratioError < .0001, 'mobile ' + state.stop + (state.stop === 'prorok' ? ' preserves the complete Healed display above its copy field' : sourceOwnsFrame ? ' preserves the complete centered source aspect ratio' : ' fills the plate edge to edge'));
     stops.push(state);
   }
   const processTop = await page.evaluate(() => document.getElementById('process-journey').offsetTop);
@@ -501,7 +635,12 @@ async function readPassageMotion(page, route) {
   const reverse = await page.evaluate(() => ({ stop: window.ROOT_PORTFOLIO_PASSAGE.mobileStop, processPaused: document.getElementById('process-arrival-motion-video').paused }));
   check(reverse.stop === 'generations' && reverse.processPaused, 'mobile reverse returns to Generations and pauses Process');
   check(errors.length === 0, 'mobile root walk has no browser errors');
-  report.mobile = { coldResources, generationsQuality, stops, processTouch, touchReverse, processWheel, final, reverse, errors };
+  report.mobile = { coldResources, generationsQuality, girlFrame, foodFrame, stops, processTouch, touchReverse, processWheel, final, reverse, errors };
+  await page.close();
+  const generatedVideo = await video.path();
+  const finalVideo = path.join(EVIDENCE, 'root-continuous-mobile.webm');
+  fs.copyFileSync(generatedVideo, finalVideo);
+  report.mobile.recording = finalVideo;
   await context.close();
 }
 

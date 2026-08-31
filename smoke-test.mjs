@@ -1198,7 +1198,11 @@ ok(
     const BOOKING_URL = 'https://calendar.app.google/rTkdNoWpm6iRrXhB7';
     const urlEsc = BOOKING_URL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
     const urlCount = (html.match(new RegExp(urlEsc, 'g')) || []).length;
-    ok(urlCount === 2, 'booking URL appears exactly twice in rendered markup (got ' + urlCount + ')');
+    ok(urlCount === 4, 'booking URL appears in both portfolio terminal paths and both Process contact paths (got ' + urlCount + ')');
+    ok(
+      /class="portfolio-terminal-book"[\s\S]*?Want a free concept for your site\?[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?class="portfolio-scene-action portfolio-terminal-book-action"[^>]*href="https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7"[^>]*target="_blank"[^>]*rel="noopener noreferrer"/.test(html),
+      'portfolio terminal carries the complete free-concept booking offer and real Calendar action'
+    );
 
     // Extract full threshold-bottom by start index through invite-book close.
     // Source-structure only — does not prove rendered geometry.

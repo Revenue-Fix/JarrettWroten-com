@@ -71,11 +71,16 @@ const requiredPhrases = [
   'See the process.',
   'Continue into the leak, the rebuild, and one result from the process.',
   'Continue to the process',
+  'Want a free concept for your site?',
+  'Book at least 24 hours ahead and add your current website to the booking form.',
+  'Book your call',
   'Back to Jarrett',
 ];
 for (const phrase of requiredPhrases) {
   ok(workHtml.includes(phrase), 'work copy: ' + phrase);
 }
+ok((workHtml.match(/https:\/\/calendar\.app\.google\/rTkdNoWpm6iRrXhB7/g) || []).length === 2, 'Work exposes the real Calendar action in scripted and no-JS terminal paths');
+ok(/class="terminal-book"[\s\S]*?class="scene-action terminal-book-action"/.test(workHtml), 'scripted Work keeps booking inside the existing terminal rest');
 ok(!workHtml.includes('Explore the final draft'), 'superseded restaurant action wording is absent');
 ok((workHtml.match(/Restaurant Concept/g) || []).length >= 4, 'restaurant status is visible in scripted and no-JS Work consumers');
 {
@@ -172,31 +177,31 @@ if (noJsMatch) {
 }
 
 // Media wiring — local only, real posters, ambient video attrs
-ok(workHtml.includes('../assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4'), 'Generations desktop high-quality Loco Moco motion path');
-ok(workHtml.includes('../assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4'), 'Generations mobile high-quality Loco Moco motion path');
+ok(workHtml.includes('../assets/work/generations/loco-moco-natural-desktop-dc59bdf1.mp4'), 'Generations desktop direct-master Loco Moco motion path');
+ok(workHtml.includes('../assets/work/generations/loco-moco-natural-mobile-fc141d42.mp4'), 'Generations mobile direct-master full-bleed Loco Moco motion path');
 ok(workHtml.includes('../assets/work/paina/opening-desktop.mp4'), 'Pā‘ina desktop motion path');
 ok(workHtml.includes('../assets/work/paina/opening-mobile-from-2p4.mp4'), 'Pā‘ina mobile motion path begins at the authored match frame');
 ok(workHtml.includes('../assets/work/paina/opening-mobile-entry-2p4.jpg'), 'Pā‘ina mobile match-cut frame');
-ok(workHtml.includes('../assets/work/rana/studio-banner.mp4'), 'studio video path');
-ok(workHtml.includes('../assets/work/rana/ring-alexandrite.mp4'), 'ring video path');
-ok(workHtml.includes('../assets/work/rana/studio-poster.jpg'), 'studio poster');
-ok(workHtml.includes('../assets/work/rana/studio-opening.jpg'), 'studio opening still');
-ok(workHtml.includes('../assets/work/rana/ring-poster.jpg'), 'ring poster');
-ok(workHtml.includes('../demos/dylan-prorok/dylan-portrait.jpg'), 'ProRok portrait reused');
-ok(workHtml.includes('../demos/dylan-prorok/sakura-ink-bloom.mp4'), 'ProRok ink video reused');
+ok(workHtml.includes('../assets/work/rana/all-rings-desktop-45b16c5d.mp4'), 'Rana desktop ring-only master path');
+ok(workHtml.includes('../assets/work/rana/all-rings-mobile-937040ac.mp4'), 'Rana portrait ring-only master path');
+ok(workHtml.includes('../assets/work/rana/alexandrite-desktop-cedccbe9.mp4'), 'Rana desktop Alexandrite follow-up path');
+ok(workHtml.includes('../assets/work/rana/alexandrite-mobile-d0e351ff.mp4'), 'Rana portrait Alexandrite follow-up path');
+ok(workHtml.includes('../demos/dylan-prorok/healed-montage-desktop-854d3384.mp4'), 'Dylan desktop Healed montage path');
+ok(workHtml.includes('../demos/dylan-prorok/healed-montage-mobile-18bdbd22.mp4'), 'Dylan portrait Healed montage path');
 ok(
   /<video\b[^>]*\bid="generations-video"[^>]*\bloop\b[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
     /<video\b[^>]*\bid="paina-video"[^>]*\bdata-once\b[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
-    /<video\b[^>]*\bid="rana-studio-video"[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
+    /<video\b[^>]*\bid="rana-studio-video"[^>]*\bmuted\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
+    !/<video\b[^>]*\bid="rana-studio-video"[^>]*\bloop\b/.test(workHtml) &&
     /<video\b[^>]*\bid="rana-ring-video"[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
     /<video\b[^>]*\bid="prorok-ink-video"[^>]*\bmuted\b[^>]*\bloop\b[^>]*\bplaysinline\b[^>]*\bpreload="none"[^>]*>/.test(workHtml) &&
     !/id="(?:paina-video|rana-studio-video|rana-ring-video|prorok-ink-video)"[\s\S]{0,260}\bautoplay\b/.test(workHtml),
-  'Generations loops while every other motion carrier defers loading and autoplay'
+  'Rana master plays once, follow-up and Healed loop, and every downstream carrier defers cold autoplay'
 );
 ok(
   /<video\b[^>]*\bid="generations-video"[^>]*\bloop\b/.test(workHtml) &&
     !/<video\b[^>]*\bid="paina-video"[^>]*\bloop\b/.test(workHtml),
-  'Hurricane Fries keeps moving while Pā‘ina retains its authored one-shot carrier'
+  'Loco Moco keeps moving while Pā‘ina retains its authored one-shot carrier'
 );
 ok(!/corridor-motion-video|corridor-entry-loop|layer-corridor/.test(workHtml), 'corridor is absent from Work markup and routing');
 ok(
@@ -211,13 +216,13 @@ ok(
   !workHtml.includes('class="generations-wash"') &&
     !workHtml.includes('.generations-wash{') &&
     !workHtml.includes('filter:saturate(1.04) contrast(1.04) brightness(calc(.98') &&
-    /function drawMobileGenerationsScene\(ctx, sourceOverride\) \{[\s\S]*?return drawMobileContain\(ctx, source\);\s*\}/.test(workHtml),
-  'Generations uses the source pixels without the portfolio grade, wash, or canvas gradients'
+    /function drawMobileGenerationsScene\(ctx, sourceOverride\) \{[\s\S]*?return drawMobileCover\(ctx, source\);\s*\}/.test(workHtml),
+  'Generations uses source pixels edge to edge without a portfolio grade, wash, or canvas gradients'
 );
 ok(
   workHtml.includes('html.generations-human-beat .scene-copy--generations') &&
-    /function syncGenerationsHumanBeat\(\)[\s\S]*?t >= 0\.2 && t < 1\.9[\s\S]*?root\.classList\.toggle\("generations-human-beat", active\)/.test(workHtml),
-  'duplicate portfolio copy yields for the extended desktop human beat'
+    /function syncGenerationsHumanBeat\(\)[\s\S]*?t >= 0 && t < 0\.5[\s\S]*?root\.classList\.toggle\("generations-human-beat", active\)/.test(workHtml),
+  'duplicate portfolio copy yields only for the natural woman shot'
 );
 
 // Motion contract + terminal rest mapping
@@ -292,24 +297,22 @@ ok(
   'zero-state reveal gate holds Pā‘ina plus the inherited Rana and Prorok layers'
 );
 ok(workHtml.includes('scrollbar-width:none') || workHtml.includes('scrollbar-width: none'), 'native scrollbar hidden');
-ok(workHtml.includes('gradeNightInk') || workHtml.includes('url(#gradeNightInk)'), 'dormant ProRok ink asset retains its media grade');
 ok(
-  /#prorok-ink-video\s*\{\s*display\s*:\s*none !important\s*\}/.test(workHtml) &&
-    !/#rana-(?:studio|ring)-video[^\{]*\{[^\}]*display\s*:\s*none/.test(workHtml),
-  'Rana motion remains visible while Dylan keeps the approved still composition'
+  !/#prorok-ink-video\s*\{\s*display\s*:\s*none/.test(workHtml) &&
+    /\.prorok-healed\s*\{[\s\S]*?filter\s*:\s*none/.test(workHtml) &&
+    /function drawMobileProrokScene\(ctx\)[\s\S]*?mobileSource\(inkVideo, prorokPortrait\)[\s\S]*?drawMobileHealedDisplay/.test(workHtml),
+  'Dylan Healed montage is the ungraded moving subject carrier'
 );
 ok(!/class="motion-toggle"|id="motion-toggle"/.test(workHtml), 'Work renders no Motion On or Off control');
 ok(/aria-label="Back to Jarrett"/.test(workHtml), 'wordmark accessible back label');
 ok(workHtml.includes('no-js-route'), 'no-JS fallback on work route');
 ok(/\.no-js-poster\s*\{[\s\S]*?height\s*:\s*auto/.test(workHtml), 'no-JS media preserves intrinsic aspect ratio');
 ok(workHtml.includes('min-height:44px') || workHtml.includes('min-height: 44px'), '44px touch targets present');
-// Mobile Rana rest: square ring film is the full-bleed subject carrier so landscape
-// studio cover-crops cannot leave only a dark material field + residual badge.
+// Mobile Rana rest: the all-rings master owns the frame until its native ended event.
 ok(
-  /@media\s*\(\s*max-width\s*:\s*720px\s*\)[\s\S]*?\.rana-ring-stage\s*\{[\s\S]*?width\s*:\s*100%[\s\S]*?height\s*:\s*100%/.test(workHtml) &&
-    /@media\s*\(\s*max-width\s*:\s*720px\s*\)[\s\S]*?\.rana-ring-stage\s*\{[\s\S]*?mix-blend-mode\s*:\s*normal/.test(workHtml) &&
-    /@media\s*\(\s*max-width\s*:\s*720px\s*\)[\s\S]*?subject carrier/.test(workHtml),
-  'mobile Rana ring stage is full-bleed subject carrier (not residual badge)'
+  /function drawMobileRanaScene\(ctx\)[\s\S]*?ranaSequenceSecondary[\s\S]*?mobileSource\(studioVideo, ranaPoster\)[\s\S]*?drawMobileCover/.test(workHtml) &&
+    /studioVideo\.addEventListener\("ended"[\s\S]*?setRanaSequenceSecondary\(true\)[\s\S]*?playSafe\(ringVideo\)/.test(workHtml),
+  'mobile Rana starts full bleed on all rings and advances only when the master ends'
 );
 
 // Composition anti-patterns (markup-level)
@@ -324,27 +327,32 @@ ok(
 
 // Assets present with frozen hashes (updated only when media bytes legitimately change)
 const ranaHashes = {
-  'assets/work/rana/ring-alexandrite.mp4': '8b06c43165b2f309005bc62d809c15b26bb1f42c5280a3dcdf80fa6438c3ff62',
-  'assets/work/rana/ring-poster.jpg': 'a9a6cb9cb033511526667664108d09b5afc56fb793e49ae087d644922e7b5365',
-  'assets/work/rana/studio-banner.mp4': '2f1ba8a6b36c18b088dc7286d2a2323c44912e72e2d429aefd84d2679902d0a6',
-  'assets/work/rana/studio-opening.jpg': 'f4dba4c922ecbc74f331b92bf678f1f7926604f1311087b7ce158879a7864c68',
-  'assets/work/rana/studio-poster.jpg': '17f4762b9d833bbe251e29731d662f582f7755802feaf1d177b72e416e8e15c5',
+  'assets/work/rana/all-rings-desktop-45b16c5d.mp4': '45b16c5d5a3fd5f1ceb85c39e38ee29fa665de42dc85813939ff68da96e670bb',
+  'assets/work/rana/all-rings-desktop-7dd4e5ff.jpg': '7dd4e5ff727f206bcc9d6f3c7f8a95881171b4727b4b6cb06cb0ab391f50c252',
+  'assets/work/rana/all-rings-mobile-937040ac.mp4': '937040ac79c9318ba9b57ad7258e96f46919e10e47267450f38c824b49260e73',
+  'assets/work/rana/all-rings-mobile-4c1a45d4.jpg': '4c1a45d431caf8419b4279fe78d56ce544ba5f4bc61842788e94e39275b4495b',
+  'assets/work/rana/alexandrite-desktop-cedccbe9.mp4': 'cedccbe95341ff61fc4a961344c9d8fd4422272d2a1dab561bfe38d718cff850',
+  'assets/work/rana/alexandrite-desktop-b278dcbe.jpg': 'b278dcbee501a9ac28638b03c5eeabeba0d243f9f8e10707fbe299641d0961bb',
+  'assets/work/rana/alexandrite-mobile-d0e351ff.mp4': 'd0e351ff372e4081e1ebce77018062313fc47088db7617f0a6ef6460fdb94450',
+  'assets/work/rana/alexandrite-mobile-f24b465e.jpg': 'f24b465ee13a8105a2832191124b4f89aa51cd041d36f6f75e9e6c579774fc44',
 };
 for (const [rel, expected] of Object.entries(ranaHashes)) {
   const buf = mustExist(rel);
   if (buf) ok(sha256(buf) === expected, rel + ' SHA-256');
 }
-const prorokPortrait = mustExist('demos/dylan-prorok/dylan-portrait.jpg');
-const prorokInk = mustExist('demos/dylan-prorok/sakura-ink-bloom.mp4');
+const prorokPortrait = mustExist('demos/dylan-prorok/healed-poster-mobile-7d9f16d1.jpg');
+const prorokInk = mustExist('demos/dylan-prorok/healed-montage-desktop-854d3384.mp4');
+const prorokInkMobile = mustExist('demos/dylan-prorok/healed-montage-mobile-18bdbd22.mp4');
 const foodHashes = {
   'assets/work/generations/hurricane-fries-desktop-3p6.mp4': 'b3bb00655c631ee328dbb9b153320c5f9aa049fa0335024eec4b1a170b05855d',
   'assets/work/generations/hurricane-fries-desktop.jpg': '5d08fc59aa446b364693db2b99838f6b4ba15b2053e44d12ea33697c89eac846',
   'assets/work/generations/hurricane-fries-mobile-3p6.mp4': '83462b27bd7327a2a7d04a46d0890f8126721b4230141820328e8feb766209e6',
   'assets/work/generations/hurricane-fries-mobile.jpg': 'ff49242954f93e12b9d86e886e441c70df79793b41d027245e1598ef45b2085f',
-  'assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4': 'a3073c1c9dd9261ddc782a42f72a730eac5cd465d380941838896b78b6bc9f85',
-  'assets/work/generations/loco-moco-site-desktop-df266fa6.jpg': 'df266fa655b9da4e20eb53d3bd4e60d4fff8927022aea4016b58f967de863492',
-  'assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4': '1f14c4e834b572473d36df01900c2c4f5b826208e98c89b140e1a771af761104',
-  'assets/work/generations/loco-moco-site-mobile-1075c858.jpg': '1075c8580d17b1ce7dbf623390a06df053c4a029b68c0b4a5b003cb8980a7fcc',
+  'assets/work/generations/loco-moco-natural-desktop-dc59bdf1.mp4': 'dc59bdf168f9a72f872c963a2a6cf005fc157ccb743953ca01e4fa947a3333db',
+  'assets/work/generations/loco-moco-natural-desktop-0433595d.jpg': '0433595dd119a52482800c4f26f46fe7f4e2e52242a6d92089132e59bfc6a419',
+  'assets/work/generations/loco-moco-natural-mobile-fc141d42.mp4': 'fc141d42d846612d286581764e09b07e6694b50e33715a64291a98d68ccdb8a2',
+  'assets/work/generations/loco-moco-natural-mobile-1d88178b.jpg': '1d88178bd4fa429cd83f20a453f782c8016c72edb3f9ae3bf68d91cc45e0ad08',
+  'assets/work/generations/generations-kitchen-logo-03eee381.png': '03eee381cb5d336dbf9197147bfe8f0e92725b58a154436ee631d305938c25de',
   'assets/work/paina/opening-desktop.mp4': 'ed99a05d492e5547b6a8c6b031f8560967cf1a84216e341642e4a73b470030dd',
   'assets/work/paina/opening-desktop-poster.jpg': 'c3bcae6ab8b434029520d944738d7a79be0b3e21b4806ecd3593153f6da21700',
   'assets/work/paina/opening-mobile-from-2p4.mp4': 'da23f85e89d36762b6e75c897f493d266fffcd4e43155bece14b5e9a0ff46259',
@@ -364,30 +372,33 @@ for (const retired of [
 ok(!fs.existsSync(path.join(ROOT, 'assets/work/paina/opening-mobile.mp4')), 'unused pre-2.4 Pā‘ina mobile carrier is absent');
 const terminalPortrait = mustExist('assets/golden-arrival/frames/ga-360.webp');
 if (prorokPortrait) {
-  ok(sha256(prorokPortrait) === '3c6eb7e4d23aca8e5bcf0784c934346a392d2421f28420699bd681aa99dfc397', 'dylan-portrait.jpg SHA-256');
+  ok(sha256(prorokPortrait) === '7d9f16d13a1effc896e09e43084694d390260550b412fce827b9eb560fad6ef9', 'Dylan mobile Healed poster SHA-256');
 }
 if (prorokInk) {
-  ok(sha256(prorokInk) === '6c44c0204d994c3a504feecadd5da0ccf070113a8dbf2bfbee195dc8a4fe523d', 'sakura-ink-bloom.mp4 SHA-256');
+  ok(sha256(prorokInk) === '854d3384573afb2ef1dbfaa637e333b98b79b507ef52d37f33bb84d79987ab2a', 'Dylan desktop Healed montage SHA-256');
+}
+if (prorokInkMobile) {
+  ok(sha256(prorokInkMobile) === '18bdbd2263059f69f9424f12b183b768371bb2e68baac51c88478d37d8f9c472', 'Dylan mobile Healed montage SHA-256');
 }
 if (terminalPortrait) {
   ok(sha256(terminalPortrait) === '552fba13d339f46bf909735f3b629c5574545fd7626021e7f371d650149bf224', 'ga-360.webp SHA-256');
 }
 // Media weight gate: Pā‘ina is deferred by scene lifecycle; Generations stays compact at cold load.
-const studioBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/studio-banner.mp4')).size;
-const inkBytes = fs.statSync(path.join(ROOT, 'demos/dylan-prorok/sakura-ink-bloom.mp4')).size;
-const ringBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/ring-alexandrite.mp4')).size;
-const generationsDesktopBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4')).size;
-const generationsMobileBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4')).size;
+const studioBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/all-rings-desktop-45b16c5d.mp4')).size;
+const inkBytes = fs.statSync(path.join(ROOT, 'demos/dylan-prorok/healed-montage-desktop-854d3384.mp4')).size;
+const ringBytes = fs.statSync(path.join(ROOT, 'assets/work/rana/alexandrite-desktop-cedccbe9.mp4')).size;
+const generationsDesktopBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/loco-moco-natural-desktop-dc59bdf1.mp4')).size;
+const generationsMobileBytes = fs.statSync(path.join(ROOT, 'assets/work/generations/loco-moco-natural-mobile-fc141d42.mp4')).size;
 const painaDesktopBytes = fs.statSync(path.join(ROOT, 'assets/work/paina/opening-desktop.mp4')).size;
 const painaMobileBytes = fs.statSync(path.join(ROOT, 'assets/work/paina/opening-mobile-from-2p4.mp4')).size;
-ok(generationsDesktopBytes < 4_900_000, 'Generations native-1080p Loco Moco carrier under 4.9 MB');
-ok(generationsMobileBytes < 900_000, 'Generations high-quality portrait Loco Moco carrier under 900 KB');
+ok(generationsDesktopBytes < 3_700_000, 'Generations direct-master CRF14 desktop carrier under 3.7 MB');
+ok(generationsMobileBytes < 1_400_000, 'Generations direct-master CRF14 portrait carrier under 1.4 MB');
 ok(generationsDesktopBytes + generationsMobileBytes + painaDesktopBytes + painaMobileBytes < 17_000_000, 'new motion carriers under 17 MB total across both breakpoints');
-ok(studioBytes < 3_500_000, 'studio-banner under 3.5 MB');
-ok(inkBytes < 600_000, 'sakura-ink-bloom under 600 KB');
+ok(studioBytes < 7_000_000, 'Rana ring-only master under 7 MB and deferred');
+ok(ringBytes < 1_200_000, 'Rana Alexandrite follow-up under 1.2 MB');
+ok(inkBytes < 2_300_000, 'Dylan desktop Healed montage under 2.3 MB');
 // Do not duplicate ProRok binaries under work/
-ok(!fs.existsSync(path.join(ROOT, 'work/dylan-portrait.jpg')), 'no duplicated dylan portrait under work/');
-ok(!fs.existsSync(path.join(ROOT, 'work/sakura-ink-bloom.mp4')), 'no duplicated ink video under work/');
+ok(!fs.existsSync(path.join(ROOT, 'work/healed-montage-desktop-854d3384.mp4')), 'no duplicated Dylan Healed video under work/');
 
 // Type system inheritance
 ok(/font-family:"Bodoni Moda"/.test(workHtml.replace(/\s+/g, '')) || workHtml.includes('font-family:"Bodoni Moda"'), 'Bodoni wired');
@@ -609,7 +620,7 @@ ok(
     'food passage contains no inset wipe, split grid, card, panel, portfolio rail, or identity furniture'
   );
   ok(
-    /id="generations-video"[\s\S]*?<source media="\(max-width:720px\)"[^>]*loco-moco-site-mobile-1f14c4e8\.mp4[\s\S]*?<source media="\(min-width:721px\)"[^>]*loco-moco-site-desktop-a3073c1c\.mp4/.test(workHtml) &&
+    /id="generations-video"[\s\S]*?<source media="\(max-width:720px\)"[^>]*loco-moco-natural-mobile-fc141d42\.mp4[\s\S]*?<source media="\(min-width:721px\)"[^>]*loco-moco-natural-desktop-dc59bdf1\.mp4/.test(workHtml) &&
       /id="paina-video"[\s\S]*?<source media="\(max-width:720px\)"[^>]*opening-mobile-from-2p4\.mp4[\s\S]*?<source media="\(min-width:721px\)"[^>]*opening-desktop\.mp4/.test(workHtml),
     'both food worlds carry breakpoint-exclusive desktop and portrait motion sources'
   );
@@ -835,25 +846,27 @@ ok(
   const videosForMatch = workHtml.match(/function videosForMobileStop\(id\) \{[\s\S]*?return \[\];\s*\}/);
   ok(!!videosForMatch, 'videosForMobileStop is extractable');
   let videosForMobileStop;
-  const generationsVideo = { id: 'generations', currentSrc: 'http://local/assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4' };
+  const generationsVideo = { id: 'generations', currentSrc: 'http://local/assets/work/generations/loco-moco-natural-mobile-fc141d42.mp4' };
   const painaVideo = { id: 'paina', currentSrc: 'http://local/assets/work/paina/opening-mobile-from-2p4.mp4' };
   const studioVideo = { id: 'studio' };
   const ringVideo = { id: 'ring' };
   const inkVideo = { id: 'ink' };
-  const generationsPoster = { id: 'generations-poster', currentSrc: 'http://local/assets/work/generations/loco-moco-site-mobile-1075c858.jpg', complete: true, naturalWidth: 720, naturalHeight: 1280 };
+  const generationsPoster = { id: 'generations-poster', currentSrc: 'http://local/assets/work/generations/loco-moco-natural-mobile-1d88178b.jpg', complete: true, naturalWidth: 448, naturalHeight: 968 };
   const painaPoster = { id: 'paina-poster', currentSrc: 'http://local/assets/work/paina/opening-mobile-entry-2p4.jpg', complete: true, naturalWidth: 720, naturalHeight: 1280 };
-  const ringPoster = { id: 'ring-poster', complete: true, naturalWidth: 720, naturalHeight: 720 };
-  const prorokPortrait = { id: 'prorok-portrait', complete: true, naturalWidth: 617, naturalHeight: 849 };
+  const ranaPoster = { id: 'rana-poster', complete: true, naturalWidth: 498, naturalHeight: 1080 };
+  const ringPoster = { id: 'ring-poster', complete: true, naturalWidth: 720, naturalHeight: 1560 };
+  const prorokPortrait = { id: 'prorok-portrait', complete: true, naturalWidth: 720, naturalHeight: 960 };
   const terminalReturn = { id: 'terminal-return', complete: true, naturalWidth: 1280, naturalHeight: 720 };
   if (videosForMatch) {
     try {
       videosForMobileStop = new Function(
         'generationsVideo',
         'painaVideo',
+        'studioVideo',
         'ringVideo',
         'inkVideo',
         videosForMatch[0] + '; return videosForMobileStop;'
-      )(generationsVideo, painaVideo, ringVideo, inkVideo);
+      )(generationsVideo, painaVideo, studioVideo, ringVideo, inkVideo);
     } catch (e) {
       failures.push('videosForMobileStop parse: ' + e.message);
     }
@@ -864,15 +877,15 @@ ok(
       got.length === expected.length && got.every((video, i) => video === expected[i]);
     ok(sameRefs(videosForMobileStop('generations'), [generationsVideo]), 'Generations destination is its portrait food carrier');
     ok(sameRefs(videosForMobileStop('paina'), [painaVideo]), 'Pā‘ina destination is its portrait kitchen carrier');
-    ok(sameRefs(videosForMobileStop('rana'), [ringVideo]), 'Rana destination is the moving ring carrier');
-    ok(sameRefs(videosForMobileStop('prorok'), []), 'Prorok destination is the approved still composition');
+    ok(sameRefs(videosForMobileStop('rana'), [studioVideo]), 'Rana destination starts on the all-rings master');
+    ok(sameRefs(videosForMobileStop('prorok'), [inkVideo]), 'Prorok destination is the Healed montage');
     ok(sameRefs(videosForMobileStop('process'), []), 'process destination has no video to force-play');
 
     const expectedByStop = {
       generations: [generationsVideo],
       paina: [painaVideo],
-      rana: [ringVideo],
-      prorok: [],
+      rana: [studioVideo],
+      prorok: [inkVideo],
       process: [],
     };
     let prewarmBothWays = true;
@@ -934,9 +947,10 @@ ok(
   ok(
     /function cancelMobileGlide\(\)[\s\S]*?clearMobileDestination\(\)/.test(workHtml) &&
       /function prepareMobileDestination\(index\)[\s\S]*?requestMobileVideo\(videos\[i\], false\)/.test(workHtml) &&
-      /function syncVideos\(p\)[\s\S]*?if \(isActive\(generationsVideo\)\)[\s\S]*?if \(isActive\(painaVideo\)\)[\s\S]*?pauseSafe\(studioVideo\);[\s\S]*?if \(isActive\(ringVideo\)\) playSafe\(ringVideo\);[\s\S]*?pauseSafe\(inkVideo\)/.test(workHtml) &&
+      /function prepareMobileDestination\(index\)[\s\S]*?mobileDestinationId === "rana"[\s\S]*?requestMobileVideo\(ringVideo, false\)/.test(workHtml) &&
+      /function syncVideos\(p\)[\s\S]*?if \(activeId === "rana"\) enterRanaSequence\(\)[\s\S]*?if \(activeId === "prorok"\) enterProrokSequence\(\)/.test(workHtml) &&
       !/videoIsPreparedDestination/.test(workHtml),
-    'moving destinations decode without pre-play while Rana moves and Dylan remains still-backed'
+    'moving destinations decode before arrival while Rana sequences and Dylan plays Healed'
   );
   ok(
     /get mobileDestination\(\) \{ return mobileDestinationId; \}/.test(workHtml),
@@ -1418,6 +1432,10 @@ ok(
       'armVideos',
       'playSafe',
       'pauseSafe',
+      'enterRanaSequence',
+      'leaveRanaSequence',
+      'enterProrokSequence',
+      'leaveProrokSequence',
       'videoIsPreparedDestination',
       'generationsVideo',
       'painaVideo',
@@ -1431,6 +1449,10 @@ ok(
       function armVideos() {},
       function playSafe(video) { played.push(video.id); },
       function pauseSafe(video) { paused.push(video.id); },
+      function enterRanaSequence() { played.push('studio'); paused.push('ring'); },
+      function leaveRanaSequence() { paused.push('studio', 'ring'); },
+      function enterProrokSequence() { played.push('ink'); },
+      function leaveProrokSequence() { paused.push('ink'); },
       function videoIsPreparedDestination() { return false; },
       generationsVideo,
       painaVideo,
@@ -1458,17 +1480,17 @@ ok(
     paused.length = 0;
     syncDesktop(0.58);
     ok(
-      played.includes('studio') && played.includes('ring') &&
+      played.includes('studio') && !played.includes('ring') &&
         ['generations', 'paina', 'ink'].every((id) => paused.includes(id)),
-      'desktop Rana rest plays the studio and ring carriers only'
+      'desktop Rana rest starts only the all-rings master'
     );
     played.length = 0;
     paused.length = 0;
     syncDesktop(0.80);
     ok(
-      played.length === 0 &&
-        ['generations', 'paina', 'studio', 'ring', 'ink'].every((id) => paused.includes(id)),
-      'desktop Prorok rest keeps every dormant motion carrier paused'
+      played.includes('ink') &&
+        ['generations', 'paina', 'studio', 'ring'].every((id) => paused.includes(id)),
+      'desktop Prorok rest plays only the Healed montage'
     );
 
     const mobilePlayed = [];
@@ -1478,6 +1500,10 @@ ok(
       'armVideos',
       'playSafe',
       'pauseSafe',
+      'enterRanaSequence',
+      'leaveRanaSequence',
+      'enterProrokSequence',
+      'leaveProrokSequence',
       'generationsVideo',
       'painaVideo',
       'studioVideo',
@@ -1495,6 +1521,10 @@ ok(
       function armVideos() {},
       function playSafe(video) { mobilePlayed.push(video.id); },
       function pauseSafe(video) { mobilePaused.push(video.id); },
+      function enterRanaSequence() { mobilePlayed.push('studio'); mobilePaused.push('ring'); },
+      function leaveRanaSequence() { mobilePaused.push('studio', 'ring'); },
+      function enterProrokSequence() { mobilePlayed.push('ink'); },
+      function leaveProrokSequence() { mobilePaused.push('ink'); },
       generationsVideo,
       painaVideo,
       studioVideo,
@@ -1517,9 +1547,9 @@ ok(
     mobilePaused.length = 0;
     syncMobile(workStops[2][1]);
     ok(
-      mobilePlayed.includes('ring') &&
-        ['generations', 'paina', 'ink', 'studio'].every((id) => mobilePaused.includes(id)),
-      'mobile Rana rest plays the ring carrier while the studio and Dylan carriers remain paused'
+      mobilePlayed.includes('studio') && !mobilePlayed.includes('ring') &&
+        ['generations', 'paina', 'ink', 'ring'].every((id) => mobilePaused.includes(id)),
+      'mobile Rana rest starts only the all-rings master'
     );
   }
 
@@ -1627,6 +1657,7 @@ ok(
       'inkVideo',
       'generationsPoster',
       'painaPoster',
+      'ranaPoster',
       'ringPoster',
       'prorokPortrait',
       'terminalReturn',
@@ -1643,6 +1674,7 @@ ok(
       inkVideo,
       generationsPoster,
       painaPoster,
+      ranaPoster,
       ringPoster,
       prorokPortrait,
       terminalReturn,
@@ -1882,46 +1914,38 @@ ok(
     inkVideo.error = null;
     ok(mobileDestinationReady('generations'), 'Generations is ready from decoded motion or its matching poster');
     ok(mobileDestinationReady('paina'), 'Pā‘ina is immediately ready from its decoded time-zero match poster while video is cold');
-    ok(mobileDestinationReady('rana'), 'Rana is immediately ready from its decoded matching ring poster while video is cold');
-    ok(mobileDestinationReady('prorok'), 'ProRok is ready from its loaded portrait treatment');
+    ok(mobileDestinationReady('rana'), 'Rana is immediately ready from its all-rings master or matching poster');
+    ok(mobileDestinationReady('prorok'), 'ProRok is ready from the Healed montage or matching poster');
     ok(mobileDestinationReady('process'), 'process is ready only when its terminal image is loaded');
     terminalReturn.complete = false;
     ok(!mobileDestinationReady('process'), 'process cannot cut to an undecoded terminal image');
     terminalReturn.complete = true;
     prorokPortrait.complete = false;
     inkVideo.readyState = 0;
-    ok(!mobileDestinationReady('prorok'), 'ProRok waits while its portrait treatment is unavailable');
+    ok(!mobileDestinationReady('prorok'), 'ProRok waits while both Healed representations are unavailable');
     inkVideo.readyState = 2;
-    ok(!mobileDestinationReady('prorok'), 'a decoded dormant ink loop cannot replace the approved ProRok still');
+    ok(mobileDestinationReady('prorok'), 'the decoded Healed montage is an authoritative ProRok representation');
     prorokPortrait.complete = true;
-    ringPoster.complete = false;
-    ringVideo.readyState = 2;
-    ok(mobileDestinationReady('rana'), 'Rana becomes ready from the decoded ring carrier');
+    ranaPoster.complete = false;
     studioVideo.requestVideoFrameCallback = function () {};
-    ringVideo.requestVideoFrameCallback = function () {};
     studioVideo.jwSawDataEvent = true;
-    ringVideo.jwSawDataEvent = true;
     delete studioVideo.jwDecodedFrame;
-    delete ringVideo.jwDecodedFrame;
-    ok(!mobileDestinationReady('rana'), 'Rana stays pending while the approved poster is unavailable');
-    ringVideo.jwDecodedFrame = true;
-    ok(mobileDestinationReady('rana'), 'Rana becomes ready after the ring presented-frame callback');
-    ringPoster.complete = true;
-    ok(mobileDestinationReady('rana'), 'Rana becomes ready when the approved ring poster is decoded');
+    ok(!mobileDestinationReady('rana'), 'Rana stays pending while the all-rings poster and presented frame are unavailable');
+    studioVideo.jwDecodedFrame = true;
+    ok(mobileDestinationReady('rana'), 'Rana becomes ready after the all-rings presented-frame callback');
+    ranaPoster.complete = true;
+    ok(mobileDestinationReady('rana'), 'Rana becomes ready when the all-rings poster is decoded');
     delete studioVideo.requestVideoFrameCallback;
-    delete ringVideo.requestVideoFrameCallback;
     delete studioVideo.jwSawDataEvent;
-    delete ringVideo.jwSawDataEvent;
     delete studioVideo.jwDecodedFrame;
-    delete ringVideo.jwDecodedFrame;
     painaVideo.readyState = 2;
     ok(mobileDestinationReady('paina'), 'Pā‘ina becomes ready from its decoded portrait carrier');
-    ringVideo.error = { code: 4 };
-    ok(!mobileDestinationFailed('rana') && mobileDestinationReady('rana'), 'a Rana media error falls back to the decoded ring poster');
-    ringPoster.naturalWidth = 0;
+    studioVideo.error = { code: 4 };
+    ok(!mobileDestinationFailed('rana') && mobileDestinationReady('rana'), 'an all-rings media error falls back to its decoded poster');
+    ranaPoster.naturalWidth = 0;
     ok(mobileDestinationFailed('rana') && !mobileDestinationReady('rana'), 'Rana fails when the approved still is unavailable');
-    ringPoster.naturalWidth = 720;
-    ringVideo.error = null;
+    ranaPoster.naturalWidth = 498;
+    studioVideo.error = null;
 
     generationsVideo.error = { code: 4 };
     ok(!mobileDestinationFailed('generations') && mobileDestinationReady('generations'), 'Generations video error advances through its decoded matching poster');
@@ -1930,7 +1954,7 @@ ok(
     ok(!mobileDestinationFailed('paina') && mobileDestinationReady('paina'), 'Pā‘ina video error advances through its decoded time-zero poster');
     painaVideo.error = null;
     inkVideo.error = { code: 4 };
-    ok(!mobileDestinationFailed('prorok') && mobileDestinationReady('prorok'), 'Prorok video error advances through its decoded portrait treatment');
+    ok(!mobileDestinationFailed('prorok') && mobileDestinationReady('prorok'), 'Healed video error advances through its decoded poster');
     inkVideo.error = null;
 
     const coldStudio = { id: 'studio', readyState: 0, preload: 'metadata', loadCalls: 0, play() { this.played = true; } };

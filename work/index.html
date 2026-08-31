@@ -11,20 +11,20 @@
 <meta property="og:title" content="Conversion-Driven Website Portfolio | Jarrett Wroten">
 <meta property="og:description" content="A full-screen passage through Generations Kitchen, Pā‘ina Café, Rana Levy, and Dylan Prorok.">
 <meta property="og:url" content="https://jarrettwroten.com/work/">
-<meta property="og:image" content="https://jarrettwroten.com/assets/work/generations/loco-moco-site-desktop-df266fa6.jpg">
+<meta property="og:image" content="https://jarrettwroten.com/assets/work/generations/loco-moco-natural-desktop-0433595d.jpg">
 <meta property="og:image:width" content="1920">
 <meta property="og:image:height" content="1080">
 <meta property="og:image:alt" content="The Loco Moco scene inside the Generations Kitchen website concept.">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:title" content="Conversion-Driven Website Portfolio | Jarrett Wroten">
 <meta name="twitter:description" content="Restaurant, jewelry, and tattoo artist concepts from a Las Vegas conversion-focused web designer.">
-<meta name="twitter:image" content="https://jarrettwroten.com/assets/work/generations/loco-moco-site-desktop-df266fa6.jpg">
+<meta name="twitter:image" content="https://jarrettwroten.com/assets/work/generations/loco-moco-natural-desktop-0433595d.jpg">
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"CollectionPage","name":"Jarrett Wroten Website Portfolio","url":"https://jarrettwroten.com/work/","description":"Conversion-driven website concepts by Jarrett Wroten.","creator":{"@type":"Person","name":"Jarrett Wroten","url":"https://jarrettwroten.com/"},"hasPart":[{"@id":"https://jarrettwroten.com/work/generations-kitchen/"},{"@id":"https://jarrettwroten.com/work/paina-cafe/"},{"@id":"https://jarrettwroten.com/work/rana-levy/"},{"@id":"https://jarrettwroten.com/work/dylan-prorok/"}]}
 </script>
 <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%23040A0C'/%3E%3Crect x='11' y='11' width='10' height='10' transform='rotate(45 16 16)' fill='%23D97A3A'/%3E%3C/svg%3E">
-<link rel="preload" as="image" href="../assets/work/generations/loco-moco-site-desktop-df266fa6.jpg" media="(min-width:721px)">
-<link rel="preload" as="image" href="../assets/work/generations/loco-moco-site-mobile-1075c858.jpg" media="(max-width:720px)">
+<link rel="preload" as="image" href="../assets/work/generations/loco-moco-natural-desktop-0433595d.jpg" media="(min-width:721px)">
+<link rel="preload" as="image" href="../assets/work/generations/loco-moco-natural-mobile-1d88178b.jpg" media="(max-width:720px)">
 <link rel="preload" as="image" href="../assets/work/paina/opening-mobile-entry-2p4.jpg" media="(max-width:720px)">
 <link rel="preload" as="image" href="../assets/golden-arrival/frames/ga-360.webp">
 <link rel="preload" as="image" href="../assets/work/rana/studio-opening.jpg">
@@ -226,7 +226,15 @@
     inset:0;
   }
   .generations-poster,
-  .generations-video,
+  .generations-video{
+    position:absolute;
+    inset:0;
+    width:100%;
+    height:100%;
+    max-width:none;
+    object-fit:cover;
+    object-position:50% 50%;
+  }
   .paina-poster,
   .paina-video{
     position:absolute;
@@ -234,11 +242,13 @@
     width:100%;
     height:100%;
     max-width:none;
-    object-fit:contain;
+    object-fit:cover;
+    object-position:50% 50%;
   }
-  .generations-poster,
-  .generations-video{object-position:50% 50%}
-  .generations-video,
+  .generations-video{
+    opacity:0;
+    transition:none;
+  }
   .paina-video{
     opacity:0;
     transition:opacity .35s var(--ease-enter);
@@ -247,6 +257,52 @@
   .paina-video.is-ready{opacity:1}
   .generations-media{
     transform:none;
+  }
+
+  .generations-site-chrome{
+    position:absolute;
+    inset:0;
+    z-index:10;
+    opacity:calc(var(--generations-hold) * max(0, 1 - var(--paina-open) * 2));
+    color:#ffb515;
+    pointer-events:none;
+  }
+  .generations-site-logo{
+    position:absolute;
+    top:calc(var(--top-chrome) + .7rem);
+    left:var(--gutter);
+    width:clamp(7.5rem,12vw,11rem);
+    height:auto;
+  }
+  .generations-site-title{
+    position:absolute;
+    right:var(--gutter);
+    bottom:clamp(4.5rem,8vh,6rem);
+    font-family:"Arial Black","Helvetica Neue",Arial,sans-serif;
+    font-size:clamp(3.8rem,8.6vw,8.2rem);
+    font-weight:950;
+    letter-spacing:-.075em;
+    line-height:.76;
+    text-align:right;
+  }
+  .generations-site-order{
+    position:absolute;
+    left:50%;
+    bottom:clamp(1.15rem,2.2vh,2rem);
+    transform:translateX(-50%);
+    display:inline-flex;
+    align-items:center;
+    min-height:2.55rem;
+    padding:.55rem 1.15rem;
+    border-radius:999px;
+    background:#ffb515;
+    color:#140b04;
+    font-family:"Arial Black","Helvetica Neue",Arial,sans-serif;
+    font-size:clamp(.72rem,.65rem + .25vw,.9rem);
+    font-weight:950;
+    letter-spacing:-.035em;
+    line-height:1;
+    white-space:nowrap;
   }
 
   /* ── Pā‘ina threshold: the served food opens into the kitchen making it ── */
@@ -354,12 +410,12 @@
     transition:opacity .35s var(--ease-enter);
   }
   .media-fill[data-video].is-ready{opacity:1}
-  #prorok-ink-video{display:none !important}
   .rana-studio{
-    /* Full-bleed hero — center the subject so desktop and mobile cover crops keep gem + scale cue. */
+    /* Rana enters on the complete all-rings master. */
+    object-fit:cover;
     object-position:50% 50%;
     transform:none;
-    filter:saturate(1.08) contrast(1.08) brightness(calc(.94 + var(--rana-hold) * .08));
+    filter:none;
   }
   .rana-opening{
     position:absolute;
@@ -373,21 +429,23 @@
     filter:brightness(1.05) contrast(1.06) saturate(1.05);
   }
   .rana-ring-stage{
-    /* Subordinate refraction / light residue — not a circular badge or second photo. */
+    /* The Alexandrite film follows only after the all-rings master naturally ends. */
     position:absolute;
-    right:clamp(-10%, -2vw, 4%);
-    bottom:clamp(-14%, -2vh, 4%);
-    width:min(56vw, 40rem);
-    height:min(68vh, 38rem);
-    opacity:calc(var(--ring-presence) * .42);
+    inset:0;
+    width:100%;
+    height:100%;
+    opacity:0;
     transform:none;
-    mix-blend-mode:screen;
-    filter:saturate(1.2) contrast(1.05) brightness(1.18) blur(.35px);
+    mix-blend-mode:normal;
+    filter:none;
+    transition:opacity .28s var(--ease-enter);
     will-change:opacity,transform;
     pointer-events:none;
   }
+  html.rana-sequence-secondary .rana-ring-stage{opacity:1}
   .rana-ring-stage .media-fill{
     border-radius:0;
+    object-fit:cover;
     object-position:50% 50%;
     -webkit-mask-image:none;
     mask-image:none;
@@ -459,6 +517,14 @@
     opacity:calc(.72 + var(--prorok-hold) * .28);
     mix-blend-mode:normal;
   }
+  .prorok-healed{
+    object-fit:contain;
+    object-position:50% 50%;
+    filter:none;
+    mix-blend-mode:normal;
+    transform:none;
+  }
+  .prorok-healed-fallback{display:none}
   .prorok-portrait{
     /* Subject carrier above graded ink — must remain legible when the live MP4 is black paper. */
     position:absolute;
@@ -726,14 +792,48 @@
   }
   .scene-copy--terminal{
     color:var(--ink);
-    left:var(--gutter);
-    right:var(--gutter);
-    bottom:clamp(2rem, 9vh, 4.6rem);
-    max-width:min(36rem, 90vw);
+    inset:0;
+    max-width:none;
     opacity:var(--terminal-hold);
     transform:translate3d(0, calc((1 - var(--terminal-hold)) * 1.2rem), 0);
     filter:blur(calc((1 - var(--terminal-hold)) * 3px));
   }
+  .terminal-process,
+  .terminal-book{
+    position:absolute;
+  }
+  .terminal-process{
+    left:var(--gutter);
+    bottom:clamp(2rem, 9vh, 4.6rem);
+    max-width:min(36rem, 46vw);
+  }
+  .terminal-book{
+    top:clamp(5.4rem, 12vh, 7.2rem);
+    right:var(--gutter);
+    width:min(25rem, 31vw);
+  }
+  .terminal-book-title{
+    margin:0 0 .55rem;
+    max-width:13ch;
+    font-family:var(--display);
+    font-weight:400;
+    font-optical-sizing:auto;
+    font-size:clamp(1.8rem, 2.8vw, 2.7rem);
+    line-height:1;
+    letter-spacing:0;
+  }
+  .terminal-book-line{
+    margin:0 0 .75rem;
+    max-width:31ch;
+    font-family:var(--reading);
+    font-weight:400;
+    font-synthesis:none;
+    font-size:clamp(1rem, 1rem + .16vw, 1.1rem);
+    line-height:1.45;
+    letter-spacing:0;
+    color:var(--ink-soft);
+  }
+  .terminal-book-action{border-bottom-color:rgba(94,231,240,.72)}
   .scene-name{
     margin:0 0 .55rem;
     font-family:var(--display);
@@ -895,7 +995,7 @@
   html[data-motion="off"] .paina-video{display:none}
   html[data-motion="off"] .rana-ring-stage{
     filter:none;
-    mix-blend-mode:screen;
+    mix-blend-mode:normal;
   }
   html[data-motion="off"] .scene-copy{
     transform:none;
@@ -1023,6 +1123,27 @@
     .layer-rana.is-revealing{opacity:var(--rana-open)}
     .layer-prorok.is-revealing{opacity:var(--prorok-open)}
     .layer-terminal.is-revealing{opacity:var(--terminal-hold)}
+    .generations-site-logo{
+      top:calc(var(--top-chrome) + .55rem);
+      width:6.6rem;
+    }
+    .generations-site-title{
+      top:35%;
+      right:var(--gutter);
+      bottom:auto;
+      font-size:clamp(3.2rem,16vw,4.45rem);
+    }
+    .generations-site-order{
+      top:51%;
+      right:var(--gutter);
+      bottom:auto;
+      left:auto;
+      transform:none;
+    }
+    html.generations-human-beat .generations-site-title,
+    html.generations-human-beat .generations-site-order{
+      opacity:0;
+    }
     .scene-copy--generations{
       opacity:var(--copy-generations);
       transform:translate3d(0, calc((1 - var(--copy-generations)) * 1.4rem), 0);
@@ -1044,17 +1165,16 @@
       filter:none;
     }
     .scene-copy--terminal{
+      inset:0;
       opacity:var(--copy-terminal);
       transform:translate3d(0, calc((1 - var(--copy-terminal)) * 1.2rem), 0);
       filter:none;
     }
-    /* Live mobile Rana: landscape studio cover crops can lose the gem into dark
-       material fields on the narrow strip. Square ring film is the subject carrier
-       (same pattern as ProRok portrait) — full-bleed material world, not a badge. */
+    /* Mobile uses the responsive all-rings master, then the responsive Alexandrite film. */
     .rana-studio{
       object-position:50% 50%;
-      /* Atmospheric underlayer while the ring carrier holds the rest. */
-      filter:saturate(1.04) contrast(1.05) brightness(calc(.86 + var(--rana-hold) * .06));
+      object-fit:cover;
+      filter:none;
     }
     .rana-opening{object-position:50% 50%}
     .rana-ring-stage{
@@ -1063,12 +1183,14 @@
       bottom:auto;
       width:100%;
       height:100%;
-      opacity:calc(var(--ring-presence) * .97);
+      opacity:0;
       transform:none;
       mix-blend-mode:normal;
-      filter:saturate(1.1) contrast(1.06) brightness(1.03);
+      filter:none;
     }
+    html.rana-sequence-secondary .rana-ring-stage{opacity:1}
     .rana-ring-stage .media-fill{
+      object-fit:cover;
       object-position:50% 50%;
       -webkit-mask-image:none;
       mask-image:none;
@@ -1081,7 +1203,7 @@
     /* Motion-off must not reapply desktop residual screen-blend on the carrier. */
     html[data-motion="off"] .rana-ring-stage{
       mix-blend-mode:normal;
-      filter:saturate(1.08) contrast(1.05) brightness(1.02);
+      filter:none;
     }
     /* Live mobile ProRok: portrait is the subject carrier. Graded sakura paper is near-black;
        without a strong portrait stack the rest collapses to an empty sumi field. */
@@ -1145,6 +1267,31 @@
     .scene-copy--terminal{
       max-width:none;
     }
+    .terminal-process{
+      left:var(--gutter);
+      right:var(--gutter);
+      bottom:calc(1.2rem + env(safe-area-inset-bottom));
+      max-width:none;
+    }
+    .terminal-book{
+      top:calc(4.8rem + env(safe-area-inset-top));
+      right:var(--gutter);
+      left:var(--gutter);
+      width:auto;
+      max-width:22rem;
+    }
+    .terminal-book-title{
+      margin-bottom:.4rem;
+      max-width:15ch;
+      font-size:clamp(1.55rem, 7vw, 1.85rem);
+      line-height:1.02;
+    }
+    .terminal-book-line{
+      margin-bottom:.45rem;
+      max-width:33ch;
+      font-size:1rem;
+      line-height:1.38;
+    }
     .scene-name{
       font-size:clamp(2.05rem,10vw,2.7rem);
     }
@@ -1179,6 +1326,31 @@
     .scene-action{
       min-height:2.75rem;
       font-size:1rem;
+    }
+  }
+
+  @media (min-width:721px) and (max-aspect-ratio:1/1){
+    .generations-site-title{
+      top:35%;
+      right:var(--gutter);
+      bottom:auto;
+      font-size:clamp(3.35rem,10vw,5rem);
+    }
+    .generations-site-order{
+      top:52%;
+      right:var(--gutter);
+      bottom:auto;
+      left:auto;
+      transform:none;
+    }
+    html.generations-human-beat .generations-site-title,
+    html.generations-human-beat .generations-site-order{
+      opacity:0;
+    }
+    .terminal-book{
+      right:auto;
+      left:var(--gutter);
+      width:min(22rem, 44vw);
     }
   }
 
@@ -1222,7 +1394,7 @@
       <h1>Generations Kitchen</h1>
       <p>Restaurant Concept</p>
       <p>The concept lets the food lead before the menu.</p>
-      <img class="no-js-poster" src="../assets/work/generations/loco-moco-site-desktop-df266fa6.jpg" alt="The Loco Moco scene inside the Generations Kitchen website concept." width="1920" height="1080">
+      <img class="no-js-poster" src="../assets/work/generations/loco-moco-natural-desktop-0433595d.jpg" alt="The Loco Moco scene inside the Generations Kitchen website concept." width="1920" height="968">
       <p><a href="https://generations.jarrettwroten.com/">Explore the restaurant concept</a></p>
       <h2>Pā‘ina Café</h2>
       <p>Restaurant Concept</p>
@@ -1246,6 +1418,9 @@
       <h2>See the process.</h2>
       <p>Continue into the leak, the rebuild, and one result from the process.</p>
       <p><a href="../#process-journey">Continue to the process</a></p>
+      <h2>Want a free concept for your site?</h2>
+      <p>Book at least 24 hours ahead and add your current website to the booking form. I’ll make a free concept for our call.</p>
+      <p><a href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book your call</a></p>
     </div>
   </main>
 
@@ -1257,17 +1432,17 @@
         <div class="layer layer-generations" id="layer-generations">
           <div class="generations-media">
             <picture>
-              <source media="(max-width:720px)" srcset="../assets/work/generations/loco-moco-site-mobile-1075c858.jpg">
-              <img class="generations-poster" id="generations-poster" src="../assets/work/generations/loco-moco-site-desktop-df266fa6.jpg" alt="" width="1920" height="1080" decoding="async" fetchpriority="high">
+              <source media="(max-width:720px)" srcset="../assets/work/generations/loco-moco-natural-mobile-1d88178b.jpg">
+              <img class="generations-poster" id="generations-poster" src="../assets/work/generations/loco-moco-natural-desktop-0433595d.jpg" alt="" width="1920" height="968" decoding="async" fetchpriority="high">
             </picture>
             <video
               class="generations-video"
               id="generations-video"
               data-video
               loop muted playsinline preload="none"
-              width="1920" height="1080">
-              <source media="(max-width:720px)" src="../assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4" type="video/mp4">
-              <source media="(min-width:721px)" src="../assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4" type="video/mp4">
+              width="1920" height="968">
+              <source media="(max-width:720px)" src="../assets/work/generations/loco-moco-natural-mobile-fc141d42.mp4" type="video/mp4">
+              <source media="(min-width:721px)" src="../assets/work/generations/loco-moco-natural-desktop-dc59bdf1.mp4" type="video/mp4">
             </video>
           </div>
         </div>
@@ -1294,26 +1469,33 @@
 
         <div class="layer layer-rana" id="layer-rana">
           <div class="rana-media">
-            <img class="media-fill rana-studio" id="rana-poster" src="../assets/work/rana/studio-poster.jpg" alt="" width="1280" height="640" decoding="async">
+            <picture>
+              <source media="(max-aspect-ratio:1/1)" srcset="../assets/work/rana/all-rings-mobile-4c1a45d4.jpg">
+              <img class="media-fill rana-studio" id="rana-poster" src="../assets/work/rana/all-rings-desktop-7dd4e5ff.jpg" alt="" width="2160" height="1080" decoding="async">
+            </picture>
             <video
               class="media-fill rana-studio"
               id="rana-studio-video"
               data-video
-              src="../assets/work/rana/studio-banner.mp4"
-              poster="../assets/work/rana/studio-poster.jpg"
-              muted loop playsinline preload="none"
-              width="1280" height="640"></video>
-            <img class="rana-opening" src="../assets/work/rana/studio-opening.jpg" alt="" width="1280" height="640" decoding="async">
+              muted playsinline preload="none"
+              width="2160" height="1080">
+              <source media="(max-aspect-ratio:1/1)" src="../assets/work/rana/all-rings-mobile-937040ac.mp4" type="video/mp4">
+              <source src="../assets/work/rana/all-rings-desktop-45b16c5d.mp4" type="video/mp4">
+            </video>
             <div class="rana-ring-stage" id="rana-ring-stage">
-              <img class="media-fill" id="ring-poster" src="../assets/work/rana/ring-poster.jpg" alt="" width="720" height="720" decoding="async">
+              <picture>
+                <source media="(max-aspect-ratio:1/1)" srcset="../assets/work/rana/alexandrite-mobile-f24b465e.jpg">
+                <img class="media-fill" id="ring-poster" src="../assets/work/rana/alexandrite-desktop-b278dcbe.jpg" alt="" width="1000" height="1000" decoding="async">
+              </picture>
               <video
                 class="media-fill"
                 id="rana-ring-video"
                 data-video
-                src="../assets/work/rana/ring-alexandrite.mp4"
-                poster="../assets/work/rana/ring-poster.jpg"
                 muted loop playsinline preload="none"
-                width="720" height="720"></video>
+                width="720" height="720">
+                <source media="(max-aspect-ratio:1/1)" src="../assets/work/rana/alexandrite-mobile-d0e351ff.mp4" type="video/mp4">
+                <source src="../assets/work/rana/alexandrite-desktop-cedccbe9.mp4" type="video/mp4">
+              </video>
             </div>
             <div class="rana-bloom"></div>
             <div class="rana-wash"></div>
@@ -1322,16 +1504,20 @@
 
         <div class="layer layer-prorok" id="layer-prorok">
           <div class="prorok-media">
-            <img class="media-fill prorok-ink" id="prorok-poster" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
+            <picture>
+              <source media="(max-aspect-ratio:1/1)" srcset="../demos/dylan-prorok/healed-poster-mobile-7d9f16d1.jpg">
+              <img class="media-fill prorok-healed" id="prorok-poster" src="../demos/dylan-prorok/healed-poster-desktop-4af24dec.jpg" alt="" width="1080" height="720" decoding="async">
+            </picture>
             <video
-              class="media-fill prorok-ink"
+              class="media-fill prorok-healed"
               id="prorok-ink-video"
               data-video
-              src="../demos/dylan-prorok/sakura-ink-bloom.mp4"
-              poster="../demos/dylan-prorok/dylan-portrait.jpg"
               muted loop playsinline preload="none"
-              width="960" height="540"></video>
-            <img class="prorok-portrait" id="prorok-portrait" src="../demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
+              width="1080" height="720">
+              <source media="(max-aspect-ratio:1/1)" src="../demos/dylan-prorok/healed-montage-mobile-18bdbd22.mp4" type="video/mp4">
+              <source src="../demos/dylan-prorok/healed-montage-desktop-854d3384.mp4" type="video/mp4">
+            </video>
+            <img class="prorok-healed-fallback" id="prorok-portrait" src="../demos/dylan-prorok/healed-poster-mobile-7d9f16d1.jpg" alt="" width="720" height="960" decoding="async">
             <div class="prorok-seal" aria-hidden="true"></div>
             <div class="prorok-wash"></div>
           </div>
@@ -1358,6 +1544,12 @@
             <a class="nav-link" href="../" id="back-home" data-role="back-home">Back to Jarrett</a>
           </div>
         </header>
+
+        <div class="generations-site-chrome" aria-hidden="true">
+          <img class="generations-site-logo" src="../assets/work/generations/generations-kitchen-logo-03eee381.png" alt="" width="1351" height="569">
+          <div class="generations-site-title">LOCO<br>MOCO</div>
+          <span class="generations-site-order">ORDER NOW&nbsp;↗</span>
+        </div>
 
         <div class="scene-copy scene-copy--generations" id="copy-generations">
           <h1 class="scene-name"><a href="generations-kitchen/" aria-label="Read the Generations Kitchen case study">Generations Kitchen</a></h1>
@@ -1393,11 +1585,18 @@
         </div>
 
         <div class="scene-copy scene-copy--terminal" id="copy-terminal">
-          <h2 class="scene-name">See the process.</h2>
-          <p class="scene-line">Continue into the leak, the rebuild, and one result from the process.</p>
-          <div class="scene-actions">
-            <a class="scene-action" href="../#process-journey">Continue to the process</a>
+          <div class="terminal-process">
+            <h2 class="scene-name">See the process.</h2>
+            <p class="scene-line">Continue into the leak, the rebuild, and one result from the process.</p>
+            <div class="scene-actions">
+              <a class="scene-action" href="../#process-journey">Continue to the process</a>
+            </div>
           </div>
+          <section class="terminal-book" aria-labelledby="terminal-book-title">
+            <h2 class="terminal-book-title" id="terminal-book-title">Want a free concept for your site?</h2>
+            <p class="terminal-book-line">Book at least 24 hours ahead and add your current website to the booking form. I’ll make a free concept for our call.</p>
+            <a class="scene-action terminal-book-action" href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Book your call</a>
+          </section>
         </div>
       </div>
     </div>
@@ -1427,6 +1626,7 @@
   var inkVideo = document.getElementById("prorok-ink-video");
   var generationsPoster = document.getElementById("generations-poster");
   var painaPoster = document.getElementById("paina-poster");
+  var ranaPoster = document.getElementById("rana-poster");
   var ringPoster = document.getElementById("ring-poster");
   var prorokPortrait = document.getElementById("prorok-portrait");
   var terminalReturn = document.getElementById("terminal-return");
@@ -1442,6 +1642,9 @@
   var renderRaf = 0;
   var lastFrameTs = 0;
   var videosArmed = false;
+  var ranaSequenceOwned = false;
+  var ranaSequenceSecondary = false;
+  var prorokSequenceOwned = false;
 
   /* The new food passage occupies the first 30%; the inherited tail keeps its
      internal timing through a local 0–1 clock. */
@@ -1790,8 +1993,8 @@
   function expectedFoodVideoPath(video, mobile) {
     if (video === generationsVideo) {
       return mobile
-        ? "/assets/work/generations/loco-moco-site-mobile-1f14c4e8.mp4"
-        : "/assets/work/generations/loco-moco-site-desktop-a3073c1c.mp4";
+        ? "/assets/work/generations/loco-moco-natural-mobile-fc141d42.mp4"
+        : "/assets/work/generations/loco-moco-natural-desktop-dc59bdf1.mp4";
     }
     if (video === painaVideo) {
       return mobile
@@ -1804,8 +2007,8 @@
   function expectedFoodPosterPath(image, mobile) {
     if (image === generationsPoster) {
       return mobile
-        ? "/assets/work/generations/loco-moco-site-mobile-1075c858.jpg"
-        : "/assets/work/generations/loco-moco-site-desktop-df266fa6.jpg";
+        ? "/assets/work/generations/loco-moco-natural-mobile-1d88178b.jpg"
+        : "/assets/work/generations/loco-moco-natural-desktop-0433595d.jpg";
     }
     if (image === painaPoster) {
       return mobile
@@ -1854,6 +2057,62 @@
       y: y,
       width: width,
       height: height
+    };
+    try {
+      ctx.drawImage(source, x, y, width, height);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function drawMobileCover(ctx, source) {
+    var size = mobileSourceSize(source);
+    if (!ctx || !size) return false;
+    var scale = Math.max(mobilePlateWidth / size.width, mobilePlateHeight / size.height);
+    var width = size.width * scale;
+    var height = size.height * scale;
+    var x = (mobilePlateWidth - width) * .5;
+    var y = (mobilePlateHeight - height) * .5;
+    lastMobileContainGeometry = {
+      sourceWidth: size.width,
+      sourceHeight: size.height,
+      plateWidth: mobilePlateWidth,
+      plateHeight: mobilePlateHeight,
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      fit: "cover"
+    };
+    try {
+      ctx.drawImage(source, x, y, width, height);
+      return true;
+    } catch (err) {
+      return false;
+    }
+  }
+
+  function drawMobileHealedDisplay(ctx, source) {
+    var size = mobileSourceSize(source);
+    if (!ctx || !size) return false;
+    var maxWidth = mobilePlateWidth * .9;
+    var maxHeight = mobilePlateHeight * .58;
+    var scale = Math.min(maxWidth / size.width, maxHeight / size.height);
+    var width = size.width * scale;
+    var height = size.height * scale;
+    var x = (mobilePlateWidth - width) * .5;
+    var y = mobilePlateHeight * .095;
+    lastMobileContainGeometry = {
+      sourceWidth: size.width,
+      sourceHeight: size.height,
+      plateWidth: mobilePlateWidth,
+      plateHeight: mobilePlateHeight,
+      x: x,
+      y: y,
+      width: width,
+      height: height,
+      fit: "contain-top"
     };
     try {
       ctx.drawImage(source, x, y, width, height);
@@ -1927,14 +2186,14 @@
   function drawMobileGenerationsScene(ctx, sourceOverride) {
     var source = sourceOverride || mobileSource(generationsVideo, generationsPoster);
     if (!source) return false;
-    return drawMobileContain(ctx, source);
+    return drawMobileCover(ctx, source);
   }
 
   function drawMobilePainaScene(ctx, sourceOverride) {
     var source = sourceOverride || mobileSource(painaVideo, painaPoster);
     if (!source) return false;
     ctx.filter = "saturate(1.05) contrast(1.04) brightness(.98)";
-    var drawn = drawMobileContain(ctx, source);
+    var drawn = drawMobileCover(ctx, source);
     ctx.filter = "none";
     if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
@@ -1951,11 +2210,11 @@
   }
 
   function drawMobileRanaScene(ctx) {
-    var source = mobileSource(ringVideo, ringPoster);
+    var source = ranaSequenceSecondary
+      ? mobileSource(ringVideo, ringPoster)
+      : mobileSource(studioVideo, ranaPoster);
     if (!source) return false;
-    ctx.filter = "saturate(1.1) contrast(1.06) brightness(1.03)";
-    var drawn = drawMobileContain(ctx, source);
-    ctx.filter = "none";
+    var drawn = drawMobileCover(ctx, source);
     if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
       [0, "rgba(4,10,12,.18)"],
@@ -1971,27 +2230,10 @@
   }
 
   function drawMobileProrokScene(ctx) {
-    var portrait = imageHasRenderableFrame(prorokPortrait) ? prorokPortrait : null;
-    if (!portrait) return false;
-    var ink = null;
-    if (ink) {
-      ctx.filter = "saturate(.9) contrast(1.08) brightness(.72)";
-      ctx.globalAlpha = .72;
-      drawMobileContain(ctx, ink);
-      ctx.globalAlpha = 1;
-      ctx.filter = "none";
-    } else {
-      ctx.fillStyle = "#0b0807";
-      ctx.fillRect(0, 0, mobilePlateWidth, mobilePlateHeight);
-    }
-
-    mobileMaskBufferCtx.setTransform(1, 0, 0, 1, 0, 0);
-    mobileMaskBufferCtx.clearRect(0, 0, mobilePlateWidth, mobilePlateHeight);
-    mobileMaskBufferCtx.filter = "saturate(.94) contrast(1.14) brightness(1.06)";
-    var portraitDrawn = drawMobileContain(mobileMaskBufferCtx, portrait);
-    mobileMaskBufferCtx.filter = "none";
-    if (!portraitDrawn) return false;
-    ctx.drawImage(mobileMaskBuffer, 0, 0);
+    var source = mobileSource(inkVideo, prorokPortrait);
+    if (!source) return false;
+    var drawn = drawMobileHealedDisplay(ctx, source);
+    if (!drawn) return false;
     fillMobileLinearGradient(ctx, 0, 0, 0, mobilePlateHeight, [
       [0, "rgba(11,8,7,.12)"],
       [.55, "rgba(11,8,7,.08)"],
@@ -2214,8 +2456,11 @@
   function playSafe(video) {
     if (!video) return;
     if (video.hasAttribute("data-once") && video.ended) return;
+    if (video === generationsVideo && motionOn && (video.currentTime || 0) < 0.5) {
+      root.classList.add("generations-human-beat");
+    }
     var p = video.play();
-    if (p && typeof p.catch === "function") p.catch(function () {});
+    if (p && typeof p.catch === "function") p.catch(function () { syncGenerationsHumanBeat(); });
   }
   function pauseSafe(video) {
     if (!video) return;
@@ -2247,11 +2492,60 @@
     }
   }
 
+  function resetVideoToStart(video) {
+    if (!video || video.readyState < 1) return;
+    try { video.currentTime = 0; } catch (error) {}
+  }
+
+  function setRanaSequenceSecondary(secondary) {
+    ranaSequenceSecondary = !!secondary;
+    root.classList.toggle("rana-sequence-secondary", ranaSequenceSecondary);
+    if (isMobile()) paint(progressCurrent);
+  }
+
+  function enterRanaSequence() {
+    if (!ranaSequenceOwned) {
+      ranaSequenceOwned = true;
+      setRanaSequenceSecondary(false);
+      resetVideoToStart(studioVideo);
+      resetVideoToStart(ringVideo);
+    }
+    requestMobileVideo(ringVideo, false);
+    if (ranaSequenceSecondary) {
+      pauseSafe(studioVideo);
+      playSafe(ringVideo);
+    } else {
+      pauseSafe(ringVideo);
+      playSafe(studioVideo);
+    }
+  }
+
+  function leaveRanaSequence() {
+    if (!ranaSequenceOwned) return;
+    ranaSequenceOwned = false;
+    pauseSafe(studioVideo);
+    pauseSafe(ringVideo);
+  }
+
+  function enterProrokSequence() {
+    if (!prorokSequenceOwned) {
+      prorokSequenceOwned = true;
+      resetVideoToStart(inkVideo);
+    }
+    playSafe(inkVideo);
+  }
+
+  function leaveProrokSequence() {
+    if (!prorokSequenceOwned) return;
+    prorokSequenceOwned = false;
+    pauseSafe(inkVideo);
+  }
+
   function videosForMobileStop(id) {
     if (id === "generations") return [generationsVideo];
     if (id === "paina") return [painaVideo];
-    if (id === "rana") return [ringVideo];
-    if (id === "prorok") return [];
+    if (id === "rana") return [studioVideo];
+    if (id === "prorok") return [inkVideo];
     /* Process is image-backed; image readiness is checked separately. */
     return [];
   }
@@ -2259,7 +2553,7 @@
   function imagesForMobileStop(id) {
     if (id === "generations") return [generationsPoster];
     if (id === "paina") return [painaPoster];
-    if (id === "rana") return [ringPoster];
+    if (id === "rana") return [ranaPoster];
     if (id === "prorok") return [prorokPortrait];
     if (id === "process") return [terminalReturn];
     return [];
@@ -2422,8 +2716,8 @@
   function mobileDestinationReady(id) {
     if (id === "generations") return destinationRepresentationReady(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationReady(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationReady(ringVideo, ringPoster);
-    if (id === "prorok") return imageHasRenderableFrame(prorokPortrait);
+    if (id === "rana") return destinationRepresentationReady(studioVideo, ranaPoster);
+    if (id === "prorok") return destinationRepresentationReady(inkVideo, prorokPortrait);
     if (id === "process") return imageHasRenderableFrame(terminalReturn);
     return false;
   }
@@ -2431,8 +2725,8 @@
   function mobileDestinationFailed(id) {
     if (id === "generations") return destinationRepresentationFailed(generationsVideo, generationsPoster);
     if (id === "paina") return destinationRepresentationFailed(painaVideo, painaPoster);
-    if (id === "rana") return destinationRepresentationFailed(ringVideo, ringPoster);
-    if (id === "prorok") return imageHasFailed(prorokPortrait);
+    if (id === "rana") return destinationRepresentationFailed(studioVideo, ranaPoster);
+    if (id === "prorok") return destinationRepresentationFailed(inkVideo, prorokPortrait);
     if (id === "process") return imageHasFailed(terminalReturn);
     return false;
   }
@@ -2516,6 +2810,7 @@
     var videos = videosForMobileStop(mobileDestinationId);
     var i;
     for (i = 0; i < videos.length; i++) requestMobileVideo(videos[i], false);
+    if (mobileDestinationId === "rana") requestMobileVideo(ringVideo, false);
   }
 
   function clearMobileDestination() {
@@ -2526,6 +2821,8 @@
     if (breakpointSwapActive) {
       pauseSafe(generationsVideo);
       pauseSafe(painaVideo);
+      leaveRanaSequence();
+      leaveProrokSequence();
       return;
     }
     if (!motionOn) {
@@ -2534,6 +2831,9 @@
       pauseSafe(studioVideo);
       pauseSafe(ringVideo);
       pauseSafe(inkVideo);
+      ranaSequenceOwned = false;
+      prorokSequenceOwned = false;
+      setRanaSequenceSecondary(false);
       return;
     }
     armVideos();
@@ -2551,28 +2851,27 @@
       else pauseSafe(generationsVideo);
       if (isActive(painaVideo)) playSafe(painaVideo);
       else pauseSafe(painaVideo);
-      pauseSafe(studioVideo);
-      if (isActive(ringVideo)) playSafe(ringVideo);
-      else pauseSafe(ringVideo);
-      pauseSafe(inkVideo);
+      if (activeId === "rana") enterRanaSequence();
+      else leaveRanaSequence();
+      if (activeId === "prorok") enterProrokSequence();
+      else leaveProrokSequence();
       return;
     }
     if (p < 0.28) playSafe(generationsVideo);
     else pauseSafe(generationsVideo);
     if (p > 0.08 && p < 0.45) playSafe(painaVideo);
     else pauseSafe(painaVideo);
-    if (p > 0.39 && p < 0.74) playSafe(studioVideo);
-    else pauseSafe(studioVideo);
-    if (p > 0.48 && p < 0.70) playSafe(ringVideo);
-    else pauseSafe(ringVideo);
-    pauseSafe(inkVideo);
+    if (p >= 0.50 && p < 0.68) enterRanaSequence();
+    else leaveRanaSequence();
+    if (p >= 0.68 && p < 0.985) enterProrokSequence();
+    else leaveProrokSequence();
   }
 
   function syncGenerationsHumanBeat() {
     var t = generationsVideo ? generationsVideo.currentTime || 0 : 0;
     var active = !!(
-      generationsVideo && motionOn && !isMobile() && !generationsVideo.paused &&
-      t >= 0.2 && t < 1.9
+      generationsVideo && motionOn && !generationsVideo.paused &&
+      t >= 0 && t < 0.5
     );
     root.classList.toggle("generations-human-beat", active);
   }
@@ -2581,7 +2880,7 @@
   function queueGenerationsHumanBeatFrame() {
     if (
       generationsHumanBeatFrame || !generationsVideo || generationsVideo.paused ||
-      !motionOn || isMobile() || typeof generationsVideo.requestVideoFrameCallback !== "function"
+      !motionOn || typeof generationsVideo.requestVideoFrameCallback !== "function"
     ) return;
     generationsHumanBeatFrame = generationsVideo.requestVideoFrameCallback(function () {
       generationsHumanBeatFrame = 0;
@@ -3085,7 +3384,7 @@
     if (motionOn !== !!event.detail.on) applyMotionPreference(!!event.detail.on, false);
   });
 
-  ["playing", "timeupdate", "seeked"].forEach(function (type) {
+  ["play", "playing", "timeupdate", "seeked"].forEach(function (type) {
     generationsVideo.addEventListener(type, function () {
       syncGenerationsHumanBeat();
       queueGenerationsHumanBeatFrame();
@@ -3099,8 +3398,7 @@
   });
   window.addEventListener("resize", function () {
     syncGenerationsHumanBeat();
-    if (isMobile()) stopGenerationsHumanBeatFrame();
-    else queueGenerationsHumanBeatFrame();
+    queueGenerationsHumanBeatFrame();
   });
 
   window.addEventListener("scroll", function () {
@@ -3133,6 +3431,14 @@
   window.addEventListener("touchcancel", onMobileTouchCancel, { passive: true });
   window.addEventListener("wheel", onMobileWheel, { passive: false });
 
+  studioVideo.addEventListener("ended", function () {
+    if (!motionOn || !ranaSequenceOwned) return;
+    setRanaSequenceSecondary(true);
+    resetVideoToStart(ringVideo);
+    pauseSafe(studioVideo);
+    playSafe(ringVideo);
+  });
+
   bindPosterFallback(generationsVideo, generationsPoster);
   bindPosterFallback(painaVideo, painaPoster);
   bindPosterFallback(studioVideo, document.getElementById("rana-poster"));
@@ -3145,6 +3451,7 @@
   bindVideoReadiness(inkVideo);
   bindImageReadiness(generationsPoster);
   bindImageReadiness(painaPoster);
+  bindImageReadiness(ranaPoster);
   bindImageReadiness(ringPoster);
   bindImageReadiness(prorokPortrait);
   bindImageReadiness(terminalReturn);
@@ -3194,6 +3501,9 @@
     get mobilePlateActive() { return mobilePlateActive; },
     get mobilePlateSize() { return { width: mobilePlateWidth, height: mobilePlateHeight }; },
     get mobileContainGeometry() { return lastMobileContainGeometry; },
+    get ranaSequenceOwned() { return ranaSequenceOwned; },
+    get ranaSequencePhase() { return ranaSequenceSecondary ? "alexandrite" : "all-rings"; },
+    get prorokSequenceOwned() { return prorokSequenceOwned; },
     get breakpointSwapActive() { return breakpointSwapActive; },
     get breakpointFallbackActive() { return breakpointFallbackActive; },
     get breakpointFallbackOwnerIndex() { return breakpointFallbackOwnerIndex; },
