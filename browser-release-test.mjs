@@ -160,11 +160,11 @@ async function readPassageMotion(page, route) {
 
 {
   const scenarios = [
-    { name: 'default-on', query: '', stored: '', reducedMotion: 'no-preference', expected: 'on', source: 'os' },
-    { name: 'os-reduce', query: '', stored: '', reducedMotion: 'reduce', expected: 'off', source: 'os' },
+    { name: 'default-on', query: '', stored: '', reducedMotion: 'no-preference', expected: 'on', source: 'default' },
+    { name: 'os-reduce-does-not-override-default', query: '', stored: '', reducedMotion: 'reduce', expected: 'on', source: 'default' },
     { name: 'query-off-over-stored-on', query: '?motion=off', stored: 'on', reducedMotion: 'no-preference', expected: 'off', source: 'query' },
     { name: 'query-on-over-stored-off', query: '?motion=on', stored: 'off', reducedMotion: 'reduce', expected: 'on', source: 'query' },
-    { name: 'stale-stored-off-is-retired', query: '', stored: 'off', reducedMotion: 'no-preference', expected: 'on', source: 'os' }
+    { name: 'stale-stored-off-is-retired', query: '', stored: 'off', reducedMotion: 'no-preference', expected: 'on', source: 'default' }
   ];
   report.motion = [];
   for (const route of ['/', '/work/']) {
@@ -195,9 +195,10 @@ async function readPassageMotion(page, route) {
   await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(400);
   await page.emulateMedia({ reducedMotion: 'no-preference' });
+  await page.emulateMedia({ reducedMotion: 'reduce' });
   await page.waitForTimeout(150);
   const osUpdated = await readPassageMotion(page, '/');
-  check(osUpdated.value === 'on' && osUpdated.portfolio === true && osUpdated.process === true, 'OS motion changes update both controllers before an explicit choice');
+  check(osUpdated.value === 'on' && osUpdated.source === 'default' && osUpdated.portfolio === true && osUpdated.process === true, 'OS motion changes do not override the default-on passage');
   await page.goto(BASE + '/?motion=off', { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(400);
   await page.emulateMedia({ reducedMotion: 'reduce' });
@@ -676,7 +677,7 @@ async function readPassageMotion(page, route) {
 {
   const scenarios = [
     { name: 'default-on', query: '', reducedMotion: 'no-preference', expected: 'on' },
-    { name: 'os-reduce', query: '', reducedMotion: 'reduce', expected: 'off' },
+    { name: 'os-reduce-does-not-override-default', query: '', reducedMotion: 'reduce', expected: 'on' },
     { name: 'query-off', query: '?motion=off', reducedMotion: 'no-preference', expected: 'off' },
   ];
   report.caseMotion = [];

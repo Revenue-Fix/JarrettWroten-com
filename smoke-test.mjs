@@ -76,6 +76,7 @@ ok(motionBootstrap.includes('localStorage.removeItem("jw-motion")') && !motionBo
 ok(!/<button[^>]*(?:portfolio-motion-toggle|process-motion-toggle)/.test(sourceHtml), 'homepage renders no Motion On or Off control');
 ok(html.includes('data-motion'), 'motion attribute boot');
 ok(motionBootstrap.includes('get("motion")') && motionBootstrap.includes('requested === "on" || requested === "off"'), 'motion query support');
+ok(motionBootstrap.includes('var current = query || "on"') && motionBootstrap.includes('query ? "query" : "default"') && !motionBootstrap.includes('prefers-reduced-motion'), 'motion defaults on independently of the operating-system preference');
 
 // unknown station fallback: validStations map + empty invalid
 ok(html.includes('validStations'), 'unknown station fallback map');

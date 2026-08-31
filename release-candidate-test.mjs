@@ -130,7 +130,7 @@ ok(!/font-style:italic/.test(pages['/work/paina-cafe/']), 'Pā‘ina does not sy
 
 ok(caseCss.includes('font:600 .875rem/1.2 var(--case-ui)') && caseCss.includes('font:600 .875rem/1.3 var(--case-ui)') && caseCss.includes('font:500 .875rem/1.4 var(--case-ui)'), 'case labels and footer meet the 14px authored floor');
 ok(caseCss.includes('html[data-case-motion="off"] video{visibility:hidden}'), 'motion-off reveals authored poster fields instead of moving video');
-ok(caseJs.includes('jw-motion-change') && caseJs.includes('videos[i].pause()'), 'case motion consumer follows the shared reduced-motion state and pauses every carrier');
+ok(caseJs.includes('jw-motion-change') && caseJs.includes('videos[i].pause()'), 'case motion consumer follows the shared motion state and pauses every carrier when explicitly disabled');
 try { new Function(caseJs); ok(true, 'case motion controller parses'); }
 catch (error) { failures.push('case motion controller parse: ' + error.message); }
 try { new Function(portfolioJs); ok(true, 'root portfolio controller parses'); }
@@ -149,7 +149,7 @@ ok(
   portfolioJs.includes('addEventListener("jw-motion-change"') &&
     root.includes('addEventListener("jw-motion-change"') &&
     caseJs.includes('addEventListener("jw-motion-change"') &&
-    motionBootstrap.includes('prefers-reduced-motion: reduce'),
+    motionBootstrap.includes('var current = query || "on"'),
   'portfolio, Process, and case studies consume one deterministic motion owner'
 );
 ok(root.includes('watchForProcessActivation') && /id="process-arrival-motion-video"[\s\S]*?preload="none"/.test(root), 'process media boot stays deferred on portfolio cold load');
@@ -168,17 +168,19 @@ ok(!/live Rana site|I built the site around the hand/.test(root + work), 'Rana s
 ok(!/currently being revised (?:with|by) Dylan Prorok/.test(root + work), 'Dylan copy makes no unsupported collaboration claim');
 
 ok(
-  root.includes('<script src="assets/motion-bootstrap.js"></script>') &&
-    work.includes('<script src="../assets/motion-bootstrap.js"></script>') &&
-    caseRequirements.every(([route]) => pages[route].includes('<script src="/assets/motion-bootstrap.js"></script>')),
+  root.includes('<script src="assets/motion-bootstrap.js?v=c9b843c9"></script>') &&
+    work.includes('<script src="../assets/motion-bootstrap.js?v=c9b843c9"></script>') &&
+    caseRequirements.every(([route]) => pages[route].includes('<script src="/assets/motion-bootstrap.js?v=c9b843c9"></script>')),
   'root, Work, and every case study load one shared synchronous motion bootstrap'
 );
 ok(
-  motionBootstrap.includes('query || (media.matches ? "off" : "on")') &&
-    motionBootstrap.includes('if (explicit) return;') &&
+  motionBootstrap.includes('var current = query || "on"') &&
+    motionBootstrap.includes('query ? "query" : "default"') &&
+    !motionBootstrap.includes('prefers-reduced-motion') &&
+    !caseCss.includes('prefers-reduced-motion') &&
     motionBootstrap.includes('localStorage.removeItem("jw-motion")') &&
     !motionBootstrap.includes('localStorage.setItem('),
-  'motion bootstrap defaults on, honors query and OS reduction, and retires stored toggle state'
+  'motion bootstrap defaults on, honors the explicit URL opt-out, and retires stored toggle state'
 );
 ok(
   !/<button[^>]*(?:portfolio-motion-toggle|process-motion-toggle|class="motion-toggle"|case-motion-toggle)/.test(

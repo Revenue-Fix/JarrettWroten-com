@@ -189,7 +189,3 @@ html[data-case-motion="off"] video{visibility:hidden}
   .case-heading{font-size:clamp(2.55rem,13vw,4.2rem)}
   .case-footer{flex-direction:column}
 }
-
-@media (prefers-reduced-motion:reduce){
-  html{scroll-behavior:auto}
-}
