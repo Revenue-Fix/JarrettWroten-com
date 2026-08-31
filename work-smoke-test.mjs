@@ -71,8 +71,8 @@ const requiredPhrases = [
   'See the process.',
   'Continue into the leak, the rebuild, and one result from the process.',
   'Continue to the process',
-  'Want a free concept for your site?',
-  'Book at least 24 hours ahead and add your current website to the booking form.',
+  'Get a free concept for your site.',
+  'Book at least 24 hours ahead. Add your current website to the form, and I’ll build your concept before our call.',
   'Book your call',
   'Back to Jarrett',
 ];

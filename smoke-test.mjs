@@ -1198,7 +1198,7 @@ ok(
     const pathCount = (html.match(/href="book\/"/g) || []).length;
     ok(pathCount === 4, 'all four homepage booking actions route through /book/ (got ' + pathCount + ')');
     ok(
-      /class="portfolio-terminal-book"[\s\S]*?Want a free concept for your site\?[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?class="portfolio-scene-action portfolio-terminal-book-action"[^>]*href="book\/"/.test(html),
+      /class="portfolio-terminal-book"[\s\S]*?Get a free concept for your site\.[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?class="portfolio-scene-action portfolio-terminal-book-action"[^>]*href="book\/"/.test(html),
       'portfolio terminal carries the complete free-concept offer into the local booking page'
     );
 
@@ -1211,7 +1211,7 @@ ok(
         ? desktopSrc.slice(bottomStart, bookClose + 4)
         : '';
     const desktopBookRe =
-      /<p class="invite-book">Want to talk first\? <a class="invite-book-link" href="book\/">Book a call\.<\/a><\/p>/;
+      /<p class="invite-book"><a class="invite-book-link" href="book\/">Book a call\.<\/a><\/p>/;
     ok(desktopBookRe.test(bottomSrc), 'desktop threshold-bottom has exact booking line with linked phrase');
     ok(
       bottomSrc.includes('class="invite-book-link" href="' + BOOKING_PATH + '"'),
@@ -1253,7 +1253,7 @@ ok(
     );
     const mobileThresholdSrc = mobileThreshold ? mobileThreshold[0] : '';
     const mobileBookRe =
-      /<p class="mobile-book">Want to talk first\? <a class="mobile-book-link" href="book\/">Book a call\.<\/a><\/p>/;
+      /<p class="mobile-book"><a class="mobile-book-link" href="book\/">Book a call\.<\/a><\/p>/;
     ok(mobileBookRe.test(mobileThresholdSrc), 'mobile threshold beat has exact booking line with linked phrase');
     ok(
       mobileThresholdSrc.includes('class="mobile-book-link" href="' + BOOKING_PATH + '"'),
@@ -1276,8 +1276,8 @@ ok(
 
     // Exact outward copy appears in both surfaces (linked phrase split across <a>).
     ok(
-      /Want to talk first\? <a[^>]*>Book a call\.<\/a>/.test(bottomSrc) &&
-        /Want to talk first\? <a[^>]*>Book a call\.<\/a>/.test(mobileThresholdSrc),
+      /<p class="invite-book"><a[^>]*>Book a call\.<\/a><\/p>/.test(bottomSrc) &&
+        /<p class="mobile-book"><a[^>]*>Book a call\.<\/a><\/p>/.test(mobileThresholdSrc),
       'booking outward copy is exact on desktop and mobile'
     );
 

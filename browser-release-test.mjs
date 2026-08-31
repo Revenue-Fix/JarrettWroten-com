@@ -110,7 +110,7 @@ for (const route of ['/', '/work/', '/work/generations-kitchen/', '/work/paina-c
       noindex: document.querySelector('meta[name="robots"]')?.content || '',
     };
   });
-  check(response && response.status() === 200 && state.h1 === 'Pick a time. I’ll bring the first idea.', 'booking page opens with the approved free-concept invitation');
+  check(response && response.status() === 200 && state.h1 === 'Pick a time. I’ll bring your free concept.', 'booking page opens with the approved free-concept invitation');
   check(state.intro.right <= state.panel.left + 1 && state.panel.right <= 1281, 'desktop booking page keeps the introduction and scheduler in their own complete regions');
   check(/calendar\.google\.com\/calendar\/appointments\/schedules\//.test(state.frameSrc) && /gv=true/.test(state.frameSrc), 'booking page loads the real Google appointment schedule inline');
   check(state.noindex === 'noindex,follow', 'booking utility stays out of the public search index');
