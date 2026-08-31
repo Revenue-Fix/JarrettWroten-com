@@ -166,6 +166,18 @@ ok(!privacy.includes('—') && !/your privacy matters/i.test(privacy), 'privacy 
 ok(!root.includes('The food already makes the sale') && !work.includes('The food already makes the sale'), 'unsupported Generations sales line is absent');
 ok(!/live Rana site|I built the site around the hand/.test(root + work), 'Rana stays inside the pending concept boundary');
 ok(!/currently being revised (?:with|by) Dylan Prorok/.test(root + work), 'Dylan copy makes no unsupported collaboration claim');
+ok(
+  root.includes('<a href="https://paina.jarrettwroten.com/" rel="noopener">Open the Pā‘ina Café website</a>') &&
+    root.includes('<a href="https://paina.jarrettwroten.com/" rel="noopener" aria-label="Open the Pā‘ina Café website">Pā‘ina Café</a>') &&
+    work.includes('<a href="https://paina.jarrettwroten.com/" rel="noopener" aria-label="Open the Pā‘ina Café website">Pā‘ina Café</a>'),
+  'Pā‘ina no-JS action and both portfolio titles open the live website directly'
+);
+ok(
+  !root.includes('href="work/paina-cafe/"') &&
+    !work.includes('href="paina-cafe/"') &&
+    !/aria-label="[^"]*Pā‘ina Café case study"/.test(root + work),
+  'visitor-facing Pā‘ina navigation does not route through the case-study page'
+);
 
 ok(
   root.includes('<script src="assets/motion-bootstrap.js?v=c9b843c9"></script>') &&
