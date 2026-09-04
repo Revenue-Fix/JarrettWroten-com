@@ -94,7 +94,7 @@ async function renderRoute(route, viewport, label) {
   const response = await page.goto(BASE + route, { waitUntil: 'domcontentloaded' });
   await page.waitForTimeout(900);
   if (route === '/book/') {
-    await page.frameLocator('iframe.booking-frame').getByRole('heading', { name: 'Select an appointment time', exact: true }).waitFor({ state: 'visible', timeoutMs: 15000 });
+    await page.frameLocator('iframe.booking-frame').getByRole('heading', { name: 'Select an appointment time', exact: true }).waitFor({ state: 'visible', timeout: 15000 });
   }
   const state = await page.evaluate(() => ({
     title: document.title,
@@ -123,7 +123,7 @@ for (const route of ['/', '/work/', '/work/generations-kitchen/', '/work/paina-c
   const page = await context.newPage();
   const response = await page.goto(BASE + '/book/', { waitUntil: 'domcontentloaded' });
   const scheduler = page.frameLocator('iframe.booking-frame');
-  await scheduler.getByRole('heading', { name: 'Select an appointment time', exact: true }).waitFor({ state: 'visible', timeoutMs: 15000 });
+  await scheduler.getByRole('heading', { name: 'Select an appointment time', exact: true }).waitFor({ state: 'visible', timeout: 15000 });
   const state = await page.evaluate(() => {
     const intro = document.querySelector('.booking-intro').getBoundingClientRect();
     const panel = document.querySelector('.booking-panel').getBoundingClientRect();
@@ -261,6 +261,37 @@ async function readPassageMotion(page, route) {
 }
 
 {
+  report.painaCaseFallback = [];
+  for (const surface of [
+    { label: 'desktop', viewport: { width: 1280, height: 720 }, poster: 'opening-desktop-poster.jpg' },
+    { label: 'mobile', viewport: { width: 390, height: 844 }, poster: 'opening-mobile-entry-2p4.jpg' },
+  ]) {
+    const context = await browser.newContext({ viewport: surface.viewport });
+    const page = await context.newPage();
+    await page.goto(BASE + '/work/paina-cafe/?motion=off', { waitUntil: 'domcontentloaded' });
+    await page.waitForTimeout(250);
+    const state = await page.evaluate(() => {
+      const hero = document.querySelector('.paina-hero');
+      const box = hero.getBoundingClientRect();
+      return {
+        backgroundImage: getComputedStyle(hero).backgroundImage,
+        videosHidden: [...document.querySelectorAll('video')].every((video) => getComputedStyle(video).visibility === 'hidden'),
+        videoPosters: [...document.querySelectorAll('video')].map((video) => video.getAttribute('poster')),
+        hero: { width: box.width, height: box.height },
+      };
+    });
+    check(
+      state.backgroundImage.includes(surface.poster) && state.videosHidden && state.videoPosters.every((poster) => poster === null) && state.hero.width >= surface.viewport.width && state.hero.height >= surface.viewport.height,
+      'Pā‘ina ' + surface.label + ' motion-off fallback uses the matching responsive poster without a conflicting video poster'
+    );
+    const screenshot = path.join(EVIDENCE, 'paina-case-' + surface.label + '-motion-off.png');
+    await page.screenshot({ path: screenshot });
+    report.painaCaseFallback.push({ ...surface, state, screenshot });
+    await context.close();
+  }
+}
+
+{
   const context = await browser.newContext({ viewport: { width: 1280, height: 720 } });
   const page = await context.newPage();
   await page.goto(BASE + '/work/', { waitUntil: 'domcontentloaded' });
@@ -284,7 +315,11 @@ async function readPassageMotion(page, route) {
     const viewport = document.getElementById('viewport');
     window.scrollTo(0, window.WORK_PASSAGE.still.process * (passage.offsetHeight - viewport.offsetHeight));
   });
-  await page.waitForTimeout(1300);
+  await page.waitForFunction(() => {
+    const link = document.querySelector('.terminal-book-action');
+    const copy = document.querySelector('.scene-copy--terminal');
+    return link?.tabIndex === 0 && Number(getComputedStyle(copy).opacity) > .99;
+  }, undefined, { timeout: 5000 });
   const terminalChoices = await page.evaluate(() => {
     const process = document.querySelector('.terminal-process').getBoundingClientRect();
     const book = document.querySelector('.terminal-book').getBoundingClientRect();
@@ -292,6 +327,7 @@ async function readPassageMotion(page, route) {
     const overlap = !(process.right <= book.left || book.right <= process.left || process.bottom <= book.top || book.bottom <= process.top);
     return { overlap, href: link.href, tabIndex: link.tabIndex, bookBottom: book.bottom, viewportHeight: innerHeight };
   });
+  report.workTerminalChoices = terminalChoices;
   check(!terminalChoices.overlap && terminalChoices.bookBottom <= terminalChoices.viewportHeight && terminalChoices.tabIndex === 0 && /\/book\/$/.test(terminalChoices.href), 'standalone Work terminal shows a separate, reachable Book a Call offer');
   await page.click('.scene-copy--terminal .scene-action');
   await page.waitForURL(BASE + '/#process-journey');
@@ -659,8 +695,12 @@ async function readPassageMotion(page, route) {
   );
   const stops = [];
   for (let i = 0; i < 5; i++) {
+    const expectedStop = ['generations', 'paina', 'rana', 'prorok', 'process'][i];
     await page.evaluate(async (index) => { await window.ROOT_PORTFOLIO_PASSAGE.goMobileStop(index); }, i);
-    await page.waitForTimeout(1150);
+    await page.waitForFunction((stop) => {
+      const passage = window.ROOT_PORTFOLIO_PASSAGE;
+      return passage.mobileStop === stop && !passage.mobileWaiting && !passage.mobileGliding;
+    }, expectedStop, { timeout: 12000 });
     const state = await page.evaluate(() => ({
       stop: window.ROOT_PORTFOLIO_PASSAGE.mobileStop,
       waiting: window.ROOT_PORTFOLIO_PASSAGE.mobileWaiting,
@@ -679,7 +719,7 @@ async function readPassageMotion(page, route) {
     await page.screenshot({ path: path.join(EVIDENCE, 'root-mobile-' + state.stop + '.png') });
     check(state.plateActive && state.plate.width >= 390 && state.plate.height >= 844, 'mobile ' + state.stop + ' uses one complete opaque plate');
     check(state.visibleCopy.length === 1, 'mobile ' + state.stop + ' shows one copy block');
-    check(state.stop === ['generations', 'paina', 'rana', 'prorok', 'process'][i], 'mobile passage lands on requested ' + ['generations', 'paina', 'rana', 'prorok', 'process'][i] + ' rest');
+    check(state.stop === expectedStop, 'mobile passage lands on requested ' + expectedStop + ' rest');
     if (state.stop === 'process') check(state.terminalBook.bottom <= 844 && state.terminalBook.tabIndex === 0 && /\/book\/$/.test(state.terminalBook.href), 'mobile portfolio terminal exposes the complete booking path inside the viewport');
     const g = state.contain;
     const ratioError = g ? Math.abs((g.width / g.height) - (g.sourceWidth / g.sourceHeight)) : Infinity;

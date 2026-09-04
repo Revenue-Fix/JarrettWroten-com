@@ -42,9 +42,11 @@
     .paina-beat p{margin:0;font-size:1.08rem;line-height:1.62;color:rgba(12,37,32,.72)}
     .paina-handoff{display:grid;grid-template-columns:minmax(0,1fr) minmax(19rem,.72fr);padding:0;min-height:100svh}
     .paina-handoff-media{min-height:70svh;display:grid;place-items:center;background:#020a09 url("/assets/work/paina/opening-desktop-poster.jpg") center/contain no-repeat}
-    .paina-handoff-media video{width:100%;height:100%;object-fit:contain;background:#020a09}
+    .paina-hero .case-hero-media,.paina-handoff-media video{background:transparent}
+    .paina-handoff-media video{width:100%;height:100%;object-fit:contain}
     .paina-handoff-copy{align-self:center;padding:clamp(4rem,9vw,8rem) var(--case-gutter)}
-    @media(max-width:800px){.paina-hero,.paina-handoff-media{background-image:url("/assets/work/paina/opening-mobile-entry-2p4.jpg")}.paina-word{font-size:clamp(4rem,22vw,7rem)}.paina-beatline{grid-template-columns:1fr;gap:3rem}.paina-handoff{display:block}.paina-handoff-media{min-height:72svh}.paina-handoff-copy{padding-top:4.5rem;padding-bottom:4.5rem}}
+    @media(max-width:800px){.paina-word{font-size:clamp(4rem,22vw,7rem)}.paina-beatline{grid-template-columns:1fr;gap:3rem}.paina-handoff{display:block}.paina-handoff-media{min-height:72svh}.paina-handoff-copy{padding-top:4.5rem;padding-bottom:4.5rem}}
+    @media(max-width:720px){.paina-hero,.paina-handoff-media{background-image:url("/assets/work/paina/opening-mobile-entry-2p4.jpg")}}
   </style>
 </head>
 <body>
@@ -55,7 +57,7 @@
 
   <main class="case-article">
     <section class="case-hero paina-hero" aria-labelledby="paina-title">
-      <video class="case-hero-media" autoplay muted loop playsinline preload="metadata" poster="/assets/work/paina/opening-desktop-poster.jpg" aria-hidden="true">
+      <video class="case-hero-media" autoplay muted loop playsinline preload="metadata" aria-hidden="true">
         <source media="(max-width:720px)" src="/assets/work/paina/opening-mobile-from-2p4.mp4" type="video/mp4">
         <source src="/assets/work/paina/opening-desktop.mp4" type="video/mp4">
       </video>
@@ -91,7 +93,7 @@
 
     <section class="paina-handoff" aria-labelledby="paina-status-title">
       <div class="paina-handoff-media" aria-hidden="true">
-        <video autoplay muted loop playsinline preload="metadata" poster="/assets/work/paina/opening-mobile-entry-2p4.jpg">
+        <video autoplay muted loop playsinline preload="metadata">
           <source media="(max-width:720px)" src="/assets/work/paina/opening-mobile-from-2p4.mp4" type="video/mp4">
           <source src="/assets/work/paina/opening-desktop.mp4" type="video/mp4">
         </video>
