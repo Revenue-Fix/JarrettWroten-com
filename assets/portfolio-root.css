@@ -680,14 +680,14 @@
     position:absolute;
   }
   .portfolio-terminal-process{
-    left:var(--portfolio-gutter);
-    bottom:clamp(2rem, 9vh, 4.6rem);
-    max-width:min(36rem, 46vw);
-  }
-  .portfolio-terminal-book{
     top:clamp(5.4rem, 12vh, 7.2rem);
     right:var(--portfolio-gutter);
     width:min(25rem, 31vw);
+  }
+  .portfolio-terminal-book{
+    left:var(--portfolio-gutter);
+    bottom:clamp(2rem, 9vh, 4.6rem);
+    max-width:min(36rem, 46vw);
   }
   .portfolio-terminal-book-title{
     margin:0 0 .55rem;
@@ -1186,14 +1186,16 @@
     .portfolio-scene-copy--terminal{
       max-width:none;
     }
-    .portfolio-terminal-process{
+    .portfolio-terminal-book{
       left:var(--portfolio-gutter);
       right:var(--portfolio-gutter);
+      top:auto;
       bottom:calc(1.2rem + env(safe-area-inset-bottom));
       max-width:none;
     }
-    .portfolio-terminal-book{
+    .portfolio-terminal-process{
       top:calc(4.8rem + env(safe-area-inset-top));
+      bottom:auto;
       right:var(--portfolio-gutter);
       left:var(--portfolio-gutter);
       width:auto;
@@ -1266,7 +1268,7 @@
     html.portfolio-generations-human-beat .portfolio-generations-site-order{
       opacity:0;
     }
-    .portfolio-terminal-book{
+    .portfolio-terminal-process{
       right:auto;
       left:var(--portfolio-gutter);
       width:min(22rem, 44vw);

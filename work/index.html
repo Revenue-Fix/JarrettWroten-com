@@ -803,14 +803,14 @@
     position:absolute;
   }
   .terminal-process{
-    left:var(--gutter);
-    bottom:clamp(2rem, 9vh, 4.6rem);
-    max-width:min(36rem, 46vw);
-  }
-  .terminal-book{
     top:clamp(5.4rem, 12vh, 7.2rem);
     right:var(--gutter);
     width:min(25rem, 31vw);
+  }
+  .terminal-book{
+    left:var(--gutter);
+    bottom:clamp(2rem, 9vh, 4.6rem);
+    max-width:min(36rem, 46vw);
   }
   .terminal-book-title{
     margin:0 0 .55rem;
@@ -1310,14 +1310,16 @@
     .scene-copy--terminal{
       max-width:none;
     }
-    .terminal-process{
+    .terminal-book{
       left:var(--gutter);
       right:var(--gutter);
+      top:auto;
       bottom:calc(1.2rem + env(safe-area-inset-bottom));
       max-width:none;
     }
-    .terminal-book{
+    .terminal-process{
       top:calc(4.8rem + env(safe-area-inset-top));
+      bottom:auto;
       right:var(--gutter);
       left:var(--gutter);
       width:auto;
@@ -1390,7 +1392,7 @@
     html.generations-human-beat .generations-site-order{
       opacity:0;
     }
-    .terminal-book{
+    .terminal-process{
       right:auto;
       left:var(--gutter);
       width:min(22rem, 44vw);
