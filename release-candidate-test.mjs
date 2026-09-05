@@ -84,8 +84,8 @@ ok(!/googletagmanager|google-analytics|\bgtag\s*\(|GTM-|generate_lead/i.test(all
 ok(!/\bCRM\b/i.test(allRuntime), 'runtime makes no CRM claim');
 ok(root.includes('mailto:Jarrett@JarrettWroten.com') && root.includes('href="book/"') && book.includes('https://calendar.google.com/calendar/appointments/schedules/'), 'contact remains email plus the local Google-backed booking page');
 ok(
-  /class="portfolio-terminal-book"[\s\S]*?Get a free concept for your site\.[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?portfolio-terminal-book-action/.test(root) &&
-    /class="terminal-book"[\s\S]*?Get a free concept for your site\.[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?terminal-book-action/.test(work),
+  /class="portfolio-terminal-book"[\s\S]*?Get a free concept for your site\.[\s\S]*?current website[\s\S]*?portfolio-terminal-book-action/.test(root) &&
+    /class="terminal-book"[\s\S]*?Get a free concept for your site\.[\s\S]*?current website[\s\S]*?terminal-book-action/.test(work),
   'root and Work add the free-concept booking path inside the existing terminal rest'
 );
 ok(root.includes('href="privacy/"'), 'root final footer links quietly to privacy');
@@ -93,11 +93,11 @@ ok(
   book.includes('class="booking-frame"') &&
     book.includes('title="Book your free website concept call"') &&
     /src="https:\/\/calendar\.google\.com\/calendar\/appointments\/schedules\/[A-Za-z0-9_-]+\?gv=true"/.test(book) &&
-    book.includes('Book at least 24 hours out.') &&
+    book.includes('Add your current website and tell me what you want it to do better.') &&
     book.includes('Add your current website and tell me what you want it to do better.') &&
     book.includes('I’ll build your concept before our call.') &&
     !book.includes('Google handles the booking and sends the confirmation.'),
-  'booking page embeds the real schedule and states the 24-hour free-concept contract'
+  'booking page embeds the real schedule and states the free-concept invitation'
 );
 
 const caseRequirements = [

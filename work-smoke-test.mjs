@@ -72,7 +72,7 @@ const requiredPhrases = [
   'Next, see how I find the leak, build the fix, and show one result.',
   'Continue to the process',
   'Get a free concept for your site.',
-  'Book at least 24 hours ahead. Add your current website to the form, and I’ll build your concept before our call.',
+  'Add your current website to the form, and I’ll build your concept before our call.',
   'Book your call',
   'Back to Jarrett',
 ];

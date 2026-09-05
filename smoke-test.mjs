@@ -1197,7 +1197,7 @@ ok(
     const pathCount = (html.match(/href="book\/"/g) || []).length;
     ok(pathCount === 4, 'all four homepage booking actions route through /book/ (got ' + pathCount + ')');
     ok(
-      /class="portfolio-terminal-book"[\s\S]*?Get a free concept for your site\.[\s\S]*?at least 24 hours ahead[\s\S]*?current website[\s\S]*?class="portfolio-scene-action portfolio-terminal-book-action"[^>]*href="book\/"/.test(html),
+      /class="portfolio-terminal-book"[\s\S]*?Get a free concept for your site\.[\s\S]*?current website[\s\S]*?class="portfolio-scene-action portfolio-terminal-book-action"[^>]*href="book\/"/.test(html),
       'portfolio terminal carries the complete free-concept offer into the local booking page'
     );
 
