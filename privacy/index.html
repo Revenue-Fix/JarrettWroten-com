@@ -37,9 +37,13 @@
     p{margin:0 0 1rem;font-size:1.08rem;line-height:1.68;color:rgba(232,244,244,.74)}
     p:last-child{margin-bottom:0}
     .contact{color:#e8f4f4;border-bottom:1px solid rgba(94,231,240,.55)}
+    h1,.contact{overflow-wrap:anywhere}
+    section>*{min-width:0}
     footer{display:flex;justify-content:space-between;gap:1rem;padding:2rem clamp(1.15rem,4vw,4rem);border-top:1px solid rgba(232,244,244,.12);font:500 .8rem/1.4 "IBM Plex Sans",system-ui,sans-serif;color:rgba(232,244,244,.65)}
     @media(max-width:620px){header nav a:first-child{display:none}section{grid-template-columns:1fr;gap:.75rem}footer{flex-direction:column}}
   </style>
+  <link rel="stylesheet" href="/assets/accessibility.css?v=20260904-a">
+  <script src="/assets/accessibility.js?v=20260904-a" defer></script>
 </head>
 <body>
   <header><a href="/">Jarrett Wroten</a><nav aria-label="Site navigation"><a href="/work/">Work</a><a href="/">Home</a></nav></header>
@@ -69,7 +73,7 @@
     </section>
     <section>
       <h2>Tracking</h2>
-      <div><p>This site does not use analytics or tracking now. I will update this page before I turn either one on.</p></div>
+      <div><p>This site remembers your motion preference in this browser. It does not use analytics or tracking now. I will update this page before I turn either one on.</p></div>
     </section>
   </main>
   <footer><a href="/">Back to Jarrett</a><span>Jarrett Wroten · Las Vegas</span></footer>

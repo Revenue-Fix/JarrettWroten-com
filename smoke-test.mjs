@@ -72,11 +72,11 @@ for (const s of ['leak', 'method', 'proof', 'jarrett', 'threshold']) {
   ok(html.includes('data-go="' + s + '"') || html.includes("'" + s + "'"), 'station seam ' + s);
 }
 
-ok(motionBootstrap.includes('localStorage.removeItem("jw-motion")') && !motionBootstrap.includes('localStorage.setItem('), 'legacy motion preference key is retired');
-ok(!/<button[^>]*(?:portfolio-motion-toggle|process-motion-toggle)/.test(sourceHtml), 'homepage renders no Motion On or Off control');
+ok(motionBootstrap.includes('localStorage.removeItem("jw-motion")') && motionBootstrap.includes('jw-motion-choice-v1'), 'legacy state is retired and the visitor pause choice has its own key');
+ok(sourceHtml.includes('/assets/accessibility.js'), 'homepage loads the shared accessible motion control');
 ok(html.includes('data-motion'), 'motion attribute boot');
 ok(motionBootstrap.includes('get("motion")') && motionBootstrap.includes('requested === "on" || requested === "off"'), 'motion query support');
-ok(motionBootstrap.includes('var current = query || "on"') && motionBootstrap.includes('query ? "query" : "default"') && !motionBootstrap.includes('prefers-reduced-motion'), 'motion defaults on independently of the operating-system preference');
+ok(motionBootstrap.includes('stored === "off" ? "off" : "on"') && !motionBootstrap.includes('prefers-reduced-motion'), 'motion defaults on and respects the visitor pause choice');
 
 // unknown station fallback: validStations map + empty invalid
 ok(html.includes('validStations'), 'unknown station fallback map');

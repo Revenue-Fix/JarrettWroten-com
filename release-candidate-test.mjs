@@ -111,10 +111,10 @@ for (const [route, status, signature] of caseRequirements) {
   ok(html.includes(status), route + ' shows exact relationship status');
   ok(html.includes(signature), route + ' has its project-specific content structure');
   ok(
-    !/<button[^>]*case-motion-toggle/.test(html) &&
+    html.includes('/assets/accessibility.js') &&
       html.includes('/assets/motion-bootstrap.js') &&
       html.includes('/assets/case-study.js'),
-    route + ' defaults through the shared motion owner without a visible toggle'
+    route + ' uses the shared motion preference and accessible pause control'
   );
   ok(!html.includes('What this status means'), route + ' avoids repeated legal-template ending');
   ok(!/created by Jarrett Wroten/i.test(html), route + ' speaks in Jarrett first person');
@@ -149,7 +149,7 @@ ok(
   portfolioJs.includes('addEventListener("jw-motion-change"') &&
     root.includes('addEventListener("jw-motion-change"') &&
     caseJs.includes('addEventListener("jw-motion-change"') &&
-    motionBootstrap.includes('var current = query || "on"'),
+    motionBootstrap.includes('stored === "off" ? "off" : "on"'),
   'portfolio, Process, and case studies consume one deterministic motion owner'
 );
 ok(root.includes('watchForProcessActivation') && /id="process-arrival-motion-video"[\s\S]*?preload="none"/.test(root), 'process media boot stays deferred on portfolio cold load');
@@ -225,26 +225,23 @@ const retiredAiCopy = [
 ok(retiredAiCopy.every((phrase) => !outwardCopy.includes(phrase)), 'Ring True removes the retired AI rationale and consultant language');
 ok(!outwardCopy.includes('—'), 'rendered outward copy uses spoken punctuation without em dashes');
 
+const motionIncludes = [root, work, ...caseRequirements.map(([route]) => pages[route])].map(html => html.match(/<script src="(?:\.\.\/|\/)?assets\/motion-bootstrap\.js\?v=([^"]+)"><\/script>/));
 ok(
-  root.includes('<script src="assets/motion-bootstrap.js?v=c9b843c9"></script>') &&
-    work.includes('<script src="../assets/motion-bootstrap.js?v=c9b843c9"></script>') &&
-    caseRequirements.every(([route]) => pages[route].includes('<script src="/assets/motion-bootstrap.js?v=c9b843c9"></script>')),
+  motionIncludes.every(Boolean) && new Set(motionIncludes.map(match => match && match[1])).size === 1,
   'root, Work, and every case study load one shared synchronous motion bootstrap'
 );
 ok(
-  motionBootstrap.includes('var current = query || "on"') &&
-    motionBootstrap.includes('query ? "query" : "default"') &&
+  motionBootstrap.includes('stored === "off" ? "off" : "on"') &&
+    motionBootstrap.includes('stored ? "stored" : "default"') &&
     !motionBootstrap.includes('prefers-reduced-motion') &&
     !caseCss.includes('prefers-reduced-motion') &&
     motionBootstrap.includes('localStorage.removeItem("jw-motion")') &&
-    !motionBootstrap.includes('localStorage.setItem('),
-  'motion bootstrap defaults on, honors the explicit URL opt-out, and retires stored toggle state'
+    motionBootstrap.includes('localStorage.setItem(storageKey'),
+  'motion defaults on, honors the URL override, and saves the visitor pause preference'
 );
 ok(
-  !/<button[^>]*(?:portfolio-motion-toggle|process-motion-toggle|class="motion-toggle"|case-motion-toggle)/.test(
-    root + work + caseRequirements.map(([route]) => pages[route]).join('\n')
-  ),
-  'no outward route renders a Motion On or Off button'
+  [root, work, ...caseRequirements.map(([route]) => pages[route])].every((html) => html.includes('/assets/accessibility.js')),
+  'every moving route loads the accessible pause control'
 );
 ok(
   root.includes('loco-moco-natural-desktop-dc59bdf1.mp4') &&

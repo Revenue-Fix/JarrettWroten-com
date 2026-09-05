@@ -640,7 +640,7 @@
     transform:translate3d(0, calc((1 - var(--portfolio-copy-generations)) * 1.4rem), 0);
     filter:blur(calc((1 - var(--portfolio-copy-generations)) * 4px));
   }
-  html.portfolio-generations-human-beat .portfolio-scene-copy--generations{
+  html.portfolio-generations-human-beat .portfolio-scene-copy--generations:not(:focus-within){
     opacity:0 !important;
     pointer-events:none;
     filter:none;

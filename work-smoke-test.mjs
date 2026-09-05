@@ -304,7 +304,7 @@ ok(
     /function drawMobileProrokScene\(ctx\)[\s\S]*?mobileSource\(inkVideo, prorokPortrait\)[\s\S]*?drawMobileHealedDisplay/.test(workHtml),
   'Dylan Healed montage is the ungraded moving subject carrier'
 );
-ok(!/class="motion-toggle"|id="motion-toggle"/.test(workHtml), 'Work renders no Motion On or Off control');
+ok(workHtml.includes('/assets/accessibility.js'), 'Work loads the shared accessible motion control');
 ok(/aria-label="Back to Jarrett"/.test(workHtml), 'wordmark accessible back label');
 ok(workHtml.includes('no-js-route'), 'no-JS fallback on work route');
 ok(/\.no-js-poster\s*\{[\s\S]*?height\s*:\s*auto/.test(workHtml), 'no-JS media preserves intrinsic aspect ratio');

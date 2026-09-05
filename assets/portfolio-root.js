@@ -195,7 +195,7 @@
   }
 
   function portfolioOwnsViewport() {
-    if (!passage || !viewport) return false;
+    if (!passage || !viewport || root.classList.contains("jw-readable")) return false;
     var rect = passage.getBoundingClientRect();
     var viewportHeight = Math.max(1, window.innerHeight || viewport.offsetHeight || 1);
     return rect.top <= viewportHeight * 0.35 && rect.bottom >= viewportHeight * 0.65;
@@ -785,6 +785,8 @@
 
   function setCopyAccess(el, active) {
     if (!el) return;
+    el.inert = !active;
+    el.setAttribute("aria-hidden", active ? "false" : "true");
     el.style.pointerEvents = active ? "auto" : "none";
     var nodes = el.querySelectorAll("a, button");
     for (var i = 0; i < nodes.length; i++) {

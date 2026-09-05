@@ -175,7 +175,7 @@ async function readPassageMotion(page, route) {
   return page.evaluate((currentRoute) => ({
     value: document.documentElement.getAttribute('data-motion'),
     source: document.documentElement.getAttribute('data-motion-source'),
-    controls: [...document.querySelectorAll('#portfolio-motion-toggle,#process-motion-toggle,#motion-toggle')].map((element) => element.textContent.trim()),
+    controls: [...document.querySelectorAll('.jw-pause-motion')].map((element) => element.textContent.trim()),
     legacyStored: localStorage.getItem('jw-motion'),
     generationsPaused: document.getElementById(currentRoute === '/' ? 'portfolio-generations-video' : 'generations-video')?.paused,
     portfolio: window.ROOT_PORTFOLIO_PASSAGE?.motion,
@@ -207,7 +207,7 @@ async function readPassageMotion(page, route) {
       const controllerValues = route === '/' ? [state.portfolio, state.process] : [state.work];
       check(state.value === scenario.expected && state.source === scenario.source, route + ' ' + scenario.name + ' resolves deterministic motion precedence');
       check(controllerValues.every((value) => value === (scenario.expected === 'on')), route + ' ' + scenario.name + ' initializes every route controller consistently');
-      check(state.controls.length === 0, route + ' ' + scenario.name + ' renders no motion control');
+      check(state.controls.length === (route === '/' ? 2 : 1) && state.controls.every(text => text === (scenario.expected === 'on' ? 'Pause motion' : 'Resume motion')), route + ' ' + scenario.name + ' exposes a correctly labeled motion control');
       check(state.legacyStored === null, route + ' ' + scenario.name + ' removes legacy stored motion state');
       if (scenario.expected === 'off') check(state.generationsPaused === true, route + ' ' + scenario.name + ' keeps Generations paused');
       report.motion.push({ route, ...scenario, state });
@@ -231,7 +231,7 @@ async function readPassageMotion(page, route) {
   await page.emulateMedia({ reducedMotion: 'no-preference' });
   await page.waitForTimeout(150);
   const explicitHeld = await readPassageMotion(page, '/');
-  check(explicitHeld.value === 'off' && explicitHeld.portfolio === false && explicitHeld.process === false && explicitHeld.controls.length === 0, 'hidden query choice is not overwritten by later OS changes and adds no control');
+  check(explicitHeld.value === 'off' && explicitHeld.portfolio === false && explicitHeld.process === false && explicitHeld.controls.every(text => text === 'Resume motion'), 'explicit pause remains active after OS changes and can be resumed');
   report.motionOsChange = { osUpdated, explicitHeld };
   await context.close();
 }
@@ -587,11 +587,11 @@ async function readPassageMotion(page, route) {
     portfolio: window.ROOT_PORTFOLIO_PASSAGE.motion,
     process: window.PROCESS_JOURNEY.motion,
     root: document.documentElement.getAttribute('data-motion'),
-    controls: document.querySelectorAll('#portfolio-motion-toggle,#process-motion-toggle').length,
+    controls: document.querySelectorAll('.jw-pause-motion').length,
   }));
   check(
-    sharedMotion.portfolio === true && sharedMotion.process === true && sharedMotion.root === 'on' && sharedMotion.controls === 0,
-    'desktop defaults both controllers on without rendering motion toggles'
+    sharedMotion.portfolio === true && sharedMotion.process === true && sharedMotion.root === 'on' && sharedMotion.controls === 2,
+    'desktop defaults both controllers on with accessible pause controls'
   );
 
   const processGeometry = await page.evaluate(() => {
@@ -782,11 +782,11 @@ async function readPassageMotion(page, route) {
       mode: document.documentElement.getAttribute('data-case-motion'),
       allPaused: [...document.querySelectorAll('video')].every((video) => video.paused),
       allHidden: [...document.querySelectorAll('video')].every((video) => getComputedStyle(video).visibility === 'hidden'),
-      controls: document.querySelectorAll('.case-motion-toggle').length,
+      controls: document.querySelectorAll('.jw-pause-motion').length,
     }));
     const on = scenario.expected === 'on';
     check(state.motion === scenario.expected && state.mode === scenario.expected, 'case route ' + scenario.name + ' follows the shared motion owner');
-    check(state.controls === 0, 'case route ' + scenario.name + ' renders no motion control');
+    check(state.controls === 1, 'case route ' + scenario.name + ' provides a motion control');
     if (!on) check(state.allPaused && state.allHidden, 'case route ' + scenario.name + ' shows the still composition with videos paused');
     report.caseMotion.push({ scenario, state });
     await context.close();

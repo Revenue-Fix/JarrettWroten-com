@@ -27,8 +27,8 @@
 <link rel="preload" as="image" href="assets/work/generations/loco-moco-natural-mobile-1d88178b.jpg" media="(max-width:720px)">
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/bodoni-moda-latin-variable.woff2" crossorigin>
 <link rel="preload" as="font" type="font/woff2" href="assets/fonts/ibm-plex-sans-latin-variable.woff2" crossorigin>
-<link rel="stylesheet" href="assets/portfolio-root.css?v=brand-titles-ring-true-2">
-<script src="assets/motion-bootstrap.js?v=c9b843c9"></script>
+<link rel="stylesheet" href="assets/portfolio-root.css?v=access-20260904">
+<script src="assets/motion-bootstrap.js?v=access-20260904"></script>
 <script>
 (function () {
   try {
@@ -2226,6 +2226,8 @@
   .no-js-project img{width:100%;height:auto;margin:1rem 0}
   .no-js-project a{border-bottom:1px solid rgba(94,231,240,.5)}
 </style>
+  <link rel="stylesheet" href="/assets/accessibility.css?v=20260904-a">
+  <script src="/assets/accessibility.js?v=20260904-a" defer></script>
 </head>
 <body>
   <div class="process-work-exit-veil" id="process-work-exit-veil" aria-hidden="true"></div>
@@ -2320,6 +2322,7 @@
     </div>
   </main>
 
+  <main id="site-content" tabindex="-1" aria-label="Portfolio and services">
   <!-- The approved /work/ oracle, namespaced as the homepage's first sticky passage. -->
   <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
       <defs>
@@ -2514,12 +2517,12 @@
         </div>
       </div>
     </div>
-  <script src="assets/portfolio-root.js?v=portfolio-terminal-booking-1"></script>
+  <script src="assets/portfolio-root.js?v=access-20260904"></script>
 
 
   <div class="process-journey" id="process-journey">
     <div class="process-viewport" id="process-viewport" aria-label="The Golden Arrival, continuous corridor">
-      <div class="process-world" id="process-world" aria-hidden="true">
+      <div class="process-world" id="process-world">
         <img class="world-frame is-active" id="process-world-frame-a" alt="" width="1280" height="720" decoding="async" loading="lazy" src="assets/golden-arrival/frames/ga-000.webp">
         <img class="world-frame" id="process-world-frame-b" alt="" width="1280" height="720" decoding="async">
         <!-- Living Arrival carrier: exact Work corridor loop. Frame-zero poster underneath remains the composed fallback. -->
@@ -2858,6 +2861,7 @@
     </div>
   </div>
 
+  </main>
   <div class="process-lightbox" id="process-lightbox" role="dialog" aria-modal="true" aria-labelledby="process-lightbox-caption" hidden>
     <div class="process-lightbox-panel" tabindex="-1" id="process-lightbox-panel">
       <button type="button" class="process-lightbox-close" id="process-lightbox-close">Close</button>
@@ -3178,7 +3182,7 @@
   }
 
   function journeyOwnsViewport() {
-    if (!journey || !viewport) return false;
+    if (!journey || !viewport || root.classList.contains("jw-readable")) return false;
     var rect = journey.getBoundingClientRect();
     return rect.top <= 1 && rect.bottom >= viewport.offsetHeight - 1;
   }
@@ -4974,7 +4978,7 @@
   });
 
   var noJsRoute = document.getElementById("process-no-js-route");
-  if (noJsRoute && noJsRoute.parentNode) noJsRoute.parentNode.removeChild(noJsRoute);
+  // Keep the readable content available for zoom/reflow and assistive navigation.
 
   bindArrivalMotionFallback(arrivalMotionVideo);
   if (holdArrivalMotion) pauseArrivalMotion(arrivalMotionVideo);
