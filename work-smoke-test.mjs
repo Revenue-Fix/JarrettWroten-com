@@ -1444,7 +1444,7 @@ ok(
       'ringVideo',
       'inkVideo',
       'breakpointSwapActive',
-      'function isMobile(){ return false; }\n' + syncMatch[0] + '; return syncVideos;'
+      'function isMobile(){ return false; } function passageIsVisible(){ return true; } function stopMobileVideoFrame(){}\n' + syncMatch[0] + '; return syncVideos;'
     )(
       true,
       function armVideos() {},
@@ -1516,7 +1516,7 @@ ok(
       'videosForMobileStop',
       'mobileStopIndexAtProgress',
       'mobileAuthoritativeIndex',
-      'function isMobile(){ return true; }\n' + syncMatch[0] + '; return syncVideos;'
+      'function isMobile(){ return true; } function passageIsVisible(){ return true; } function scheduleMobileVideoFrame(){}\n' + syncMatch[0] + '; return syncVideos;'
     )(
       true,
       function armVideos() {},
@@ -1665,7 +1665,7 @@ ok(
       'playSafe',
       'motionOn',
       'isMobile',
-      readinessParts.join('\n') +
+      'function passageIsVisible(){ return true; }\n' + readinessParts.join('\n') +
         '; return { videoHasRenderableFrame, mobileDestinationReady, mobileDestinationFailed, mobileReadinessStatus, applyMobileReadinessResult, requestMobileVideo, warmMobileBeatVideos, bindVideoReadiness, probeHiddenVideoFrame, resetVideoReadinessState };'
     )(
       generationsVideo,

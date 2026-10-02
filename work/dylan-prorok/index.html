@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-case-motion="off">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -30,6 +30,7 @@
     .dylan-hero::before{content:"";position:absolute;inset:-3rem;background:url("/demos/dylan-prorok/dylan-portrait.jpg") center/cover no-repeat;filter:blur(34px) saturate(.5);opacity:.34;transform:scale(1.08)}
     .dylan-hero .case-hero-media{filter:url(#dylan-grade) contrast(1.06)}
     .dylan-mobile-portrait{display:none}
+    html[data-case-motion="off"] .dylan-mobile-portrait{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;filter:saturate(.72) contrast(1.08)}
     .dylan-hero::after{background:linear-gradient(180deg,rgba(8,6,5,.12),rgba(8,6,5,.95) 94%)}
     .dylan-hero .case-title{max-width:8ch;color:var(--case-ink)}
     .dylan-thesis{min-height:100svh;display:grid;place-items:center;text-align:center;background:radial-gradient(circle at 50% 42%,rgba(178,58,44,.16),transparent 30%),#0b0807}
@@ -53,6 +54,7 @@
   </style>
   <link rel="stylesheet" href="/assets/accessibility.css?v=20260904-a">
   <script src="/assets/accessibility.js?v=20260904-a" defer></script>
+  <link rel="stylesheet" href="/assets/acquisition-nav.css?v=20261002">
 </head>
 <body>
   <svg width="0" height="0" style="position:absolute;overflow:hidden" aria-hidden="true" focusable="false"><filter id="dylan-grade" color-interpolation-filters="sRGB"><feColorMatrix type="saturate" values="0.45"/><feComponentTransfer><feFuncR type="gamma" amplitude="1.05" exponent=".9" offset="0"/><feFuncG type="gamma" amplitude=".9" exponent="1" offset="0"/><feFuncB type="gamma" amplitude=".78" exponent="1.05" offset="0"/></feComponentTransfer></filter></svg>
@@ -64,8 +66,8 @@
   <main class="case-article">
     <section class="case-hero dylan-hero" aria-labelledby="dylan-title">
       <img class="dylan-mobile-portrait" src="/demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" decoding="async">
-      <video class="case-hero-media" autoplay muted loop playsinline preload="metadata" poster="/demos/dylan-prorok/dylan-portrait.jpg" aria-hidden="true">
-        <source src="/demos/dylan-prorok/sakura-ink-bloom.mp4" type="video/mp4">
+      <video class="case-hero-media" muted loop playsinline preload="none" poster="/demos/dylan-prorok/dylan-portrait.jpg" aria-hidden="true">
+        <source data-src="/demos/dylan-prorok/sakura-ink-bloom.mp4" type="video/mp4">
       </video>
       <div class="case-hero-copy">
         <p class="case-status">Tattoo Artist - In Progress</p>
@@ -80,7 +82,7 @@
 
     <section class="dylan-flow" aria-labelledby="dylan-flow-title">
       <div class="dylan-flow-media" aria-hidden="true">
-        <video autoplay muted loop playsinline preload="metadata" poster="/demos/dylan-prorok/dylan-portrait.jpg"><source src="/demos/dylan-prorok/sakura-ink-bloom.mp4" type="video/mp4"></video>
+        <video muted loop playsinline preload="none" poster="/demos/dylan-prorok/dylan-portrait.jpg"><source data-src="/demos/dylan-prorok/sakura-ink-bloom.mp4" type="video/mp4"></video>
         <img src="/demos/dylan-prorok/dylan-portrait.jpg" alt="" width="617" height="849" loading="lazy" decoding="async">
       </div>
       <div class="dylan-flow-copy">
@@ -111,6 +113,13 @@
       </div>
     </section>
   </main>
+
+  <section class="jw-project-inquiry" aria-labelledby="jw-project-inquiry-title">
+    <p>For your business</p>
+    <h2 id="jw-project-inquiry-title">What should your website do better?</h2>
+    <p>Explore my approach to web design for Las Vegas service businesses, or book a call and add your current site for a free concept.</p>
+    <div><a href="/las-vegas-web-design/">Web design and redesign</a><a href="/book/">Get a free website concept</a></div>
+  </section>
 
   <footer class="case-footer"><a href="/work/">Back to all work</a><span>Jarrett Wroten · Las Vegas</span></footer>
 </body>

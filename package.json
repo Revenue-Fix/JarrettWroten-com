@@ -3,9 +3,10 @@
   "private": true,
   "scripts": {
     "test": "npm run test:static",
-    "test:static": "node smoke-test.mjs && node work-smoke-test.mjs && node release-candidate-test.mjs",
+    "test:static": "node smoke-test.mjs && node work-smoke-test.mjs && node release-candidate-test.mjs && node preload-behavior-test.mjs",
     "test:browser": "node browser-release-test.mjs",
-    "test:accessibility": "node accessibility-test.mjs"
+    "test:accessibility": "node accessibility-test.mjs",
+    "test:preload": "node preload-network-test.mjs"
   },
   "devDependencies": {
     "playwright-core": "1.62.1"

@@ -22,6 +22,7 @@ const routeFiles = {
   '/work/paina-cafe/': 'work/paina-cafe/index.html',
   '/work/rana-levy/': 'work/rana-levy/index.html',
   '/work/dylan-prorok/': 'work/dylan-prorok/index.html',
+  '/las-vegas-web-design/': 'las-vegas-web-design/index.html',
 };
 const pages = Object.fromEntries(Object.entries(routeFiles).map(([route, rel]) => [route, read(rel)]));
 const privacy = read('privacy/index.html');
@@ -29,6 +30,7 @@ const book = read('book/index.html');
 const root = pages['/'];
 const work = pages['/work/'];
 const portfolioCss = read('assets/portfolio-root.css');
+const acquisitionCss = read('assets/acquisition-nav.css');
 const portfolioJs = read('assets/portfolio-root.js');
 const motionBootstrap = read('assets/motion-bootstrap.js');
 const caseCss = read('assets/case-study.css');
@@ -58,11 +60,14 @@ ok(!sitemap.includes('/privacy/'), 'privacy is omitted from sitemap');
 ok(/name="robots" content="noindex,follow"/.test(book), 'booking utility is noindex,follow');
 ok(book.includes('<link rel="canonical" href="https://jarrettwroten.com/book/">'), 'booking utility has a self canonical');
 ok(!sitemap.includes('/book/'), 'booking utility is omitted from sitemap');
-ok(!fs.existsSync(path.join(ROOT, 'las-vegas-web-design')), 'unapproved Las Vegas landing route remains absent');
+// The October 2 local inbound optimization authorizes this commercial route.
+ok(fs.existsSync(path.join(ROOT, 'las-vegas-web-design/index.html')), 'Las Vegas service destination exists');
+ok(root.includes('href="/las-vegas-web-design/"') && work.includes('href="/las-vegas-web-design/"'), 'service destination is linked from both portfolio entry points');
+ok(root.includes('href="/work/paina-cafe/"') && work.includes('href="/work/paina-cafe/"'), 'Paina case study is reachable from both portfolio entry points');
 
 const expectedIndex = Object.keys(routeFiles).map((route) => 'https://jarrettwroten.com' + route);
 const actualIndex = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((match) => match[1]);
-ok(JSON.stringify(actualIndex) === JSON.stringify(expectedIndex), 'sitemap contains the exact six-URL index set');
+ok(JSON.stringify(actualIndex) === JSON.stringify(expectedIndex), 'sitemap contains the seven intended canonical index URLs');
 ok(/User-agent:\s*\*[\s\S]*Allow:\s*\/[\s\S]*Sitemap:\s*https:\/\/jarrettwroten\.com\/sitemap\.xml/.test(robots), 'robots allows crawling and names the sitemap');
 ok(!/Disallow:\s*\/(?:privacy|work)/i.test(robots), 'robots does not block pages that depend on HTML index directives');
 
@@ -81,7 +86,9 @@ ok(fs.existsSync(path.join(ROOT, 'demos/dylan-prorok/healed-montage-mobile-18bdb
 const allRuntime = [...Object.values(pages), privacy, book].join('\n');
 ok(!/<form\b/i.test(allRuntime), 'runtime adds no contact form');
 ok(!/googletagmanager|google-analytics|\bgtag\s*\(|GTM-|generate_lead/i.test(allRuntime), 'runtime adds no analytics or lead event code');
-ok(!/\bCRM\b/i.test(allRuntime), 'runtime makes no CRM claim');
+const servicePage = pages['/las-vegas-web-design/'];
+ok(servicePage.includes('CRM routing and follow-up can be included after reviewing your current tools and agreeing the scope.'), 'CRM service is explicitly conditional on tool review and agreed scope');
+ok(!/\bCRM\b/i.test([...Object.entries(pages).filter(([route]) => route !== '/las-vegas-web-design/').map(([, html]) => html), privacy, book].join('\n')), 'existing portfolio and utilities retain their original service claims');
 ok(root.includes('mailto:Jarrett@JarrettWroten.com') && root.includes('href="book/"') && book.includes('https://calendar.google.com/calendar/appointments/schedules/'), 'contact remains email plus the local Google-backed booking page');
 ok(
   /class="portfolio-terminal-book"[\s\S]*?Get a free concept for your site\.[\s\S]*?current website[\s\S]*?portfolio-terminal-book-action/.test(root) &&
@@ -130,7 +137,11 @@ ok(!/font-style:italic/.test(pages['/work/paina-cafe/']), 'Pā‘ina does not sy
 
 ok(caseCss.includes('font:600 .875rem/1.2 var(--case-ui)') && caseCss.includes('font:600 .875rem/1.3 var(--case-ui)') && caseCss.includes('font:500 .875rem/1.4 var(--case-ui)'), 'case labels and footer meet the 14px authored floor');
 ok(caseCss.includes('html[data-case-motion="off"] video{visibility:hidden}'), 'motion-off reveals authored poster fields instead of moving video');
-ok(caseJs.includes('jw-motion-change') && caseJs.includes('videos[i].pause()'), 'case motion consumer follows the shared motion state and pauses every carrier when explicitly disabled');
+ok(caseJs.includes('jw-motion-change') && caseJs.includes('!state.visible) video.pause()') && caseJs.includes('motionOn && !document.hidden && rendered'), 'case motion consumer pauses carriers unless motion, visibility, and rendered geometry allow playback');
+for (const [route] of caseRequirements) {
+  const videos = [...pages[route].matchAll(/<video\b[^>]*>[\s\S]*?<\/video>/g)].map((match) => match[0]);
+  ok(videos.length > 0 && videos.every((video) => /preload="none"/.test(video) && /data-src="/.test(video) && !/\sautoplay(?:\s|>)/.test(video) && !/(?:<video|<source)[^>]*\ssrc="/.test(video)), route + ' defers video sources and retains no eager autoplay carrier');
+}
 try { new Function(caseJs); ok(true, 'case motion controller parses'); }
 catch (error) { failures.push('case motion controller parse: ' + error.message); }
 try { new Function(portfolioJs); ok(true, 'root portfolio controller parses'); }
@@ -138,8 +149,9 @@ catch (error) { failures.push('root portfolio controller parse: ' + error.messag
 
 const portfolioBlock = (root.match(/<!-- The approved \/work\/[\s\S]*?<script src="assets\/portfolio-root\.js(?:\?[^\"]+)?"><\/script>/) || [''])[0];
 const portfolioClasses = [...portfolioBlock.matchAll(/class="([^"]+)"/g)].flatMap((match) => match[1].split(/\s+/));
-ok(portfolioClasses.length > 20 && portfolioClasses.every((name) => name.startsWith('portfolio-')), 'homepage portfolio markup contains only namespaced classes');
-ok([...new Set(portfolioClasses)].every((name) => portfolioCss.includes('.' + name)), 'every homepage portfolio class has a matching style selector');
+const acquisitionClasses = new Set(['jw-brand-links', 'jw-service-cue', 'jw-header-inquiry']);
+ok(portfolioClasses.length > 20 && portfolioClasses.every((name) => name.startsWith('portfolio-') || acquisitionClasses.has(name)), 'homepage portfolio and acquisition markup keep isolated class names');
+ok([...new Set(portfolioClasses)].every((name) => (portfolioCss + acquisitionCss).includes('.' + name)), 'every homepage portfolio and acquisition class has a matching style selector');
 const ids = [...root.matchAll(/\bid="([^"]+)"/g)].map((match) => match[1]);
 ok(ids.length === new Set(ids).size, 'combined root has no duplicate IDs');
 ok(/<meta name="viewport" content="width=device-width, initial-scale=1">/.test(root) && !/<meta name="process-viewport"/.test(root), 'combined root keeps the standard viewport meta');
@@ -172,12 +184,10 @@ ok(
     work.includes('href="https://paina.jarrettwroten.com/" rel="noopener" aria-label="Open the Pā‘ina Café website"'),
   'Pā‘ina no-JS action and both portfolio titles open the live website directly'
 );
-ok(
-  !root.includes('href="work/paina-cafe/"') &&
-    !work.includes('href="paina-cafe/"') &&
-    !/aria-label="[^"]*Pā‘ina Café case study"/.test(root + work),
-  'visitor-facing Pā‘ina navigation does not route through the case-study page'
-);
+for (const slug of ['generations-kitchen', 'paina-cafe', 'rana-levy', 'dylan-prorok']) {
+  ok(root.includes('href="work/' + slug + '/"') && work.includes('href="' + slug + '/"'), slug + ' case narrative remains reachable in both readable fallbacks');
+}
+
 ok(
   portfolioCss.includes('.portfolio-scene-copy--generations .portfolio-scene-name > a{color:#ffb515}') &&
     portfolioCss.includes('.portfolio-title-p{color:#1f8588}') &&

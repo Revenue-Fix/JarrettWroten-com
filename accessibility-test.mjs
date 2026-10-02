@@ -84,7 +84,7 @@ await test('Proof buttons are exposed; dialog closes and restores keyboard focus
   await context.close();
 });
 
-for(const route of ['/','/work/','/work/generations-kitchen/','/work/paina-cafe/','/work/rana-levy/','/work/dylan-prorok/','/book/','/privacy/']) {
+for(const route of ['/','/work/','/work/generations-kitchen/','/work/paina-cafe/','/work/rana-levy/','/work/dylan-prorok/','/las-vegas-web-design/','/book/','/privacy/']) {
   await test('320px reflow '+route,async()=>{
     const context=await browser.newContext({viewport:{width:320,height:256}});
     const page=await context.newPage();
@@ -115,7 +115,7 @@ for(const route of ['/','/work/','/work/generations-kitchen/','/work/paina-cafe/
   });
 }
 
-for(const route of ['/','/work/','/book/','/privacy/','/work/rana-levy/','/work/paina-cafe/']) {
+for(const route of ['/','/work/','/book/','/privacy/','/work/rana-levy/','/work/paina-cafe/','/las-vegas-web-design/']) {
   await test('200% text '+route,async()=>{
     const context=await browser.newContext({viewport:{width:390,height:844}});
     const page=await context.newPage();

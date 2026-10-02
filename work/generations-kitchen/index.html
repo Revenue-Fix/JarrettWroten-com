@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-case-motion="off">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -48,6 +48,7 @@
   </style>
   <link rel="stylesheet" href="/assets/accessibility.css?v=20260904-a">
   <script src="/assets/accessibility.js?v=20260904-a" defer></script>
+  <link rel="stylesheet" href="/assets/acquisition-nav.css?v=20261002">
 </head>
 <body>
   <header class="case-header">
@@ -57,9 +58,9 @@
 
   <main class="case-article">
     <section class="case-hero gk-hero" aria-labelledby="gk-title">
-      <video class="case-hero-media" autoplay muted playsinline preload="metadata" poster="/assets/work/generations/hurricane-fries-desktop.jpg" aria-hidden="true">
-        <source media="(max-width:720px)" src="/assets/work/generations/hurricane-fries-mobile-3p6.mp4" type="video/mp4">
-        <source src="/assets/work/generations/hurricane-fries-desktop-3p6.mp4" type="video/mp4">
+      <video class="case-hero-media" muted playsinline preload="none" poster="/assets/work/generations/hurricane-fries-desktop.jpg" aria-hidden="true">
+        <source media="(max-width:720px)" data-src="/assets/work/generations/hurricane-fries-mobile-3p6.mp4" type="video/mp4">
+        <source data-src="/assets/work/generations/hurricane-fries-desktop-3p6.mp4" type="video/mp4">
       </video>
       <div class="case-hero-copy">
         <p class="case-status">Restaurant Concept</p>
@@ -81,9 +82,9 @@
     <section class="gk-runway" aria-labelledby="gk-system-title">
       <div class="gk-runway-grid">
         <div class="gk-runway-media" aria-hidden="true">
-          <video autoplay muted loop playsinline preload="metadata" poster="/assets/work/generations/hurricane-fries-desktop.jpg">
-            <source media="(max-width:720px)" src="/assets/work/generations/hurricane-fries-mobile-3p6.mp4" type="video/mp4">
-            <source src="/assets/work/generations/hurricane-fries-desktop-3p6.mp4" type="video/mp4">
+          <video muted loop playsinline preload="none" poster="/assets/work/generations/hurricane-fries-desktop.jpg">
+            <source media="(max-width:720px)" data-src="/assets/work/generations/hurricane-fries-mobile-3p6.mp4" type="video/mp4">
+            <source data-src="/assets/work/generations/hurricane-fries-desktop-3p6.mp4" type="video/mp4">
           </video>
         </div>
         <div class="gk-decisions">
@@ -111,6 +112,13 @@
       </div>
     </section>
   </main>
+
+  <section class="jw-project-inquiry" aria-labelledby="jw-project-inquiry-title">
+    <p>For your business</p>
+    <h2 id="jw-project-inquiry-title">What should your website do better?</h2>
+    <p>Explore my approach to web design for Las Vegas service businesses, or book a call and add your current site for a free concept.</p>
+    <div><a href="/las-vegas-web-design/">Web design and redesign</a><a href="/book/">Get a free website concept</a></div>
+  </section>
 
   <footer class="case-footer"><a href="/work/">Back to all work</a><span>Jarrett Wroten · Las Vegas</span></footer>
 </body>

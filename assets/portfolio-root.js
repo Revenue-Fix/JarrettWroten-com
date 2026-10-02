@@ -36,6 +36,8 @@
   var progressTarget = 0;
   var progressCurrent = 0;
   var renderRaf = 0;
+  var mobileVideoFrameHandle = 0;
+  var mobileVideoFrameOwner = null;
   var lastFrameTs = 0;
   var videosArmed = false;
   var ranaSequenceOwned = false;
@@ -176,6 +178,7 @@
     }
     setMotionUI();
     if (!motionOn) {
+      stopRenderLoop();
       progressCurrent = progressTarget;
       paint(progressCurrent);
       syncVideos(progressCurrent);
@@ -674,6 +677,7 @@
   }
 
   function renderMobilePlate(index, values, sourceOverride) {
+    if (!passageIsVisible()) return false;
     if (!initMobilePlate()) {
       setMobilePlateActive(false);
       return false;
@@ -727,7 +731,7 @@
   }
 
   function paint(p) {
-    if (breakpointSwapActive) return;
+    if (breakpointSwapActive || !passageIsVisible()) return;
     p = clamp(p, 0, 1);
     root.style.setProperty("--portfolio-progress", p.toFixed(5));
 
@@ -800,14 +804,70 @@
     }
   }
 
+  function passageIsVisible() {
+    if (!passage || !viewport || document.hidden || root.classList.contains("jw-readable")) return false;
+    var rect = viewport.getBoundingClientRect();
+    var height = window.innerHeight || 1;
+    return rect.width > 0 && rect.height > 0 && rect.bottom > 0 && rect.top < height;
+  }
+
+  function stopMobileVideoFrame() {
+    if (mobileVideoFrameOwner && mobileVideoFrameHandle && typeof mobileVideoFrameOwner.cancelVideoFrameCallback === "function") {
+      mobileVideoFrameOwner.cancelVideoFrameCallback(mobileVideoFrameHandle);
+    }
+    mobileVideoFrameHandle = 0;
+    mobileVideoFrameOwner = null;
+  }
+
+  function stopRenderLoop() {
+    if (renderRaf) window.cancelAnimationFrame(renderRaf);
+    renderRaf = 0;
+    lastFrameTs = 0;
+    stopMobileVideoFrame();
+  }
+
+  function currentMobileVideo() {
+    if (!isMobile() || !motionOn || mobileTransition || !passageIsVisible()) return null;
+    var index = mobileStopIndexAtProgress(progressCurrent);
+    var video = index === 0 ? generationsVideo : index === 1 ? painaVideo :
+      index === 2 ? (ranaSequenceSecondary ? ringVideo : studioVideo) : index === 3 ? inkVideo : null;
+    return video && !video.paused && !video.ended && video.readyState >= 2 ? video : null;
+  }
+
+  function scheduleMobileVideoFrame() {
+    var video = currentMobileVideo();
+    if (!video) {
+      stopMobileVideoFrame();
+      return;
+    }
+    if (typeof video.requestVideoFrameCallback !== "function") {
+      startRenderLoop();
+      return;
+    }
+    if (mobileVideoFrameOwner === video && mobileVideoFrameHandle) return;
+    stopMobileVideoFrame();
+    mobileVideoFrameOwner = video;
+    mobileVideoFrameHandle = video.requestVideoFrameCallback(function () {
+      mobileVideoFrameHandle = 0;
+      mobileVideoFrameOwner = null;
+      if (currentMobileVideo() !== video) return;
+      paint(progressCurrent);
+      scheduleMobileVideoFrame();
+    });
+  }
+
   function startRenderLoop() {
-    if (renderRaf) return;
+    if (renderRaf || !passageIsVisible()) return;
     lastFrameTs = 0;
     renderRaf = window.requestAnimationFrame(renderTick);
   }
 
   function renderTick(ts) {
     renderRaf = 0;
+    if (!passageIsVisible()) {
+      stopRenderLoop();
+      return;
+    }
     var dt = lastFrameTs ? Math.min(0.048, (ts - lastFrameTs) / 1000) : 0.016;
     lastFrameTs = ts;
     if (!motionOn) {
@@ -819,7 +879,7 @@
     if (isMobile()) {
       progressCurrent = progressTarget;
       paint(progressCurrent);
-      renderRaf = window.requestAnimationFrame(renderTick);
+      scheduleMobileVideoFrame();
       return;
     }
     var alpha = 1 - Math.exp(-dt / Math.max(0.001, TAU));
@@ -837,6 +897,11 @@
   function sampleScroll() {
     if (breakpointSwapActive) return;
     progressTarget = computeProgress();
+    if (!passageIsVisible()) {
+      stopRenderLoop();
+      syncVideos(progressTarget);
+      return;
+    }
     if (!motionOn || isMobile()) {
       progressCurrent = progressTarget;
       paint(progressCurrent);
@@ -1194,7 +1259,7 @@
   }
 
   function warmMobileBeatVideos() {
-    if (!motionOn || !isMobile()) return;
+    if (!motionOn || !isMobile() || !passageIsVisible()) return;
     requestMobileVideo(generationsVideo, true);
   }
 
@@ -1216,6 +1281,15 @@
   }
 
   function syncVideos(p) {
+    if (!passageIsVisible()) {
+      pauseSafe(generationsVideo);
+      pauseSafe(painaVideo);
+      pauseSafe(studioVideo);
+      pauseSafe(ringVideo);
+      pauseSafe(inkVideo);
+      stopRenderLoop();
+      return;
+    }
     if (breakpointSwapActive) {
       pauseSafe(generationsVideo);
       pauseSafe(painaVideo);
@@ -1224,6 +1298,7 @@
       return;
     }
     if (!motionOn) {
+      stopRenderLoop();
       pauseSafe(generationsVideo);
       pauseSafe(painaVideo);
       pauseSafe(studioVideo);
@@ -1253,8 +1328,10 @@
       else leaveRanaSequence();
       if (activeId === "prorok") enterProrokSequence();
       else leaveProrokSequence();
+      scheduleMobileVideoFrame();
       return;
     }
+    stopMobileVideoFrame();
     if (p < 0.28) playSafe(generationsVideo);
     else pauseSafe(generationsVideo);
     if (p > 0.08 && p < 0.45) playSafe(painaVideo);
@@ -1628,6 +1705,7 @@
   }
 
   function onMobileWheel(e) {
+    if (e.ctrlKey) return;
     if (!passageGestureAvailable()) return;
     if (Math.abs(e.deltaX) > Math.abs(e.deltaY)) return;
     e.preventDefault();
@@ -1787,6 +1865,7 @@
 
   /* One deliberate keypress advances one locked portfolio world. */
   document.addEventListener("keydown", function (e) {
+    if (e.ctrlKey || e.metaKey || e.altKey || (e.shiftKey && (e.key === "Home" || e.key === "End"))) return;
     if (isInteractiveOrigin(e)) return;
     var isSpace = e.key === " " || e.key === "Spacebar";
     if (e.key !== "ArrowDown" && e.key !== "ArrowUp" && e.key !== "PageDown" && e.key !== "PageUp" && e.key !== "Home" && e.key !== "End" && !isSpace) return;
@@ -1832,6 +1911,8 @@
 
   window.addEventListener("resize", onMobileViewportChange);
 
+  document.addEventListener("visibilitychange", sampleScroll);
+
   window.addEventListener("pageshow", function () {
     cancelMobileGlide();
     resetMobileTouch();
@@ -1862,6 +1943,15 @@
     resetVideoToStart(ringVideo);
     pauseSafe(studioVideo);
     playSafe(ringVideo);
+  });
+
+  [generationsVideo, painaVideo, studioVideo, ringVideo, inkVideo].forEach(function (video) {
+    ["loadeddata", "playing", "seeked", "pause", "ended"].forEach(function (type) {
+      video.addEventListener(type, function () {
+        if (isMobile() && passageIsVisible()) paint(progressCurrent);
+        scheduleMobileVideoFrame();
+      });
+    });
   });
 
   bindPosterFallback(generationsVideo, generationsPoster);

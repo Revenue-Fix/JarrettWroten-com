@@ -167,6 +167,8 @@
       color:var(--ink-mute);
     }
     .booking-note a{border-bottom:1px solid rgba(94,231,240,.55)}
+    .booking-email{margin-top:.65rem}
+    .booking-email a{display:inline-flex;align-items:center;min-height:44px}
     .booking-panel{
       position:relative;
       min-width:0;
@@ -219,6 +221,9 @@
       .booking-panel{min-height:67rem}
       .booking-frame{height:67rem;min-height:67rem}
     }
+    @media (max-width:360px){
+      .booking-intro .booking-copy{padding-top:9rem}
+    }
   </style>
   <link rel="stylesheet" href="/assets/accessibility.css?v=20260904-a">
   <script src="/assets/accessibility.js?v=20260904-a" defer></script>
@@ -238,6 +243,7 @@
         <p class="booking-lead">Add your current website and tell me what you want it to do better. I’ll build your concept before our call.</p>
         <p class="booking-facts">15 minutes · Google Meet · Pacific time</p>
         <p class="booking-note"><a href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Open in Google Calendar</a> · <a href="../privacy/">Privacy</a></p>
+        <p class="booking-note booking-email">Prefer email? <a href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Send me your site.</a></p>
       </div>
     </section>
     <section class="booking-panel" id="calendar" aria-labelledby="calendar-title">

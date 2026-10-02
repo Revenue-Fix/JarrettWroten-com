@@ -1,5 +1,5 @@
 <!doctype html>
-<html lang="en">
+<html lang="en" data-case-motion="off">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -50,6 +50,7 @@
   </style>
   <link rel="stylesheet" href="/assets/accessibility.css?v=20260904-a">
   <script src="/assets/accessibility.js?v=20260904-a" defer></script>
+  <link rel="stylesheet" href="/assets/acquisition-nav.css?v=20261002">
 </head>
 <body>
   <header class="case-header">
@@ -61,8 +62,8 @@
     <section class="case-hero rana-hero" aria-labelledby="rana-title">
       <img class="rana-hero-still" src="/assets/work/rana/studio-poster.jpg" alt="" width="1280" height="640" decoding="async">
       <img class="rana-mobile-gem" src="/assets/work/rana/ring-poster.jpg" alt="" width="720" height="720" decoding="async">
-      <video class="case-hero-media" autoplay muted loop playsinline preload="metadata" poster="/assets/work/rana/studio-poster.jpg" aria-hidden="true">
-        <source src="/assets/work/rana/studio-banner.mp4" type="video/mp4">
+      <video class="case-hero-media" muted loop playsinline preload="none" poster="/assets/work/rana/studio-poster.jpg" aria-hidden="true">
+        <source data-src="/assets/work/rana/studio-banner.mp4" type="video/mp4">
       </video>
       <div class="case-hero-copy">
         <p class="case-status">Pending Engagement</p>
@@ -80,8 +81,8 @@
         </div>
       </div>
       <div class="rana-gem" aria-hidden="true">
-        <video autoplay muted loop playsinline preload="metadata" poster="/assets/work/rana/ring-poster.jpg">
-          <source src="/assets/work/rana/ring-alexandrite.mp4" type="video/mp4">
+        <video muted loop playsinline preload="none" poster="/assets/work/rana/ring-poster.jpg">
+          <source data-src="/assets/work/rana/ring-alexandrite.mp4" type="video/mp4">
         </video>
       </div>
     </section>
@@ -105,6 +106,13 @@
       </div>
     </section>
   </main>
+
+  <section class="jw-project-inquiry" aria-labelledby="jw-project-inquiry-title">
+    <p>For your business</p>
+    <h2 id="jw-project-inquiry-title">What should your website do better?</h2>
+    <p>Explore my approach to web design for Las Vegas service businesses, or book a call and add your current site for a free concept.</p>
+    <div><a href="/las-vegas-web-design/">Web design and redesign</a><a href="/book/">Get a free website concept</a></div>
+  </section>
 
   <footer class="case-footer"><a href="/work/">Back to all work</a><span>Jarrett Wroten · Las Vegas</span></footer>
 </body>

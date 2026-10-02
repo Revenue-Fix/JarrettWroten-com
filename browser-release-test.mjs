@@ -113,7 +113,7 @@ async function renderRoute(route, viewport, label) {
   await context.close();
 }
 
-for (const route of ['/', '/work/', '/work/generations-kitchen/', '/work/paina-cafe/', '/work/rana-levy/', '/work/dylan-prorok/', '/book/', '/privacy/']) {
+for (const route of ['/', '/work/', '/work/generations-kitchen/', '/work/paina-cafe/', '/work/rana-levy/', '/work/dylan-prorok/', '/las-vegas-web-design/', '/book/', '/privacy/']) {
   await renderRoute(route, { width: 1280, height: 720 }, 'desktop');
   await renderRoute(route, { width: 390, height: 844 }, 'mobile');
 }
