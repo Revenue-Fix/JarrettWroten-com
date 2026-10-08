@@ -15,7 +15,7 @@
 
     function updateControls() {
       controls.forEach(function (button) {
-        button.textContent = motion.value === "on" ? "Pause motion" : "Resume motion";
+        button.textContent = motion.value === "on" ? "Pause Motion" : "Resume Motion";
       });
     }
 
@@ -54,7 +54,7 @@
       var skip = document.createElement("a");
       skip.className = "jw-skip-link";
       skip.href = "#" + main.id;
-      skip.textContent = "Skip to content";
+      skip.textContent = "Skip To Content";
       document.body.insertBefore(skip, document.body.firstChild);
       if (reading) {
         var readLink = document.createElement("a");
@@ -63,13 +63,13 @@
         readUrl.hash = "";
         readLink.href = readUrl.href;
         readLink.className = "jw-skip-link";
-        readLink.textContent = "Read page without animation";
+        readLink.textContent = "Read Page Without Animation";
         skip.after(readLink);
         if (explicitReading) {
           var returnLink = document.createElement("a");
           readUrl.searchParams.delete("view");
           returnLink.href = readUrl.href;
-          returnLink.textContent = "Back to the visual portfolio";
+          returnLink.textContent = "Back To The Visual Portfolio";
           var returnLine = document.createElement("p");
           returnLine.appendChild(returnLink);
           reading.querySelector(".no-js-stack").prepend(returnLine);

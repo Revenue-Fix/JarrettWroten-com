@@ -64,8 +64,7 @@ p{color:var(--soft)}
 .section{padding-block:clamp(3.5rem,7vw,6.5rem)}
 .section-heading{margin-bottom:2.5rem}
 .service-list{border-top:1px solid var(--line)}
-.service-row{display:grid;grid-template-columns:3rem minmax(0,.9fr) minmax(0,1fr);gap:clamp(1rem,3vw,3rem);padding-block:2rem;border-bottom:1px solid var(--line)}
-.row-number{padding-top:.35rem;color:var(--amber);font-size:.9rem}
+.service-row{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1fr);gap:clamp(1rem,3vw,3rem);padding-block:2rem;border-bottom:1px solid var(--line)}
 .service-row p{max-width:49ch;align-self:center;font-size:1.05rem}
 .work-section{background:#0a1518}
 .work-heading{display:flex;justify-content:space-between;align-items:end;gap:2rem}
@@ -78,12 +77,10 @@ p{color:var(--soft)}
 .project h3 span{font-family:var(--text);font-size:1.1rem;color:var(--cyan)}
 .project>p{max-width:43ch;margin-top:.55rem}
 .process-section{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.2fr);gap:clamp(2rem,6vw,6rem)}
-.process-list{list-style:none;counter-reset:process;margin:0;padding:0}
-.process-list li{position:relative;counter-increment:process;padding:0 0 2rem 2.75rem}
+.process-list{list-style:none;margin:0;padding:0}
+.process-list li{position:relative;padding:0 0 2rem}
 .process-list li+li{padding-top:1.75rem;border-top:1px solid var(--line)}
 .process-list li:last-child{padding-bottom:0}
-.process-list li::before{content:"0" counter(process);position:absolute;left:0;top:.4rem;color:var(--amber);font-size:.85rem}
-.process-list li+li::before{top:2.15rem}
 .process-list h3{font-size:clamp(1.65rem,2.4vw,2.2rem)}
 .process-list p{margin-top:.8rem;max-width:53ch}
 .questions-section{border-top:1px solid var(--line)}
@@ -105,7 +102,7 @@ p{color:var(--soft)}
   .hero{grid-template-columns:minmax(0,1.1fr) minmax(0,.9fr);gap:1.75rem}
   h1{font-size:clamp(2.8rem,6vw,4.2rem)}
   .hero-portrait img{aspect-ratio:3/4}
-  .service-row{grid-template-columns:2rem minmax(0,.85fr) minmax(0,1.15fr);gap:1.25rem}
+  .service-row{grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr);gap:1.25rem}
   .process-section{gap:2rem;grid-template-columns:minmax(0,.85fr) minmax(0,1.15fr)}
   .questions{gap:2.25rem}
 }
@@ -116,8 +113,7 @@ p{color:var(--soft)}
   h1{max-width:17ch;font-size:clamp(2.85rem,8.7vw,3.75rem)}
   .hero-portrait{max-width:34rem}
   .hero-portrait img{aspect-ratio:4/3;object-position:center}
-  .service-row{grid-template-columns:1.7rem minmax(0,1fr);gap:.7rem 1rem;padding-block:1.5rem}
-  .service-row p{grid-column:2}
+  .service-row{grid-template-columns:minmax(0,1fr);gap:.7rem;padding-block:1.5rem}
   .service-row h3 br{display:none}
   .work-heading{display:block}
   .section-intro{max-width:38ch;margin-top:1rem}

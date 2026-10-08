@@ -50,7 +50,7 @@
   var mt=d.getElementById("motionBtn");
   function setPaused(p){
     paused=p; html.classList.toggle("is-paused",p);
-    if(mt){ mt.setAttribute("aria-pressed",p?"true":"false"); mt.setAttribute("aria-label",p?"Play motion":"Pause motion"); mt.querySelector(".motion__txt").textContent=p?"Play":"Pause"; }
+    if(mt){ mt.setAttribute("aria-pressed",p?"true":"false"); mt.setAttribute("aria-label",p?"Play Motion":"Pause Motion"); mt.querySelector(".motion__txt").textContent=p?"Play":"Pause"; }
     if(hasG){ p?gsap.globalTimeline.pause():gsap.globalTimeline.resume(); }
     loops.forEach(function(v){ if(p) v.pause(); else if(vis.get(v)) tryPlay(v); });
   }
