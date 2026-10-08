@@ -285,3 +285,4 @@ html.is-paused *,html.is-paused *::before,html.is-paused *::after{animation-play
   .hdr__cta{font-size:13px;padding:0 12px}
   .hdr__menu{padding:0 12px}
 }
+[id^="c-"]{scroll-margin-top:96px}
