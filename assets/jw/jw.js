@@ -106,6 +106,23 @@
     setTimeout(function(){ $$("[data-hero],[data-hero-w]").forEach(function(el){ if(getComputedStyle(el).opacity==="0"&&!paused){el.style.opacity=1;el.style.transform="none";} }); },4000);
   }
 
+
+  /* land deep links (e.g. /portfolio/#c-rana) after fonts and layout settle */
+  if(location.hash.length>1){
+    var tgt=d.getElementById(decodeURIComponent(location.hash.slice(1)));
+    if(tgt){
+      var userMoved=false;
+      ["wheel","touchstart","keydown"].forEach(function(ev){ window.addEventListener(ev,function(){userMoved=true;},{passive:true,once:true}); });
+      var land=function(){
+        if(userMoved) return;
+        var shift=0, el=tgt;
+        while(el&&el!==d.body){ var t=getComputedStyle(el).transform; if(t&&t!=="none"){ var m=t.match(/matrix(3d)?\(([^)]+)\)/); if(m){ var v=m[2].split(",").map(parseFloat); shift+= m[1]? v[13] : v[5]; } } el=el.parentElement; }
+        var y=Math.max(0,tgt.getBoundingClientRect().top-shift+window.scrollY-(window.innerWidth<=900?84:96));
+        if(lenis) lenis.scrollTo(y,{immediate:true,force:true}); else window.scrollTo(0,y);
+      };
+      window.addEventListener("load",function(){ (d.fonts&&d.fonts.ready?d.fonts.ready:Promise.resolve()).then(function(){ [120,600,1300,2200].forEach(function(ms,i){ setTimeout(function(){ if(i===1&&window.ScrollTrigger) ScrollTrigger.refresh(); land(); },ms); }); }); });
+    }
+  }
   /* walkthrough (opt-in) */
   var wo=d.getElementById("walkOpen"), dlg=d.getElementById("walkDialog");
   if(wo&&dlg&&dlg.showModal){
