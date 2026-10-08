@@ -9,8 +9,8 @@
 .portfolio-generations-site-logo,.generations-site-logo{top:max(calc(var(--portfolio-top-chrome,var(--top-chrome,3.4rem)) + .7rem),5.1rem)}
 .jw-project-inquiry{padding:clamp(3rem,7vw,6rem) clamp(1.15rem,4vw,4.5rem);border-top:1px solid rgba(237,246,244,.18);background:#040a0c;color:#edf6f4;font:1.1rem/1.55 Georgia,serif}
 .jw-project-inquiry>p{max-width:46rem}
-.jw-project-inquiry>p:first-child{color:#5ee7f0;font:600 .9rem/1.4 "IBM Plex Sans",system-ui,sans-serif}
-.jw-project-inquiry h2{max-width:24ch;font:400 clamp(2rem,4vw,3.8rem)/1.1 "Bodoni Moda",Georgia,serif;margin:1rem 0}
+.jw-project-inquiry>p:first-child{color:#5ee7f0;font:italic 400 clamp(1.25rem,1.1rem + .4vw,1.5rem)/1.2 "Instrument Serif",Georgia,serif;letter-spacing:normal}
+.jw-project-inquiry h2{max-width:24ch;font:400 clamp(2.3rem,4.4vw,4.2rem)/1.04 "Instrument Serif","Bodoni Moda",Georgia,serif;letter-spacing:-.01em;margin:.75rem 0 1rem}
 .jw-project-inquiry>div{display:flex;flex-wrap:wrap;gap:1rem;margin-top:1.5rem}
 .jw-project-inquiry>div>a{display:inline-flex;align-items:center;min-height:44px;padding:.6rem 1rem;border:1px solid rgba(237,246,244,.6);font:600 1rem/1.4 "IBM Plex Sans",system-ui,sans-serif}
 .jw-project-inquiry>div>a:last-child{background:#e8f4f4;color:#040a0c}
