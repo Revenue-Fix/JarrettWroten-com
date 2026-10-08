@@ -17,6 +17,11 @@
   <meta name="twitter:title" content="Privacy | Jarrett Wroten">
   <meta name="twitter:description" content="How Jarrett uses the contact and booking details you choose to share.">
   <style>
+    :root{font-synthesis-weight:none}
+    @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-italic-latin-ext.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+    @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-italic-latin.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+    @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-regular-latin-ext.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
+    @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-regular-latin.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
     @font-face{font-family:"Bodoni Moda";src:url("/assets/fonts/bodoni-moda-latin-variable.woff2") format("woff2");font-weight:400 900;font-display:swap}
     @font-face{font-family:"IBM Plex Sans";src:url("/assets/fonts/ibm-plex-sans-latin-variable.woff2") format("woff2");font-weight:100 700;font-display:swap}
     @font-face{font-family:"Rana Reader Fallback";src:url("/assets/fonts/rana-reader-fallback-roman.woff2") format("woff2");font-weight:400;font-display:swap}
@@ -29,7 +34,7 @@
     header a{min-height:44px;display:inline-flex;align-items:center}
     header nav{display:flex;gap:1rem;color:rgba(232,244,244,.72)}
     main{width:min(100% - 2.3rem,48rem);margin:0 auto;padding:clamp(4rem,11vw,8rem) 0 7rem}
-    h1{max-width:8ch;margin:0;font:500 clamp(4rem,12vw,8rem)/.85 "Bodoni Moda",Georgia,serif;letter-spacing:-.045em}
+    h1{max-width:11ch;margin:0;font:400 clamp(3.6rem,11vw,8rem)/.94 "Instrument Serif","Bodoni Moda",Georgia,serif;letter-spacing:-.015em}
     .intro{max-width:35rem;margin:2rem 0 clamp(4rem,9vw,7rem);font-size:clamp(1.2rem,1rem + .7vw,1.6rem);line-height:1.5;color:rgba(232,244,244,.78)}
     section{display:grid;grid-template-columns:minmax(8rem,.35fr) 1fr;gap:clamp(1.5rem,6vw,5rem);padding:2.1rem 0;border-top:1px solid rgba(232,244,244,.16)}
     h2{margin:0;font:600 1rem/1.35 "IBM Plex Sans",system-ui,sans-serif;letter-spacing:0;color:#5ee7f0}
@@ -37,7 +42,7 @@
     p{margin:0 0 1rem;font-size:1.08rem;line-height:1.68;color:rgba(232,244,244,.74)}
     p:last-child{margin-bottom:0}
     .contact{color:#e8f4f4;border-bottom:1px solid rgba(94,231,240,.55)}
-    h1,.contact{overflow-wrap:anywhere}
+    h1{overflow-wrap:break-word}.contact{overflow-wrap:anywhere}
     section>*{min-width:0}
     footer{display:flex;justify-content:space-between;gap:1rem;padding:2rem clamp(1.15rem,4vw,4rem);border-top:1px solid rgba(232,244,244,.12);font:500 .8rem/1.4 "IBM Plex Sans",system-ui,sans-serif;color:rgba(232,244,244,.65)}
     @media(max-width:620px){header nav a:first-child{display:none}section{grid-template-columns:1fr;gap:.75rem}footer{flex-direction:column}}
