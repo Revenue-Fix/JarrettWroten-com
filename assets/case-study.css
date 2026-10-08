@@ -115,9 +115,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--case-accent);outlin
 }
 .case-status{
   margin:0 0 1rem;
-  font:600 .875rem/1.2 var(--case-ui);
-  letter-spacing:.12em;
-  text-transform:uppercase;
+  font:italic 400 clamp(1.25rem,1.1rem + .4vw,1.5rem)/1.2 var(--case-display);
+  letter-spacing:normal;
   color:var(--case-accent);
 }
 .case-title{
@@ -141,9 +140,8 @@ a:focus-visible,button:focus-visible{outline:2px solid var(--case-accent);outlin
 .case-section-inner{width:min(100%,76rem);margin:0 auto}
 .case-kicker{
   margin:0 0 1rem;
-  font:600 .875rem/1.3 var(--case-ui);
-  letter-spacing:.12em;
-  text-transform:uppercase;
+  font:italic 400 clamp(1.25rem,1.1rem + .4vw,1.5rem)/1.25 var(--case-display);
+  letter-spacing:normal;
   color:var(--case-accent);
 }
 .case-heading{
