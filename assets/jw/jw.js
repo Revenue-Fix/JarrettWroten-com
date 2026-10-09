@@ -63,16 +63,59 @@
     var tl=gsap.timeline({delay:.15});
     tl.to("[data-hero-w]",{opacity:1,y:0,duration:1.25,ease:E,stagger:.09})
       .to("[data-hero]",{opacity:1,y:0,duration:1.1,ease:E,stagger:.1},"-=0.95");
-    var cards=$$(".stage__card");
-    if(cards.length){
-      tl.from(cards,{opacity:0,y:120,rotate:function(i){return [-12,10,-8][i]||0;},duration:1.6,ease:E,stagger:.12},0.2);
-      cards.forEach(function(c,i){ gsap.fromTo(c,{y:-(6+i*2)},{y:(6+i*2),x:(i%2?-8:8),rotation:"+="+(i%2?-1.2:1),duration:4.5+i*1.1,ease:"sine.inOut",yoyo:true,repeat:-1,delay:1.6+i*.3,immediateRender:false}); });
-      var stage=d.getElementById("stage");
-      if(window.matchMedia("(pointer:fine)").matches&&stage){
-        var qx=gsap.quickTo(stage,"x",{duration:1.2,ease:"power3"}), qy=gsap.quickTo(stage,"y",{duration:1.2,ease:"power3"});
-        window.addEventListener("pointermove",function(e){ qx((e.clientX/innerWidth-.5)*-18); qy((e.clientY/innerHeight-.5)*-10); });
+    /* floating concept cards (kept from live): placed around the measured hero text so they never overlap it (desktop);
+       phone uses the CSS fanned row under the buttons. Entrance + float are the live values. */
+    var hc=$$(".hcard"), head=d.querySelector(".hero__head");
+    if(hc.length===3&&head){
+      var offIn=function(el){ var x=0,y=0,e=el; while(e&&e!==head){ x+=e.offsetLeft; y+=e.offsetTop; e=e.offsetParent; } return {x:x,y:y,w:el.offsetWidth,h:el.offsetHeight}; };
+      var textW=function(el){ var r=d.createRange(); r.selectNodeContents(el); return r.getBoundingClientRect().width; };
+      var cardH=function(w){ return 28+w*0.625; };
+      var place=function(){
+        head.style.paddingBottom="";
+        if(window.innerWidth<=900){ hc.forEach(function(c){ c.style.left=c.style.top=c.style.width=""; c.classList.add("is-placed"); }); return; }
+        var cs=getComputedStyle(head), padL=parseFloat(cs.paddingLeft), R=head.clientWidth-parseFloat(cs.paddingRight);
+        var G=Math.max(24,Math.min(40,window.innerWidth*0.025));
+        var kick=d.querySelector(".hero__kicker"), words=$$(".hero__l1 .w"), l1=d.querySelector(".hero__l1"), l2=d.querySelector(".hero__l2"), sub=d.querySelector(".hero__sub"), ctas=d.querySelector(".hero__ctas");
+        var k=offIn(kick), kRight=k.x+textW(kick), lw=words[words.length-1], t=offIn(l1), lo=offIn(lw), tRight=lo.x+lw.offsetWidth;
+        var hdr=d.getElementById("hdr"), hdrH=hdr?hdr.offsetHeight:72, headTop=head.getBoundingClientRect().top+window.scrollY;
+        /* B: right of the period after Quietly. */
+        var bL=tRight+G, bW=Math.min(R-bL, 360), bH=cardH(bW), bT=t.y+t.h/2-bH/2;
+        /* A: above/right of the eyebrow, in the band between the header and the headline */
+        var bandTop=hdrH+16-headTop, bandBot=t.y-30-parseFloat(getComputedStyle(l1).fontSize)*0.15, aH=Math.max(90,bandBot-bandTop), aW=Math.min(300,(aH-28)/0.625);
+        var aR=Math.min(tRight-40, bL-G), aL=Math.max(kRight+G, aR-aW); aW=aR-aL; aH=cardH(aW); var aT=bandBot-aH;
+        /* C: right of the body copy under the subhead */
+        var l2o=offIn(l2), so=offIn(sub), co=offIn(ctas), sRight=so.x+Math.min(sub.offsetWidth,textW(sub)), cRight=co.x;
+        $$("a",ctas).forEach(function(a){ cRight=Math.max(cRight,co.x+a.offsetLeft+a.offsetWidth); });
+        var l2Right=l2o.x+textW(l2);
+        var cL=Math.max(sRight,cRight)+G*1.6, cW=Math.min(R-cL,380), cTop=Math.max(l2o.y+l2o.h+14, bT+bH+G);
+        if(cL<l2Right+G) cTop=Math.max(cTop,l2o.y+l2o.h+14);
+        var cH=cardH(cW);
+        [[aL,aT,aW],[bL,bT,bW],[cL,cTop,cW]].forEach(function(v,i){ var c=hc[i]; if(v[2]<120){ c.style.display="none"; return; } c.style.display=""; c.style.left=v[0].toFixed(1)+"px"; c.style.top=v[1].toFixed(1)+"px"; c.style.width=v[2].toFixed(1)+"px"; c.classList.add("is-placed"); });
+        var textBottom=co.y+co.h, need=cTop+cH+G-textBottom;
+        if(need>0) head.style.paddingBottom=need.toFixed(0)+"px";
+        if(window.ScrollTrigger) ScrollTrigger.refresh();
+      };
+      place();
+      if(d.fonts&&d.fonts.ready) d.fonts.ready.then(place);
+      var rT=0; window.addEventListener("resize",function(){ clearTimeout(rT); rT=setTimeout(place,120); });
+      var rot=[-3,2.5,-1.5];
+      if(window.innerWidth>900) hc.forEach(function(c,i){ gsap.set(c,{rotation:rot[i]}); });
+      if(window.innerWidth>900){
+        tl.from(hc,{opacity:0,y:120,duration:1.6,ease:E,stagger:.12},0.2);
+        hc.forEach(function(c,i){ gsap.fromTo(c,{y:-(6+i*2)},{y:(6+i*2),x:(i%2?-8:8),rotation:"+="+(i%2?-1.2:1),duration:4.5+i*1.1,ease:"sine.inOut",yoyo:true,repeat:-1,delay:1.6+i*.3,immediateRender:false}); });
       }
-      if(window.ScrollTrigger&&stage) gsap.to(stage,{opacity:.35,scale:.94,ease:"none",scrollTrigger:{trigger:".hero",start:"top top",end:"bottom top",scrub:true}});
+    }
+    /* film hero: the plate opens from an inset rounded frame to full bleed as the hero scrolls away (scrubbed, ease none) */
+    var pf=d.getElementById("plateFrame"), hh=d.querySelector(".hero__head");
+    if(pf&&hh&&window.ScrollTrigger){
+      var st={p:0};
+      var apply=function(){ var px=parseFloat(getComputedStyle(hh).paddingLeft)||0, r=(window.innerWidth<=900?14:18), k=1-st.p;
+        pf.style.clipPath="inset(0 "+(px*k).toFixed(1)+"px 0 "+(px*k).toFixed(1)+"px round "+(r*k).toFixed(1)+"px)"; };
+      var hdrH=function(){ var h=d.getElementById("hdr"); return h?h.offsetHeight:72; };
+      var top0=function(){ return pf.getBoundingClientRect().top+window.scrollY; };
+      apply();
+      gsap.to(st,{p:1,ease:"none",onUpdate:apply,scrollTrigger:{trigger:pf,start:function(){return 0;},end:function(){return Math.max(1,top0()-hdrH());},scrub:true,invalidateOnRefresh:true,onRefresh:apply}});
+      window.addEventListener("resize",apply);
     }
     if(window.ScrollTrigger){
       /* headings */
@@ -138,4 +181,13 @@
     sc.addEventListener("input",function(){ if(v.duration){ v.pause(); v.currentTime=sc.value/1000*v.duration; end.hidden=true; } });
     sc.addEventListener("change",function(){ if(v.currentTime<v.duration-0.05){ var p=v.play(); if(p&&p.catch)p.catch(function(){}); } });
   } else if(wo&&dlg){ wo.addEventListener("click",function(){ window.location.href="/assets/golden-arrival/golden-arrival-approved.mp4"; }); }
+
+  /* film hero caption follows the montage (6 cuts x 2.2s from the concept loops; raw, no filters) */
+  var pv=d.getElementById("plateVideo");
+  if(pv){
+    var segs=[["Rainbow Gardens","Wedding Venue","https://rainbow.jarrettwroten.com/"],["Generations Kitchen","Hawaiian Restaurant","https://generations.jarrettwroten.com/"],["Rana Levy","Fine Jewelry And Lapidary","https://rana.jarrettwroten.com/"],["Wrapstar","Wraps, Ceramic Coating And Tint","https://wrapstar.jarrettwroten.com/"],["Pā‘ina Café","Hawaiian Café","https://paina.jarrettwroten.com/"],["Stirling Club","Wedding And Event Venue","https://stirling.jarrettwroten.com/"]];
+    var pn=d.getElementById("plateName"), pc=d.getElementById("plateCat"), pl=d.getElementById("plateLink"), cur=0;
+    pv.addEventListener("timeupdate",function(){ var i=Math.min(segs.length-1,Math.floor(pv.currentTime/2.2)); if(i===cur) return; cur=i;
+      pn.textContent=segs[i][0]; pc.textContent=segs[i][1]; pl.href=segs[i][2]; pl.setAttribute("aria-label","Open the "+segs[i][0]+" concept in a new tab"); });
+  }
 })();

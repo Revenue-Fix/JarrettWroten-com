@@ -1,0 +1,60 @@
+/* Film hero (2026-10-09). Loads after jw.css; hero only. Raw concept footage, no scrim or filter.
+   Display line per SOTD research: lh 0.95, -0.02em; phone recomposed (12.8vw). */
+.hero--film{display:block;min-height:0;padding:calc(var(--hdr) + clamp(20px,4.5vh,48px)) 0 0;overflow:clip}
+.hero__head{position:relative;z-index:3;max-width:1600px;margin:0 auto;padding:0 var(--pad)}
+.hero--film .hero__title{letter-spacing:-.02em}
+.hero--film .hero__l1{font-size:min(8.6vw,15vh,140px);line-height:.95;white-space:nowrap}
+.hero--film .hero__l2{font-size:min(3.4vw,6vh,52px);margin-top:.18em}
+.hero__row{display:flex;align-items:flex-end;justify-content:space-between;gap:24px 48px;flex-wrap:wrap;margin-top:clamp(14px,2.6vh,28px)}
+.hero--film .hero__sub{margin-top:0;max-width:30em}
+.hero--film .hero__ctas{margin-top:0}
+.plate{margin:clamp(22px,4vh,44px) 0 0;position:relative;z-index:2}
+.plate__frame{position:relative;width:100%;aspect-ratio:16/10;max-height:calc(100svh - var(--hdr));background:#111;overflow:hidden;
+  clip-path:inset(0 var(--pad) 0 var(--pad) round 18px)}
+.plate__v{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block}
+.plate__cap{display:flex;align-items:center;justify-content:space-between;gap:8px 24px;flex-wrap:wrap;padding:14px var(--pad) 0;max-width:1600px;margin:0 auto}
+.plate__now{font:500 17px/1.3 var(--fu);color:var(--bone)}
+.plate__name{font:400 26px/1 var(--fd);letter-spacing:0}
+.plate__cat{color:var(--mute);margin-left:10px}
+@media (max-width:900px){
+  .hero--film{padding-top:calc(var(--hdr) + 22px)}
+  .hero--film .hero__l1{white-space:normal;font-size:clamp(44px,12.8vw,58px);line-height:.95}
+  .hero--film .hero__l2{font-size:clamp(24px,6.9vw,30px)}
+  .hero__row{display:block;margin-top:16px}
+  .hero--film .hero__ctas{margin-top:20px}
+  .plate{margin-top:26px;display:flex;flex-direction:column-reverse}
+  .plate__frame{clip-path:inset(0 var(--pad) 0 var(--pad) round 14px)}
+  .plate__cap{padding:0 var(--pad) 8px;align-items:flex-end;flex-wrap:nowrap;width:100%;box-sizing:border-box}
+  .plate__lg{display:none}
+  .plate__name{font-size:22px}
+  .plate__cat{display:block;margin:4px 0 0;font-size:15px}
+}
+@media (max-width:560px){
+  .hero--film .hero__ctas .btn{width:100%}
+  .hero--film .hero__ctas{gap:4px 22px}
+}
+
+/* Floating concept cards (kept from live) flowing around the hero wording. Desktop positions are set in jw.js from the
+   measured text boxes so a card never overlaps text; phone is a fanned row under the buttons. */
+.hcards{pointer-events:none}
+.hcard{position:absolute;left:0;top:0;width:280px;border-radius:14px;overflow:hidden;background:#111;opacity:0;
+  box-shadow:0 40px 90px rgba(0,0,0,.55),0 0 0 1px rgba(255,255,255,.07)}
+.hcard.is-placed{opacity:1}
+.hcard .media{aspect-ratio:16/10}
+.hcard .media__v{width:100%;height:100%;object-fit:cover;display:block}
+.hero--film .hero__row{display:block}
+.hero--film .hero__ctas{margin-top:clamp(18px,3vh,30px)}
+@media (max-width:900px){
+  .hcards{position:relative;display:flex;justify-content:center;margin:28px 0 4px;height:auto}
+  .hcard{position:relative;width:46%;max-width:210px;flex:none;opacity:1}
+  .hcard .card__bar{height:18px;padding:0 8px;gap:4px}
+  .hcard .card__bar i{width:5px;height:5px}
+  .hcard--0{transform:rotate(-4deg) translateY(6px);z-index:1}
+  .hcard--1{transform:rotate(2deg);margin-left:-18%;z-index:2}
+  .hcard--2{transform:rotate(-1.5deg) translateY(10px);margin-left:-18%;z-index:3}
+  .hcards{order:9}
+  .hero__head{display:flex;flex-direction:column}
+}
+@media (min-width:901px){
+  .hero--film{padding-top:calc(var(--hdr) + clamp(150px,22vh,220px))}
+}
