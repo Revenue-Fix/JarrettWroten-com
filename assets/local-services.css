@@ -132,6 +132,3 @@ p{color:var(--soft)}
   .site-footer{display:block}
   .site-footer nav{margin-top:.5rem}
 }
-@media(prefers-reduced-motion:reduce){
-  *,*::before,*::after{animation:none!important;transition:none!important;scroll-behavior:auto!important}
-}
