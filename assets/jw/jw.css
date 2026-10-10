@@ -294,3 +294,6 @@ html.is-paused *,html.is-paused *::before,html.is-paused *::after{animation-play
   .hdr__menu{padding:0 12px}
 }
 [id^="c-"]{scroll-margin-top:96px}
+/* Oct 10: Back To Top (standing rule: conversion buttons + Back To Top only) */
+.ftr__totop{display:inline-flex;align-items:center;min-height:44px;margin-top:40px;font-size:15px;letter-spacing:.02em;color:rgba(237,232,225,.75);text-decoration:none}
+.ftr__totop:hover,.ftr__totop:focus-visible{color:var(--bone);text-decoration:underline}
