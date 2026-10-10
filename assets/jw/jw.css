@@ -174,7 +174,8 @@ html.is-paused *,html.is-paused *::before,html.is-paused *::after{animation-play
 @keyframes marq{to{transform:translateX(-50%)}}
 /* walkthrough */
 .walk{position:relative;min-height:min(92vh,860px);display:flex;align-items:flex-end;overflow:hidden;padding:120px 0 clamp(80px,10vw,140px);isolation:isolate}
-.walk__bg{position:absolute;inset:0;z-index:-1}
+.walk__bg{position:absolute;inset:0;z-index:-1;background:#0a0a0a center/cover no-repeat}
+.walk__bg.has-poster{background-image:url(/assets/jw/corridor.jpg)}
 .walk__v{width:100%;height:100%;object-fit:cover}
 .walk__bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(10,10,10,.7) 0%,rgba(10,10,10,0) 28%,rgba(10,10,10,0) 40%,rgba(10,10,10,.9) 100%),linear-gradient(90deg,rgba(10,10,10,.75) 0%,rgba(10,10,10,0) 60%)}
 .walk .h2,.walk .lede{text-shadow:0 2px 24px rgba(0,0,0,.55)}

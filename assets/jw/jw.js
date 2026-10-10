@@ -11,7 +11,7 @@
   $$("[data-split]").forEach(function(h){
     var words=h.textContent.trim().split(/\s+/);
     h.setAttribute("aria-label",h.textContent.trim());
-    h.innerHTML=words.map(function(w){return '<span class="w" aria-hidden="true" style="overflow:hidden;display:inline-block;vertical-align:top;padding-bottom:.08em;margin-bottom:-.08em"><span class="wi" style="display:inline-block">'+w+'</span></span>';}).join(" ");
+    h.innerHTML=words.map(function(w){return '<span class="w" aria-hidden="true" style="overflow:hidden;display:inline-block;vertical-align:top;padding:.1em 0 .14em;margin:-.1em 0 -.14em"><span class="wi" style="display:inline-block">'+w+'</span></span>';}).join(" ");
   });
 
   /* smooth scroll */
@@ -45,6 +45,10 @@
     var io=new IntersectionObserver(function(es){es.forEach(function(en){vis.set(en.target,en.isIntersecting); if(en.isIntersecting){ if(en.target.preload==="none"){en.target.preload="auto";} tryPlay(en.target);} else en.target.pause();});},{rootMargin:"200px 0px"});
     loops.forEach(function(v){v.muted=true;io.observe(v);});
   } else loops.forEach(function(v){v.muted=true;tryPlay(v);});
+
+  /* lower films: paint their poster as a backdrop well before they enter view, so no black band shows while the film loads */
+  var bgs=$$(".walk__bg");
+  if(bgs.length){ if("IntersectionObserver" in window){ var bio=new IntersectionObserver(function(es){es.forEach(function(en){ if(en.isIntersecting){ en.target.classList.add("has-poster"); bio.unobserve(en.target);} });},{rootMargin:"1600px 0px"}); bgs.forEach(function(b){bio.observe(b);}); } else bgs.forEach(function(b){b.classList.add("has-poster");}); }
 
   /* motion toggle */
   var mt=d.getElementById("motionBtn");
@@ -120,7 +124,7 @@
     if(window.ScrollTrigger){
       /* headings */
       $$("[data-split]").forEach(function(h){
-        gsap.from($$(".wi",h),{yPercent:110,duration:1.1,ease:E,stagger:.06,scrollTrigger:{trigger:h,start:"top 86%"}});
+        gsap.from($$(".wi",h),{yPercent:110,duration:1.1,ease:E,stagger:.06,clearProps:"transform",scrollTrigger:{trigger:h,start:"top 86%"}});
       });
       ScrollTrigger.batch("[data-reveal]",{start:"top 90%",onEnter:function(b){gsap.to(b,{opacity:1,y:0,duration:1.1,ease:E,stagger:.12,overwrite:true});}});
       /* path line draw */
@@ -135,7 +139,7 @@
       if(ph) gsap.fromTo(ph,{yPercent:-6},{yPercent:6,ease:"none",scrollTrigger:{trigger:ph,start:"top bottom",end:"bottom top",scrub:true}});
       /* card media drift */
       $$(".card__frame .media").forEach(function(m){ gsap.fromTo(m,{yPercent:3},{yPercent:-3,ease:"none",scrollTrigger:{trigger:m,start:"top bottom",end:"bottom top",scrub:true}}); });
-      var wv=d.querySelector(".walk__v");
+      var wv=d.querySelector(".walk__bg");
       if(wv) gsap.fromTo(wv,{scale:1.18},{scale:1,ease:"none",scrollTrigger:{trigger:".walk",start:"top bottom",end:"bottom bottom",scrub:true}});
     }
     /* magnetic buttons */
