@@ -185,7 +185,7 @@
   /* film hero caption follows the montage (6 cuts x 2.2s from the concept loops; raw, no filters) */
   var pv=d.getElementById("plateVideo");
   if(pv){
-    var segs=[["Stirling Club","Wedding And Event Venue","https://stirling.jarrettwroten.com/"],["Generations Kitchen","Hawaiian Restaurant","https://generations.jarrettwroten.com/"],["Rana Levy","Fine Jewelry And Lapidary","https://rana.jarrettwroten.com/"],["Wrapstar","Wraps, Ceramic Coating And Tint","https://wrapstar.jarrettwroten.com/"],["Pā‘ina Café","Hawaiian Café","https://paina.jarrettwroten.com/"],["Rainbow Gardens","Wedding Venue","https://rainbow.jarrettwroten.com/"]];
+    var segs=[["Wrapstar","Wraps, Ceramic Coating And Tint","https://wrapstar.jarrettwroten.com/"],["Stirling Club","Wedding And Event Venue","https://stirling.jarrettwroten.com/"],["Starbase Wraps","Tesla Wraps And PPF","https://starbase.jarrettwroten.com/"],["Rana Levy","Fine Jewelry And Lapidary","https://rana.jarrettwroten.com/"],["Dylan Prorok","Japanese Tattoo Artist","https://prorok.jarrettwroten.com/"],["Rainbow Gardens","Wedding Venue","https://rainbow.jarrettwroten.com/"]];
     var pn=d.getElementById("plateName"), pc=d.getElementById("plateCat"), pl=d.getElementById("plateLink"), cur=0;
     pv.addEventListener("timeupdate",function(){ var i=Math.min(segs.length-1,Math.floor(pv.currentTime/2.2)); if(i===cur) return; cur=i;
       pn.textContent=segs[i][0]; pc.textContent=segs[i][1]; pl.href=segs[i][2]; pl.setAttribute("aria-label","Open the "+segs[i][0]+" concept in a new tab"); });
