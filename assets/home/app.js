@@ -119,3 +119,7 @@ sc.addEventListener('change',()=>{if(v.currentTime<v.duration-0.05){const p=v.pl
 
 /* device QA: give the mobile card frame the real track height so the card never runs into the name line */
 (function(){const t=document.getElementById('track');if(!t)return;const f=()=>{document.documentElement.style.setProperty('--trackH',t.clientHeight+'px')};f();addEventListener('resize',f,{passive:true});addEventListener('orientationchange',()=>setTimeout(f,300));addEventListener('load',f)})();
+
+/* 1012 phones: the work strip is a native swipe carousel (no long pinned scroll) */
+(function(){const t=document.getElementById('track'),pg=document.getElementById('wProg');if(!t)return;const mq=matchMedia('(max-width:700px)');
+t.addEventListener('scroll',()=>{if(!mq.matches)return;const m=t.scrollWidth-t.clientWidth;dispatchEvent(new Event('scroll'));if(pg&&m>0)pg.style.width=(t.scrollLeft/m*100)+'%'},{passive:true})})();

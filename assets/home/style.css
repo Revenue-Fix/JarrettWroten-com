@@ -369,3 +369,21 @@ html.light .pp,html.light .bar .mbtn{border-color:rgba(18,17,16,.55);background:
 .iwd{display:inline-block;font-family:'Pinyon Script',cursive;font-weight:400;letter-spacing:0;font-size:1.05em;line-height:1.25;padding:.12em .3em .28em .05em;margin:-.1em 0 -.2em;background:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;opacity:0;transition:opacity .9s ease .35s}
 .intro.go .iwd{opacity:1}
 .iwd{padding-left:0;padding-right:.15em}
+/* 1012 mobile dead-space pass (phones only; desktop untouched) */
+@media (max-width:700px){
+  .hero-wrap{height:auto!important}
+  .hero{position:relative!important}
+  .say{padding-top:56px!important;padding-bottom:40px!important}
+  .work{height:auto!important}
+  .work-pin{position:relative!important;height:auto!important;overflow:visible!important;padding:56px 0 40px!important}
+  .work-top{margin-bottom:16px!important}
+  .track{flex:none!important;transform:none!important;overflow-x:auto;overflow-y:hidden;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;overscroll-behavior-x:contain}
+  .track::-webkit-scrollbar{display:none}
+  .track>.pc{scroll-snap-align:center}
+  .how{padding-top:56px!important;padding-bottom:24px!important}
+  .proof{padding-top:56px!important;padding-bottom:56px!important;margin-top:24px!important;row-gap:16px!important}
+  .proof-k{padding-top:0!important}
+  .me{padding-top:56px!important;padding-bottom:56px!important}
+  .walk{padding-top:56px!important;padding-bottom:40px!important}
+  .end{padding-top:40px!important;padding-bottom:56px!important}
+}
