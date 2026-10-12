@@ -47,7 +47,7 @@ function onScroll(){const vh=innerHeight,y=scrollY;
  const b=big.getBoundingClientRect();const p=Math.min(1,Math.max(0,(vh*.85-b.top)/(b.height+vh*.3)));const n=Math.round(p*wds.length);wds.forEach((w,i)=>w.classList.toggle('lit',i<n||paused));
  const r=work.getBoundingClientRect(),span=r.height-vh;const q=Math.min(1,Math.max(0,-r.top/span));
  const max=track.scrollWidth-innerWidth;track.style.transform=`translate3d(${-q*max}px,0,0)`;wProg.style.width=(q*100)+'%';
- const center=innerWidth/2;let best=0,bd=1e9;cards.forEach((c,j)=>{const cr=c.getBoundingClientRect();const d=Math.abs(cr.left+cr.width/2-center);if(d<bd){bd=d;best=j}});if(q>=.985)best=cards.length-1;else if(q<=.015)best=0;if(r.top<vh&&r.bottom>0)setCur(best);
+ const center=innerWidth/2;let best=0,bd=1e9;cards.forEach((c,j)=>{const cr=c.getBoundingClientRect();const d=Math.abs(cr.left+cr.width/2-center);if(d<bd){bd=d;best=j}});if(matchMedia('(max-width:700px)').matches);else if(q>=.985)best=cards.length-1;else if(q<=.015)best=0;if(r.top<vh&&r.bottom>0)setCur(best);
  if(innerWidth>860)stackCards.forEach((c,i)=>{const nx=stackCards[i+1];if(!nx){c.style.transform='';return}const nr=nx.getBoundingClientRect(),cr=c.getBoundingClientRect();const k=Math.min(1,Math.max(0,(cr.bottom-nr.top)/cr.height));c.style.transform=`scale(${1-k*.06})`;c.style.filter=`brightness(${1-k*.35})`});
  const er=endW.getBoundingClientRect();const ep=Math.min(1,Math.max(0,(vh-er.top)/(vh*.9)));const ins=18*(1-ep);endW.style.clipPath=`inset(0 ${ins}% 0 ${ins}% round 8px)`;
  bar.classList.toggle('solid',y>vh*.85);if(y>vh*.85&&y>last+2)bar.classList.add('hide');if(y<last-2||y<vh*.85)bar.classList.remove('hide');last=y;
