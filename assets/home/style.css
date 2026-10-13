@@ -387,3 +387,8 @@ html.light .pp,html.light .bar .mbtn{border-color:rgba(18,17,16,.55);background:
   .walk{padding-top:56px!important;padding-bottom:40px!important}
   .end{padding-top:40px!important;padding-bottom:56px!important}
 }
+/* 1012 phones: 'Cinematic.' sits on the same line as 'Made' (desktop/tablet untouched) */
+@media (max-width:600px){
+  .h1 .ln:nth-child(2){white-space:nowrap}
+  .h1 .payoff{font-size:.84em}
+}
