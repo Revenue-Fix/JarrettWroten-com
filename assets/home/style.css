@@ -392,3 +392,16 @@ html.light .pp,html.light .bar .mbtn{border-color:rgba(18,17,16,.55);background:
   .h1 .ln:nth-child(2){white-space:nowrap}
   .h1 .payoff{font-size:.84em}
 }
+/* v53fix desktop: masked headline descenders (g/y/p/f tails, comma) were sliced by overflow:hidden.
+   Extra bottom padding is cancelled by a negative margin so layout does not move; hidden-state offsets are
+   pushed further so the next line never peeks into the taller mask. Desktop only: phones unchanged. */
+@media (min-width:861px){
+  .mask .ml{padding-bottom:.2em;margin-bottom:-.12em;padding-left:.08em;margin-left:-.08em}
+  .mask .ml>span{transform:translateY(140%)}
+  .mask.in .ml>span,.paused .mask .ml>span,.done .mask .ml>span{transform:none}
+  .proof-n .ml{padding-bottom:.2em;margin-bottom:-.16em}
+  .work-name{height:1.25em!important;margin-bottom:-.15em}
+  .work-name .nm{transform:translateY(140%)}.work-name .nm.cur{transform:none}.work-name .nm.gone{transform:translateY(-140%)}
+}
+/* v53fix: menu overlay scrolls with the wheel (paired with data-lenis-prevent on #menu) */
+.menu{overscroll-behavior:contain}
