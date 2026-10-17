@@ -20,41 +20,39 @@
   <meta name="twitter:description" content="How Jarrett uses the contact and booking details you choose to share.">
   <style>
     :root{font-synthesis-weight:none}
-    @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-italic-latin-ext.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
-    @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-italic-latin.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
-    @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-regular-latin-ext.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
-    @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-regular-latin.woff2") format("woff2");font-weight:400;font-style:normal;font-display:swap;unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
-    @font-face{font-family:"Bodoni Moda";src:url("/assets/fonts/bodoni-moda-latin-variable.woff2") format("woff2");font-weight:400 900;font-display:swap}
-    @font-face{font-family:"IBM Plex Sans";src:url("/assets/fonts/ibm-plex-sans-latin-variable.woff2") format("woff2");font-weight:100 700;font-display:swap}
-    @font-face{font-family:"Rana Reader Fallback";src:url("/assets/fonts/rana-reader-fallback-roman.woff2") format("woff2");font-weight:400;font-display:swap}
-    :root{color-scheme:dark;background:#040a0c;color:#e8f4f4;font-family:Georgia,"Rana Reader Fallback",serif}
+    :root{color-scheme:dark;background:#040a0c;color:#e8f4f4;font-family:"General Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
     *{box-sizing:border-box}
     body{margin:0;min-width:320px;background:#040a0c;color:#e8f4f4}
     a{color:inherit;text-decoration:none}
     main a[href^="mailto:"],footer a{display:inline-flex;align-items:center;min-height:44px}
     a:focus-visible{outline:2px solid #5ee7f0;outline-offset:5px}
-    header{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem clamp(1.15rem,4vw,4rem);font:600 .88rem/1 "IBM Plex Sans",system-ui,sans-serif}
+    header{display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem clamp(1.15rem,4vw,4rem);font:600 .88rem/1 "General Sans",system-ui,-apple-system,"Segoe UI",sans-serif}
     header a{min-height:44px;display:inline-flex;align-items:center}
     header nav{display:flex;gap:1rem;color:rgba(232,244,244,.72)}
     main{width:min(100% - 2.3rem,48rem);margin:0 auto;padding:clamp(4rem,11vw,8rem) 0 7rem}
-    h1{max-width:11ch;margin:0;font:400 clamp(3.6rem,11vw,8rem)/.94 "Instrument Serif","Bodoni Moda",Georgia,serif;letter-spacing:-.015em}
+    h1{max-width:13ch;margin:0;font:500 clamp(3.2rem,10vw,7.4rem)/.94 "General Sans",system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:-.015em}
     .intro{max-width:35rem;margin:2rem 0 clamp(4rem,9vw,7rem);font-size:clamp(1.2rem,1rem + .7vw,1.6rem);line-height:1.5;color:rgba(232,244,244,.78)}
     section{display:grid;grid-template-columns:minmax(8rem,.35fr) 1fr;gap:clamp(1.5rem,6vw,5rem);padding:2.1rem 0;border-top:1px solid rgba(232,244,244,.16)}
-    h2{margin:0;font:600 1rem/1.35 "IBM Plex Sans",system-ui,sans-serif;letter-spacing:0;color:#5ee7f0}
+    h2{margin:0;font:600 1rem/1.35 "General Sans",system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:0;color:#5ee7f0}
     section div{max-width:34rem}
     p{margin:0 0 1rem;font-size:1.08rem;line-height:1.68;color:rgba(232,244,244,.74)}
     p:last-child{margin-bottom:0}
     .contact{color:#e8f4f4;border-bottom:1px solid rgba(94,231,240,.55)}
     h1{overflow-wrap:break-word}.contact{overflow-wrap:anywhere}
     section>*{min-width:0}
-    footer{display:flex;justify-content:space-between;gap:1rem;padding:2rem clamp(1.15rem,4vw,4rem);border-top:1px solid rgba(232,244,244,.12);font:500 .8rem/1.4 "IBM Plex Sans",system-ui,sans-serif;color:rgba(232,244,244,.65)}
+    footer{display:flex;justify-content:space-between;gap:1rem;padding:2rem clamp(1.15rem,4vw,4rem);border-top:1px solid rgba(232,244,244,.12);font:500 .8rem/1.4 "General Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color:rgba(232,244,244,.65)}
     @media(max-width:620px){header nav a:first-child{display:none}section{grid-template-columns:1fr;gap:.75rem}footer{flex-direction:column}}
   </style>
-  <link rel="stylesheet" href="/assets/accessibility.css?v=20260904-a">
+  <link rel="stylesheet" href="/assets/accessibility.css?v=20261017-type">
   <script src="/assets/accessibility.js?v=titlecase-20261007" defer></script>
 <!-- Google Analytics 4: loads after first interaction or idle, same pattern as the existing Clarity tag -->
 <script>(function(w,d){var ID="G-T4DYFPXT70",done=0,ev=["scroll","pointerdown","keydown"],o={passive:true,capture:true};w.dataLayer=w.dataLayer||[];w.gtag=function(){w.dataLayer.push(arguments)};function go(){if(done)return;done=1;ev.forEach(function(e){w.removeEventListener(e,go,o)});var s=d.createElement("script");s.async=1;s.src="https://www.googletagmanager.com/gtag/js?id="+ID;d.head.appendChild(s);gtag("js",new Date());gtag("config",ID)}ev.forEach(function(e){w.addEventListener(e,go,o)});function idle(){w.requestIdleCallback?w.requestIdleCallback(go,{timeout:2500}):setTimeout(go,2500)}d.readyState==="complete"?setTimeout(idle,4000):w.addEventListener("load",function(){setTimeout(idle,4000)},{once:true})})(window,document);</script>
 <script type="text/javascript">(function(w,d){w.clarity=w.clarity||function(){(w.clarity.q=w.clarity.q||[]).push(arguments)};var done=0,ev=["scroll","pointerdown","keydown"],o={passive:true,capture:true};function go(){if(done)return;done=1;ev.forEach(function(e){w.removeEventListener(e,go,o)});var t=d.createElement("script");t.async=1;t.src="https://www.clarity.ms/tag/yvve5xueah";var y=d.getElementsByTagName("script")[0];y.parentNode.insertBefore(t,y)}ev.forEach(function(e){w.addEventListener(e,go,o)});function idle(){w.requestIdleCallback?w.requestIdleCallback(go,{timeout:2500}):setTimeout(go,2500)}d.readyState==="complete"?setTimeout(idle,4000):w.addEventListener("load",function(){setTimeout(idle,4000)},{once:true})})(window,document);clarity("set","site","jarrettwroten");</script>
+<!-- Same type as the home page: General Sans + Boska -->
+<link rel="preconnect" href="https://api.fontshare.com"><link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/MFQT7HFGCR2L5ULQTW6YXYZXXHMPKLJ3/YWQ244D6TACUX5JBKATPOW5I5MGJ3G73/7YY3ZAAE3TRV2LANYOLXNHTPHLXVWTKH.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/3RZHWSNONLLWJK3RLPEKUZOMM56GO4LJ/BPDRY7AHVI3MCDXXVXTQQ76H3UXA63S3/SB2OEB6IKZPRR6JT4GFJ2TFT6HBB6AZN.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/K46YRH762FH3QJ25IQM3VAXAKCHEXXW4/ISLWQPUZHZF33LRIOTBMFOJL57GBGQ4B/3ZLMEXZEQPLTEPMHTQDAUXP5ZZXCZAEN.woff2">
+<link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'"><link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=boska@400i,500i&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet"><link href="https://api.fontshare.com/v2/css?f[]=boska@400i,500i&display=swap" rel="stylesheet"></noscript>
+<link rel="stylesheet" href="/assets/home-type.css?v=20261017a">
 </head>
 <body>
   <header><a href="/">Jarrett Wroten</a></header>

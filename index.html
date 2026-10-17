@@ -91,7 +91,7 @@ function ease(p){return p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2}
 function f(n){if(r.classList.contains("paused")){fin();return}if(!t0){if(!r.classList.contains("ready")){requestAnimationFrame(f);return}t0=n+(VG?1150:150);r.dataset.rvs0=Math.round(t0)}var p=Math.max(0,Math.min(1,(n-t0)/DUR));if(VT)setT(p);else if(VS)set(T*p);else if(VG){var tm=n-t0,LC=Ls[0]+Ls[1]+Ls[2]+Ls[3];if(tm<600)set(LC*ease(Math.max(0,tm)/600));else if(tm<700)set(LC);else{var q=Math.min(1,(tm-700)/3500);set(LC+(T-LC)*q)}}else set(T*(.15*p+.85*ease(p)));if(p<1)requestAnimationFrame(f);else fin()}
 requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdone")&&document.hidden)fin()},7000)})();</script>
     <div class="hero-f">
-      <p class="fade">I'm Jarrett Wroten, the Las Vegas web designer. I build your site from your own footage, and I build a free concept of it before we ever talk.</p>
+      <p class="fade">I'm Jarrett Wroten, your local Las Vegas Cinematic Web Designer. I build your site from your own footage, and I build a free concept of it before we ever talk.</p>
       <a class="btn fade" href="/book/">Book Your Free Concept Call</a>
     </div>
   </div>
