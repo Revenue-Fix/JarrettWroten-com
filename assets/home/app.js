@@ -25,8 +25,7 @@ const big=$('.words');
 const wds=[...big.querySelectorAll('.wd')];
 // horizontal track
 const track=$('#track'),work=$('.work'),wCount=$('#wCount'),wProg=$('#wProg');const cards=[];
-W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.setAttribute('aria-label',`Open The ${w[1]} Concept`);
-a.innerHTML=`<div class="pc-f"><video muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}.jpg?v=1011s" src="assets/home/film/w-${w[0]}.mp4?v=1011s"></video></div><div class="pc-i"><span class="pc-n">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
+W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="pc-f"><video muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}.jpg?v=1011s" src="assets/home/film/w-${w[0]}.mp4?v=1011s"></video></div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
 track.append(a);cards.push(a)});
 let cur=-1;
 function setCur(i){if(i===cur)return;cur=i;cards.forEach((c,j)=>{c.classList.toggle('on',j===i);const v=c.querySelector('video');if(!window.__wn)return;if(Math.abs(j-i)<=1){v.preload='auto';if(!paused)v.play().catch(()=>{})}else v.pause()});wCount.textContent=String(i+1).padStart(2,'0');const wn=$('#wName');wn.querySelectorAll('.nm:not(.gone)').forEach(o=>{o.classList.remove('cur');o.classList.add('gone');setTimeout(()=>o.remove(),1000)});const sp=document.createElement('span');sp.className='nm';sp.innerHTML=W[i][1].replace(/(\S+)$/,'<em>$1</em>');wn.append(sp);sp.style.fontSize='';const aw=wn.clientWidth;if(sp.scrollWidth>aw){sp.style.fontSize=(parseFloat(getComputedStyle(sp).fontSize)*aw/sp.scrollWidth*0.98)+'px'}requestAnimationFrame(()=>requestAnimationFrame(()=>sp.classList.add('cur')))}
@@ -56,7 +55,7 @@ lenis.on('scroll',onScroll);addEventListener('scroll',onScroll,{passive:true});a
 {const wk=document.querySelector('.work');new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){window.__wn=1;o.disconnect();const k=cur;cur=-1;setCur(k)}},{rootMargin:'100% 0px'}).observe(wk)}
 setInterval(()=>obs.forEach(o=>{if(o.getBoundingClientRect().top<innerHeight)o.classList.add('in')}),900);
 // pause
-const pp=$('#pp');pp.onclick=()=>{paused=!paused;pp.setAttribute('aria-pressed',paused);pp.querySelector('.pp-t').textContent=paused?'Play':'Pause';root.classList.toggle('paused',paused);
+const pp=$('#pp');pp.onclick=()=>{paused=!paused;pp.setAttribute('aria-label',paused?'Play motion':'Pause motion');pp.querySelector('.pp-t').textContent=paused?'Play':'Pause';root.classList.toggle('paused',paused);
  const vs=$$('video');if(paused){vs.forEach(v=>v.pause());po.classList.add('on');wds.forEach(w=>w.classList.add('lit'));obs.forEach(o=>o.classList.add('in'));num.textContent='$40,114.81'}else{hv.play().catch(()=>{});const c=cards[cur];c&&c.querySelector('video').play().catch(()=>{});lz.forEach(v=>{if(v.src&&v.getBoundingClientRect().top<innerHeight&&v.getBoundingClientRect().bottom>0)v.play().catch(()=>{})})}};
 $('#top').onclick=()=>lenis.scrollTo(0,{duration:1.8,easing:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2});
 })();

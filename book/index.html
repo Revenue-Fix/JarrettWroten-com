@@ -18,6 +18,9 @@
   <meta name="twitter:title" content="Book a Free Website Concept Call | Jarrett Wroten Web Design">
   <meta name="twitter:description" content="Add your current website and get a free concept for the call.">
   <meta name="twitter:image" content="https://jarrettwroten.com/assets/golden-arrival/frames/ga-360.webp">
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/instrument-serif-regular-latin.woff2" crossorigin>
+  <link rel="preload" as="font" type="font/woff2" href="/assets/fonts/ibm-plex-sans-latin-variable.woff2" crossorigin>
+  <link rel="preload" as="image" href="/assets/golden-arrival/frames/ga-360.webp" fetchpriority="high">
   <style>
     :root{font-synthesis-weight:none}
     @font-face{font-family:"Instrument Serif";src:url("/assets/fonts/instrument-serif-italic-latin-ext.woff2") format("woff2");font-weight:400;font-style:italic;font-display:swap;unicode-range:U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C4, U+2113, U+2C60-2C7F, U+A720-A7FF}
@@ -175,7 +178,7 @@
     }
     .booking-note a{border-bottom:1px solid rgba(94,231,240,.55)}
     .booking-email{margin-top:.65rem}
-    .booking-email a{display:inline-flex;align-items:center;min-height:44px}
+    .booking-email a,.booking-note a{display:inline-flex;align-items:center;min-height:44px}
     .booking-panel{
       position:relative;
       min-width:0;
@@ -242,7 +245,7 @@
   <a class="skip-link" href="#calendar">Skip To Available Times</a>
   <main class="booking-page">
     <section class="booking-intro" aria-labelledby="booking-title">
-      <img class="booking-portrait" src="../assets/golden-arrival/frames/ga-360.webp" alt="" width="1280" height="720">
+      <img class="booking-portrait" src="../assets/golden-arrival/frames/ga-360.webp" alt="" fetchpriority="high" width="1280" height="720">
       <div class="booking-wash" aria-hidden="true"></div>
       <header class="booking-header">
         <a class="wordmark" href="../" aria-label="Jarrett Wroten home">Jarrett Wroten</a>
