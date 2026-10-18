@@ -1,4 +1,5 @@
 User-agent: *
 Allow: /
+Disallow: /audit/
 
 Sitemap: https://jarrettwroten.com/sitemap.xml
