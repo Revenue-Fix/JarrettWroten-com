@@ -1,6 +1,6 @@
 (()=>{
 const W=[
-["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Hawaiian Caf\u00e9"],["prorok","Dylan Prorok","Japanese Tattoo Artist"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["starbase","Starbase Wraps","Tesla Wraps And PPF"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"]];
+["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Hawaiian Caf\u00e9"],["prorok","Dylan Prorok","Japanese Tattoo Artist"],["truheart","Tru Heart Consulting","Sales Team Consulting"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["starbase","Starbase Wraps","Tesla Wraps And PPF"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"]];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],root=document.documentElement;
 let paused=false;
 const lenis=new Lenis({lerp:.1,smoothWheel:true});window.__lenis=lenis;
@@ -34,7 +34,7 @@ const obs=$$('.fade,.mask,.me-p');
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});obs.forEach(o=>io.observe(o));
 // lazy videos
 const lz=$$('video[data-src]');
-const lio=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){if(!v.src)v.src=v.dataset.src;if(!paused)v.play().catch(()=>{})}else v.pause()}),{rootMargin:'300px'});lz.forEach(v=>lio.observe(v));
+const lio=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){if(!v.src)v.src=(v.dataset.webm&&v.canPlayType('video/webm; codecs="vp9"')==='probably')?v.dataset.webm:v.dataset.src;if(!paused)v.play().catch(()=>{})}else v.pause()}),{rootMargin:'300px'});lz.forEach(v=>lio.observe(v));
 new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){if(!paused)hv.play().catch(()=>{})}else hv.pause()})).observe(hv);
 // counter: Dylan's real figure (within 30 days)
 const num=$('#dpNum');let counted=false;
@@ -88,7 +88,7 @@ addEventListener('pointerup',()=>{dn=false;tr.classList.remove('drag')});
 tr.addEventListener('click',e=>{if(moved>6){e.preventDefault();e.stopPropagation()}},true);
 })();
 (()=>{const $=s=>document.querySelector(s);
-const W=[["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Event Venue"],["rana","Rana Levy","Fine Jewelry"],["generations","Generations Kitchen","Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Caf\u00e9"],["prorok","Dylan Prorok","Tattoo Artist"],["purpleflare","Purple Flare Wraps","Wraps And Fleet"],["starbase","Starbase Wraps","Tesla Wraps"],["wrapstar","Wrapstar","Wraps And Coating"]];
+const W=[["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Event Venue"],["rana","Rana Levy","Fine Jewelry"],["generations","Generations Kitchen","Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Caf\u00e9"],["prorok","Dylan Prorok","Tattoo Artist"],["truheart","Tru Heart Consulting","Sales Team"],["purpleflare","Purple Flare Wraps","Wraps And Fleet"],["starbase","Starbase Wraps","Tesla Wraps"],["wrapstar","Wrapstar","Wraps And Coating"]];
 const ml=$('#menuL');W.forEach((w,i)=>{const li=document.createElement('li');li.className='m-in';li.style.transitionDelay=(0.12+i*0.03)+'s';li.innerHTML=`<a href="https://${w[0]}.jarrettwroten.com/" target="_blank" rel="noopener">${w[1]}<span>${w[2]}</span></a>`;ml.append(li)});
 const menu=$('#menu'),mb=$('#mbtn'),mc=$('#mclose');let last=null;
 function open(){last=document.activeElement;menu.hidden=false;requestAnimationFrame(()=>menu.classList.add('open'));mb.setAttribute('aria-expanded','true');window.__lenis&&window.__lenis.stop();document.documentElement.style.overflow='hidden';setTimeout(()=>mc.focus(),50)}

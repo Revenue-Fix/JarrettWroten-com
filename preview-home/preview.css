@@ -112,3 +112,16 @@
 .sv-demo.anim.s-ans .sv-chips{opacity:1;transform:none}
 .sv-demo.s-out .sv-chips{opacity:0!important;transition:opacity .45s linear}
 .sv-sk-a{margin-top:26px}
+
+/* Light-section theme: Aubergine (Jarrett picked Oct 22). Overrides html.light from assets/home/style.css on /preview-home/ only. */
+/* shared for dark options (A,B): light sections become a deep tone; nav pill + buttons go gold */
+html.light .bar .mark{color:var(--fg);text-shadow:none}
+html.light .pp,html.light .bar .mbtn{border-color:rgba(238,232,221,.6);background:rgba(11,11,10,.38);color:var(--fg)}
+html.light{--bb:#d4ae5a;--bf:#0b0b0a;--bh:#f3dc9a}
+html.light .dp-h em,html.light .how-head em,html.light .card-n em{color:#d4ae5a}
+html.light .dp-ph{border-color:rgba(212,174,90,.7);background:rgba(212,174,90,.08)}
+html.light .dp-ph blockquote p{color:#e2c27a}
+html.light .dp-film{box-shadow:0 30px 80px -40px rgba(0,0,0,.9)}
+html.light .sv-pane{border-color:rgba(238,232,221,.16)}
+html.light{--bg:#241a2c;--fg:#f0eaf0;--fgm:rgba(240,234,240,.74);--card:#30253a;--ln:rgba(240,234,240,.15)}
+html.light .sv-pane{background:#15101a}
