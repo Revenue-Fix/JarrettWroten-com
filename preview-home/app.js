@@ -10,8 +10,8 @@ lenis.stop();scrollTo(0,0);
 const intro=$('#intro'),iN=$('#introN'),iB=$('#introBar'),hv=$('#heroV');
 hv.play&&hv.play().catch(()=>{});
 requestAnimationFrame(()=>intro.classList.add('go'));
-const t0=performance.now(),DUR=1900;
-(function tick(t){const p=Math.min(1,(t-t0)/DUR),e=1-Math.pow(1-p,3);iN.textContent=Math.round(e*100);iB.style.width=(e*100)+'%';
+const t0=performance.now(),DUR=2400;
+(function tick(t){const p=Math.min(1,(t-t0)/DUR),e=1-Math.pow(1-p,3);iN.textContent=Math.round(e*100);iB.style.width=(e*100)+'%';window.__wd&&window.__wd(p);
  if(p<1)requestAnimationFrame(tick);else setTimeout(()=>{intro.classList.add('out');root.classList.add('ready');try{hv.currentTime=0;hv.play()}catch(_){}lenis.start();setTimeout(()=>intro.remove(),1200)},180)})(t0);
 // payoff word lands 0.25s after payoff cut (5.5s), then stays
 const po=$('#payoff'),PAY=5.75;

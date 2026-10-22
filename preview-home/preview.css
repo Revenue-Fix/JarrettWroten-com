@@ -132,11 +132,3 @@ html.light .sv-pane{background:#15101a}
 .iwd .wdt{opacity:0;transition:opacity .25s}
 .iwd.wd-done .wdf2{opacity:1;transition:opacity .35s ease}
 .iwd.wd-done .wdt{opacity:0!important}
-/* Hero: search-first headline (four short lines; descenders never clipped) */
-.h1.h1-s{font-size:clamp(40px,5.7vw,108px);line-height:1.02;letter-spacing:-.03em}
-.h1.h1-s .ln{padding-bottom:.16em;margin-bottom:-.1em}
-.ready .h1.h1-s .ln:nth-child(3) .w{transition-delay:.24s}
-.ready .h1.h1-s .ln:nth-child(4) .w{transition-delay:.36s}
-.h1.h1-s .ln{white-space:nowrap}
-.hero-f p{max-width:34em}
-@media (max-width:700px){.h1.h1-s{font-size:min(8.3vw,52px);line-height:1.03}.h1.h1-s .payoff{font-size:1em}}
