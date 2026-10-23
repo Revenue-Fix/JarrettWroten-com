@@ -10,9 +10,13 @@ lenis.stop();scrollTo(0,0);
 const intro=$('#intro'),iN=$('#introN'),iB=$('#introBar'),hv=$('#heroV');
 hv.play&&hv.play().catch(()=>{});
 requestAnimationFrame(()=>intro.classList.add('go'));
-const t0=performance.now(),DUR=2400;
+const t0=performance.now(),DUR=2400,SH=1000;let ts=0;
 (function tick(t){const p=Math.min(1,(t-t0)/DUR),e=1-Math.pow(1-p,3);iN.textContent=Math.round(e*100);iB.style.width=(e*100)+'%';window.__wd&&window.__wd(p);
- if(p<1)requestAnimationFrame(tick);else setTimeout(()=>{intro.classList.add('out');root.classList.add('ready');try{hv.currentTime=0;hv.play()}catch(_){}lenis.start();setTimeout(()=>intro.remove(),1200)},180)})(t0);
+ if(p<1){requestAnimationFrame(tick);return}
+ /* one full shine sweep over the finished word, then the lift */
+ if(!ts)ts=t;const sp=window.__ws?Math.min(1,(t-ts)/SH):1;window.__ws&&window.__ws(sp);
+ if(sp<1){requestAnimationFrame(tick);return}
+ setTimeout(()=>{intro.classList.add('out');root.classList.add('ready');try{hv.currentTime=0;hv.play()}catch(_){}lenis.start();setTimeout(()=>intro.remove(),1200)},180)})(t0);
 // payoff word lands 0.25s after payoff cut (5.5s), then stays
 const po=$('#payoff'),PAY=5.75;
 function pay(){if(!po.classList.contains('on')&&root.classList.contains('ready')&&(hv.currentTime>=PAY||paused))po.classList.add('on')}
@@ -150,4 +154,52 @@ function run(){if(P()){final();running=false;return}running=true;clear();const c
  at(Math.max(g1+1100,a1+700)+3600,()=>{i=(i+1)%T.length;d.classList.add('s-out');at(600,run)})}
 new IntersectionObserver(es=>{const e=es[0];if(e.isIntersecting){if(!running){seen=true;run()}}else if(running){final();running=false}},{threshold:.25}).observe(d);
 document.getElementById('pp').addEventListener('click',()=>{if(P()){final();running=false}else if(seen){const r=d.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)run()}});
+})();
+
+/* hero CTA -> docked bottom-center CTA (one element, FLIP move; reduced-motion gets a short move, never none) */
+(()=>{
+const btn=document.querySelector('.hero-f .btn'),slot=document.querySelector('.hero-f'),hero=document.querySelector('.hero'),wrap=document.getElementById('heroWrap'),end=document.querySelector('.end');
+if(!btn||!slot||!hero)return;
+const mqR=matchMedia('(prefers-reduced-motion: reduce)');
+let docked=false,tmr=0,raf=0;
+btn.classList.add('dock-btn');
+function reserve(){if(!docked){const h=btn.offsetHeight;if(h)slot.style.minHeight=h+'px'}}
+reserve();addEventListener('resize',()=>{reserve();sched()});
+function flip(first,animate,op0){
+ const last=btn.getBoundingClientRect();
+ if(!animate||!first||!last.width||!last.height)return;
+ const dx=first.left-last.left,dy=first.top-last.top,sx=first.width/last.width,sy=first.height/last.height;
+ if(Math.abs(dx)<1&&Math.abs(dy)<1&&Math.abs(sx-1)<.01&&Math.abs(sy-1)<.01)return;
+ const D=mqR.matches?250:500;
+ btn.style.transformOrigin='0 0';btn.style.transition='none';
+ btn.style.transform=`translate(${dx}px,${dy}px) scale(${sx},${sy})`;if(op0<1)btn.style.opacity=op0;
+ btn.getBoundingClientRect();
+ btn.style.transition=`transform ${D}ms cubic-bezier(.22,.8,.2,1),opacity ${D}ms ease,background-color 1.1s,color 1.1s`;
+ btn.style.transform='none';if(op0<1)btn.style.opacity='';
+ clearTimeout(tmr);tmr=setTimeout(()=>{btn.style.transition='';btn.style.transform='';btn.style.transformOrigin='';btn.style.opacity=''},D+80);
+}
+function setDocked(on,animate){
+ if(on===docked)return;
+ const first=btn.getBoundingClientRect(),hc=btn.closest('.hero-c'),op0=on&&hc?(parseFloat(getComputedStyle(hc).opacity)||1):1;
+ btn.style.transition='none';btn.style.transform='';
+ if(on){btn.classList.remove('fade');btn.classList.add('docked');document.body.appendChild(btn)}
+ else{btn.classList.remove('docked','dock-off');btn.classList.add('fade');slot.appendChild(btn)}
+ docked=on;
+ flip(first,animate,op0);
+}
+function want(){
+ const vh=innerHeight;
+ if(wrap&&getComputedStyle(hero).position==='sticky'){const r=wrap.getBoundingClientRect(),span=r.height-vh;if(span>0){const p=-r.top/span;return docked?p>.18:p>.3}}
+ const hb=hero.getBoundingClientRect().bottom;return docked?hb<vh*.7:hb<vh*.55;
+}
+let first=true;
+function update(){
+ raf=0;
+ setDocked(want(),!first);first=false;
+ if(docked){const vh=innerHeight,off=!!end&&end.getBoundingClientRect().top<vh*.75;btn.classList.toggle('dock-off',off);btn.tabIndex=off?-1:0;btn.setAttribute('aria-hidden',off?'true':'false')}
+}
+function sched(){if(!raf)raf=requestAnimationFrame(update)}
+addEventListener('scroll',sched,{passive:true});
+if(document.readyState==='complete')update();else addEventListener('load',update);
+setTimeout(update,1200);
 })();
