@@ -153,11 +153,8 @@ html.light .sv-pane{background:#15101a}
 .menu .menu-cta:focus-visible{outline:2px solid #f3dc9a;outline-offset:3px}
 @media (hover:hover){.menu .menu-cta:hover::after{transform:none}}
 
-/* Purple comet around gold CTAs (stays inside the pill edge so the label and tap target are untouched) */
-.btn .comet{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:visible;filter:drop-shadow(0 0 3px rgba(139,92,246,.95)) drop-shadow(0 0 8px rgba(139,92,246,.7))}
-.btn .comet rect{animation:cometRun 3s linear infinite;will-change:stroke-dashoffset}
-.btn .comet.paused rect,.btn.dock-off .comet rect{animation-play-state:paused}
-@keyframes cometRun{from{stroke-dashoffset:var(--o0)}to{stroke-dashoffset:var(--o1)}}
+/* Purple comet v2 (canvas, drawn in app.js) around gold CTAs; inside the pill edge, never intercepts taps */
+.btn canvas.comet2{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;display:block}
 .btn.dock-btn,.end-a .btn,.menu .menu-cta{box-shadow:0 0 18px rgba(139,92,246,.28),0 8px 26px rgba(0,0,0,.35)}
 
 /* Shared emphasis: gold Pinyon Script (same gold as the loader "Web Design" and the hero payoff) */
