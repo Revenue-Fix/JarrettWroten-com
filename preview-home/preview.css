@@ -132,3 +132,10 @@ html.light .sv-pane{background:#15101a}
 .iwd .wdt{opacity:0;transition:opacity .25s}
 .iwd.wd-done .wdf2{opacity:1;transition:opacity .35s ease}
 .iwd.wd-done .wdt{opacity:0!important}
+
+/* Hero CTA: gold pill (site gold) with dark text; longer label wraps gracefully, 44px+ tap target */
+.hero-f .btn{--bb:var(--gold);--bf:#0b0b0a;--bh:var(--gold2);padding:13px 30px;min-height:52px;text-align:center;line-height:1.25;max-width:100%;box-shadow:0 6px 22px rgba(0,0,0,.28)}
+@media (max-width:860px){.hero-f .btn{font-size:15px;padding:13px 24px}}
+
+/* Dylan card: crisp still photo instead of video (no scale/parallax, so it stays pixel-sharp) */
+.pc-f img.pc-still{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:68% 50%;display:block;transform:none!important}
