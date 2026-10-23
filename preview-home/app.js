@@ -1,6 +1,6 @@
 (()=>{
 const W=[
-["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Hawaiian Caf\u00e9"],["prorok","Dylan Prorok","Japanese Tattoo Artist"],["truheart","Tru Heart Consulting","Sales Team Consulting"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["starbase","Starbase Wraps","Tesla Wraps And PPF"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"]];
+["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Hawaiian Caf\u00e9"],["prorok","Dylan Prorok","Japanese Tattoo Artist"],["truheart","Tru Heart Consulting","Sales Team Consulting"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"]];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],root=document.documentElement;
 let paused=false;
 const lenis=new Lenis({lerp:.1,smoothWheel:true});window.__lenis=lenis;
@@ -29,7 +29,7 @@ const big=$('.words');
 const wds=[...big.querySelectorAll('.wd')];
 // horizontal track
 const track=$('#track'),work=$('.work'),wCount=$('#wCount'),wProg=$('#wProg');const cards=[];
-W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="pc-f">${`<video class="pc-full" muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}-full.jpg?v=1022i"><source src="assets/home/film/w-${w[0]}-full.webm?v=1022i" type="video/webm; codecs=vp9"><source src="assets/home/film/w-${w[0]}-full.mp4?v=1022i" type="video/mp4"></video>`}</div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
+W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="pc-f">${`<video class="pc-full" muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}-full.jpg?v=1022j"><source src="assets/home/film/w-${w[0]}-full.webm?v=1022j" type="video/webm; codecs=vp9"><source src="assets/home/film/w-${w[0]}-full.mp4?v=1022j" type="video/mp4"></video>`}</div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
 track.append(a);cards.push(a)});
 let cur=-1;
 /* Playback guarantee: every carousel/hero video plays in every motion mode (no reduced-motion branch anywhere), explicit play() with catch + retry,
@@ -239,7 +239,7 @@ window.__glide=()=>({pd,tp,P,ax,ay,dx,dy,sc,hw,dw,dh});
 /* purple comet v2: canvas-drawn on the gold CTA border. Long smooth tail (~80% of the perimeter, 140 additive segments, no banding) fading from bright lavender at the head to nothing,
    with a layered, tapered head bloom. Clipped to a thin ring inside the pill edge so the label/tap target stay clean. One shared rAF loop, only visible buttons draw, 3.4s loop, runs in every motion mode. */
 (()=>{
-const LOOP=3400,N=160,TAIL=.95;
+const LOOP=3400,N=200,TAIL=.98;
 const items=[];let raf=0;
 function add(btn){
  if(!btn||btn.querySelector('canvas.comet2'))return;
@@ -276,7 +276,7 @@ function draw(it,now){
  for(let pass=0;pass<2;pass++){
   c.lineWidth=pass?2.3:5.6;
   for(let i=0;i<N;i++){
-   const u0=i/N,u1=(i+1)/N,um=(u0+u1)/2,a=Math.pow(1-um,1.25)*(pass?.95:.4);
+   const u0=i/N,u1=(i+1)/N,um=(u0+u1)/2,a=Math.pow(1-um,.7)*(pass?.9:.38);
    const p0=at(g,sh-u0*Lt),p1=at(g,sh-u1*Lt),k=col(um);
    c.strokeStyle='rgba('+k[0]+','+k[1]+','+k[2]+','+a.toFixed(3)+')';
    c.beginPath();c.moveTo(p0[0],p0[1]);c.lineTo(p1[0],p1[1]);c.stroke()}}
