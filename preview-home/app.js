@@ -39,6 +39,21 @@ function ply(v,n){if(!v||paused)return;v.muted=true;v.defaultMuted=true;v.setAtt
  if(pr&&pr.catch)pr.catch(()=>{n=n||0;if(n<4)setTimeout(()=>ply(v,n+1),400*(n+1))})}
 const kickAll=()=>{ply(hv);cards.forEach((c,j)=>{const v=c.querySelector('video');if(v&&Math.abs(j-cur)<=1&&window.__wn)ply(v)})};
 ['pointerdown','touchstart','keydown','wheel','scroll'].forEach(e=>addEventListener(e,()=>{kickAll()},{passive:true,once:true}));
+/* Autoplay policy can need a real activation (click, tap, key). wheel/scroll are NOT activations, so the one-shot kick above can be spent without unlocking anything. Keep kicking on every real activation. */
+['pointerdown','pointerup','mouseup','click','touchend','keydown'].forEach(e=>addEventListener(e,()=>{kickAll();$$('video[data-src]').forEach(v=>{if(v.src&&inView(v))ply(v)})},{passive:true}));
+/* No-autoplay fallback: where the browser, OS or policy keeps <video> from advancing, an animated WebP of the same film (assets/home/film/<name>-a.webp, loaded only then) covers the frame. Detection is currentTime, not paused. The video is still retried and the WebP is removed again if it starts to advance. */
+function inView(v){const r=v.getBoundingClientRect();return r.width>0&&r.bottom>0&&r.top<innerHeight&&r.right>0&&r.left<innerWidth}
+function fbUrl(v){let b;if(v===hv)b=matchMedia('(max-width:700px) and (orientation:portrait)').matches?'assets/home/film/hero-sm':'assets/home/film/hero';else{const u=v.dataset.src||(v.querySelector('source')||{}).getAttribute&&v.querySelector('source').getAttribute('src')||v.currentSrc||v.getAttribute('src')||'';b=u.replace(/[?#].*$/,'').replace(/\.(mp4|webm)$/,'')}return b?new URL(b+'-a.webp',document.baseURI).href:''}
+function fbShow(v){if(v.__fb)return;const u=fbUrl(v);if(!u)return;const im=new Image();im.className=(v.className+' vfb').trim();im.alt='';im.setAttribute('aria-hidden','true');im.decoding='async';im.style.cssText=v.style.cssText;im.src=u;if(!/^(absolute|fixed)$/.test(getComputedStyle(v).position)){v.__d=v.style.display;v.style.display='none'}v.after(im);v.__fb=im;v.dataset.fb='1'}
+function fbHide(v){if(!v.__fb)return;v.__fb.remove();v.__fb=null;if(v.__d!==undefined){v.style.display=v.__d;v.__d=undefined}delete v.dataset.fb}
+window.__fbShow=fbShow;
+setInterval(()=>{if(document.hidden||!root.classList.contains('ready'))return;[hv,...$$('video')].forEach((v,k,a)=>{if(a.indexOf(v)!==k||v.closest('dialog'))return;
+ const ci=cards.findIndex(c=>c.contains(v));let want=!paused&&inView(v)&&(ci<0||(window.__wn&&Math.abs(ci-cur)<=1));if(v.style.display==='none'&&v.__fb)want=!paused&&inView(v.__fb);
+ const t=v.currentTime,adv=v.__lt!==undefined&&(t>v.__lt+.03||t<v.__lt-.5);v.__lt=t;
+ if(!want){v.__st=0;v.__ok=0;return}
+ if(adv&&!v.paused){v.__st=0;v.__ok=(v.__ok||0)+1;if(v.__fb&&v.__ok>=4)fbHide(v);return}
+ v.__ok=0;v.__st=(v.__st||0)+1;if(v.paused||v.ended)ply(v);
+ const buffering=!v.error&&v.readyState<3&&v.networkState===2;if(v.__st>=(buffering?12:4))fbShow(v)})},500);
 setInterval(()=>{if(paused||document.hidden)return;cards.forEach((c,j)=>{const v=c.querySelector('video');if(!v||!window.__wn||Math.abs(j-cur)>1)return;if(v.paused||v.ended)ply(v);else if(v.readyState<2&&v.networkState===3)v.load()})},1000);
 function setCur(i){if(i===cur)return;cur=i;cards.forEach((c,j)=>{c.classList.toggle('on',j===i);const v=c.querySelector('video');if(!v||!window.__wn)return;if(Math.abs(j-i)<=1){v.preload='auto';ply(v)}else v.pause()});wCount.textContent=String(i+1).padStart(2,'0');const wn=$('#wName');wn.querySelectorAll('.nm:not(.gone)').forEach(o=>{o.classList.remove('cur');o.classList.add('gone');setTimeout(()=>o.remove(),1000)});const sp=document.createElement('span');sp.className='nm';sp.innerHTML=W[i][1].replace(/(\S+)$/,'<em class="gs">$1</em>');wn.append(sp);sp.style.fontSize='';const aw=wn.clientWidth;if(sp.scrollWidth>aw){sp.style.fontSize=(parseFloat(getComputedStyle(sp).fontSize)*aw/sp.scrollWidth*0.98)+'px'}requestAnimationFrame(()=>requestAnimationFrame(()=>sp.classList.add('cur')))}
 // reveals
@@ -82,7 +97,7 @@ const wrap=$('#heroWrap'),hv=$('#heroV'),hc=$('.hero-c'),secs=[...document.query
 let snapT=0,snapping=false;
 function loop(){const vh=innerHeight;
  const r=wrap.getBoundingClientRect();const p=Math.min(1,Math.max(0,-r.top/(r.height-vh)));const e=p*p*(3-2*p);
- hv.style.setProperty('--ix',(e*4)+'vw');hv.style.setProperty('--iy',(e*5)+'vh');hv.style.setProperty('--ir',(e*22)+'px');hc.style.transform=`translate3d(0,${-e*14}vh,0)`;hc.style.opacity=1-e*.9;
+ hv.style.setProperty('--ix',(e*4)+'vw');hv.style.setProperty('--iy',(e*5)+'vh');hv.style.setProperty('--ir',(e*22)+'px');hc.style.transform=`translate3d(0,${-e*14}vh,0)`;hc.style.opacity=1-e*.9;hv.__fb&&(hv.__fb.style.cssText=hv.style.cssText);
  let th='dark';for(const s of secs){const b=s.getBoundingClientRect();if(b.top<vh*.5&&b.bottom>vh*.5){th=s.dataset.theme;break}}root.classList.toggle('light',th==='light');
  const cx=innerWidth/2;cards.forEach(c=>{const b=c.getBoundingClientRect();const d=(b.left+b.width/2-cx)/innerWidth;c.style.setProperty('--px',(-d*60)+'px')});
  requestAnimationFrame(loop)}

@@ -190,3 +190,14 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 
 /* gold CTA label: option B (General Sans 700, 17px, +0.012em, no caps) */
 .hero-f .btn,.btn.dock-btn,.menu .menu-cta,.end-a .btn{font:700 17px/1.25 var(--sans)!important;letter-spacing:.012em!important;text-transform:none!important;color:#0b0b0a!important}
+
+/* animated-WebP fallback frames (shown only if a <video> will not advance) */
+.dp-film img.vfb,.card-f img.vfb,.pc-f img.vfb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.vfb{-webkit-user-drag:none}
+
+/* hero headline legibility over bright footage */
+.hero::after{background:linear-gradient(0deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.6) 26%,rgba(0,0,0,.28) 48%,rgba(0,0,0,0) 68%)!important}
+.hero-c{text-shadow:0 2px 3px rgba(0,0,0,.45),0 4px 40px rgba(0,0,0,.65)!important}
+
+/* phone: one-line docked/hero button so it never covers half the screen */
+@media (max-width:700px){.btn.dock-btn{font-size:13.2px!important;letter-spacing:0!important;white-space:nowrap!important;padding-left:14px!important;padding-right:14px!important;min-height:46px!important}}
