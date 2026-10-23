@@ -8,7 +8,7 @@ const lenis=new Lenis({lerp:.1,smoothWheel:true});window.__lenis=lenis;
 lenis.stop();scrollTo(0,0);
 // intro: counter 0-100, then curtain up
 const intro=$('#intro'),iN=$('#introN'),iB=$('#introBar'),hv=$('#heroV');
-hv.play&&hv.play().catch(()=>{});
+ply(hv);
 requestAnimationFrame(()=>intro.classList.add('go'));
 const t0=performance.now(),DUR=2400,SH=1200;let ts=0;
 (function tick(t){const p=Math.min(1,(t-t0)/DUR),e=1-Math.pow(1-p,3);iN.textContent=Math.round(e*100);iB.style.width=(e*100)+'%';window.__wd&&window.__wd(p);
@@ -16,7 +16,7 @@ const t0=performance.now(),DUR=2400,SH=1200;let ts=0;
  /* one full shine sweep over the finished word, then the lift */
  if(!ts)ts=t;const sp=window.__ws?Math.min(1,(t-ts)/SH):1;window.__ws&&window.__ws(sp);
  if(sp<1){requestAnimationFrame(tick);return}
- setTimeout(()=>{intro.classList.add('out');root.classList.add('ready');try{hv.currentTime=0;hv.play()}catch(_){}lenis.start();setTimeout(()=>intro.remove(),1200)},200)})(t0);
+ setTimeout(()=>{intro.classList.add('out');root.classList.add('ready');try{hv.currentTime=0}catch(_){}ply(hv);lenis.start();setTimeout(()=>intro.remove(),1200)},200)})(t0);
 // payoff word lands 0.25s after payoff cut (5.5s), then stays
 const po=$('#payoff'),PAY=5.75;
 function pay(){if(!po.classList.contains('on')&&root.classList.contains('ready')&&(hv.currentTime>=PAY||paused))po.classList.add('on')}
@@ -46,8 +46,13 @@ const obs=$$('.fade,.mask,.me-p');
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});obs.forEach(o=>io.observe(o));
 // lazy videos
 const lz=$$('video[data-src]');
-const lio=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){if(!v.src)v.src=(v.dataset.webm&&v.canPlayType('video/webm; codecs="vp9"')==='probably')?v.dataset.webm:v.dataset.src;if(!paused)v.play().catch(()=>{})}else v.pause()}),{rootMargin:'300px'});lz.forEach(v=>lio.observe(v));
-new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){if(!paused)hv.play().catch(()=>{})}else hv.pause()})).observe(hv);
+const lio=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){if(!v.src)v.src=(v.dataset.webm&&v.canPlayType('video/webm; codecs="vp9"')==='probably')?v.dataset.webm:v.dataset.src;ply(v)}else v.pause()}),{rootMargin:'300px'});lz.forEach(v=>lio.observe(v));
+/* hero film: never auto-paused (not when off-screen, hidden, low-power, data saver or reduced motion); only the manual Pause pill stops it. Resumes with retry on view, tab return, any 'pause' it didn't ask for, and a 1s watchdog. */
+new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)ply(hv)})).observe(hv);
+hv.addEventListener('pause',()=>{if(!paused&&!document.hidden)setTimeout(()=>{if(hv.paused&&!paused)ply(hv)},60)});
+hv.addEventListener('stalled',()=>{if(!paused)ply(hv)});hv.addEventListener('suspend',()=>{if(!paused&&hv.paused)ply(hv)});
+setInterval(()=>{if(!paused&&!document.hidden&&(hv.paused||hv.ended))ply(hv)},1000);
+document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!paused)ply(hv)});
 // counter: Dylan's real figure (within 30 days)
 const num=$('#dpNum');let counted=false;
 function count(){if(counted||!num)return;counted=true;const to=30,s=performance.now(),D=1600;(function f(t){const p=Math.min(1,(t-s)/D),e=1-Math.pow(1-p,4);num.textContent=Math.round(to*e);if(p<1&&!paused)requestAnimationFrame(f);else num.textContent='30'})(s)}
