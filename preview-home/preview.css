@@ -146,3 +146,41 @@ html.light .sv-pane{background:#15101a}
 .btn.docked{position:fixed;left:0;right:0;margin:0 auto;bottom:calc(22px + env(safe-area-inset-bottom,0px));width:max-content;max-width:calc(100vw - 32px);z-index:70;box-shadow:0 10px 34px rgba(0,0,0,.5),0 0 0 1px rgba(0,0,0,.12)}
 .btn.docked.dock-off{opacity:0;pointer-events:none;visibility:hidden;transition:opacity .3s ease,visibility 0s linear .3s}
 @media (max-width:860px){.btn.docked{bottom:calc(46px + env(safe-area-inset-bottom,0px));font-size:13.5px;min-height:46px;padding:10px 18px}}
+
+/* Remaining CTAs (menu, final) match the hero: gold fill, dark text, gold2 hover; long label wraps on phone */
+.menu .menu-cta,.end-a .btn{--bb:var(--gold);--bf:#0b0b0a;--bh:var(--gold2);background:var(--gold)!important;color:#0b0b0a!important;text-align:center;line-height:1.25;padding-top:14px;padding-bottom:14px;max-width:100%;text-shadow:none}
+.end-a .btn{font-size:clamp(15px,1.3vw,18px);padding-left:36px;padding-right:36px}
+@media (max-width:860px){.end-a .btn{font-size:15.5px;padding-left:22px;padding-right:22px;min-height:56px}.menu .menu-cta{font-size:15.5px;min-height:56px}}
+/* Menu CTA: no focus-sweep fill (that was the cream strip caught mid-slide when the menu focuses the button); keep a clear focus ring instead */
+.menu .menu-cta{flex:none;overflow:hidden}
+.menu .menu-cta:focus-visible::after{transform:translateY(101%)}
+.menu .menu-cta:focus-visible{outline:2px solid #f3dc9a;outline-offset:3px}
+@media (hover:hover){.menu .menu-cta:hover::after{transform:none}}
+
+/* Purple comet around gold CTAs (stays inside the pill edge so the label and tap target are untouched) */
+.btn .comet{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;overflow:visible;filter:drop-shadow(0 0 3px rgba(139,92,246,.95)) drop-shadow(0 0 8px rgba(139,92,246,.7))}
+.btn .comet rect{animation:cometRun 3s linear infinite;will-change:stroke-dashoffset}
+.btn .comet.paused rect,.btn.dock-off .comet rect{animation-play-state:paused}
+@keyframes cometRun{from{stroke-dashoffset:var(--o0)}to{stroke-dashoffset:var(--o1)}}
+.btn.dock-btn,.end-a .btn,.menu .menu-cta{box-shadow:0 0 18px rgba(139,92,246,.28),0 8px 26px rgba(0,0,0,.35)}
+
+/* Shared emphasis: gold Pinyon Script (same gold as the loader "Web Design" and the hero payoff) */
+em.gs,.gs{font-family:'Pinyon Script','Snell Roundhand','Apple Chancery',cursive;font-style:normal;font-weight:400;letter-spacing:0;font-size:1.22em;line-height:1;
+ padding:.14em .16em .26em .04em;margin:-.14em -.12em -.26em -.04em;
+ background-image:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+ -webkit-box-decoration-break:clone;box-decoration-break:clone;text-shadow:none}
+.dp-n .dp-w.gs{font-size:.48em;margin:0;padding:.1em .12em .22em .04em}
+.card-n em.gs{font-size:1.5em}
+.work-meta em.gs{font-size:1.3em}
+.mask .ml:has(.gs){padding-bottom:.28em;margin-bottom:-.2em}
+
+/* Portfolio cards: each card shows the live site's full hero (short looping clip) */
+.pc-f video.pc-full{inset:0!important;width:100%!important;height:100%!important;max-width:none;object-fit:cover;object-position:50% 50%;transform:none!important;transition:none}
+.pc:hover .pc-f video.pc-full{transform:none!important}
+
+/* Portfolio cards: each card shows the live site's full hero (short looping clip) */
+.pc-f video.pc-full{inset:0!important;width:100%!important;height:100%!important;max-width:none;object-fit:cover;object-position:50% 50%;transform:none!important;transition:none}
+.pc:hover .pc-f video.pc-full{transform:none!important}
+.dp-n .dp-w.gs{font-size:.42em;padding:.1em .04em .22em .04em;margin:0 -.02em}
+.work-name em.gs{font-size:1.12em;padding-bottom:.3em}
+@media (min-width:861px){.sv-lead em.gs{white-space:nowrap}}

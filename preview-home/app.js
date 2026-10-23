@@ -29,10 +29,10 @@ const big=$('.words');
 const wds=[...big.querySelectorAll('.wd')];
 // horizontal track
 const track=$('#track'),work=$('.work'),wCount=$('#wCount'),wProg=$('#wProg');const cards=[];
-W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="pc-f">${w[0]==='prorok'?'<img class="pc-still" src="assets/home/film/w-prorok-still.jpg?v=1022s" alt="Dylan Prorok, Large-Scale Japanese Tattooing" width="2400" height="1350" decoding="async" draggable="false">':w[0]==='truheart'?'<video muted loop playsinline preload="none" poster="assets/home/film/w-truheart-hero.jpg?v=1022h"><source src="assets/home/film/w-truheart-hero.webm?v=1022h" type="video/webm; codecs=vp9"><source src="assets/home/film/w-truheart-hero.mp4?v=1022h" type="video/mp4"></video>':`<video muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}.jpg?v=1011s" src="assets/home/film/w-${w[0]}.mp4?v=1011s"></video>`}</div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
+W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="pc-f">${w[0]==='prorok'?'<img class="pc-still" src="assets/home/film/w-prorok-still.jpg?v=1022s" alt="Dylan Prorok, Large-Scale Japanese Tattooing" width="2400" height="1350" decoding="async" draggable="false">':`<video class="pc-full" muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}-full.jpg?v=1022f"><source src="assets/home/film/w-${w[0]}-full.webm?v=1022f" type="video/webm; codecs=vp9"><source src="assets/home/film/w-${w[0]}-full.mp4?v=1022f" type="video/mp4"></video>`}</div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
 track.append(a);cards.push(a)});
 let cur=-1;
-function setCur(i){if(i===cur)return;cur=i;cards.forEach((c,j)=>{c.classList.toggle('on',j===i);const v=c.querySelector('video');if(!v||!window.__wn)return;if(Math.abs(j-i)<=1){v.preload='auto';if(!paused)v.play().catch(()=>{})}else v.pause()});wCount.textContent=String(i+1).padStart(2,'0');const wn=$('#wName');wn.querySelectorAll('.nm:not(.gone)').forEach(o=>{o.classList.remove('cur');o.classList.add('gone');setTimeout(()=>o.remove(),1000)});const sp=document.createElement('span');sp.className='nm';sp.innerHTML=W[i][1].replace(/(\S+)$/,'<em>$1</em>');wn.append(sp);sp.style.fontSize='';const aw=wn.clientWidth;if(sp.scrollWidth>aw){sp.style.fontSize=(parseFloat(getComputedStyle(sp).fontSize)*aw/sp.scrollWidth*0.98)+'px'}requestAnimationFrame(()=>requestAnimationFrame(()=>sp.classList.add('cur')))}
+function setCur(i){if(i===cur)return;cur=i;cards.forEach((c,j)=>{c.classList.toggle('on',j===i);const v=c.querySelector('video');if(!v||!window.__wn)return;if(Math.abs(j-i)<=1){v.preload='auto';if(!paused)v.play().catch(()=>{})}else v.pause()});wCount.textContent=String(i+1).padStart(2,'0');const wn=$('#wName');wn.querySelectorAll('.nm:not(.gone)').forEach(o=>{o.classList.remove('cur');o.classList.add('gone');setTimeout(()=>o.remove(),1000)});const sp=document.createElement('span');sp.className='nm';sp.innerHTML=W[i][1].replace(/(\S+)$/,'<em class="gs">$1</em>');wn.append(sp);sp.style.fontSize='';const aw=wn.clientWidth;if(sp.scrollWidth>aw){sp.style.fontSize=(parseFloat(getComputedStyle(sp).fontSize)*aw/sp.scrollWidth*0.98)+'px'}requestAnimationFrame(()=>requestAnimationFrame(()=>sp.classList.add('cur')))}
 // reveals
 const obs=$$('.fade,.mask,.me-p');
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});obs.forEach(o=>io.observe(o));
@@ -202,4 +202,23 @@ function sched(){if(!raf)raf=requestAnimationFrame(update)}
 addEventListener('scroll',sched,{passive:true});
 if(document.readyState==='complete')update();else addEventListener('load',update);
 setTimeout(update,1200);
+})();
+
+/* purple comet that circles the gold CTA border (inline SVG stroke, dash-offset loop; paused when off-screen; runs in every motion mode) */
+(()=>{
+const NS='http://www.w3.org/2000/svg';
+const M=30,L=[[30,.16,3.4,'#7c4ae6'],[26,.16,3.4,'#8b5cf6'],[22,.16,3.4,'#8b5cf6'],[18,.18,3.5,'#9a6dfa'],[14,.2,3.6,'#a77bff'],[10,.24,3.6,'#b896ff'],[7,.32,3.7,'#c9aeff'],[4.4,.55,3.8,'#ddc9ff'],[2.4,1,3.9,'#f4ecff']];
+function add(btn){
+ if(!btn||btn.querySelector('.comet'))return;
+ const sv=document.createElementNS(NS,'svg');sv.setAttribute('class','comet');sv.setAttribute('aria-hidden','true');sv.setAttribute('focusable','false');
+ const rs=L.map(l=>{const r=document.createElementNS(NS,'rect');r.setAttribute('pathLength','100');r.setAttribute('fill','none');r.setAttribute('stroke-linecap','round');r.setAttribute('stroke-width',l[2]);r.setAttribute('stroke-dasharray',l[0]+' 100');
+  const o=-(M-l[0]);r.style.setProperty('--o0',o);r.style.setProperty('--o1',o-100);r.style.opacity=l[1];r.setAttribute('stroke',l[3]);sv.appendChild(r);return r});
+ btn.appendChild(sv);
+ function fit(){const w=btn.offsetWidth,h=btn.offsetHeight;if(!w||!h)return;sv.setAttribute('viewBox',`0 0 ${w} ${h}`);rs.forEach(r=>{r.setAttribute('x',2);r.setAttribute('y',2);r.setAttribute('width',w-4);r.setAttribute('height',h-4);r.setAttribute('rx',(h-4)/2)})}
+ fit();
+ if('ResizeObserver' in window)new ResizeObserver(fit).observe(btn);else addEventListener('resize',fit);
+ if('IntersectionObserver' in window)new IntersectionObserver(es=>es.forEach(e=>sv.classList.toggle('paused',!e.isIntersecting))).observe(btn);
+}
+function run(){document.querySelectorAll('.hero-f .btn, .btn.dock-btn, .end-a .btn, .menu-cta').forEach(add)}
+run();
 })();
