@@ -132,6 +132,3 @@ html.light .sv-pane{background:#15101a}
 .iwd .wdt{opacity:0;transition:opacity .25s}
 .iwd.wd-done .wdf2{opacity:1;transition:opacity .35s ease}
 .iwd.wd-done .wdt{opacity:0!important}
-/* Hero supporting line: soft local scrim + deeper shadow so it reads over every clip frame (footage stays untinted elsewhere) */
-.hero-f p{position:relative;isolation:isolate;text-shadow:0 1px 2px rgba(0,0,0,.7),0 2px 10px rgba(0,0,0,.6),0 2px 28px rgba(0,0,0,.65)}
-.hero-f p::before{content:"";position:absolute;inset:-26px -38px -22px -34px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 78% 82% at 42% 52%,rgba(0,0,0,.58) 0%,rgba(0,0,0,.4) 52%,rgba(0,0,0,0) 100%)}
