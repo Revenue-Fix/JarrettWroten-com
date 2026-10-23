@@ -156,52 +156,56 @@ new IntersectionObserver(es=>{const e=es[0];if(e.isIntersecting){if(!running){se
 document.getElementById('pp').addEventListener('click',()=>{if(P()){final();running=false}else if(seen){const r=d.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)run()}});
 })();
 
-/* hero CTA -> docked bottom-center CTA (one element, FLIP move; reduced-motion gets a short move, never none) */
+/* hero CTA glides to the bottom-center dock as you scroll (one element; position and size follow scroll progress, rAF + light lerp; identical in every motion mode) */
 (()=>{
-const btn=document.querySelector('.hero-f .btn'),slot=document.querySelector('.hero-f'),hero=document.querySelector('.hero'),wrap=document.getElementById('heroWrap'),end=document.querySelector('.end');
+const btn=document.querySelector('.hero-f .btn'),slot=document.querySelector('.hero-f'),hero=document.querySelector('.hero'),hc=document.querySelector('.hero-c'),end=document.querySelector('.end');
 if(!btn||!slot||!hero)return;
-const mqR=matchMedia('(prefers-reduced-motion: reduce)');
-let docked=false,tmr=0,raf=0;
+const mqS=matchMedia('(max-width:860px)');
+const probe=document.createElement('div');probe.setAttribute('aria-hidden','true');
+probe.style.cssText='position:fixed;left:0;width:0;height:0;visibility:hidden;pointer-events:none';document.body.appendChild(probe);
+let ax=0,ay=0,hw=0,dw=0,dh=0,dx=0,dy=0,sc=1,P=300,pd=0,tp=0,raf=0,last=0,ready=false,off=false;
 btn.classList.add('dock-btn');
-function reserve(){if(!docked){const h=btn.offsetHeight;if(h)slot.style.minHeight=h+'px'}}
-reserve();addEventListener('resize',()=>{reserve();sched()});
-function flip(first,animate,op0){
- const last=btn.getBoundingClientRect();
- if(!animate||!first||!last.width||!last.height)return;
- const dx=first.left-last.left,dy=first.top-last.top,sx=first.width/last.width,sy=first.height/last.height;
- if(Math.abs(dx)<1&&Math.abs(dy)<1&&Math.abs(sx-1)<.01&&Math.abs(sy-1)<.01)return;
- const D=mqR.matches?250:500;
- btn.style.transformOrigin='0 0';btn.style.transition='none';
- btn.style.transform=`translate(${dx}px,${dy}px) scale(${sx},${sy})`;if(op0<1)btn.style.opacity=op0;
- btn.getBoundingClientRect();
- btn.style.transition=`transform ${D}ms cubic-bezier(.22,.8,.2,1),opacity ${D}ms ease,background-color 1.1s,color 1.1s`;
- btn.style.transform='none';if(op0<1)btn.style.opacity='';
- clearTimeout(tmr);tmr=setTimeout(()=>{btn.style.transition='';btn.style.transform='';btn.style.transformOrigin='';btn.style.opacity=''},D+80);
+function ty(){if(!hc)return 0;const t=getComputedStyle(hc).transform;if(!t||t==='none')return 0;const m=t.match(/matrix(3d)?\(([^)]+)\)/);if(!m)return 0;const v=m[2].split(',').map(parseFloat);return m[1]?v[13]:v[5]}
+function measure(){
+ /* hero state: measure in the slot; dock state: measure as the fixed glide button */
+ btn.classList.remove('fade');const inSlot=btn.parentNode===slot;
+ if(!inSlot){btn.classList.remove('glide');btn.style.transform='';slot.appendChild(btn)}
+ slot.style.minHeight='';const r=btn.getBoundingClientRect();hw=r.width;
+ ax=r.left;ay=r.top+scrollY-ty()-scrollY+scrollY; /* viewport y at scrollY 0 */
+ ay=r.top+scrollY-ty();
+ slot.style.minHeight=r.height+'px';
+ btn.classList.add('glide');document.body.appendChild(btn);btn.style.transform='translate(0,0)';
+ dw=btn.offsetWidth;dh=btn.offsetHeight;
+ probe.style.bottom=mqS.matches?'calc(46px + env(safe-area-inset-bottom,0px))':'calc(22px + env(safe-area-inset-bottom,0px))';
+ const pb=probe.getBoundingClientRect().top;
+ dx=Math.round((innerWidth-dw)/2);dy=pb-dh;
+ sc=dw?hw/dw:1;
+ P=Math.max(240,hero.offsetHeight*.7);
 }
-function setDocked(on,animate){
- if(on===docked)return;
- const first=btn.getBoundingClientRect(),hc=btn.closest('.hero-c'),op0=on&&hc?(parseFloat(getComputedStyle(hc).opacity)||1):1;
- btn.style.transition='none';btn.style.transform='';
- if(on){btn.classList.remove('fade');btn.classList.add('docked');document.body.appendChild(btn)}
- else{btn.classList.remove('docked','dock-off');btn.classList.add('fade');slot.appendChild(btn)}
- docked=on;
- flip(first,animate,op0);
+function draw(){
+ const e=pd,s=sc+(1-sc)*e,x=ax+(dx-ax)*e,y=ay+(dy-ay)*e;
+ btn.style.transform=`translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0) scale(${s.toFixed(4)})`;
 }
-function want(){
- const vh=innerHeight;
- if(wrap&&getComputedStyle(hero).position==='sticky'){const r=wrap.getBoundingClientRect(),span=r.height-vh;if(span>0){const p=-r.top/span;return docked?p>.18:p>.3}}
- const hb=hero.getBoundingClientRect().bottom;return docked?hb<vh*.7:hb<vh*.55;
+function endCheck(){
+ const o=pd>.98&&!!end&&end.getBoundingClientRect().top<innerHeight*.75;
+ if(o!==off){off=o;btn.classList.toggle('dock-off',o);btn.tabIndex=o?-1:0;btn.setAttribute('aria-hidden',o?'true':'false')}
 }
-let first=true;
-function update(){
- raf=0;
- setDocked(want(),!first);first=false;
- if(docked){const vh=innerHeight,off=!!end&&end.getBoundingClientRect().top<vh*.75;btn.classList.toggle('dock-off',off);btn.tabIndex=off?-1:0;btn.setAttribute('aria-hidden',off?'true':'false')}
+function frame(t){
+ raf=0;const dt=Math.min(64,t-(last||t));last=t;
+ tp=Math.min(1,Math.max(0,scrollY/P));
+ const k=1-Math.exp(-dt/85);pd+=(tp-pd)*k;
+ if(Math.abs(tp-pd)<.0006)pd=tp;
+ draw();endCheck();
+ if(pd!==tp){raf=requestAnimationFrame(frame)}else last=0;
 }
-function sched(){if(!raf)raf=requestAnimationFrame(update)}
+function sched(){if(!raf)raf=requestAnimationFrame(frame)}
+function init(snap){measure();tp=Math.min(1,Math.max(0,scrollY/P));if(snap)pd=tp;draw();endCheck();ready=true;sched()}
 addEventListener('scroll',sched,{passive:true});
-if(document.readyState==='complete')update();else addEventListener('load',update);
-setTimeout(update,1200);
+let rt=0;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>init(true),120)});
+const go=()=>init(true);
+if(document.readyState==='complete')go();else addEventListener('load',go);
+setTimeout(go,1200);setTimeout(go,4000);
+window.__glide=()=>({pd,tp,P,ax,ay,dx,dy,sc,hw,dw,dh});
 })();
 
 /* purple comet that circles the gold CTA border (inline SVG stroke, dash-offset loop; paused when off-screen; runs in every motion mode) */
