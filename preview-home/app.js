@@ -29,7 +29,7 @@ const big=$('.words');
 const wds=[...big.querySelectorAll('.wd')];
 // horizontal track
 const track=$('#track'),work=$('.work'),wCount=$('#wCount'),wProg=$('#wProg');const cards=[];
-W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="pc-f">${`<video class="pc-full" muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}-full.jpg?v=1022g"><source src="assets/home/film/w-${w[0]}-full.webm?v=1022g" type="video/webm; codecs=vp9"><source src="assets/home/film/w-${w[0]}-full.mp4?v=1022g" type="video/mp4"></video>`}</div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
+W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="pc-f">${`<video class="pc-full" muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}-full.jpg?v=1022h"><source src="assets/home/film/w-${w[0]}-full.webm?v=1022h" type="video/webm; codecs=vp9"><source src="assets/home/film/w-${w[0]}-full.mp4?v=1022h" type="video/mp4"></video>`}</div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
 track.append(a);cards.push(a)});
 let cur=-1;
 /* Playback guarantee: every carousel/hero video plays in every motion mode (no reduced-motion branch anywhere), explicit play() with catch + retry,
