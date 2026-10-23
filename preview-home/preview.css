@@ -135,7 +135,7 @@ html.light .sv-pane{background:#15101a}
 
 /* Hero CTA: gold pill (site gold) with dark text; longer label wraps gracefully, 44px+ tap target */
 .hero-f .btn,.btn.dock-btn{--bb:var(--gold);--bf:#0b0b0a;--bh:var(--gold2);padding:13px 30px;min-height:52px;text-align:center;line-height:1.25;max-width:100%;box-shadow:0 6px 22px rgba(0,0,0,.28)}
-@media (max-width:860px){.hero-f .btn{font-size:15px;padding:13px 24px}}
+@media (max-width:860px){.hero-f .btn{padding:15px 24px}}
 
 /* Dylan card: crisp still photo instead of video (no scale/parallax, so it stays pixel-sharp) */
 .pc-f img.pc-still{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:68% 50%;display:block;transform:none!important}
@@ -145,8 +145,8 @@ html.light .sv-pane{background:#15101a}
 .btn.dock-btn{text-shadow:none}
 /* Remaining CTAs (menu, final) match the hero: gold fill, dark text, gold2 hover; long label wraps on phone */
 .menu .menu-cta,.end-a .btn{--bb:var(--gold);--bf:#0b0b0a;--bh:var(--gold2);background:var(--gold)!important;color:#0b0b0a!important;text-align:center;line-height:1.25;padding-top:14px;padding-bottom:14px;max-width:100%;text-shadow:none}
-.end-a .btn{font-size:clamp(15px,1.3vw,18px);padding-left:36px;padding-right:36px}
-@media (max-width:860px){.end-a .btn{font-size:15.5px;padding-left:22px;padding-right:22px;min-height:56px}.menu .menu-cta{font-size:15.5px;min-height:56px}}
+.end-a .btn{padding-left:36px;padding-right:36px}
+@media (max-width:860px){.end-a .btn{padding-left:22px;padding-right:22px;min-height:56px}.menu .menu-cta{min-height:56px;padding-left:22px;padding-right:22px}}
 /* Menu CTA: no focus-sweep fill (that was the cream strip caught mid-slide when the menu focuses the button); keep a clear focus ring instead */
 .menu .menu-cta{flex:none;overflow:hidden}
 .menu .menu-cta:focus-visible::after{transform:translateY(101%)}
@@ -182,9 +182,12 @@ em.gs,.gs{font-family:'Pinyon Script','Snell Roundhand','Apple Chancery',cursive
 .btn.glide{position:fixed;left:0;top:0;right:auto;bottom:auto;margin:0;width:max-content;max-width:calc(100vw - 32px);min-height:52px;z-index:70;transform-origin:0 0;will-change:transform;opacity:0;pointer-events:auto;box-shadow:0 0 18px rgba(139,92,246,.28),0 10px 30px rgba(0,0,0,.4);transition:opacity 1.1s ease .45s,background-color .25s,color .25s}
 .ready .btn.glide,.paused .btn.glide,.done .btn.glide{opacity:1}
 .btn.glide.dock-off{opacity:0!important;pointer-events:none;visibility:hidden;transition:opacity .3s ease,visibility 0s linear .3s}
-@media (max-width:860px){.btn.glide{font-size:13.5px;min-height:46px;padding:10px 18px}}
+@media (max-width:860px){.btn.glide{min-height:52px;padding:15px 24px}}
 
 /* How-it-works heading: exactly three lines at every width */
 .how .h2 .ml.l3{display:block;white-space:nowrap}
 .how .h2 .ml.l3>span{display:block}
 @media (max-width:860px){.how-head .h2{font-size:clamp(30px,9.2vw,44px)}}
+
+/* gold CTA label: option B (General Sans 700, 17px, +0.012em, no caps) */
+.hero-f .btn,.btn.dock-btn,.menu .menu-cta,.end-a .btn{font:700 17px/1.25 var(--sans)!important;letter-spacing:.012em!important;text-transform:none!important;color:#0b0b0a!important}
