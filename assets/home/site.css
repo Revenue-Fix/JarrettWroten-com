@@ -1,0 +1,245 @@
+/* preview-home: sections added for the rebuild. Hero and shared styles come from assets/home/style.css untouched. */
+:root{--gold:#d4ae5a;--gold2:#f3dc9a}
+.pv-flag{position:fixed;left:12px;bottom:12px;z-index:120;pointer-events:none;font:600 12px/1 var(--sans);letter-spacing:0;background:#d4ae5a;color:#0b0b0a;padding:7px 10px;border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.35)}
+.pv-flag span{font-weight:500;margin-left:6px;opacity:.8}
+
+/* 2. AI Search Visibility */
+.sv{padding:clamp(72px,11vh,130px) 0 clamp(72px,11vh,140px);color:var(--fg)}
+.sv-top{align-items:start}
+.sv .sv-lead{grid-column:1/12;max-width:24ch}
+@media (min-width:861px){.sv .sv-lead{grid-column:1/12;font-size:clamp(36px,4.4vw,76px);max-width:21ch}}
+.sv-demo{position:relative;display:grid;grid-template-columns:1fr 1fr;gap:var(--gap);margin:clamp(48px,8vh,96px) var(--pad) 0;padding:0}
+.sv-pane{position:relative;background:#151513;border:1px solid rgba(238,232,221,.12);border-radius:10px;padding:clamp(20px,2.2vw,34px);min-height:clamp(300px,30vw,400px);color:#eee8dd;overflow:hidden}
+.sv-src{font-weight:600;font-size:15px;color:rgba(238,232,221,.64);margin-bottom:18px}
+.sv-q{display:flex;align-items:center;gap:12px;min-height:56px;padding:0 20px;border-radius:999px;background:#0b0b0a;border:1px solid rgba(238,232,221,.18);font-size:clamp(16px,1.3vw,19px);font-weight:500}
+.sv-q svg{width:20px;height:20px;flex:none;color:rgba(238,232,221,.6)}
+.sv-caret{width:2px;height:1.1em;background:var(--gold);margin-left:-8px;animation:svb 1s steps(1) infinite}
+@keyframes svb{50%{opacity:0}}
+.sv-res{margin-top:18px;display:flex;flex-direction:column;gap:12px}
+.sv-you{display:flex;align-items:center;gap:14px;padding:16px 18px;border-radius:8px;background:#1d1b16;border:1px solid var(--gold);box-shadow:0 0 0 4px rgba(212,174,90,.12)}
+.sv-pin{width:14px;height:14px;border-radius:50% 50% 50% 0;transform:rotate(-45deg);background:var(--gold);flex:none;margin:0 2px}
+.sv-you>div{flex:1;min-width:0}
+.sv-name{font-weight:600;font-size:clamp(18px,1.5vw,22px);letter-spacing:-.015em}
+.sv-meta{font-size:14.5px;color:rgba(238,232,221,.64);margin-top:3px}
+.sv-call{flex:none;font-weight:600;font-size:14px;background:var(--gold);color:#0b0b0a;border-radius:999px;padding:9px 16px}
+.sv-sk{display:flex;flex-direction:column;gap:8px;padding:14px 18px;border-radius:8px;background:rgba(238,232,221,.04)}
+.sv-sk i{display:block;height:10px;border-radius:5px;background:rgba(238,232,221,.13);width:46%}
+.sv-sk i+i{width:72%;background:rgba(238,232,221,.07)}
+.sv-ask{display:flex;justify-content:flex-end}
+.sv-ask span{display:inline-block;max-width:88%;min-height:1.5em;background:#0b0b0a;border:1px solid rgba(238,232,221,.18);border-radius:18px 18px 4px 18px;padding:14px 18px;font-size:clamp(16px,1.3vw,19px);font-weight:500;line-height:1.4}
+.sv-ans{display:flex;gap:14px;margin-top:22px;align-items:flex-start}
+.sv-dot{width:26px;height:26px;border-radius:50%;flex:none;background:radial-gradient(circle at 35% 35%,var(--gold2),var(--gold) 60%,#8a6a2a);margin-top:2px}
+.sv-ans p{font-size:clamp(17px,1.4vw,21px);line-height:1.5}
+.sv-ans strong{font-weight:600;color:#fff;background:linear-gradient(transparent 62%,rgba(212,174,90,.38) 62%)}
+.sv-sk-a{margin:18px 0 0 40px;background:none;padding:0}
+.sv-note{grid-column:1/3;font-size:13.5px;color:var(--fgm);margin-top:2px}
+/* animation states (JS adds .anim; without it the final state shows) */
+.sv-demo .sv-res>*,.sv-demo .sv-ans,.sv-demo .sv-sk-a{transition:opacity .7s var(--ease),transform .9s var(--ease)}
+.sv-demo.anim .sv-res>*{opacity:0;transform:translateY(14px)}
+.sv-demo.anim.s-r .sv-sk{opacity:1;transform:translateY(0)}
+.sv-demo.anim .sv-sk{transform:translateY(14px)}
+.sv-demo.anim .sv-you{transform:translateY(80px) scale(.98)}
+.sv-demo.anim.s-r .sv-you{opacity:0;transform:translateY(80px)}
+.sv-demo.anim.s-y .sv-you{opacity:1;transform:none;transition:opacity .5s var(--ease),transform 1.1s var(--ease)}
+.sv-demo.anim.s-y .sv-sk{transform:translateY(0)}
+.sv-demo.anim .sv-ans,.sv-demo.anim .sv-sk-a{opacity:0;transform:translateY(12px)}
+.sv-demo.anim.s-a .sv-sk-a{opacity:1;transform:none}
+.sv-demo.anim.s-ans .sv-ans{opacity:1;transform:none}
+.sv-demo.anim.s-y .sv-call{animation:svp 1.6s var(--ease) .6s 2}
+@keyframes svp{0%{box-shadow:0 0 0 0 rgba(212,174,90,.6)}100%{box-shadow:0 0 0 14px rgba(212,174,90,0)}}
+.sv-demo.s-out .sv-res>*,.sv-demo.s-out .sv-ans,.sv-demo.s-out .sv-sk-a{opacity:0!important;transition:opacity .45s linear}
+.paused .sv-caret{animation:none}
+.sv-say{margin-top:clamp(72px,12vh,140px);align-items:start}
+.sv-h{grid-column:1/7}
+.sv-copy{grid-column:7/13}
+.sv-copy p{font-size:clamp(17px,1.35vw,22px);line-height:1.55;color:var(--fgm);max-width:34em}
+.sv-copy p+p{margin-top:20px;color:var(--fg)}
+
+/* 3. Dylan Prorok proof */
+.dp{padding:clamp(80px,13vh,160px) 0;color:var(--fg)}
+.dp-grid{row-gap:clamp(36px,6vh,72px);align-items:start}
+.dp-h{grid-column:1/-1}
+.dp-h .ml:nth-child(3)>span{transition-delay:.2s}
+.dp-f{grid-column:1/8}
+.dp-film{display:block;position:relative;aspect-ratio:16/9;overflow:hidden;border-radius:8px;background:#000;box-shadow:0 30px 80px -40px rgba(0,0,0,.6)}
+.dp-film video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.dp-t{grid-column:9/13}
+.dp-who{font-size:clamp(18px,1.4vw,22px);line-height:1.45;font-weight:500}
+.dp-n{margin-top:18px;font-weight:500;letter-spacing:-.045em;line-height:.9;font-size:clamp(72px,9vw,160px);font-variant-numeric:tabular-nums;white-space:nowrap}
+.dp-n .dp-w{font-family:var(--serif);font-style:italic;font-weight:400;font-size:.36em;letter-spacing:-.01em}
+.dp-s{margin-top:14px;font-size:clamp(17px,1.3vw,20px);line-height:1.5;color:var(--fgm)}
+.dp-q{margin-top:32px;padding:22px 24px;border-radius:8px}
+.dp-q blockquote p{font-family:var(--serif);font-style:italic;font-size:clamp(22px,1.9vw,30px);line-height:1.3}
+.dp-q figcaption{margin-top:12px;font-size:14.5px;color:var(--fgm)}
+.dp-ph{border:2px dashed #b68a3a;background:rgba(212,174,90,.10)}
+.dp-ph blockquote p{color:#7a5a1e}
+.dp-l{margin-top:24px}
+.lnk{display:inline-flex;align-items:center;min-height:44px;font-weight:600;font-size:15.5px;text-decoration:none;border-bottom:1px solid currentColor;line-height:1.2;padding-top:12px}
+
+/* 4. portfolio extras */
+.work-meta{white-space:nowrap}
+
+/* 7. CTA */
+.end-a{display:flex;flex-direction:column;align-items:center;gap:14px}
+.end-t .end-a{margin-top:40px}
+.end-tel{display:inline-flex;align-items:center;min-height:44px;font-weight:600;font-size:17px;text-decoration:none;border-bottom:1px solid currentColor;line-height:1.2;padding-top:10px}
+
+@media (max-width:860px){
+  .sv .sv-lead{grid-column:1/7}
+  .sv-demo{grid-template-columns:1fr}
+  .sv-note{grid-column:1/2}
+  .sv-pane{min-height:0}
+  .sv-h,.sv-copy{grid-column:1/7}.sv-copy{margin-top:24px}
+  .dp-f,.dp-t{grid-column:1/-1}
+}
+@media (max-width:700px){
+  .sv{padding:56px 0 64px}
+  .sv-demo{margin-top:36px}
+  .sv-pane{padding:18px}
+  .sv-q{min-height:52px;padding:0 16px;font-size:16px}
+  .sv-you{padding:14px}
+  .sv-say{margin-top:56px}
+  .dp{padding:56px 0}
+  .dp-h{font-size:clamp(34px,9.4vw,44px)}
+  .dp-n{font-size:clamp(72px,24vw,110px)}
+  .end-a .btn{width:100%}
+}
+
+.sv-chips{display:flex;gap:10px;margin:18px 0 0 40px}
+.sv-web{font-weight:600;font-size:14px;border:1px solid rgba(238,232,221,.35);border-radius:999px;padding:8px 16px}
+.sv-demo .sv-chips{transition:opacity .7s var(--ease) .25s,transform .9s var(--ease) .25s}
+.sv-demo.anim .sv-chips{opacity:0;transform:translateY(12px)}
+.sv-demo.anim.s-ans .sv-chips{opacity:1;transform:none}
+.sv-demo.s-out .sv-chips{opacity:0!important;transition:opacity .45s linear}
+.sv-sk-a{margin-top:26px}
+
+/* Light-section theme: Aubergine (Jarrett picked Oct 22). Overrides html.light from assets/home/style.css on /preview-home/ only. */
+/* shared for dark options (A,B): light sections become a deep tone; nav pill + buttons go gold */
+html.light .bar .mark{color:var(--fg);text-shadow:none}
+html.light .pp,html.light .bar .mbtn{border-color:rgba(238,232,221,.6);background:rgba(11,11,10,.38);color:var(--fg)}
+html.light{--bb:#d4ae5a;--bf:#0b0b0a;--bh:#f3dc9a}
+html.light .dp-h em,html.light .how-head em,html.light .card-n em{color:#d4ae5a}
+html.light .dp-ph{border-color:rgba(212,174,90,.7);background:rgba(212,174,90,.08)}
+html.light .dp-ph blockquote p{color:#e2c27a}
+html.light .dp-film{box-shadow:0 30px 80px -40px rgba(0,0,0,.9)}
+html.light .sv-pane{border-color:rgba(238,232,221,.16)}
+html.light{--bg:#241a2c;--fg:#f0eaf0;--fgm:rgba(240,234,240,.74);--card:#30253a;--ln:rgba(240,234,240,.15)}
+html.light .sv-pane{background:#15101a}
+/* Loader: "Web Design" writes itself in (pen-path mask reveal, then crisp fill) */
+.iwd.wd{opacity:1;transition:none;background:none;color:inherit;overflow:visible}
+.iwd .wds{display:inline-block;overflow:visible}
+.iwd .wdf2{opacity:0}
+.iwd .wdt{opacity:0;transition:opacity .25s}
+.iwd.wd-done .wdf2{opacity:1;transition:opacity .35s ease}
+.iwd.wd-done .wdt{opacity:0!important}
+
+/* Hero CTA: gold pill (site gold) with dark text; longer label wraps gracefully, 44px+ tap target */
+.hero-f .btn,.btn.dock-btn{--bb:var(--gold);--bf:#0b0b0a;--bh:var(--gold2);padding:13px 30px;min-height:52px;text-align:center;line-height:1.25;max-width:100%;box-shadow:0 6px 22px rgba(0,0,0,.28)}
+@media (max-width:860px){.hero-f .btn{padding:15px 24px}}
+
+/* Dylan card: crisp still photo instead of video (no scale/parallax, so it stays pixel-sharp) */
+.pc-f img.pc-still{position:absolute;inset:0;width:100%;height:100%;max-width:none;object-fit:cover;object-position:68% 50%;display:block;transform:none!important}
+
+/* Docked CTA: the same gold button, fixed bottom-center once past the hero (replaces the header CTA so only one shows) */
+.bar .bar-cta{display:none!important}
+.btn.dock-btn{text-shadow:none}
+/* Remaining CTAs (menu, final) match the hero: gold fill, dark text, gold2 hover; long label wraps on phone */
+.menu .menu-cta,.end-a .btn{--bb:var(--gold);--bf:#0b0b0a;--bh:var(--gold2);background:var(--gold)!important;color:#0b0b0a!important;text-align:center;line-height:1.25;padding-top:14px;padding-bottom:14px;max-width:100%;text-shadow:none}
+.end-a .btn{padding-left:36px;padding-right:36px}
+@media (max-width:860px){.end-a .btn{padding-left:22px;padding-right:22px;min-height:56px}.menu .menu-cta{min-height:56px;padding-left:22px;padding-right:22px}}
+/* Menu CTA: no focus-sweep fill (that was the cream strip caught mid-slide when the menu focuses the button); keep a clear focus ring instead */
+.menu .menu-cta{flex:none;overflow:hidden}
+.menu .menu-cta:focus-visible::after{transform:translateY(101%)}
+.menu .menu-cta:focus-visible{outline:2px solid #f3dc9a;outline-offset:3px}
+@media (hover:hover){.menu .menu-cta:hover::after{transform:none}}
+
+/* Purple comet v2 (canvas, drawn in app.js) around gold CTAs; inside the pill edge, never intercepts taps */
+.btn canvas.comet2{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:2;display:block}
+.btn.dock-btn,.end-a .btn,.menu .menu-cta{box-shadow:0 0 18px rgba(139,92,246,.28),0 8px 26px rgba(0,0,0,.35)}
+
+/* Shared emphasis: gold Playfair Display Italic 500 (hero "Cinematic." and loader "Web Design" stay Pinyon Script) */
+em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-style:italic;font-weight:500;letter-spacing:-.005em;font-size:1em;line-height:1;
+ padding:.04em .08em .1em 0;margin:-.04em -.08em -.1em 0;
+ background-image:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;
+ -webkit-box-decoration-break:clone;box-decoration-break:clone;text-shadow:none}
+.dp-n .dp-w.gs{font-family:'Playfair Display',Georgia,serif;font-style:italic;font-weight:500;letter-spacing:-.005em;font-size:.42em;margin:0;padding:.04em .06em .1em 0}
+.card-n em.gs{font-size:1em}
+.work-meta em.gs{font-size:1em}
+.work-name em.gs{font-size:1em;padding-bottom:.1em}
+.mask .ml:has(.gs){padding-bottom:.16em;margin-bottom:-.08em}
+
+/* Portfolio cards: each card shows the live site's full hero (short looping clip) */
+.pc-f video.pc-full{inset:0!important;width:100%!important;height:100%!important;max-width:none;object-fit:cover;object-position:50% 50%;transform:none!important;transition:none}
+.pc:hover .pc-f video.pc-full{transform:none!important}
+
+/* Portfolio cards: each card shows the live site's full hero (short looping clip) */
+.pc-f video.pc-full{inset:0!important;width:100%!important;height:100%!important;max-width:none;object-fit:cover;object-position:50% 50%;transform:none!important;transition:none}
+.pc:hover .pc-f video.pc-full{transform:none!important}
+@media (min-width:861px){.sv-lead em.gs{white-space:nowrap}}
+
+/* Scroll-linked glide: the one gold CTA is fixed and positioned by transform from scroll progress (hero slot -> bottom-center dock) */
+.btn.glide{position:fixed;left:0;top:0;right:auto;bottom:auto;margin:0;width:max-content;max-width:calc(100vw - 32px);min-height:52px;z-index:70;transform-origin:0 0;will-change:transform;opacity:0;pointer-events:auto;box-shadow:0 0 18px rgba(139,92,246,.28),0 10px 30px rgba(0,0,0,.4);transition:opacity 1.1s ease .45s,background-color .25s,color .25s}
+.ready .btn.glide,.paused .btn.glide,.done .btn.glide{opacity:1}
+.btn.glide.dock-off{opacity:0!important;pointer-events:none;visibility:hidden;transition:opacity .3s ease,visibility 0s linear .3s}
+@media (max-width:860px){.btn.glide{min-height:52px;padding:15px 24px}}
+
+/* How-it-works heading: exactly three lines at every width */
+.how .h2 .ml.l3{display:block;white-space:nowrap}
+.how .h2 .ml.l3>span{display:block}
+@media (max-width:860px){.how-head .h2{font-size:clamp(30px,9.2vw,44px)}}
+
+/* gold CTA label: option B (General Sans 700, 17px, +0.012em, no caps) */
+.hero-f .btn,.btn.dock-btn,.menu .menu-cta,.end-a .btn{font:700 17px/1.25 var(--sans)!important;letter-spacing:.012em!important;text-transform:none!important;color:#0b0b0a!important}
+
+/* animated-WebP fallback frames (shown only if a <video> will not advance) */
+.dp-film img.vfb,.card-f img.vfb,.pc-f img.vfb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
+.vfb{-webkit-user-drag:none}
+
+/* footage plays untouched: no scrim, tint, blur or filter over any video (the shared style.css draws a gradient over the hero; this preview removes it) */
+.hero::after{content:none!important;display:none!important;background:none!important}
+/* legibility comes from the type itself: a tight shadow hugging the letterforms, not a darkened frame */
+.hero-c{text-shadow:0 0 1px rgba(0,0,0,.65),0 1px 2px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.45),0 4px 22px rgba(0,0,0,.3)!important}
+.hero .h1{font-weight:600}
+/* phone: the gold script "Cinematic." gets the same shadow the cream headline words already have (SVG ignores text-shadow, so it is drawn with drop-shadow on the word itself; nothing touches the footage) */
+@media (max-width:700px){.hero .rvs{filter:drop-shadow(0 0 1px rgba(0,0,0,.65)) drop-shadow(0 1px 2px rgba(0,0,0,.55)) drop-shadow(0 2px 8px rgba(0,0,0,.45)) drop-shadow(0 4px 22px rgba(0,0,0,.3))}}
+/* chips that sit on footage (Pause, Menu) are solid, so they cover a small rectangle instead of blurring/tinting the footage behind them */
+.pp,.mbtn,html.light .pp,html.light .bar .mbtn{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#0b0b0a!important;color:#eee8dd!important;border-color:rgba(238,232,221,.45)!important}
+.pp:hover{background:#eee8dd!important;color:#0b0b0a!important}
+
+/* phone: one-line docked/hero button so it never covers half the screen */
+@media (max-width:700px){.btn.dock-btn{font-size:13.2px!important;letter-spacing:0!important;white-space:nowrap!important;padding-left:14px!important;padding-right:14px!important;min-height:46px!important}}
+/* Split-word emphasis (.words): WebKit/Safari does not paint a parent's background-clip:text through inline-block word spans, so "Gets The Click." was transparent (invisible) on iPad/iPhone. Paint the gold gradient on each word span instead. */
+.words .gs{background-image:none}
+.words .gs .wd{background-image:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding:.04em .08em .1em 0;margin:-.04em -.08em -.1em 0}
+/* stepping aside for the search section is quicker than the end-of-page fade, so a fast flick never slides text under a half-faded button */
+.btn.glide.dock-off.dock-sv{transition:opacity .16s ease,visibility 0s linear .16s}
+
+/* p32: Free Search Audit card shows the live Boomerang diagram (ported SVG/SMIL from the Purple Flare audit). Always plays. */
+.card-f.bm{background:#0a0710}
+.bm-p{position:absolute;inset:0;overflow:hidden;border-radius:inherit;border:1px solid rgba(217,208,234,.14);box-sizing:border-box;background:linear-gradient(160deg,rgba(139,61,255,.12),transparent 60%),#0a0710}
+.bm-in{position:absolute;left:0;top:0;width:100%;box-sizing:border-box;padding:34px 36px;transform-origin:0 0;color:#d9d0ea;font:400 18px/1.62 'General Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}
+.bm-e{font:600 15px/1 'General Sans',system-ui,sans-serif;letter-spacing:.24em;text-transform:uppercase;color:#d9d0ea;margin:0 0 16px}
+.bm-h{font:800 34px/1.08 Syne,'General Sans',system-ui,sans-serif;letter-spacing:-.02em;color:#fff;margin:0 0 8px;text-wrap:balance}
+.bm-t{margin:0 0 18px;max-width:60ch;color:#d9d0ea}
+.bm-in svg{display:block;width:100%;height:auto;overflow:visible}
+.bm-in text{font-family:'General Sans',system-ui,sans-serif}
+.bm-in .bm-m{display:none}
+@media (min-width:861px) and (max-width:1200px){.bm-in{padding:22px 20px}.bm-e{font-size:13px;margin-bottom:12px}.bm-h{font-size:28px}.bm-t{font-size:15px;margin-bottom:12px}.bm-d text[font-size="15"]{font-size:18px}.bm-d text[font-size="16"]{font-size:19px}.bm-d text[font-size="14"]{font-size:16px}.bm-d text[font-size="12.5"]{font-size:15px}}
+@media (max-width:860px){
+  .card .card-f.bm{aspect-ratio:auto!important;min-height:0!important;height:auto!important;flex:none!important}
+  .card-f.bm .bm-p{position:relative;inset:auto}
+  .card-f.bm .bm-in{position:relative;transform:none!important;width:auto!important;padding:clamp(18px,4vw,32px)}
+  .bm-h{font-size:clamp(22px,4.6vw,32px)}
+  .bm-t{font-size:clamp(15px,2.4vw,18px)}
+}
+@media (max-width:700px){
+  .card-f.bm .bm-in{padding:18px 16px}
+  .bm-e{font-size:12px;margin-bottom:12px}
+  .bm-t{margin-bottom:14px}
+  .bm-in .bm-d{display:none}.bm-in .bm-m{display:block}
+}
+
+/* p34: The Fixes card (II) shows the whole 16:9 Truheart clip on desktop (no cover crop of the left edge). The frame is exactly 16:9, as wide as its column unless the card is too short, right edge aligned with cards I and III, centered vertically. Tablet/phone (<=860px) already show 16:9 and are untouched. p35: card III (Results, Wrapstar clip) gets the same frame. */
+@media (min-width:861px){
+  .how .stack>.card:nth-child(2)>.card-f,.how .stack>.card:nth-child(3)>.card-f{align-self:center;justify-self:end;width:min(100%,calc((min(72vh,640px) - 2 * clamp(24px,3vw,48px)) * 16 / 9));height:auto;aspect-ratio:16/9}
+}
