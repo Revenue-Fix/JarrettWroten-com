@@ -32,12 +32,14 @@ const track=$('#track'),work=$('.work'),wCount=$('#wCount'),wProg=$('#wProg');co
 W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';a.innerHTML=`<div class="pc-f">${`<video class="pc-full" muted loop playsinline preload="none" poster="assets/home/film/w-${w[0]}-full.jpg?v=${w[0]==='truheart'?'p33':'p26'}"><source src="assets/home/film/w-${w[0]}-full.webm?v=${w[0]==='truheart'?'p33':'p26'}" type="video/webm; codecs=vp9"><source src="assets/home/film/w-${w[0]}-full.mp4?v=${w[0]==='truheart'?'p33':'p26'}" type="video/mp4"></video>`}</div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
 track.append(a);cards.push(a)});
 let cur=-1;
+/* a card plays while any part of it is on screen; current+-1 stays the preload/play floor */
+const live=(c,j)=>Math.abs(j-cur)<=1||!!c.__vis;
 /* Playback guarantee: every carousel/hero video plays in every motion mode (no reduced-motion branch anywhere), explicit play() with catch + retry,
    retried again on the first scroll/tap/key, and a 1s watchdog that restarts any card in view that is paused or stalled. */
 function ply(v,n){if(!v||paused)return;v.muted=true;v.defaultMuted=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.playsInline=true;
  let pr;try{pr=v.play()}catch(_){}
  if(pr&&pr.catch)pr.catch(()=>{n=n||0;if(n<4)setTimeout(()=>ply(v,n+1),400*(n+1))})}
-const kickAll=()=>{ply(hv);cards.forEach((c,j)=>{const v=c.querySelector('video');if(v&&Math.abs(j-cur)<=1&&window.__wn)ply(v)})};
+const kickAll=()=>{ply(hv);cards.forEach((c,j)=>{const v=c.querySelector('video');if(v&&live(c,j)&&window.__wn)ply(v)})};
 ['pointerdown','touchstart','keydown','wheel','scroll'].forEach(e=>addEventListener(e,()=>{kickAll()},{passive:true,once:true}));
 /* Autoplay policy can need a real activation (click, tap, key). wheel/scroll are NOT activations, so the one-shot kick above can be spent without unlocking anything. Keep kicking on every real activation. */
 ['pointerdown','pointerup','mouseup','click','touchend','keydown'].forEach(e=>addEventListener(e,()=>{kickAll();$$('video[data-src]').forEach(v=>{if(v.src&&inView(v))ply(v)})},{passive:true}));
@@ -48,14 +50,15 @@ function fbShow(v){if(v.__fb)return;const u=fbUrl(v);if(!u)return;const im=new I
 function fbHide(v){if(!v.__fb)return;v.__fb.remove();v.__fb=null;if(v.__d!==undefined){v.style.display=v.__d;v.__d=undefined}delete v.dataset.fb}
 window.__fbShow=fbShow;
 setInterval(()=>{if(document.hidden||!root.classList.contains('ready'))return;[hv,...$$('video')].forEach((v,k,a)=>{if(a.indexOf(v)!==k||v.closest('dialog'))return;
- const ci=cards.findIndex(c=>c.contains(v));let want=!paused&&inView(v)&&(ci<0||(window.__wn&&Math.abs(ci-cur)<=1));if(v.style.display==='none'&&v.__fb)want=!paused&&inView(v.__fb);
+ const ci=cards.findIndex(c=>c.contains(v));let want=!paused&&inView(v)&&(ci<0||(window.__wn&&live(cards[ci],ci)));if(v.style.display==='none'&&v.__fb)want=!paused&&inView(v.__fb);
  const t=v.currentTime,adv=v.__lt!==undefined&&(t>v.__lt+.03||t<v.__lt-.5);v.__lt=t;
  if(!want){v.__st=0;v.__ok=0;return}
  if(adv&&!v.paused){v.__st=0;v.__ok=(v.__ok||0)+1;if(v.__fb&&v.__ok>=4)fbHide(v);return}
  v.__ok=0;v.__st=(v.__st||0)+1;if(v.paused||v.ended)ply(v);
  const buffering=!v.error&&v.readyState<3&&v.networkState===2;if(v.__st>=(buffering?12:4))fbShow(v)})},500);
-setInterval(()=>{if(paused||document.hidden)return;cards.forEach((c,j)=>{const v=c.querySelector('video');if(!v||!window.__wn||Math.abs(j-cur)>1)return;if(v.paused||v.ended)ply(v);else if(v.readyState<2&&v.networkState===3)v.load()})},1000);
-function setCur(i){if(i===cur)return;cur=i;cards.forEach((c,j)=>{c.classList.toggle('on',j===i);const v=c.querySelector('video');if(!v||!window.__wn)return;if(Math.abs(j-i)<=1){v.preload='auto';ply(v)}else v.pause()});wCount.textContent=String(i+1).padStart(2,'0');const wn=$('#wName');wn.querySelectorAll('.nm:not(.gone)').forEach(o=>{o.classList.remove('cur');o.classList.add('gone');setTimeout(()=>o.remove(),1000)});const sp=document.createElement('span');sp.className='nm';sp.innerHTML=W[i][1].replace(/(\S+)$/,'<em class="gs">$1</em>');wn.append(sp);sp.style.fontSize='';const aw=wn.clientWidth;if(sp.scrollWidth>aw){sp.style.fontSize=(parseFloat(getComputedStyle(sp).fontSize)*aw/sp.scrollWidth*0.98)+'px'}requestAnimationFrame(()=>requestAnimationFrame(()=>sp.classList.add('cur')))}
+setInterval(()=>{if(paused||document.hidden)return;cards.forEach((c,j)=>{const v=c.querySelector('video');if(!v||!window.__wn||!live(c,j))return;if(v.paused||v.ended)ply(v);else if(v.readyState<2&&v.networkState===3)v.load()})},1000);
+function setCur(i){if(i===cur)return;cur=i;cards.forEach((c,j)=>{c.classList.toggle('on',j===i);const v=c.querySelector('video');if(!v||!window.__wn)return;if(live(c,j)){v.preload='auto';ply(v)}else v.pause()});wCount.textContent=String(i+1).padStart(2,'0');const wn=$('#wName');wn.querySelectorAll('.nm:not(.gone)').forEach(o=>{o.classList.remove('cur');o.classList.add('gone');setTimeout(()=>o.remove(),1000)});const sp=document.createElement('span');sp.className='nm';sp.innerHTML=W[i][1].replace(/(\S+)$/,'<em class="gs">$1</em>');wn.append(sp);sp.style.fontSize='';const aw=wn.clientWidth;if(sp.scrollWidth>aw){sp.style.fontSize=(parseFloat(getComputedStyle(sp).fontSize)*aw/sp.scrollWidth*0.98)+'px'}requestAnimationFrame(()=>requestAnimationFrame(()=>sp.classList.add('cur')))}
+{const cio=new IntersectionObserver(es=>es.forEach(e=>{const c=e.target;c.__vis=e.isIntersecting;const v=c.querySelector('video');if(v&&c.__vis&&window.__wn&&!paused){v.preload='auto';ply(v)}}));cards.forEach(c=>cio.observe(c))}
 // reveals
 const obs=$$('.fade,.mask,.me-p');
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});obs.forEach(o=>io.observe(o));
