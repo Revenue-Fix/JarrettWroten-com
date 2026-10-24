@@ -195,9 +195,14 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 .dp-film img.vfb,.card-f img.vfb,.pc-f img.vfb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .vfb{-webkit-user-drag:none}
 
-/* hero headline legibility over bright footage */
-.hero::after{background:linear-gradient(0deg,rgba(0,0,0,.82) 0%,rgba(0,0,0,.6) 26%,rgba(0,0,0,.28) 48%,rgba(0,0,0,0) 68%)!important}
-.hero-c{text-shadow:0 2px 3px rgba(0,0,0,.45),0 4px 40px rgba(0,0,0,.65)!important}
+/* footage plays untouched: no scrim, tint, blur or filter over any video (the shared style.css draws a gradient over the hero; this preview removes it) */
+.hero::after{content:none!important;display:none!important;background:none!important}
+/* legibility comes from the type itself: a tight shadow hugging the letterforms, not a darkened frame */
+.hero-c{text-shadow:0 0 1px rgba(0,0,0,.65),0 1px 2px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.45),0 4px 22px rgba(0,0,0,.3)!important}
+.hero .h1{font-weight:600}
+/* chips that sit on footage (Pause, Menu) are solid, so they cover a small rectangle instead of blurring/tinting the footage behind them */
+.pp,.mbtn,html.light .pp,html.light .bar .mbtn{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#0b0b0a!important;color:#eee8dd!important;border-color:rgba(238,232,221,.45)!important}
+.pp:hover{background:#eee8dd!important;color:#0b0b0a!important}
 
 /* phone: one-line docked/hero button so it never covers half the screen */
 @media (max-width:700px){.btn.dock-btn{font-size:13.2px!important;letter-spacing:0!important;white-space:nowrap!important;padding-left:14px!important;padding-right:14px!important;min-height:46px!important}}
