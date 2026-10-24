@@ -76,7 +76,7 @@ if(num){num.textContent='0';new IntersectionObserver((es,o)=>{if(es[0].isInterse
 // stacked cards + end film + header
 const stackCards=$$('.card'),endW=$('.end-v-w'),bar=$('#bar');let last=0;
 function onScroll(){const vh=innerHeight,y=scrollY;
- const b=big.getBoundingClientRect();const p=Math.min(1,Math.max(0,(vh*.85-b.top)/(b.height+vh*.3)));const n=Math.round(p*wds.length);wds.forEach((w,i)=>w.classList.toggle('lit',i<n||paused));
+ const b=big.getBoundingClientRect();/* lights word by word from entering (top at 90% of the screen) to fully lit once its last line is above 70% (and its top above 45%), so the gold payoff is always fully lit at any resting position where the demo cards show below it */const lz0=vh*.9,lz1=Math.min(vh*.45,vh*.7-b.height);const p=Math.min(1,Math.max(0,(lz0-b.top)/Math.max(1,lz0-lz1)));const n=Math.round(p*wds.length);wds.forEach((w,i)=>w.classList.toggle('lit',i<n||paused));
  const r=work.getBoundingClientRect(),span=r.height-vh;const q=Math.min(1,Math.max(0,-r.top/span));
  const max=track.scrollWidth-innerWidth;track.style.transform=`translate3d(${-q*max}px,0,0)`;wProg.style.width=(q*100)+'%';
  const center=innerWidth/2;let best=0,bd=1e9;cards.forEach((c,j)=>{const cr=c.getBoundingClientRect();const d=Math.abs(cr.left+cr.width/2-center);if(d<bd){bd=d;best=j}});if(matchMedia('(max-width:700px)').matches);else if(q>=.985)best=cards.length-1;else if(q<=.015)best=0;if(r.top<vh&&r.bottom>0)setCur(best);
@@ -186,6 +186,7 @@ document.getElementById('pp').addEventListener('click',()=>{if(P()){final();runn
 
 /* hero CTA glides to the bottom-center dock as you scroll (one element; position and size follow scroll progress, rAF + light lerp; identical in every motion mode) */
 (()=>{
+const svA=document.querySelector('#search .sv-top'),svZ=document.querySelector('#search .sv-say');
 const btn=document.querySelector('.hero-f .btn'),slot=document.querySelector('.hero-f'),hero=document.querySelector('.hero'),hc=document.querySelector('.hero-c'),end=document.querySelector('.end');
 if(!btn||!slot||!hero)return;
 const mqS=matchMedia('(max-width:860px)');
@@ -215,8 +216,10 @@ function draw(){
  btn.style.transform=`translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0) scale(${s.toFixed(4)})`;
 }
 function endCheck(){
- const o=pd>.98&&!!end&&end.getBoundingClientRect().top<innerHeight*.75;
- if(o!==off){off=o;btn.classList.toggle('dock-off',o);btn.tabIndex=o?-1:0;btn.setAttribute('aria-hidden',o?'true':'false')}
+ /* steps aside (fades, untappable) wherever it would sit on the search section's headline, demo cards or copy, so it never covers text or the demo's Call/Website buttons */
+ let sv=false;if(svA&&svZ){const b=btn.getBoundingClientRect(),M=56,t=svA.getBoundingClientRect().top,z=svZ.getBoundingClientRect().bottom;sv=b.bottom+M>t&&b.top-M<z}
+ const o=sv||(pd>.98&&!!end&&end.getBoundingClientRect().top<innerHeight*.75);
+ btn.classList.toggle('dock-sv',sv);if(o!==off){off=o;btn.classList.toggle('dock-off',o);btn.tabIndex=o?-1:0;btn.setAttribute('aria-hidden',o?'true':'false')}
 }
 function frame(t){
  raf=0;const dt=Math.min(64,t-(last||t));last=t;

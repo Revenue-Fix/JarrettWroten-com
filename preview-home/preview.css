@@ -200,9 +200,16 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 /* legibility comes from the type itself: a tight shadow hugging the letterforms, not a darkened frame */
 .hero-c{text-shadow:0 0 1px rgba(0,0,0,.65),0 1px 2px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.45),0 4px 22px rgba(0,0,0,.3)!important}
 .hero .h1{font-weight:600}
+/* phone: the gold script "Cinematic." gets the same shadow the cream headline words already have (SVG ignores text-shadow, so it is drawn with drop-shadow on the word itself; nothing touches the footage) */
+@media (max-width:700px){.hero .rvs{filter:drop-shadow(0 0 1px rgba(0,0,0,.65)) drop-shadow(0 1px 2px rgba(0,0,0,.55)) drop-shadow(0 2px 8px rgba(0,0,0,.45)) drop-shadow(0 4px 22px rgba(0,0,0,.3))}}
 /* chips that sit on footage (Pause, Menu) are solid, so they cover a small rectangle instead of blurring/tinting the footage behind them */
 .pp,.mbtn,html.light .pp,html.light .bar .mbtn{-webkit-backdrop-filter:none!important;backdrop-filter:none!important;background:#0b0b0a!important;color:#eee8dd!important;border-color:rgba(238,232,221,.45)!important}
 .pp:hover{background:#eee8dd!important;color:#0b0b0a!important}
 
 /* phone: one-line docked/hero button so it never covers half the screen */
 @media (max-width:700px){.btn.dock-btn{font-size:13.2px!important;letter-spacing:0!important;white-space:nowrap!important;padding-left:14px!important;padding-right:14px!important;min-height:46px!important}}
+/* Split-word emphasis (.words): WebKit/Safari does not paint a parent's background-clip:text through inline-block word spans, so "Gets The Click." was transparent (invisible) on iPad/iPhone. Paint the gold gradient on each word span instead. */
+.words .gs{background-image:none}
+.words .gs .wd{background-image:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding:.04em .08em .1em 0;margin:-.04em -.08em -.1em 0}
+/* stepping aside for the search section is quicker than the end-of-page fade, so a fast flick never slides text under a half-faded button */
+.btn.glide.dock-off.dock-sv{transition:opacity .16s ease,visibility 0s linear .16s}
