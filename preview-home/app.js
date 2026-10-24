@@ -302,3 +302,11 @@ window.__cometDbg={items,draw,geo,at,TAIL,LOOP};
 function run(){document.querySelectorAll('.hero-f .btn, .btn.dock-btn, .end-a .btn, .menu-cta').forEach(add);kick()}
 run();setInterval(kick,1500);
 })();
+
+/* p32: fit the Boomerang diagram to the Free Search Audit card frame (desktop/laptop; below 861px it flows at natural size) */
+(()=>{const f=document.querySelector('.card-f.bm');if(!f)return;const p=f.querySelector('.bm-p'),n=f.querySelector('.bm-in'),mq=matchMedia('(min-width:861px)');
+ const fit=()=>{if(!mq.matches){n.style.width='';n.style.transform='';return}const fw=p.clientWidth,fh=p.clientHeight;if(!fw||!fh)return;let w=fw,s=1,h=0;
+  for(let i=0;i<5;i++){n.style.width=w+'px';h=n.offsetHeight;s=Math.min(1,fh/h,fw/w);const nw=Math.max(fw,fw/s);if(Math.abs(nw-w)<1)break;w=nw}
+  n.style.width=w+'px';h=n.offsetHeight;s=Math.min(1,fh/h,fw/w);const x=(fw-w*s)/2,y=(fh-h*s)/2;n.style.transform='translate('+x+'px,'+y+'px) scale('+s+')'};
+ fit();if('ResizeObserver' in window)new ResizeObserver(fit).observe(p);addEventListener('resize',fit,{passive:true});mq.addEventListener&&mq.addEventListener('change',fit);
+ document.fonts&&document.fonts.ready.then(fit);document.fonts&&document.fonts.addEventListener&&document.fonts.addEventListener('loadingdone',fit)})();
