@@ -239,7 +239,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
   .bm-in .bm-d{display:none}.bm-in .bm-m{display:block}
 }
 
-/* p34: The Fixes card (II) shows the whole 16:9 Truheart clip on desktop (no cover crop of the left edge). The frame is exactly 16:9, as wide as its column unless the card is too short, right edge aligned with cards I and III, centered vertically. Tablet/phone (<=860px) already show 16:9 and are untouched. */
+/* p34: The Fixes card (II) shows the whole 16:9 Truheart clip on desktop (no cover crop of the left edge). The frame is exactly 16:9, as wide as its column unless the card is too short, right edge aligned with cards I and III, centered vertically. Tablet/phone (<=860px) already show 16:9 and are untouched. p35: card III (Results, Wrapstar clip) gets the same frame. */
 @media (min-width:861px){
-  .how .stack>.card:nth-child(2)>.card-f{align-self:center;justify-self:end;width:min(100%,calc((min(72vh,640px) - 2 * clamp(24px,3vw,48px)) * 16 / 9));height:auto;aspect-ratio:16/9}
+  .how .stack>.card:nth-child(2)>.card-f,.how .stack>.card:nth-child(3)>.card-f{align-self:center;justify-self:end;width:min(100%,calc((min(72vh,640px) - 2 * clamp(24px,3vw,48px)) * 16 / 9));height:auto;aspect-ratio:16/9}
 }
