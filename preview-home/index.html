@@ -31,7 +31,7 @@
 <link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" onload="this.onload=null;this.rel='stylesheet'"><link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=boska@400i,500i&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" rel="stylesheet"><link href="https://api.fontshare.com/v2/css?f[]=boska@400i,500i&display=swap" rel="stylesheet"></noscript>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Pinyon+Script&family=Playfair+Display:ital,wght@1,500&display=block">
 <link rel="stylesheet" href="assets/home/style.css?v=53fix-p5">
-<link rel="stylesheet" href="preview-home/preview.css?v=p30">
+<link rel="stylesheet" href="preview-home/preview.css?v=p31">
 <script>window.RVQ=/[?&]v=/.test(location.search)?location.search:"?v=pinyon-gold-together"</script><style>.rvp .h1 .payoff{opacity:0!important}</style><script>/[?&]v=(draw|flare|drawlight|script[23]?|pinyon-purple|pinyon-gold)\b/.test(RVQ)&&document.documentElement.classList.add("rvp")</script>
 <link rel="preload" as="image" href="assets/home/film/hero-p29.jpg?v=p29" fetchpriority="high">
 <script type="application/ld+json">
@@ -102,7 +102,7 @@ var fl=document.createElementNS(ns,"path");fl.setAttribute("d",R.F);fl.setAttrib
 R.D.forEach(function(d){G.forEach(function(e,i){var p=document.createElementNS(ns,"path");p.setAttribute("d",d);e.appendChild(p);P[i].push(p)})});
 var tip=document.createElementNS(ns,"circle");tip.setAttribute("r","2.4");tip.setAttribute("class","tip");s.appendChild(tip);
 var sr=document.createElement("span");sr.className="rv-sr";sr.textContent=po.textContent;po.textContent="";po.append(sr,s);
-var Ls=P[1].map(function(p){return p.getTotalLength()}),T=Ls.reduce(function(a,b){return a+b},0),TR=34,DUR=(VT?3800:VS?4100:VG?4200:1750),t0=0;
+var Ls=P[1].map(function(p){return p.getTotalLength()}),T=Ls.reduce(function(a,b){return a+b},0),TR=34,DUR=(VT?1900:VS?4100:VG?4200:1750),t0=0;
 function set(L){var acc=0,tp=null;for(var i=0;i<Ls.length;i++){var l=Ls[i],v=Math.max(0,Math.min(l,L-acc));for(var k=0;k<2;k++){var q=P[k][i].style;q.strokeDasharray=v+" "+(l+1);q.visibility=v>0?"visible":"hidden"}var a=Math.max(0,L-acc-TR),b=v-a,q2=P[2][i].style;q2.strokeDasharray=b+" "+(2*l+2);q2.strokeDashoffset=-a;q2.visibility=b>0?"visible":"hidden";if(!tp&&L-acc>=0&&L-acc<l)tp=P[1][i].getPointAtLength(v);acc+=l}if(tp&&L<T){tip.setAttribute("cx",tp.x);tip.setAttribute("cy",tp.y);tip.style.opacity=1}else tip.style.opacity=0}
 function seg(i0,i1,L){var acc=0,tp=null;for(var i=i0;i<i1;i++){var l=Ls[i],v=Math.max(0,Math.min(l,L-acc));for(var k=0;k<2;k++){var q=P[k][i].style;q.strokeDasharray=v+" "+(l+1);q.visibility=v>0?"visible":"hidden"}var a=Math.max(0,L-acc-TR),b=v-a,q2=P[2][i].style;q2.strokeDasharray=b+" "+(2*l+2);q2.strokeDashoffset=-a;q2.visibility=b>0?"visible":"hidden";if(!tp&&L-acc>=0&&L-acc<l)tp=P[1][i].getPointAtLength(v);acc+=l}return tp}
 var tip2=null,cdone=0;function cFill(){cdone=1;var FC=R.F.split(/(?=M)/).slice(0,3).join("");[["fsh",0],["fl",1]].forEach(function(x){var e=document.createElementNS(ns,"path");e.setAttribute("d",FC);e.setAttribute("class",x[0]+" cfx");e.style.transition="opacity .3s";x[1]?s.insertBefore(e,G[2]):s.insertBefore(e,G[0]);requestAnimationFrame(function(){e.style.opacity=1})});for(var k=1;k<3;k++)for(var i=0;i<4;i++){P[k][i].style.transition="opacity .3s";P[k][i].style.opacity=0}}
@@ -217,6 +217,6 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
   </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
-<script src="preview-home/app.js?v=p30"></script>
+<script src="preview-home/app.js?v=p31"></script>
 </body>
 </html>
