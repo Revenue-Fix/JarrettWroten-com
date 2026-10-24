@@ -243,3 +243,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 @media (min-width:861px){
   .how .stack>.card:nth-child(2)>.card-f,.how .stack>.card:nth-child(3)>.card-f{align-self:center;justify-self:end;width:min(100%,calc((min(72vh,640px) - 2 * clamp(24px,3vw,48px)) * 16 / 9));height:auto;aspect-ratio:16/9}
 }
+.end-hd{text-align:center;margin-bottom:clamp(28px,5vh,64px)}
+.end-t>.end-p:first-child{margin-top:0}
+/* phones: .how card III keeps top:100px while position:relative, so it hangs 54px into .end */
+@media (max-width:700px){.end-hd{margin-top:68px}}
