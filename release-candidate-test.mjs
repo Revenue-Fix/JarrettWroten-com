@@ -98,7 +98,7 @@ ok(
 ok(root.includes('href="privacy/"'), 'root final footer links quietly to privacy');
 ok(
   book.includes('class="booking-frame"') &&
-    book.includes('title="Book your free website concept call"') &&
+    book.includes('title="Get Your Free AI Search Visibility + SEO Audit"') &&
     /src="https:\/\/calendar\.google\.com\/calendar\/appointments\/schedules\/[A-Za-z0-9_-]+\?gv=true"/.test(book) &&
     book.includes('Add your current website and tell me what you want it to do better.') &&
     book.includes('Add your current website and tell me what you want it to do better.') &&
