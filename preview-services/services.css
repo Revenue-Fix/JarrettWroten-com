@@ -11,8 +11,12 @@
 .svc-n em.gs{font-size:1em}
 .svc-t{font-weight:600;font-size:clamp(22px,1.9vw,30px);letter-spacing:-.02em;line-height:1.15}
 .svc-p{margin-top:12px;font-size:clamp(16px,1.2vw,19px);line-height:1.55;color:var(--fgm);max-width:38em}
-@media (min-width:1201px){.svcs-grid{grid-template-columns:repeat(3,1fr)}.svc:nth-child(2n){transition-delay:0s}.svc:nth-child(3n+2){transition-delay:.1s}.svc:nth-child(3n){transition-delay:.2s}.svc:last-child{grid-column:2}}
+@media (min-width:1201px){.svcs-grid{grid-template-columns:repeat(3,1fr)}.svc:nth-child(2n){transition-delay:0s}.svc:nth-child(3n+2){transition-delay:.1s}.svc:nth-child(3n){transition-delay:.2s}}
 @media (max-width:700px){.svcs{padding:64px 0}.svcs-grid{grid-template-columns:1fr;margin-top:36px}.svc{padding:22px 20px}.svc:nth-child(n){transition-delay:0s}}
 .svcs-lead{grid-column:1/12;max-width:28ch;margin-top:clamp(24px,4vh,44px);color:var(--fgm)}@media (max-width:860px){.svcs-lead{grid-column:1/7}}
 
-.svc-add{margin-top:.9em;padding-top:.9em;border-top:1px solid rgba(201,168,92,.25)}
+
+
+.svc-tag{margin-top:1em;padding-top:.9em;border-top:1px solid rgba(201,168,92,.28);color:#c9a85c;font-size:.9em;letter-spacing:.01em}
+@media (min-width:701px) and (max-width:1200px){.svc:last-child{grid-column:1/-1}}
+@media (min-width:1201px){.svcs-grid{grid-template-columns:repeat(6,1fr)}.svc{grid-column:span 2}.svc:nth-last-child(2){grid-column:2/span 2}.svc:last-child{grid-column:4/span 2}}
