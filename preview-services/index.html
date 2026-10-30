@@ -141,15 +141,86 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
   </div>
 </section>
 
-<!-- shared site.js expects these portfolio hooks; kept hidden in this draft -->
-<section class="work" id="work" hidden style="display:none"><div class="work-pin"><span id="wCount"></span><span id="wTotal"></span><div class="track" id="track"></div><div class="work-name" id="wName"></div><div class="work-prog"><i id="wProg"></i></div></div></section>
 
-<!-- 3. THE ONE ASK: FREE AUDIT -->
-<section class="end" id="book" aria-label="Book your free audit">
-  <h2 class="h-end mask end-hd"><span class="ml"><span>Start With Your Free</span></span><span class="ml"><span><em class="gs">Search Audit.</em></span></span></h2>
+<!-- 2. AI SEARCH VISIBILITY -->
+<section class="sv" id="search" data-theme="dark" aria-labelledby="svTitle">
+  <div class="grid sv-top">
+    <h2 class="vh" id="svTitle">Google &amp; AI Search Visibility</h2>
+    <p class="big words sv-lead">When someone searches Google or asks ChatGPT for what you do, the business that shows up first <em class="gs">Gets The Click.</em></p>
+  </div>
+  <div class="sv-demo" id="svDemo" aria-label="A search on Google and a question to an AI assistant, with your business showing up">
+    <div class="sv-pane sv-g">
+      <p class="sv-src">Google</p>
+      <div class="sv-q"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5" fill="none" stroke="currentColor" stroke-width="2"/><path d="M15.5 15.5L21 21" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg><span class="sv-typed" data-k="g">japanese tattoo artist las vegas</span><i class="sv-caret" aria-hidden="true"></i></div>
+      <div class="sv-res">
+        <div class="sv-you"><span class="sv-pin" aria-hidden="true"></span><div><p class="sv-name">Your Business</p><p class="sv-meta"><span data-k="t">Japanese Tattoo Artist</span> · Las Vegas</p></div><span class="sv-call">Call</span></div>
+        <div class="sv-sk"><i></i><i></i></div><div class="sv-sk"><i></i><i></i></div><div class="sv-sk"><i></i><i></i></div>
+      </div>
+    </div>
+    <div class="sv-pane sv-a">
+      <p class="sv-src">ChatGPT</p>
+      <p class="sv-ask"><span class="sv-typed" data-k="a">Who should I call for a japanese tattoo in Las Vegas?</span></p>
+      <div class="sv-ans"><span class="sv-dot" aria-hidden="true"></span><p>One to call is <strong>Your Business</strong>, a <span data-k="t2">Japanese tattoo artist</span> in Las Vegas. Here’s their number and website.</p></div>
+      <div class="sv-chips" aria-hidden="true"><span class="sv-call">Call</span><span class="sv-web">Website</span></div>
+      <div class="sv-sk sv-sk-a"><i></i><i></i></div>
+    </div>
+  </div>
+  <div class="grid sv-say">
+    <h3 class="h2 mask sv-h"><span class="ml"><span>Google &amp; AI Search</span></span><span class="ml"><span><em class="gs">Visibility.</em></span></span></h3>
+    <div class="sv-copy">
+      <p class="fade">Google and AI answers have to find you, understand exactly what you do and where, and trust you enough to put you first. I fix what’s keeping them from sending the call to you.</p>
+      <p class="fade">Then your Cinematic Website, built from your own footage, turns that search into a booking.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 3. DYLAN PROROK PROOF -->
+<section class="dp" data-theme="light" aria-labelledby="dpTitle">
+  <div class="grid dp-grid">
+    <h2 class="h2 mask dp-h" id="dpTitle"><span class="ml"><span>Someone Searched</span></span><span class="ml"><span><em class="gs">“Las Vegas Japanese Tattoos.”</em></span></span><span class="ml"><span>Dylan Got The Booking.</span></span></h2>
+    <div class="dp-f fade"><a class="dp-film" href="https://dylanprorok.com/" target="_blank" rel="noopener" aria-label="Open dylanprorok.com in a new tab"><video muted loop playsinline preload="none" poster="assets/home/film/w-prorok-scroll.jpg?v=p25" data-src="assets/home/film/w-prorok-scroll.mp4?v=p25" data-webm="assets/home/film/w-prorok-scroll.webm?v=p25"></video></a></div>
+    <div class="dp-t">
+      <p class="dp-who fade">Dylan Prorok is a Las Vegas Japanese tattoo artist.</p>
+      <p class="dp-n fade" aria-label="Within 30 days"><span class="dp-w gs">Within</span> <span id="dpNum">30</span> <span class="dp-w gs">Days</span></p>
+      <p class="dp-s fade">He recovered his investment within 30 days.</p>
+      <!-- PLACEHOLDER: Dylan Prorok's testimonial goes here, quoted word for word, once he sends it. Remove the .dp-ph box (and its "testimonial coming" label) before this goes live. Do not paraphrase or invent a quote. -->
+      
+      <p class="dp-l fade"><a class="lnk" href="https://dylanprorok.com/" target="_blank" rel="noopener">See Dylan’s Site</a></p>
+    </div>
+  </div>
+</section>
+
+<!-- 4. PORTFOLIO (existing /portfolio/ concepts, plus Truheart, minus Heritage) -->
+<section class="work" data-theme="dark" id="work" aria-label="Cinematic Websites I've built">
+  <div class="work-pin">
+    <div class="work-top grid">
+      <h2 class="h2 mask"><span class="ml"><span>Then The Cinematic Website</span></span><span class="ml"><span>Turns The Search <em class="gs">Into A Call.</em></span></span></h2>
+      <p class="work-meta"><span id="wCount">01</span> <em class="gs">of</em> <span id="wTotal">9</span></p>
+    </div>
+    <div class="track" id="track"></div>
+    <div class="work-name" id="wName" aria-hidden="true"></div>
+    <div class="work-prog"><i id="wProg"></i></div>
+  </div>
+</section>
+
+<!-- 5. HOW IT WORKS -->
+<section class="how" data-theme="light" aria-label="How it works">
+  <div class="how-head grid">
+    <h2 class="h2 mask"><span class="ml l3"><span>Free Search Audit.</span></span><span class="ml l3"><span>The Fixes.</span></span><span class="ml l3"><span><em class="gs">Results.</em></span></span></h2>
+  </div>
+  <div class="stack">
+    <article class="card"><div class="card-n"><em class="gs">I</em></div><div class="card-t"><h3>Free Search Audit</h3><p>I show you where you show up on Google and in AI answers today, who shows up instead, and what to fix first.</p></div><div class="card-f bm"><div class="bm-p"><div class="bm-in"><p class="bm-e">The boomerang</p><h4 class="bm-h">Every &ldquo;Get a Quote&rdquo; comes back to the start.</h4><p class="bm-t">On pages like Gallery, Packages, Reviews and About, the quote button jumps back to the homepage form.</p><svg class="bm-d" viewBox="0 0 680 290" role="img" aria-label="Pages like Gallery, Packages, Reviews and About send the Get a Quote button back to the homepage form"><defs><linearGradient id="bmg1" x1="0" x2="1"><stop offset="0" stop-color="#8b3dff"/><stop offset="1" stop-color="#ff4fd8"/></linearGradient></defs><path d="M100 68 C100 150 340 120 340 224" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><rect x="38" y="24" width="124" height="44" rx="22" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="100" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Gallery</text><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="0.0s" repeatCount="indefinite" path="M100 68 C100 150 340 120 340 224"/></circle><path d="M260 68 C260 150 340 120 340 224" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><rect x="198" y="24" width="124" height="44" rx="22" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="260" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Packages</text><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-2.7s" repeatCount="indefinite" path="M260 68 C260 150 340 120 340 224"/></circle><path d="M420 68 C420 150 340 120 340 224" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><rect x="358" y="24" width="124" height="44" rx="22" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="420" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Reviews</text><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-1.8s" repeatCount="indefinite" path="M420 68 C420 150 340 120 340 224"/></circle><path d="M580 68 C580 150 340 120 340 224" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><rect x="518" y="24" width="124" height="44" rx="22" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="580" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">About</text><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-0.9s" repeatCount="indefinite" path="M580 68 C580 150 340 120 340 224"/></circle><rect x="190" y="224" width="300" height="52" rx="14" fill="#0a0710" stroke="url(#bmg1)" stroke-width="2"/><text x="340" y="247" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Homepage form</text><text x="340" y="266" text-anchor="middle" fill="#9a8fb0" font-size="12.5">the slowest page, loaded again</text><text x="340" y="132" text-anchor="middle" fill="#ff9be8" font-size="14" font-weight="700" letter-spacing="2">GET A QUOTE</text></svg><svg class="bm-m" viewBox="0 0 340 330" role="img" aria-label="Pages like Gallery, Packages, Reviews and About send the Get a Quote button back to the homepage form"><defs><linearGradient id="bmg2" x1="0" x2="1"><stop offset="0" stop-color="#8b3dff"/><stop offset="1" stop-color="#ff4fd8"/></linearGradient></defs><path d="M88 60 C88 190 170 170 170 262" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="0.0s" repeatCount="indefinite" path="M88 60 C88 190 170 170 170 262"/></circle><path d="M252 60 C252 190 170 170 170 262" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-2.7s" repeatCount="indefinite" path="M252 60 C252 190 170 170 170 262"/></circle><path d="M88 126 C88 190 170 170 170 262" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-1.8s" repeatCount="indefinite" path="M88 126 C88 190 170 170 170 262"/></circle><path d="M252 126 C252 190 170 170 170 262" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-0.9s" repeatCount="indefinite" path="M252 126 C252 190 170 170 170 262"/></circle><rect x="20" y="20" width="136" height="40" rx="20" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="88" y="45" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Gallery</text><rect x="184" y="20" width="136" height="40" rx="20" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="252" y="45" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Packages</text><rect x="20" y="86" width="136" height="40" rx="20" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="88" y="111" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Reviews</text><rect x="184" y="86" width="136" height="40" rx="20" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="252" y="111" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">About</text><text x="170" y="172" text-anchor="middle" fill="#ff9be8" font-size="13" font-weight="700" letter-spacing="2">GET A QUOTE</text><rect x="30" y="262" width="280" height="56" rx="14" fill="#0a0710" stroke="url(#bmg2)" stroke-width="2"/><text x="170" y="286" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Homepage form</text><text x="170" y="305" text-anchor="middle" fill="#9a8fb0" font-size="12.5">the slowest page, loaded again</text></svg></div></div></div></article>
+    <article class="card"><div class="card-n"><em class="gs">II</em></div><div class="card-t"><h3>The Fixes</h3><p>I fix what keeps Google and AI answers from putting you first, and build the Cinematic Website that turns those visitors into customers.</p></div><div class="card-f"><video muted loop playsinline preload="none" poster="assets/home/film/w-truheart-full.jpg?v=p33" data-src="assets/home/film/w-truheart-full.mp4?v=p33" data-webm="assets/home/film/w-truheart-full.webm?v=p33"></video></div></article>
+    <article class="card"><div class="card-n"><em class="gs">III</em></div><div class="card-t"><h3>Results</h3><p>More of the people searching for what you do find you first, see the real experience of working with you, and call.</p></div><div class="card-f"><video muted loop playsinline preload="none" poster="assets/home/film/w-wrapstar-full.jpg?v=p25" data-src="assets/home/film/w-wrapstar-full.mp4?v=p25" data-webm="assets/home/film/w-wrapstar-full.webm?v=p25"></video></div></article>
+  </div>
+</section>
+
+<!-- 7. ONE CTA (no price on the homepage: Jarrett's decision) -->
+<section class="end" id="book" aria-label="Book a call">
+  <h2 class="h-end mask end-hd"><span class="ml"><span>Want To Meet&nbsp;With</span></span><span class="ml"><span><em class="gs">The Designer?</em></span></span></h2>
   <div class="end-v-w"><video class="end-v" style="object-position:50% 20%" muted loop playsinline preload="none" poster="assets/home/walk/corridor.jpg" data-src="assets/home/walk/golden-arrival-approved.mp4"></video></div>
   <div class="end-t">
-    <p class="end-p fade">Book a 15-minute call on Google Meet. I&rsquo;ll show you where you show up on Google and in AI answers today, who shows up instead, and what to fix first.</p>
+    <p class="end-p fade">Book a 15-minute call on Google Meet. I'll show you where you show up on Google and in AI answers today, and what it takes to show up first.</p>
     <div class="fade end-a"><a class="btn btn-lg" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2YdXyVF5uIUo74Fv4SrprKAVyqtont8zyMcfribjk4uwAJCGMvckaErguyS5pJ23xRft13Ebzb" target="_blank" rel="noopener">Book Your Free AI Search Visibility &amp; SEO Audit</a></div>
   </div>
 </section>
