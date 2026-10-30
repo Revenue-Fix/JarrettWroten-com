@@ -20,3 +20,4 @@
 .svc-tag{margin-top:1em;padding-top:.9em;border-top:1px solid rgba(201,168,92,.28);color:#c9a85c;font-size:.9em;letter-spacing:.01em}
 @media (min-width:701px) and (max-width:1200px){.svc:last-child{grid-column:1/-1}}
 @media (min-width:1201px){.svcs-grid{grid-template-columns:repeat(6,1fr)}.svc{grid-column:span 2}.svc:nth-last-child(2){grid-column:2/span 2}.svc:last-child{grid-column:4/span 2}}
+.svc-t em.gs{font-size:1.12em;padding-bottom:.08em;display:inline-block}
