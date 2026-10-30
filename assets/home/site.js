@@ -3,7 +3,8 @@ const W=[
 ["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Hawaiian Caf\u00e9"],["prorok","Dylan Prorok","Japanese Tattoo Artist"],["truheart","Tru Heart Consulting","Sales Team Consulting"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"]];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],root=document.documentElement;
 let paused=false;
-const lenis=new Lenis({lerp:.1,smoothWheel:true});window.__lenis=lenis;
+const touchFirst=matchMedia('(pointer:coarse)').matches;// touch phones scroll natively: Lenis's non-passive touch listeners made swipes stall (Oct 30 emulator walk)
+const lenis=touchFirst?{raf(){},on(){},stop(){root.style.overflow='hidden'},start(){root.style.overflow=''},scrollTo(y){scrollTo({top:typeof y==='number'?y:0,behavior:'smooth'})}}:new Lenis({lerp:.1,smoothWheel:true});window.__lenis=lenis;
 (function raf(t){lenis.raf(t);requestAnimationFrame(raf)})();
 lenis.stop();scrollTo(0,0);
 // intro: counter 0-100, then curtain up
