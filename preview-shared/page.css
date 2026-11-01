@@ -58,3 +58,14 @@
 .pg-h-m{font-size:clamp(44px,6.6vw,120px)}
 .pv-b .mask .ml{padding-bottom:.1em}
 .mask .ml:nth-child(3)>span{transition-delay:.2s}
+/* full-bleed film opening, like the homepage hero */
+.pg-hero{position:relative;isolation:isolate;min-height:100vh;min-height:100svh;display:flex;flex-direction:column;justify-content:flex-end;padding-top:120px;padding-bottom:clamp(44px,9vh,100px);overflow:hidden}
+.pg-bg{position:absolute;inset:0;z-index:-1;overflow:hidden;clip-path:inset(var(--iy,0) var(--ix,0) var(--iy,0) var(--ix,0) round var(--ir,0));will-change:clip-path}
+.pg-bg::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,rgba(11,11,10,.55) 0%,rgba(11,11,10,.12) 34%,rgba(11,11,10,.28) 62%,rgba(11,11,10,.9) 100%)}
+.pg-v{width:100%;height:100%;object-fit:cover;background:#000;transform:scale(var(--vs,1.06));will-change:transform}
+.pg-hero .pg-c{will-change:transform,opacity}
+.pg-hero .pg-k,.pg-hero .pg-lede{color:rgba(238,232,221,.82)}
+.pg-hero .pg-h,.pg-hero .pg-k,.pg-hero .pg-lede{text-shadow:0 1px 3px rgba(0,0,0,.45),0 2px 26px rgba(0,0,0,.4)}
+.pg-hero .pg-h em.gs{text-shadow:none;filter:drop-shadow(0 2px 14px rgba(0,0,0,.45))}
+.pg-hero+.cf{padding-top:clamp(90px,14vh,160px)}
+.pg-hero+.pv{padding-top:clamp(80px,12vh,140px)}

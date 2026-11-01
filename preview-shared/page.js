@@ -15,15 +15,17 @@ const vids=$$('video[data-src]');
 const vio=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){if(!v.src){v.src=v.dataset.src}v.playbackRate=1;if(!paused)v.play().catch(()=>{})}else v.pause()}),{rootMargin:'25% 0px'});
 vids.forEach(v=>vio.observe(v));
 // header + film widen
-const bar=$('#bar'),film=$('.pg-film');let last=0;
+const bar=$('#bar'),film=$('.pg-film'),hbg=$('.pg-bg'),hv=$('.pg-v'),hc=$('.pg-hero .pg-c'),hs=$('.pg-hero');let last=0;
+if(hv){hv.playbackRate=1;hv.play().catch(()=>{})}
 function onScroll(){const vh=innerHeight,y=scrollY;
+ if(hs&&!paused){const r=hs.getBoundingClientRect();const p=Math.min(1,Math.max(0,-r.top/Math.max(1,r.height)));const e=p*p*(3-2*p);hbg.style.setProperty('--ix',(e*4)+'vw');hbg.style.setProperty('--iy',(e*5)+'vh');hbg.style.setProperty('--ir',(e*22)+'px');hv.style.setProperty('--vs',(1.06-e*.06).toFixed(4));hc.style.transform=`translate3d(0,${-e*14}vh,0)`;hc.style.opacity=1-e*.9}
  if(film&&innerWidth>860&&!paused){const r=film.getBoundingClientRect();const p=Math.min(1,Math.max(0,(vh-r.top)/(vh*.9)));const ins=18*(1-p);film.style.clipPath=`inset(0 ${ins}% 0 ${ins}% round 8px)`}
  bar.classList.toggle('solid',y>80);if(y>vh*.6&&y>last+2)bar.classList.add('hide');if(y<last-2||y<vh*.6)bar.classList.remove('hide');last=y;
  if(y+vh>=root.scrollHeight-40){root.classList.add('done');obs.forEach(o=>o.classList.add('in'))}}
 lenis.on('scroll',onScroll);addEventListener('scroll',onScroll,{passive:true});addEventListener('resize',onScroll);onScroll();
 // pause
 const pp=$('#pp');pp.onclick=()=>{paused=!paused;pp.setAttribute('aria-pressed',paused);pp.setAttribute('aria-label',paused?'Play motion':'Pause motion');pp.querySelector('.pp-t').textContent=paused?'Play':'Pause';root.classList.toggle('paused',paused);
- if(paused){vids.forEach(v=>v.pause());obs.forEach(o=>o.classList.add('in'))}else{vids.forEach(v=>{const b=v.getBoundingClientRect();if(v.src&&b.top<innerHeight&&b.bottom>0)v.play().catch(()=>{})});onScroll()}};
+ if(paused){vids.forEach(v=>v.pause());hv&&hv.pause();obs.forEach(o=>o.classList.add('in'))}else{hv&&hv.play().catch(()=>{});vids.forEach(v=>{const b=v.getBoundingClientRect();if(v.src&&b.top<innerHeight&&b.bottom>0)v.play().catch(()=>{})});onScroll()}};
 $('#top').onclick=()=>lenis.scrollTo(0,{duration:1.8,easing:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2});
 // menu
 const menu=$('#menu'),mb=$('#mbtn'),mc=$('#mclose');let lastF=null;
