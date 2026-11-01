@@ -1,0 +1,5 @@
+/* Homepage footer services links (Oct 31, 2026, Jarrett OK 6:07 PM PT) */
+.foot-svc{display:flex;flex-wrap:wrap;gap:4px 32px;border-top:1px solid var(--ln);padding-top:18px;margin-bottom:6px;font-size:15px}
+.foot-svc a{text-decoration:none;min-height:44px;display:flex;align-items:center}
+.foot-svc a:hover{text-decoration:underline;text-underline-offset:.25em}
+@media (max-width:860px){.foot-svc{flex-direction:column;gap:0}}
