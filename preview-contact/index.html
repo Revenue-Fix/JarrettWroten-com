@@ -1,131 +1,121 @@
 <!doctype html>
 <html lang="en">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Contact | Jarrett Wroten Web Design</title>
-  <meta name="description" content="Send Jarrett Wroten a note about your website.">
-  <meta name="robots" content="noindex,nofollow">
-  <meta name="googlebot" content="noindex,nofollow">
-  <link rel="canonical" href="https://jarrettwroten.com/contact/">
-  <link rel="icon" href="/favicon.ico" sizes="any">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Contact | Jarrett Wroten Web Design</title>
+<meta name="description" content="Send Jarrett Wroten a note about your website.">
+<meta name="robots" content="noindex,nofollow">
+<meta name="googlebot" content="noindex,nofollow">
+<link rel="canonical" href="https://jarrettwroten.com/contact/">
+<meta name="theme-color" content="#0b0b0a">
+<link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <meta property="og:type" content="website">
-  <meta property="og:site_name" content="Jarrett Wroten Web Design">
-  <meta property="og:title" content="Contact | Jarrett Wroten Web Design">
-  <meta property="og:description" content="Send Jarrett Wroten a note about your website.">
-  <meta property="og:url" content="https://jarrettwroten.com/contact/">
-  <meta name="twitter:card" content="summary">
-  <meta name="twitter:title" content="Contact | Jarrett Wroten Web Design">
-  <meta name="twitter:description" content="Send Jarrett Wroten a note about your website.">
-  <style>
-:root{font-synthesis-weight:none;color-scheme:dark;background:#040a0c;color:#e8f4f4;font-family:"General Sans",system-ui,-apple-system,"Segoe UI",sans-serif;--cy:#5ee7f0;--ink:#e8f4f4;--mute:rgba(232,244,244,.72)}
-*{box-sizing:border-box}
-body{margin:0;min-width:320px;background:#040a0c;color:var(--ink);overflow-x:hidden}
-a{color:inherit;text-decoration:none}
-a:focus-visible,button:focus-visible{outline:2px solid var(--cy);outline-offset:5px}
-header{position:relative;z-index:2;display:flex;justify-content:space-between;align-items:center;gap:1rem;padding:1rem clamp(1.15rem,4vw,4rem);font:600 .88rem/1 "General Sans",system-ui,sans-serif}
-header a{min-height:44px;display:inline-flex;align-items:center}
-.glow{position:fixed;inset:-20vmax;z-index:0;pointer-events:none;background:radial-gradient(38vmax 30vmax at 20% 30%,rgba(94,231,240,.16),transparent 70%),radial-gradient(34vmax 28vmax at 80% 70%,rgba(64,140,255,.12),transparent 70%);animation:drift 14s ease-in-out infinite alternate}
-@keyframes drift{0%{transform:translate3d(-3%,-2%,0) scale(1)}50%{transform:translate3d(3%,2%,0) scale(1.06)}100%{transform:translate3d(-1%,4%,0) scale(1.02)}}
-main{position:relative;z-index:1;width:min(100% - 2.3rem,64rem);margin:0 auto;padding:clamp(3rem,9vw,7rem) 0 6rem;display:grid;grid-template-columns:1fr 1.15fr;gap:clamp(2rem,6vw,5rem);align-items:start}
-h1{margin:0;font:500 clamp(3rem,8vw,6.4rem)/.94 "General Sans",system-ui,sans-serif;letter-spacing:-.015em;overflow-wrap:break-word}
-.intro{max-width:28rem;margin:1.6rem 0 0;font-size:clamp(1.1rem,1rem + .5vw,1.4rem);line-height:1.5;color:var(--mute)}
-.alt{margin-top:2rem;font-size:1rem;line-height:1.6;color:var(--mute)}
-.alt a{color:var(--ink);border-bottom:1px solid rgba(94,231,240,.55);display:inline-flex;min-height:44px;align-items:center}
-form{display:grid;gap:1.1rem;padding:clamp(1.4rem,3vw,2.4rem);border:1px solid rgba(232,244,244,.14);border-radius:22px;background:rgba(10,22,26,.72);backdrop-filter:blur(10px)}
-.row{display:grid;grid-template-columns:1fr 1fr;gap:1.1rem}
-.f{position:relative;display:grid;gap:.45rem}
-label{font:600 .86rem/1.2 "General Sans",system-ui,sans-serif;color:var(--cy)}
-label span{color:var(--mute);font-weight:500}
-input,textarea{width:100%;min-height:48px;padding:.8rem .95rem;border:1px solid rgba(232,244,244,.2);border-radius:12px;background:rgba(4,10,12,.8);color:var(--ink);font:500 1rem/1.4 "General Sans",system-ui,sans-serif;transition:border-color .3s,box-shadow .3s}
-textarea{min-height:9rem;resize:vertical}
-input:focus,textarea:focus{outline:none;border-color:var(--cy);box-shadow:0 0 0 3px rgba(94,231,240,.18),0 0 28px rgba(94,231,240,.18)}
-.f::after{content:"";position:absolute;left:12px;right:12px;bottom:0;height:2px;border-radius:2px;background:linear-gradient(90deg,transparent,var(--cy),transparent);transform:scaleX(0);transition:transform .5s cubic-bezier(.2,.8,.2,1)}
-.f:focus-within::after{transform:scaleX(1)}
-.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
-.send{display:grid;grid-template-columns:auto 1fr;gap:1.1rem;align-items:center;margin-top:.3rem}
-button{position:relative;overflow:hidden;min-height:52px;padding:0 1.8rem;border:0;border-radius:999px;background:var(--cy);color:#04151a;font:700 1.0625rem/1 "General Sans",system-ui,sans-serif;cursor:pointer;transition:transform .25s}
-button:hover{transform:translateY(-2px)}
-button::after{content:"";position:absolute;inset:0;background:linear-gradient(110deg,transparent 30%,rgba(255,255,255,.7) 50%,transparent 70%);transform:translateX(-120%);animation:shine 3.6s ease-in-out infinite}
-@keyframes shine{0%,55%{transform:translateX(-120%)}85%,100%{transform:translateX(120%)}}
-button[disabled]{opacity:.7;cursor:progress}
-.consent{margin:0;font-size:.86rem;line-height:1.55;color:var(--mute)}
-.consent a{color:var(--ink);border-bottom:1px solid rgba(94,231,240,.55)}
-.status{min-height:1.4em;margin:0;font-size:1rem;line-height:1.5;color:var(--cy)}
-.status.err{color:#ffb4a8}
-.rv{opacity:1;transform:none}
-.js .rv{opacity:0;transform:translateY(22px)}
-.js .rv.in{opacity:1;transform:none;transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
-.pm{min-height:44px;padding:0 1.1rem;border:1px solid rgba(232,244,244,.22);border-radius:999px;background:transparent;color:var(--mute);font:600 .82rem/1 "General Sans",system-ui,sans-serif}
-.pm::after{display:none}
-.pm:hover{transform:none;color:var(--ink)}
-.paused .glow,.paused button::after{animation-play-state:paused}
-footer{position:relative;z-index:1;display:flex;justify-content:space-between;gap:1rem;padding:2rem clamp(1.15rem,4vw,4rem);border-top:1px solid rgba(232,244,244,.12);font:500 .8rem/1.4 "General Sans",system-ui,sans-serif;color:rgba(232,244,244,.65)}
-footer a{display:inline-flex;align-items:center;min-height:44px}
-@media(max-width:860px){main{grid-template-columns:1fr}}
-@media(max-width:560px){.row{grid-template-columns:1fr}.send{grid-template-columns:1fr}button{width:100%}footer{flex-direction:column}}
-</style>
-  <link rel="stylesheet" href="https://jarrettwroten.com/assets/accessibility.css?v=20261017-type2">
-  <script src="https://jarrettwroten.com/assets/accessibility.js?v=titlecase-20261007" defer></script>
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Jarrett Wroten Web Design">
+<meta property="og:title" content="Contact | Jarrett Wroten Web Design">
+<meta property="og:description" content="Send Jarrett Wroten a note about your website.">
+<meta property="og:image" content="https://jarrettwroten.com/assets/jw/og.jpg">
+<link rel="preconnect" href="https://api.fontshare.com"><link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="preconnect" href="https://api.fontshare.com">
+<link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/MFQT7HFGCR2L5ULQTW6YXYZXXHMPKLJ3/YWQ244D6TACUX5JBKATPOW5I5MGJ3G73/7YY3ZAAE3TRV2LANYOLXNHTPHLXVWTKH.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/3RZHWSNONLLWJK3RLPEKUZOMM56GO4LJ/BPDRY7AHVI3MCDXXVXTQQ76H3UXA63S3/SB2OEB6IKZPRR6JT4GFJ2TFT6HBB6AZN.woff2">
+<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/K46YRH762FH3QJ25IQM3VAXAKCHEXXW4/ISLWQPUZHZF33LRIOTBMFOJL57GBGQ4B/3ZLMEXZEQPLTEPMHTQDAUXP5ZZXCZAEN.woff2">
+<link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600,700&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+<link rel="stylesheet" href="https://jarrettwroten.com/assets/home/style.css?v=53fix-p5">
+<link rel="stylesheet" href="https://jarrettwroten.com/assets/home/site.css?v=launch2">
+<link rel="stylesheet" href="https://jarrettwroten.com/assets/home/foot-svc.css?v=1031a">
+<link rel="stylesheet" href="https://jarrettwroten.com/preview-shared/page.css?v=1">
 <!-- Google Analytics 4: loads after first interaction or idle, same pattern as the existing Clarity tag -->
 <script>(function(w,d){var ID="G-T4DYFPXT70",done=0,ev=["scroll","pointerdown","keydown"],o={passive:true,capture:true};w.dataLayer=w.dataLayer||[];w.gtag=function(){w.dataLayer.push(arguments)};function go(){if(done)return;done=1;ev.forEach(function(e){w.removeEventListener(e,go,o)});var s=d.createElement("script");s.async=1;s.src="https://www.googletagmanager.com/gtag/js?id="+ID;d.head.appendChild(s);gtag("js",new Date());gtag("config",ID)}ev.forEach(function(e){w.addEventListener(e,go,o)});function idle(){w.requestIdleCallback?w.requestIdleCallback(go,{timeout:2500}):setTimeout(go,2500)}d.readyState==="complete"?setTimeout(idle,4000):w.addEventListener("load",function(){setTimeout(idle,4000)},{once:true})})(window,document);</script>
 <script type="text/javascript">(function(w,d){w.clarity=w.clarity||function(){(w.clarity.q=w.clarity.q||[]).push(arguments)};var done=0,ev=["scroll","pointerdown","keydown"],o={passive:true,capture:true};function go(){if(done)return;done=1;ev.forEach(function(e){w.removeEventListener(e,go,o)});var t=d.createElement("script");t.async=1;t.src="https://www.clarity.ms/tag/yvve5xueah";var y=d.getElementsByTagName("script")[0];y.parentNode.insertBefore(t,y)}ev.forEach(function(e){w.addEventListener(e,go,o)});function idle(){w.requestIdleCallback?w.requestIdleCallback(go,{timeout:2500}):setTimeout(go,2500)}d.readyState==="complete"?setTimeout(idle,4000):w.addEventListener("load",function(){setTimeout(idle,4000)},{once:true})})(window,document);clarity("set","site","jarrettwroten");</script>
-<!-- Same type as the home page: General Sans + Boska -->
-<link rel="preconnect" href="https://api.fontshare.com"><link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
-<link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/MFQT7HFGCR2L5ULQTW6YXYZXXHMPKLJ3/YWQ244D6TACUX5JBKATPOW5I5MGJ3G73/7YY3ZAAE3TRV2LANYOLXNHTPHLXVWTKH.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/3RZHWSNONLLWJK3RLPEKUZOMM56GO4LJ/BPDRY7AHVI3MCDXXVXTQQ76H3UXA63S3/SB2OEB6IKZPRR6JT4GFJ2TFT6HBB6AZN.woff2"><link rel="preload" as="font" type="font/woff2" crossorigin href="https://cdn.fontshare.com/wf/K46YRH762FH3QJ25IQM3VAXAKCHEXXW4/ISLWQPUZHZF33LRIOTBMFOJL57GBGQ4B/3ZLMEXZEQPLTEPMHTQDAUXP5ZZXCZAEN.woff2">
-<link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" onload="this.onload=null;this.rel='stylesheet'"><link rel="preload" as="style" href="https://api.fontshare.com/v2/css?f[]=boska@400i,500i&display=swap" onload="this.onload=null;this.rel='stylesheet'"><noscript><link href="https://api.fontshare.com/v2/css?f[]=general-sans@400,500,600&display=swap" rel="stylesheet"><link href="https://api.fontshare.com/v2/css?f[]=boska@400i,500i&display=swap" rel="stylesheet"></noscript>
-<link rel="stylesheet" href="https://jarrettwroten.com/assets/home-type.css?v=20261017a">
 </head>
 <body>
-  <div class="glow" aria-hidden="true"></div>
-  <header><a href="/">Jarrett Wroten</a><button type="button" class="pm" id="pm" aria-pressed="false">Pause Motion</button></header>
-  <main>
-    <div>
-      <h1 class="rv">Tell Me About Your Site.</h1>
-      <p class="intro rv">Send me what you have in mind, and I will write back.</p>
-      <p class="alt rv">Rather talk it through? <a href="/book/">Book a call</a></p>
-    </div>
-    <form id="contact" class="rv" action="https://formsubmit.co/jarrett@jarrettwroten.com" method="POST" novalidate>
+<a class="skip" href="#main">Skip To Content</a>
+<header class="bar" id="bar">
+  <a class="mark" href="/">Jarrett Wroten</a>
+  <div class="bar-r">
+    <button class="pp" id="pp" aria-pressed="false" aria-label="Pause motion"><span class="pp-i"></span><span class="pp-t">Pause</span></button>
+    <button class="mbtn" id="mbtn" aria-expanded="false" aria-controls="menu"><span class="mbtn-t">Menu</span></button>
+  </div>
+</header>
+<div class="menu" id="menu" data-lenis-prevent role="dialog" aria-modal="true" aria-label="Menu" hidden>
+  <div class="menu-top"><span class="mark">Jarrett Wroten</span><button class="mbtn" id="mclose">Close</button></div>
+  <a class="btn btn-lg menu-cta" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2YdXyVF5uIUo74Fv4SrprKAVyqtont8zyMcfribjk4uwAJCGMvckaErguyS5pJ23xRft13Ebzb" target="_blank" rel="noopener">Book Your Free AI Search Visibility &amp; SEO Audit</a>
+  <p class="menu-k">Pages</p>
+  <ul class="menu-l">
+    <li class="m-in" style="transition-delay:.12s"><a href="/">Home<span>Start Here</span></a></li>
+    <li class="m-in" style="transition-delay:.15s"><a href="/portfolio/">Portfolio<span>Cinematic Websites</span></a></li>
+    <li class="m-in" style="transition-delay:.18s"><a href="/las-vegas-web-design/">Websites<span>Las Vegas Web Design</span></a></li>
+    <li class="m-in" style="transition-delay:.21s"><a href="/preview-contact/">Contact<span>Write To Me</span></a></li>
+  </ul>
+  <div class="menu-f"><a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a><span>Las Vegas, Nevada</span></div>
+</div>
+<main id="main">
+<section class="pg" aria-label="Contact">
+  <p class="pg-k fade">Contact</p>
+  <h1 class="pg-h mask"><span class="ml"><span>Tell Me About</span></span><span class="ml"><span><em class="gs">Your Site.</em></span></span></h1>
+  <p class="pg-lede fade">Send me what you have in mind, and I will write back.</p>
+  <div class="pg-film"><video muted loop playsinline preload="none" poster="https://jarrettwroten.com/assets/home/walk/corridor.jpg" data-src="https://jarrettwroten.com/assets/home/walk/golden-arrival-approved.mp4" style="object-position:50% 20%" aria-hidden="true"></video></div>
+</section>
+<section class="cf" aria-label="Contact form">
+  <div class="cf-side">
+    <h2 class="h2s mask"><span class="ml"><span>Write To Me</span></span></h2>
+    <p class="fade">Your note comes straight to my inbox.</p>
+    <a class="alt fade" href="/book/">Rather talk it through? Book a call</a>
+  </div>
+  <form id="contact" action="https://formsubmit.co/jarrett@jarrettwroten.com" method="POST" novalidate>
       <input type="hidden" name="_subject" value="New note from jarrettwroten.com">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="_captcha" value="false">
       <input type="hidden" name="_next" value="https://jarrettwroten.com/preview-contact/?sent=1">
       <div class="hp" aria-hidden="true"><label for="hp">Leave this empty</label><input id="hp" type="text" name="_honey" tabindex="-1" autocomplete="off"></div>
       <div class="row">
-        <div class="f"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
-        <div class="f"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
+        <div class="fl fade"><label for="name">Name</label><input id="name" name="name" type="text" autocomplete="name" required></div>
+        <div class="fl fade"><label for="email">Email</label><input id="email" name="email" type="email" autocomplete="email" required></div>
       </div>
-      <div class="f"><label for="phone">Mobile Phone <span>(optional)</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div>
-      <div class="f"><label for="message">Message</label><textarea id="message" name="message" required></textarea></div>
-      <div class="send">
-        <button type="submit">Send</button>
-        <p class="consent" id="consent">By providing your phone number, you consent to receive text messages from Jarrett Wroten Web Design. Message and data rates may apply. Reply STOP to opt out. <a href="/preview-privacy/#texting">Privacy Policy</a></p>
+      <div class="fl fade"><label for="phone">Mobile Phone <span>(optional)</span></label><input id="phone" name="phone" type="tel" autocomplete="tel" inputmode="tel"></div>
+      <div class="fl fade"><label for="message">Message</label><textarea id="message" name="message" required></textarea></div>
+      <div class="end-a fade">
+        <button class="btn btn-lg" type="submit">Send</button>
       </div>
+      <p class="consent fade" id="consent">By providing your phone number, you consent to receive text messages from Jarrett Wroten Web Design. Message and data rates may apply. Reply STOP to opt out. <a href="/preview-privacy/#texting">Privacy Policy</a></p>
       <p class="status" id="status" role="status" aria-live="polite"></p>
     </form>
-  </main>
-  <footer><span>Jarrett Wroten Web Design · Las Vegas · <a href="tel:+17254337775">(725) 433-7775</a></span><a href="/preview-privacy/">Privacy</a></footer>
+</section>
+</main>
+<footer class="foot">
+  <div class="foot-w">Jarrett <em>Wroten</em></div>
+  <nav class="foot-svc" aria-label="Services">
+    <a href="/las-vegas-web-design/">Websites</a>
+    <a href="https://maps.google.com/maps?cid=9828660954270675116">Find Us On Google</a>
+  </nav>
+  <div class="foot-row">
+    <a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a>
+    <span>Las Vegas, Nevada</span>
+    <a href="/portfolio/">Portfolio</a>
+    <a href="/preview-privacy/">Privacy</a>
+    <button class="top" id="top">Back To Top</button>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script src="https://jarrettwroten.com/preview-shared/page.js?v=1"></script>
 <script>
 (function(){
-var RM=false,d=document;d.documentElement.classList.add('js');
-var els=[].slice.call(d.querySelectorAll('.rv'));
-function show(){els.forEach(function(e,i){setTimeout(function(){e.classList.add('in')},120+i*140)})}
-requestAnimationFrame(show);setTimeout(function(){els.forEach(function(e){e.classList.add('in')})},2500);
-var pm=d.getElementById('pm');pm.addEventListener('click',function(){var on=d.documentElement.classList.toggle('paused');pm.setAttribute('aria-pressed',on?'true':'false');pm.textContent=on?'Resume Motion':'Pause Motion'});
-var f=d.getElementById('contact'),st=d.getElementById('status'),b=f.querySelector('button[type=submit]');
+var d=document,f=d.getElementById('contact'),st=d.getElementById('status'),b=f.querySelector('button[type=submit]');
 if(location.search.indexOf('sent=1')>-1){st.textContent='Got it. I will be in touch soon.'}
 f.addEventListener('submit',function(ev){
   ev.preventDefault();st.className='status';
   if(!f.checkValidity()){st.className='status err';st.textContent='Please add your name, a valid email and a message.';var bad=f.querySelector(':invalid');if(bad)bad.focus();return}
   if(f._honey&&f._honey.value){return}
-  b.disabled=true;b.textContent='Sending';
+  b.disabled=true;b.firstChild.nodeValue='Sending';
   fetch('https://formsubmit.co/ajax/jarrett@jarrettwroten.com',{method:'POST',headers:{'Accept':'application/json'},body:new FormData(f)})
   .then(function(r){return r.json().then(function(j){return {ok:r.ok,j:j}})})
   .then(function(x){if(x.ok&&String(x.j.success)==='true'){f.reset();st.textContent='Got it. I will be in touch soon.'}else{throw 0}})
   .catch(function(){st.className='status err';st.innerHTML='That did not send. Email me at <a href="mailto:jarrett@jarrettwroten.com">jarrett@jarrettwroten.com</a>.'})
-  .then(function(){b.disabled=false;b.textContent='Send'});
+  .then(function(){b.disabled=false;b.firstChild.nodeValue='Send'});
 });
 })();
 </script>

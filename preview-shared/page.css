@@ -1,0 +1,60 @@
+/* Subpage layer on top of the homepage's own style.css, site.css and foot-svc.css. Only page layout lives here; type, color, buttons, header, menu and footer come from the homepage files. */
+.bar{background:transparent}
+.bar .mark{text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.bar .mbtn{display:inline-flex;align-items:center}
+.pg{padding:clamp(120px,18vh,190px) var(--pad) 0}
+.pg-k{font-size:15px;font-weight:500;color:var(--mid);margin-bottom:22px}
+.pg-h{font-weight:500;font-size:clamp(52px,8.4vw,150px);line-height:.92;letter-spacing:-.04em}
+.pg-h em.gs{background-image:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding:.04em .1em .14em 0;margin:-.04em -.1em -.14em 0}
+.pg-lede{max-width:34em;margin-top:30px;font-size:clamp(17px,1.35vw,21px);line-height:1.5;color:var(--mid)}
+.pg-film{margin:clamp(56px,9vh,110px) 0 0;width:100%;overflow:hidden;border-radius:8px;clip-path:inset(0 18% 0 18% round 8px);will-change:clip-path}
+.pg-film video{width:100%;aspect-ratio:21/9;object-fit:cover;background:#000}
+/* contact form */
+.cf{display:grid;grid-template-columns:minmax(0,5fr) minmax(0,7fr);gap:clamp(32px,6vw,110px);padding:clamp(80px,13vh,150px) var(--pad);align-items:start}
+.cf-side .h2s{font-weight:500;font-size:clamp(34px,3.6vw,60px);line-height:1;letter-spacing:-.035em}
+.cf-side p{margin-top:22px;max-width:26em;font-size:clamp(16px,1.2vw,19px);line-height:1.55;color:var(--mid)}
+.cf-side .alt{margin-top:28px;display:inline-flex;align-items:center;min-height:44px;font-weight:600;font-size:17px;text-decoration:none;border-bottom:1px solid currentColor}
+.cf form{display:grid;gap:34px}
+.cf .row{display:grid;grid-template-columns:1fr 1fr;gap:34px}
+.fl{position:relative;display:grid;gap:6px}
+.fl label{font-size:15px;font-weight:500;color:var(--mid)}
+.fl label span{color:var(--dim)}
+.fl input,.fl textarea{width:100%;min-height:52px;padding:10px 0 12px;border:0;border-bottom:1px solid rgba(238,232,221,.32);border-radius:0;background:transparent;color:var(--bone);font:500 clamp(18px,1.4vw,22px)/1.4 var(--sans);letter-spacing:-.01em}
+.fl textarea{min-height:150px;resize:vertical}
+.fl input:focus,.fl textarea:focus{outline:none}
+.fl::after{content:"";position:absolute;left:0;right:0;bottom:0;height:2px;background:linear-gradient(90deg,#b68a3a,#f3dc9a,#d4ae5a);transform:scaleX(0);transform-origin:0 50%;transition:transform .9s var(--ease)}
+.fl:focus-within::after{transform:scaleX(1)}
+.hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
+.cf .end-a{align-items:flex-start;margin-top:6px}
+.cf .end-a .btn{border:0;cursor:pointer;min-width:220px}
+.consent{max-width:40em;font-size:14px;line-height:1.6;color:var(--mid)}
+.consent a{color:var(--bone);text-underline-offset:.2em}
+.status{min-height:1.5em;font-size:17px;line-height:1.5;color:#f3dc9a}
+.status.err{color:#ffb4a8}
+.status a{color:inherit}
+/* privacy */
+.pv{padding:clamp(70px,11vh,130px) var(--pad) clamp(80px,12vh,140px);display:grid;grid-template-columns:minmax(0,4fr) minmax(0,8fr);gap:clamp(32px,6vw,110px)}
+.pv-nav{position:sticky;top:110px;align-self:start;display:grid;gap:2px;font-size:15px}
+.pv-nav a{min-height:44px;display:flex;align-items:center;text-decoration:none;color:var(--mid);border-bottom:1px solid var(--rule)}
+.pv-nav a:hover{color:var(--bone)}
+.pv-b section{padding:0 0 clamp(44px,7vh,72px);margin-bottom:clamp(44px,7vh,72px);border-bottom:1px solid var(--rule);scroll-margin-top:110px}
+.pv-b section:last-child{border-bottom:0}
+.pv-b h2{font-weight:500;font-size:clamp(30px,3vw,48px);line-height:1.02;letter-spacing:-.03em;margin-bottom:22px}
+.pv-b p,.pv-b li{max-width:40em;font-size:clamp(16px,1.2vw,19px);line-height:1.6;color:var(--mid)}
+.pv-b p+p{margin-top:16px}
+.pv-b ul{list-style:none;display:grid;gap:12px;margin-top:16px}
+.pv-b li{padding-left:22px;position:relative}
+.pv-b li::before{content:"";position:absolute;left:0;top:.72em;width:8px;height:1px;background:var(--gold)}
+.pv-b a{color:var(--bone);text-underline-offset:.2em}
+.paused .pg-film{clip-path:none!important}
+@media (max-width:860px){
+ .cf,.pv{grid-template-columns:1fr}
+ .pv-nav{position:static}
+ .cf .row{grid-template-columns:1fr}
+ .cf .end-a .btn{width:100%}
+ .pg-film{clip-path:none!important}
+ .pg-film video{aspect-ratio:4/5}
+}
+.pg-h-m{font-size:clamp(44px,6.6vw,120px)}
+.pv-b .mask .ml{padding-bottom:.1em}
+.mask .ml:nth-child(3)>span{transition-delay:.2s}
