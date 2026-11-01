@@ -58,6 +58,10 @@ button[disabled]{opacity:.7;cursor:progress}
 .rv{opacity:1;transform:none}
 .js .rv{opacity:0;transform:translateY(22px)}
 .js .rv.in{opacity:1;transform:none;transition:opacity .9s cubic-bezier(.2,.8,.2,1),transform .9s cubic-bezier(.2,.8,.2,1)}
+.pm{min-height:44px;padding:0 1.1rem;border:1px solid rgba(232,244,244,.22);border-radius:999px;background:transparent;color:var(--mute);font:600 .82rem/1 "General Sans",system-ui,sans-serif}
+.pm::after{display:none}
+.pm:hover{transform:none;color:var(--ink)}
+.paused .glow,.paused button::after{animation-play-state:paused}
 footer{position:relative;z-index:1;display:flex;justify-content:space-between;gap:1rem;padding:2rem clamp(1.15rem,4vw,4rem);border-top:1px solid rgba(232,244,244,.12);font:500 .8rem/1.4 "General Sans",system-ui,sans-serif;color:rgba(232,244,244,.65)}
 footer a{display:inline-flex;align-items:center;min-height:44px}
 @media(max-width:860px){main{grid-template-columns:1fr}}
@@ -76,7 +80,7 @@ footer a{display:inline-flex;align-items:center;min-height:44px}
 </head>
 <body>
   <div class="glow" aria-hidden="true"></div>
-  <header><a href="/">Jarrett Wroten</a></header>
+  <header><a href="/">Jarrett Wroten</a><button type="button" class="pm" id="pm" aria-pressed="false">Pause Motion</button></header>
   <main>
     <div>
       <h1 class="rv">Tell Me About Your Site.</h1>
@@ -109,7 +113,8 @@ var RM=false,d=document;d.documentElement.classList.add('js');
 var els=[].slice.call(d.querySelectorAll('.rv'));
 function show(){els.forEach(function(e,i){setTimeout(function(){e.classList.add('in')},120+i*140)})}
 requestAnimationFrame(show);setTimeout(function(){els.forEach(function(e){e.classList.add('in')})},2500);
-var f=d.getElementById('contact'),st=d.getElementById('status'),b=f.querySelector('button');
+var pm=d.getElementById('pm');pm.addEventListener('click',function(){var on=d.documentElement.classList.toggle('paused');pm.setAttribute('aria-pressed',on?'true':'false');pm.textContent=on?'Resume Motion':'Pause Motion'});
+var f=d.getElementById('contact'),st=d.getElementById('status'),b=f.querySelector('button[type=submit]');
 if(location.search.indexOf('sent=1')>-1){st.textContent='Got it. I will be in touch soon.'}
 f.addEventListener('submit',function(ev){
   ev.preventDefault();st.className='status';
