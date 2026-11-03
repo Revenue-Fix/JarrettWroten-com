@@ -34,7 +34,7 @@
 <link rel="stylesheet" href="assets/home/services.css?v=s5"><link rel="stylesheet" href="assets/home/foot-svc.css?v=1031a">
 <style>/* tagline under the hero (Nov 2 2026): sits in the empty 60vh at the bottom of .hero-wrap, so page height is unchanged on desktop */
 .tagl{position:absolute;left:0;right:0;top:100vh;height:60vh;display:flex;align-items:center;justify-content:center;padding:0 var(--pad);text-align:center;color:var(--fg)}
-.tagl-t{margin:0;font-size:clamp(32px,7.25vw,150px);line-height:1.06;letter-spacing:-.01em}
+.tagl-t{margin:0;font-size:clamp(36px,4.6vw,84px);line-height:1.06;letter-spacing:-.01em}
 .tagl-t .ml{display:block;overflow:hidden;padding:0 .12em .18em;margin:0 -.12em -.1em}
 .tagl-t .ml>span{display:inline-block;transform-origin:0 100%;will-change:transform}
 .tagl-t .ml+.ml{margin-top:1em}
@@ -42,8 +42,9 @@
 .tagl-t:not(.mask) .ml>span{transform:translateY(140%)}
 #tagl .ml+.ml>span{transition-duration:2.1s;transition-delay:.45s}
 .tg-on em.gs{background-image:linear-gradient(100deg,rgba(255,250,232,0) 38%,rgba(255,250,232,.95) 50%,rgba(255,250,232,0) 62%),linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);background-size:260% 100%,100% 100%;background-repeat:no-repeat;background-position:var(--sx,120%) 0,0 0}
+@media (min-width:861px){.tagl-t{font-size:clamp(44px,5.6vw,104px)}}
 @media (max-width:860px){.tagl{height:35vh}}
-@media (max-width:700px){.tagl{position:relative;top:auto;height:auto;padding:60px var(--pad) 4px}.tagl-t{font-size:clamp(29px,8.2vw,40px)}}
+@media (max-width:700px){.tagl{position:relative;top:auto;height:auto;padding:60px var(--pad) 4px}}
 </style>
 
 <script>window.RVQ=/[?&]v=/.test(location.search)?location.search:"?v=pinyon-gold-together"</script><style>.rvp .h1 .payoff{opacity:0!important}</style><script>/[?&]v=(draw|flare|drawlight|script[23]?|pinyon-purple|pinyon-gold)\b/.test(RVQ)&&document.documentElement.classList.add("rvp")</script>
