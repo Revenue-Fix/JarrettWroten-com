@@ -34,7 +34,7 @@
 <link rel="stylesheet" href="assets/home/services.css?v=s5"><link rel="stylesheet" href="assets/home/foot-svc.css?v=1031a">
 <style>/* tagline under the hero (Nov 2 2026): sits in the empty 60vh at the bottom of .hero-wrap, so page height is unchanged on desktop */
 .tagl{position:absolute;left:0;right:0;top:100vh;height:60vh;display:flex;align-items:center;justify-content:center;padding:0 var(--pad);text-align:center;color:var(--fg)}
-.tagl-t{margin:0;font-size:clamp(32px,3.6vw,64px);line-height:1.06;letter-spacing:-.01em}
+.tagl-t{margin:0;font-size:clamp(32px,7.25vw,150px);line-height:1.06;letter-spacing:-.01em}
 .tagl-t .ml{display:block;overflow:hidden;padding:0 .12em .18em;margin:0 -.12em -.1em}
 .tagl-t .ml>span{display:inline-block;transform-origin:0 100%;will-change:transform}
 .tagl-t .ml+.ml{margin-top:1em}
@@ -260,7 +260,7 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
 <script>/* tagline (Nov 2 2026): adds the site's .mask wipe once the line reaches the scroll point; the gold sweep follows scroll position */
 (function(){var t=document.getElementById('tagl');if(!t)return;var E=[].slice.call(t.querySelectorAll('em.gs'));
 function c(v){return v<0?0:v>1?1:v}var last=-1,on=0;
-function f(){var vh=innerHeight,b=t.getBoundingClientRect(),y=b.top;var p=(vh*.706-y)/(vh*.5);if(p!==last){last=p;
+function f(){var vh=innerHeight,b=t.getBoundingClientRect(),y=b.top;var p=(vh*.8-(y+b.height/2))/(vh*.5);if(p!==last){last=p;
 if(!on&&p>=0){on=1;t.classList.add('in')}
 var w=c((p-.55)/.6);E.forEach(function(e,i){var x=i?c((p-.84)/.52):c(w*1.15);e.style.setProperty('--sx',(120-x*140).toFixed(2)+'%')})}
 requestAnimationFrame(f)}requestAnimationFrame(function(){t.classList.add('tg-on','mask');requestAnimationFrame(f)})})();</script>
