@@ -258,9 +258,9 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
 <script>/* tagline scroll scrub (Nov 2 2026): progress comes only from where the line sits in the viewport */
 (function(){var t=document.getElementById('tagl');if(!t)return;var L=[].slice.call(t.querySelectorAll('.ml>span')),E=[].slice.call(t.querySelectorAll('em.gs'));t.classList.add('tg-on');
 function c(v){return v<0?0:v>1?1:v}function ez(v){return 1-Math.pow(1-v,3)}var last=-1;
-function f(){var vh=innerHeight,b=t.getBoundingClientRect(),y=b.top;var p=(vh-y)/(vh*.6);if(p!==last){last=p;
+function f(){var vh=innerHeight,b=t.getBoundingClientRect(),y=b.top;var p=(vh*.734-y)/(vh*.5);if(p!==last){last=p;
 L.forEach(function(s,i){var q=ez(c((p-i*.16)/.7));s.style.setProperty('--r',(1-q).toFixed(4))});
-var w=c((p-.55)/.75);E.forEach(function(e,i){var x=c(w*1.15-i*.12);e.style.setProperty('--sx',(120-x*140).toFixed(2)+'%')})}
+var w=c((p-.55)/.6);E.forEach(function(e,i){var x=c(w*1.15-i*.12);e.style.setProperty('--sx',(120-x*140).toFixed(2)+'%')})}
 requestAnimationFrame(f)}requestAnimationFrame(f)})();</script>
 <script src="assets/home/site.js?v=touch1"></script>
 </body>
