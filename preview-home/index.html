@@ -37,7 +37,11 @@
 <style>/* tagline under the hero (preview, Nov 2 2026): sits in the empty 60vh at the bottom of .hero-wrap, so page height is unchanged on desktop */
 .tagl{position:absolute;left:0;right:0;top:100vh;height:60vh;display:flex;align-items:center;justify-content:center;padding:0 var(--pad);text-align:center;color:var(--fg)}
 .tagl-t{margin:0;font-size:clamp(32px,3.6vw,64px);line-height:1.06;letter-spacing:-.01em}
-.tagl-t .ml{padding-bottom:.18em;margin-bottom:-.1em}
+.tagl-t .ml{display:block;overflow:hidden;padding:0 .12em .18em;margin:0 -.12em -.1em}
+.tagl-t .ml>span{display:inline-block;transform-origin:0 100%;will-change:transform}
+/* scroll-scrubbed: lines rise with the scroll, then a light sweep runs through the gold; all driven by scroll position (no timers, no reduced-motion branch) */
+.tg-on .ml>span{transform:translate3d(0,calc(var(--r,1)*118%),0) rotate(calc(var(--r,1)*4deg))}
+.tg-on em.gs{background-image:linear-gradient(100deg,rgba(255,250,232,0) 38%,rgba(255,250,232,.95) 50%,rgba(255,250,232,0) 62%),linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);background-size:260% 100%,100% 100%;background-repeat:no-repeat;background-position:var(--sx,120%) 0,0 0}
 @media (max-width:860px){.tagl{height:35vh}}
 @media (max-width:700px){.tagl{position:relative;top:auto;height:auto;padding:60px var(--pad) 4px}.tagl-t{font-size:clamp(29px,8.2vw,40px)}}
 </style>
@@ -127,7 +131,7 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
     </div>
   </div>
 </section>
-<div class="tagl"><p class="tagl-t mask"><span class="ml"><span><em class="gs">Cinematic Websites Delivered</em></span></span><span class="ml"><span><em class="gs">In 7 Days Or Less Guaranteed</em></span></span></p></div>
+<div class="tagl"><p class="tagl-t" id="tagl"><span class="ml"><span><em class="gs">Cinematic Websites Delivered</em></span></span><span class="ml"><span><em class="gs">In 7 Days Or Less Guaranteed</em></span></span></p></div>
 
 </div>
 
@@ -253,6 +257,13 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
   </div>
 </footer>
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
+<script>/* tagline scroll scrub (preview, Nov 2 2026): progress comes only from where the line sits in the viewport */
+(function(){var t=document.getElementById('tagl');if(!t)return;var L=[].slice.call(t.querySelectorAll('.ml>span')),E=[].slice.call(t.querySelectorAll('em.gs'));t.classList.add('tg-on');
+function c(v){return v<0?0:v>1?1:v}function ez(v){return 1-Math.pow(1-v,3)}var last=-1;
+function f(){var vh=innerHeight,b=t.getBoundingClientRect(),y=b.top;var p=(vh-y)/(vh*.6);if(p!==last){last=p;
+L.forEach(function(s,i){var q=ez(c((p-i*.16)/.7));s.style.setProperty('--r',(1-q).toFixed(4))});
+var w=c((p-.55)/.75);E.forEach(function(e,i){var x=c(w*1.15-i*.12);e.style.setProperty('--sx',(120-x*140).toFixed(2)+'%')})}
+requestAnimationFrame(f)}requestAnimationFrame(f)})();</script>
 <script src="assets/home/site.js?v=touch1"></script>
 </body>
 </html>
