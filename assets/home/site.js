@@ -37,7 +37,7 @@ let cur=-1;
 const live=(c,j)=>Math.abs(j-cur)<=1||!!c.__vis;
 /* Playback guarantee: every carousel/hero video plays in every motion mode (no reduced-motion branch anywhere), explicit play() with catch + retry,
    retried again on the first scroll/tap/key, and a 1s watchdog that restarts any card in view that is paused or stalled. */
-function ply(v,n){if(!v||paused)return;v.muted=true;v.defaultMuted=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.playsInline=true;
+function ply(v,n){if(!v||paused||v.__done)return;v.muted=true;v.defaultMuted=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.playsInline=true;
  let pr;try{pr=v.play()}catch(_){}
  if(pr&&pr.catch)pr.catch(()=>{n=n||0;if(n<4)setTimeout(()=>ply(v,n+1),400*(n+1))})}
 const kickAll=()=>{ply(hv);cards.forEach((c,j)=>{const v=c.querySelector('video');if(v&&live(c,j)&&window.__wn)ply(v)})};
@@ -50,7 +50,7 @@ function fbUrl(v){let b;if(v===hv)b=matchMedia('(max-width:700px) and (orientati
 function fbShow(v){if(v.__fb)return;const u=fbUrl(v);if(!u)return;const im=new Image();im.className=(v.className+' vfb').trim();im.alt='';im.setAttribute('aria-hidden','true');im.decoding='async';im.style.cssText=v.style.cssText;im.src=u;if(!/^(absolute|fixed)$/.test(getComputedStyle(v).position)){v.__d=v.style.display;v.style.display='none'}v.after(im);v.__fb=im;v.dataset.fb='1'}
 function fbHide(v){if(!v.__fb)return;v.__fb.remove();v.__fb=null;if(v.__d!==undefined){v.style.display=v.__d;v.__d=undefined}delete v.dataset.fb}
 window.__fbShow=fbShow;
-setInterval(()=>{if(document.hidden||!root.classList.contains('ready'))return;[hv,...$$('video')].forEach((v,k,a)=>{if(a.indexOf(v)!==k||v.closest('dialog'))return;
+setInterval(()=>{if(document.hidden||!root.classList.contains('ready'))return;[hv,...$$('video')].forEach((v,k,a)=>{if(a.indexOf(v)!==k||v.closest('dialog')||v.__done)return;
  const ci=cards.findIndex(c=>c.contains(v));let want=!paused&&inView(v)&&(ci<0||(window.__wn&&live(cards[ci],ci)));if(v.style.display==='none'&&v.__fb)want=!paused&&inView(v.__fb);
  const t=v.currentTime,adv=v.__lt!==undefined&&(t>v.__lt+.03||t<v.__lt-.5);v.__lt=t;
  if(!want){v.__st=0;v.__ok=0;return}
@@ -64,6 +64,8 @@ function setCur(i){if(i===cur)return;cur=i;cards.forEach((c,j)=>{c.classList.tog
 const obs=$$('.fade,.mask,.me-p');
 const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{rootMargin:'0px 0px -12% 0px'});obs.forEach(o=>io.observe(o));
 // lazy videos
+/* play-once videos (data-once, e.g. the closing corridor walk .end-v): after one full runthrough they hold on the last frame; ply(), the watchdog and the Play button skip them so nothing restarts them (Jarrett, Nov 3 2026: "only 1 runthrough") */
+$$('video[data-once]').forEach(v=>v.addEventListener('ended',()=>{v.__done=1;v.pause()}));
 const lz=$$('video[data-src]');
 const lio=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIntersecting){if(!v.src)v.src=(v.dataset.webm&&v.canPlayType('video/webm; codecs="vp9"')==='probably')?v.dataset.webm:v.dataset.src;ply(v)}else v.pause()}),{rootMargin:'300px'});lz.forEach(v=>lio.observe(v));
 /* hero film: never auto-paused (not when off-screen, hidden, low-power, data saver or reduced motion); only the manual Pause pill stops it. Resumes with retry on view, tab return, any 'pause' it didn't ask for, and a 1s watchdog. */
@@ -93,7 +95,7 @@ lenis.on('scroll',onScroll);addEventListener('scroll',onScroll,{passive:true});a
 setInterval(()=>obs.forEach(o=>{if(o.getBoundingClientRect().top<innerHeight)o.classList.add('in')}),900);
 // pause
 const pp=$('#pp');pp.onclick=()=>{paused=!paused;pp.setAttribute('aria-pressed',paused);pp.setAttribute('aria-label',paused?'Play motion':'Pause motion');pp.querySelector('.pp-t').textContent=paused?'Play':'Pause';root.classList.toggle('paused',paused);
- const vs=$$('video');if(paused){vs.forEach(v=>v.pause());po.classList.add('on');wds.forEach(w=>w.classList.add('lit'));obs.forEach(o=>o.classList.add('in'));if(num)num.textContent='30';counted=true}else{hv.play().catch(()=>{});const c=cards[cur];c&&c.querySelector('video')&&c.querySelector('video').play().catch(()=>{});lz.forEach(v=>{if(v.src&&v.getBoundingClientRect().top<innerHeight&&v.getBoundingClientRect().bottom>0)v.play().catch(()=>{})})}};
+ const vs=$$('video');if(paused){vs.forEach(v=>v.pause());po.classList.add('on');wds.forEach(w=>w.classList.add('lit'));obs.forEach(o=>o.classList.add('in'));if(num)num.textContent='30';counted=true}else{hv.play().catch(()=>{});const c=cards[cur];c&&c.querySelector('video')&&c.querySelector('video').play().catch(()=>{});lz.forEach(v=>{if(v.src&&!v.__done&&v.getBoundingClientRect().top<innerHeight&&v.getBoundingClientRect().bottom>0)v.play().catch(()=>{})})}};
 $('#top').onclick=()=>lenis.scrollTo(0,{duration:1.8,easing:t=>t<.5?4*t*t*t:1-Math.pow(-2*t+2,3)/2});
 })();
 (()=>{const $=s=>document.querySelector(s),root=document.documentElement;
