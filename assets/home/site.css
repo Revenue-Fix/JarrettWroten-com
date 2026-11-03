@@ -252,3 +252,4 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 /* work strip swipe hint (phones only, where the track is a native swipe; Jarrett Nov 3 2026): sits in the gap left of the counter, out of flow so the row height never changes */
 .w-swipe{display:none}
 @media (max-width:700px){.work-meta{position:relative}.w-swipe{display:flex;flex-direction:column;align-items:flex-end;position:absolute;right:calc(100% + 12px);bottom:.12em;font-size:11px;line-height:1.25;font-weight:500;letter-spacing:.02em;color:rgba(238,232,221,.62);white-space:nowrap;pointer-events:none}}
+@media (min-width:589px) and (max-width:630px){.w-swipe{display:none}}
