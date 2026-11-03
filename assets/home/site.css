@@ -247,3 +247,5 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 .end-t>.end-p:first-child{margin-top:0}
 /* phones: .how card III keeps top:100px while position:relative, so it hangs 54px into .end */
 @media (max-width:700px){.end-hd{margin-top:68px}}
+/* docked hero CTA text shrinks on small phones so the longer label stays on one line (Jarrett Nov 3 2026) */
+@media (max-width:399px){.btn.dock-btn.glide{font-size:calc((100vw - 68px) / 25.2)!important}}
