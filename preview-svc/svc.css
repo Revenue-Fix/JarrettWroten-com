@@ -1,0 +1,17 @@
+/* Service page layer (preview). Type, color, cards, buttons, header, menu and footer come from the homepage's own style.css, site.css and services.css. */
+a.sp-card{display:block;text-decoration:none;color:inherit}
+a.sp-card .svc-t{transition:color .4s}
+a.sp-card:hover .svc-t{color:#f3dc9a}
+a.sp-card:focus-visible{outline:2px solid #d4ae5a;outline-offset:4px}
+.pg-filmw{padding-top:0}
+.sp-how,.sp-more{padding:clamp(80px,12vh,140px) var(--pad) 0}
+.sp-how .h2s,.sp-more .h2s{font-weight:500;font-size:clamp(40px,5.4vw,96px);line-height:.98;letter-spacing:-.035em}
+.sp-how .h2s .ml,.sp-more .h2s .ml{display:block}
+.sp-steps,.sp-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:clamp(14px,1.4vw,22px);margin-top:clamp(40px,7vh,80px)}
+.sp-grid{grid-template-columns:repeat(3,1fr)}
+@media (max-width:1200px){.sp-grid{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:860px){.sp-steps{grid-template-columns:1fr}}
+@media (max-width:700px){.sp-grid{grid-template-columns:1fr}.sp-how,.sp-more{padding-top:72px}}
+.sp-grid .svc,.sp-steps .svc{grid-column:auto}
+@media (min-width:1201px){.sp-grid .svc:last-child:nth-child(3n+1){grid-column:2}}
+@media (min-width:701px) and (max-width:1200px){.sp-grid .svc:last-child:nth-child(2n+1){grid-column:1/-1}}
