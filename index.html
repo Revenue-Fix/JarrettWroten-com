@@ -261,10 +261,13 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
 <script src="https://cdn.jsdelivr.net/npm/lenis@1.1.13/dist/lenis.min.js"></script>
 <script>/* tagline (Nov 2 2026): adds the site's .mask wipe once the line reaches the scroll point; the gold sweep follows scroll position */
 (function(){var t=document.getElementById('tagl');if(!t)return;var E=[].slice.call(t.querySelectorAll('em.gs'));
-function c(v){return v<0?0:v>1?1:v}var last=-1,on=0;
-function f(){var vh=innerHeight,b=t.getBoundingClientRect(),y=b.top;var p=(vh*.8-(y+b.height/2))/(vh*.5);if(p!==last){last=p;
+function c(v){return v<0?0:v>1?1:v}var last=-1,on=0,rd=0,cur=0,pt=0,L2=t.querySelectorAll('.ml>span')[1];
+/* line 2's sweep waits for line 2's wipe to finish, then follows scroll at no more than one full pass per 1.1s, so it never crosses a rising line and never snaps */
+function go(){rd=1}if(L2)L2.addEventListener('transitionend',function(ev){if(ev.target===L2&&ev.propertyName==='transform')go()});
+function f(ts){var vh=innerHeight,b=t.getBoundingClientRect(),y=b.top;var p=(vh*.8-(y+b.height/2))/(vh*.5);if(p!==last){last=p;
 if(!on&&p>=0){on=1;t.classList.add('in')}
-var w=c((p-.55)/.6);E.forEach(function(e,i){var x=i?c((p-.84)/.52):c(w*1.15);e.style.setProperty('--sx',(120-x*140).toFixed(2)+'%')})}
+var w=c((p-.55)/.6);E[0]&&E[0].style.setProperty('--sx',(120-c(w*1.15)*140).toFixed(2)+'%')}
+if(E[1]){var tx=rd?c((p-.84)/.52):0,dt=pt?Math.min(ts-pt,50):16,st=dt/1100,d=tx-cur;if(d){cur+=d>st?st:d<-st?-st:d;E[1].style.setProperty('--sx',(120-cur*140).toFixed(2)+'%')}}pt=ts;
 requestAnimationFrame(f)}requestAnimationFrame(function(){t.classList.add('tg-on','mask');requestAnimationFrame(f)})})();</script>
 <script src="assets/home/site.js?v=touch1"></script>
 </body>
