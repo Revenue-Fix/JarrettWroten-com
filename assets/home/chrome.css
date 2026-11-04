@@ -1,0 +1,6 @@
+/* Shadow-root shim for assets/home/chrome.js: the homepage's :root tokens and base type on the shadow host, so style.css, site.css and page.css work unchanged inside it, cut off from the page's own stylesheets. */
+:host{all:initial;display:contents}
+:host([spacer]){display:block;height:76px}
+.jwc{--ink:#0b0b0a;--ink2:#141412;--bone:#eee8dd;--dim:rgba(238,232,221,.3);--mid:rgba(238,232,221,.64);--rule:rgba(238,232,221,.16);--sans:"General Sans",system-ui,sans-serif;--serif:"Boska",Georgia,serif;--ease:cubic-bezier(.16,1,.3,1);--io:cubic-bezier(.7,0,.3,1);--pad:clamp(20px,3.2vw,56px);--gap:clamp(14px,1.6vw,28px);--bg:#0b0b0a;--fg:#eee8dd;--fgm:rgba(238,232,221,.64);--card:#151513;--ln:rgba(238,232,221,.16);--bb:#eee8dd;--bf:#0b0b0a;--bh:#ffffff;--gold:#d4ae5a;--gold2:#f3dc9a;color:var(--fg);font-family:var(--sans);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-size:16px;line-height:normal;letter-spacing:normal;text-align:left}
+.jwc:not(.ok){visibility:hidden}
+.jwc a{color:inherit}
