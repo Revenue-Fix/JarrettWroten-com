@@ -1,6 +1,6 @@
 /* Subpage layer on top of the homepage's own style.css, site.css and foot-svc.css. Only page layout lives here; type, color, buttons, header, menu and footer come from the homepage files. */
 .bar{background:transparent}
-.bar .mark{text-decoration:none;min-height:44px;display:inline-flex;align-items:center}
+.bar .mark{text-decoration:none;min-height:44px;display:inline-block;line-height:44px}
 .bar .mbtn{display:inline-flex;align-items:center}
 .pg{padding:clamp(120px,18vh,190px) var(--pad) 0}
 .pg-k{font-size:15px;font-weight:500;color:var(--mid);margin-bottom:22px}
