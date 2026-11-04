@@ -72,7 +72,12 @@ const lio=new IntersectionObserver(es=>es.forEach(e=>{const v=e.target;if(e.isIn
 new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)ply(hv)})).observe(hv);
 hv.addEventListener('pause',()=>{if(!paused&&!document.hidden)setTimeout(()=>{if(hv.paused&&!paused)ply(hv)},60)});
 hv.addEventListener('stalled',()=>{if(!paused)ply(hv)});hv.addEventListener('suspend',()=>{if(!paused&&hv.paused)ply(hv)});
-setInterval(()=>{if(!paused&&!document.hidden&&(hv.paused||hv.ended))ply(hv)},1000);
+/* stuck guard: a hero that reports playing but has not advanced for 2 ticks, or sits at or near its end, is rewound to 0 and played again (QA, Nov 3 2026: frozen at currentTime==duration after a forced reload at 411) */
+let hLt=-1,hSt=0;
+setInterval(()=>{if(paused||document.hidden)return;if(hv.paused||hv.ended){hLt=-1;hSt=0;ply(hv);return}
+ const t=hv.currentTime,d=hv.duration,end=d>0&&isFinite(d)&&t>=d-.1;
+ if(Math.abs(t-hLt)>.01){hLt=t;hSt=0;return}
+ if((hv.readyState>=3||end)&&++hSt>=2){hLt=-1;hSt=0;if(!(hv.playbackRate>0))hv.playbackRate=1;try{hv.currentTime=0}catch(_){}ply(hv)}},1000);
 document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!paused)ply(hv)});
 // counter: Dylan's real figure (within 30 days)
 const num=$('#dpNum');let counted=false;
