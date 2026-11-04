@@ -69,3 +69,6 @@
 .pg-hero .pg-h em.gs{text-shadow:none;filter:drop-shadow(0 2px 14px rgba(0,0,0,.45))}
 .pg-hero+.cf{padding-top:clamp(90px,14vh,160px)}
 .pg-hero+.pv{padding-top:clamp(80px,12vh,140px)}
+
+/* LCP (Nov 3 2026): page hero reveal starts at .01 like the homepage hero (.hero .fade), so the same fade plays and the text counts as painted on first frame */
+.pg-hero .fade:not(.in){opacity:.01}
