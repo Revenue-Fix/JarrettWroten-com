@@ -67,7 +67,7 @@ img,video{display:block;max-width:100%}
 .say{padding-top:clamp(140px,24vh,280px);padding-bottom:clamp(120px,20vh,240px);row-gap:28px}
 .say-k{grid-column:1/4;font-weight:500;font-size:15px;color:var(--mid);padding-top:.9em}
 .big{grid-column:4/13;font-weight:500;font-size:clamp(32px,4.1vw,76px);line-height:1.05;letter-spacing:-.03em}
-.big .wd{display:inline-block;opacity:.14;transition:opacity .6s linear}.big .wd.lit{opacity:1}
+.big .wd{display:inline-block;opacity:.4;transition:opacity .6s linear}.big .wd.lit{opacity:1}
 .h2{font-weight:500;font-size:clamp(36px,4.6vw,84px);line-height:.96;letter-spacing:-.032em}
 
 /* work: horizontal track */
