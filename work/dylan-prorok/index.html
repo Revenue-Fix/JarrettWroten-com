@@ -50,7 +50,7 @@
     .dylan-principle p{max-width:34rem;margin:0;font-size:1.08rem;line-height:1.68;color:rgba(17,12,9,.7)}
     .dylan-status{background:#130c09}
     .dylan-status .case-copy{margin-top:2.4rem}
-    @media(max-width:800px){.dylan-hero .case-hero-media{display:none}.dylan-mobile-portrait{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;filter:saturate(.72) contrast(1.08)}.dylan-flow{display:block}.dylan-flow-media{min-height:76svh}.dylan-flow-media video{display:none}.dylan-flow-copy{padding-top:5rem;padding-bottom:5rem}.dylan-principle{grid-template-columns:1fr;gap:1rem}}
+    @media(max-width:800px){.dylan-hero .case-hero-media{object-fit:cover;object-position:50% 30%}.dylan-mobile-portrait{display:block;position:absolute;inset:0;width:100%;height:100%;object-fit:contain;object-position:center;filter:saturate(.72) contrast(1.08)}.dylan-flow{display:block}.dylan-flow-media{min-height:76svh}.dylan-flow-copy{padding-top:5rem;padding-bottom:5rem}.dylan-principle{grid-template-columns:1fr;gap:1rem}}
   </style>
   <link rel="stylesheet" href="/assets/accessibility.css?v=20261017-type2">
   <script src="/assets/accessibility.js?v=titlecase-20261007" defer></script>
@@ -156,5 +156,13 @@
 
   <footer class="case-footer"><span>Jarrett Wroten Web Design · Las Vegas · <a href="tel:+17254337775">(725) 433-7775</a> · <a href="/about/">About</a></span></footer>
 <script src="/assets/home/chrome.js?v=1" defer></script>
+<script>(function(){var root=document.documentElement,vs=[].slice.call(document.querySelectorAll("video"));
+function on(){return root.getAttribute("data-case-motion")!=="off"}
+function vis(v){var r=v.getBoundingClientRect();return r.width>0&&r.height>0&&r.bottom>0&&r.top<innerHeight}
+function ply(v,n){if(!on()||!v.getAttribute("src")||!vis(v)||!v.paused||v.ended)return;v.muted=true;v.defaultMuted=true;v.playsInline=true;v.setAttribute("playsinline","");v.setAttribute("autoplay","");v.loop=true;var p=v.play();if(p&&p.catch)p.catch(function(){if((n||0)<3)setTimeout(function(){ply(v,(n||0)+1)},400)})}
+function all(){vs.forEach(function(v){ply(v,0)})}
+["pointerdown","keydown","wheel","scroll","touchstart"].forEach(function(e){addEventListener(e,all,{passive:true,once:true})});
+vs.forEach(function(v){v.addEventListener("loadeddata",function(){ply(v,0)})});
+setInterval(all,1000)})();</script>
 </body>
 </html>
