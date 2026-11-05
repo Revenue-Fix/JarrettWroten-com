@@ -98,6 +98,38 @@
 </style><style id="fcb1">.fcb-h{grid-column:1/-1;font-weight:600;font-size:clamp(30px,3.4vw,52px);letter-spacing:-.025em;line-height:1.1;margin:0 0 clamp(18px,3vh,34px);color:var(--fg)}.fcb-h .ml{display:block}.work-top .fcb-h{margin-bottom:clamp(10px,2vh,22px)}</style>
 <style id="nxt1">.end-t .end-price.end-price2{margin-top:8px}.svc-list-h.nxt-h{margin:0 var(--pad) clamp(28px,5vh,60px)}</style>
 <style id="scr1">.fcb-h,.svc-list-h.nxt-h{font-family:'Pinyon Script',cursive;font-weight:400;letter-spacing:0;font-size:clamp(44px,4.8vw,76px);line-height:1.2}.fcb-h .ml,.nxt-h .ml{padding:.08em .2em .22em .04em;margin:-.08em -.2em -.22em -.04em}.fcb-h .ml>span,.nxt-h .ml>span{padding:0 .12em 0 0;background:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}</style>
+<style id="roi1">
+.end-t .roi.fade{max-width:980px;margin:clamp(56px,9vh,110px) auto 0;text-align:left}
+.roi-h{text-align:center;margin-bottom:clamp(22px,4vh,40px)}
+.roi-in{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:clamp(14px,2vw,24px);align-items:end}
+.roi-f{display:flex;flex-direction:column;gap:10px;border:0;padding:0;margin:0;min-width:0}
+.roi-l{font-size:13.5px;font-weight:600;letter-spacing:.01em;color:var(--fgm)}
+.roi-x{display:flex;align-items:center;gap:8px;height:58px;padding:0 18px;border:1px solid rgba(238,232,221,.2);border-radius:999px;background:rgba(238,232,221,.04);transition:border-color .4s var(--ease),box-shadow .4s var(--ease)}
+.roi-x:focus-within{border-color:var(--gold);box-shadow:0 0 0 4px rgba(212,174,90,.14)}
+.roi-x i{font-style:normal;color:var(--gold);font-size:20px}
+.roi-x input{flex:1;min-width:0;width:100%;background:none;border:0;outline:0;color:#eee8dd;font:600 20px/1 var(--sans);letter-spacing:-.01em}
+.roi-st{padding:0 6px;justify-content:space-between}
+.roi-st input{text-align:center}
+.roi-b{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid rgba(212,174,90,.5);background:none;color:var(--gold);font:500 22px/1 var(--sans);cursor:pointer;transition:background .3s var(--ease)}
+.roi-b:hover{background:rgba(212,174,90,.12)}
+.roi-p .roi-l{float:left;width:100%;padding:0;margin:0 0 10px}.roi-p .roi-pk{clear:both}
+.roi-pk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.roi-p{display:block}
+.roi-pk label{position:relative;cursor:pointer}
+.roi-pk input{position:absolute;opacity:0;pointer-events:none}
+.roi-pk span{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;height:58px;padding:0 8px;border:1px solid rgba(238,232,221,.2);border-radius:999px;font-weight:600;font-size:15px;color:#eee8dd;text-align:center;white-space:nowrap;transition:background .4s var(--ease),border-color .4s var(--ease),color .4s var(--ease)}
+.roi-pk b{font-weight:500;font-size:11.5px;color:var(--fgm);transition:color .4s var(--ease)}
+.roi-pk input:checked+span{background:var(--gold);border-color:var(--gold);color:#14110c}
+.roi-pk input:checked+span b{color:#3a2f1a}
+.roi-pk input:focus-visible+span{box-shadow:0 0 0 4px rgba(212,174,90,.3)}
+.roi-out{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:clamp(14px,2vw,24px);margin-top:clamp(22px,4vh,36px);padding:clamp(20px,3vw,32px);border:1px solid rgba(212,174,90,.45);border-radius:14px;background:#14120e}
+.roi-o{display:flex;flex-direction:column;gap:6px;min-width:0}
+.roi-o b{font-weight:600;font-size:clamp(28px,2.6vw,40px);letter-spacing:-.03em;color:#eee8dd;font-variant-numeric:tabular-nums;white-space:nowrap}
+.roi-big b{font-size:clamp(40px,4vw,64px);line-height:1}
+.roi-big b em{font-weight:400;padding-right:.08em}
+.roi-pay{margin-top:18px;text-align:center;font-size:clamp(15px,1.1vw,18px);color:var(--fgm)}
+@media (max-width:860px){.roi-in{grid-template-columns:1fr 1fr}.roi-p{grid-column:1/-1;order:-1}.roi-out{grid-template-columns:1fr 1fr}.roi-big{grid-column:1/-1;order:-1;align-items:center}.roi-o{align-items:center;text-align:center}}
+@media (max-width:560px){.roi-in{grid-template-columns:1fr}.roi-pk span{font-size:min(15px,calc((100vw - 56px) / 22));padding:0 4px}.roi-pk b{font-size:min(11.5px,calc((100vw - 56px) / 29))}.roi-o b{font-size:min(28px,calc((100vw - 80px) / 8.4))}.roi-big b{font-size:min(56px,calc((100vw - 60px) / 5.2))}}
+</style>
 </head>
 <body>
 <div class="intro" id="intro" aria-hidden="true">
@@ -345,6 +377,26 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
     <div class="fade end-a"><a class="btn btn-lg" href="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2YdXyVF5uIUo74Fv4SrprKAVyqtont8zyMcfribjk4uwAJCGMvckaErguyS5pJ23xRft13Ebzb" target="_blank" rel="noopener">Book My Free Found, Chosen, Booked Consultation Now</a><a class="end-tel" href="tel:+17254337775">Or Call (725) 433-7775</a></div>
     <p class="end-price fade">Get Booked Starting at $397/Month</p>
     <p class="end-price end-price2 fade">SEO, AI Search Visibility, Google My Business Optimization from $750/Month</p>
+    <div class="roi fade" id="roi" aria-labelledby="roiTitle">
+      <h3 class="fcb-h roi-h mask" id="roiTitle"><span class="ml"><span>Your ROI</span></span></h3>
+      <div class="roi-in">
+        <label class="roi-f"><span class="roi-l">Average Customer Value</span><span class="roi-x"><i aria-hidden="true">$</i><input id="roiV" type="text" inputmode="numeric" autocomplete="off" value="1,500" aria-label="Average customer value in dollars"></span></label>
+        <fieldset class="roi-f roi-p"><legend class="roi-l">Package</legend>
+          <div class="roi-pk" role="radiogroup">
+            <label><input type="radio" name="roiP" value="750"><span>Get Found<b>$750/Month</b></span></label>
+            <label><input type="radio" name="roiP" value="397"><span>Get Booked<b>$397/Month</b></span></label>
+            <label><input type="radio" name="roiP" value="1147" checked><span>Both<b>$1,147/Month</b></span></label>
+          </div>
+        </fieldset>
+        <label class="roi-f"><span class="roi-l">New Or Saved Customers Per Month</span><span class="roi-x roi-st"><button type="button" class="roi-b" data-d="-1" aria-label="One fewer">&minus;</button><input id="roiN" type="text" inputmode="numeric" autocomplete="off" value="3" aria-label="New or saved customers per month"><button type="button" class="roi-b" data-d="1" aria-label="One more">+</button></span></label>
+      </div>
+      <div class="roi-out" aria-live="polite">
+        <div class="roi-o"><span class="roi-l">New Revenue Per Month</span><b id="roiR">$4,500</b></div>
+        <div class="roi-o"><span class="roi-l">Your Investment</span><b id="roiC">$1,147</b></div>
+        <div class="roi-o roi-big"><span class="roi-l">Your ROI</span><b><em class="gs" id="roiP">292%</em></b></div>
+      </div>
+      <p class="roi-pay" id="roiPay">One customer a month covers it.</p>
+    </div>
   </div>
 </section>
 </main>
@@ -396,5 +448,21 @@ function run(){if(P()){final();running=false;return}running=true;clear();const c
  at(12500,()=>{d.classList.add('s-out');at(600,()=>{i=(i+1)%T.length;run()})})}
 new IntersectionObserver(es=>{const e=es[0];if(e.isIntersecting){if(!running){seen=true;run()}}else if(running){final();running=false}},{threshold:.25}).observe(d);
 const pp=document.getElementById('pp');if(pp)pp.addEventListener('click',()=>{if(P()){final();running=false}else if(seen){const r=d.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)run()}});
-final();})();</script></body>
+final();})();</script><script>/* ROI calculator (Nov 5 2026) */
+(function(){const r=document.getElementById('roi');if(!r)return;
+const V=document.getElementById('roiV'),N=document.getElementById('roiN'),oR=document.getElementById('roiR'),oC=document.getElementById('roiC'),oP=document.getElementById('roiP'),pay=document.getElementById('roiPay');
+const num=s=>{const n=parseInt(String(s).replace(/[^0-9]/g,''),10);return isNaN(n)?0:n},fm=n=>'$'+Math.round(n).toLocaleString('en-US'),W=['Zero','One','Two','Three','Four','Five','Six','Seven','Eight','Nine','Ten'];
+let cur={r:0,c:0,p:0},raf=0;
+function tween(to){cancelAnimationFrame(raf);const from={...cur},t0=performance.now(),D=700;
+ (function step(t){const k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,4);cur={r:from.r+(to.r-from.r)*e,c:from.c+(to.c-from.c)*e,p:from.p+(to.p-from.p)*e};
+ oR.textContent=fm(cur.r);oC.textContent=fm(cur.c);oP.textContent=Math.round(cur.p).toLocaleString('en-US')+'%';if(k<1)raf=requestAnimationFrame(step)})(t0)}
+function calc(){const v=num(V.value),n=num(N.value),c=num((r.querySelector('input[name=roiP]:checked')||{}).value);const rev=v*n,roi=c?(rev-c)/c*100:0;
+ tween({r:rev,c:c,p:roi});
+ if(v>0){const k=Math.ceil(c/v);pay.textContent=(k<=10?W[k]:k)+(k===1?' customer':' customers')+' a month covers it.'}else pay.textContent='Enter your average customer value.'}
+function fmtV(){const p=V.selectionStart,len=V.value.length,n=num(V.value);V.value=n?n.toLocaleString('en-US'):'';const d=V.value.length-len;try{V.setSelectionRange(Math.max(0,p+d),Math.max(0,p+d))}catch(e){}}
+V.addEventListener('input',()=>{fmtV();calc()});N.addEventListener('input',()=>{N.value=String(Math.min(999,num(N.value))||'');calc()});
+r.querySelectorAll('input[name=roiP]').forEach(i=>i.addEventListener('change',calc));
+r.querySelectorAll('.roi-b').forEach(b=>b.addEventListener('click',()=>{N.value=Math.max(0,Math.min(999,num(N.value)+ +b.dataset.d));calc()}));
+let done=false;new IntersectionObserver(es=>{if(es[0].isIntersecting&&!done){done=true;calc()}},{threshold:.3}).observe(r);
+oR.textContent='$0';oC.textContent='$0';oP.textContent='0%';})();</script></body>
 </html>
