@@ -1,3 +1,4 @@
+@font-face{font-family:"Playfair Display";font-style:italic;font-weight:500;font-display:swap;src:url(fonts/playfair-i500-latin.woff2?v=1) format("woff2")}
 /* preview-home: sections added for the rebuild. Hero and shared styles come from assets/home/style.css untouched. */
 :root{--gold:#d4ae5a;--gold2:#f3dc9a}
 .pv-flag{position:fixed;left:12px;bottom:12px;z-index:120;pointer-events:none;font:600 12px/1 var(--sans);letter-spacing:0;background:#d4ae5a;color:#0b0b0a;padding:7px 10px;border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.35)}
@@ -256,7 +257,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 /* header wordmark: Jarrett Wroten Web Design on one line, same fonts and gold as the opening lockup; scales down only where Pause + Menu need the room */
 .bar .mark,.menu-top .mark{white-space:nowrap;font-weight:500;letter-spacing:-.035em;font-size:min(18px,calc((100vw - 228px) / 11.8))}
 .mark .wm-w{font-family:var(--serif);font-style:italic;font-weight:400;letter-spacing:-.01em}
-.mark .wm-d{font-family:'Pinyon Script',cursive;font-weight:400;letter-spacing:0;font-size:1.2em;padding:.1em .15em .3em 0;background:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.mark .wm-d{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;letter-spacing:-.01em;font-size:1em;padding:.1em .12em .2em 0;background:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
 /* the header now stays visible: keep the Services heading clear of it on the skip-link jump, and keep long menu names off their numerals */
 #services{scroll-margin-top:40px}
 .menu-l a{gap:14px}
