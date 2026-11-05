@@ -207,7 +207,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 .pp:hover{background:#eee8dd!important;color:#0b0b0a!important}
 
 /* phone: one-line docked/hero button so it never covers half the screen */
-@media (max-width:700px){.btn.dock-btn{font-size:13.2px!important;letter-spacing:0!important;white-space:nowrap!important;padding-left:14px!important;padding-right:14px!important;min-height:46px!important}}
+@media (max-width:700px){.btn.dock-btn{font-size:min(13.2px,calc((100vw - 68px) / 27.4))!important;letter-spacing:0!important;white-space:nowrap!important;padding-left:14px!important;padding-right:14px!important;min-height:46px!important}}
 /* Split-word emphasis (.words): WebKit/Safari does not paint a parent's background-clip:text through inline-block word spans, so "Gets The Click." was transparent (invisible) on iPad/iPhone. Paint the gold gradient on each word span instead. */
 .words .gs{background-image:none}
 .words .gs .wd{background-image:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding:.04em .08em .1em 0;margin:-.04em -.08em -.1em 0}
@@ -248,7 +248,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 /* phones: .how card III keeps top:100px while position:relative, so it hangs 54px into .end */
 @media (max-width:700px){.end-hd{margin-top:68px}}
 /* docked hero CTA text shrinks on small phones so the longer label stays on one line (Jarrett Nov 3 2026) */
-@media (max-width:399px){.btn.dock-btn.glide{font-size:calc((100vw - 68px) / 25.2)!important}}
+@media (max-width:399px){.btn.dock-btn.glide{font-size:calc((100vw - 68px) / 27.4)!important}}
 /* work strip swipe hint (phones only, where the track is a native swipe; Jarrett Nov 3 2026): sits in the gap left of the counter, out of flow so the row height never changes */
 .w-swipe{display:none}
 @media (max-width:700px){.work-meta{position:relative}.w-swipe{display:flex;flex-direction:column;align-items:flex-end;position:absolute;right:calc(100% + 12px);bottom:.12em;font-size:11px;line-height:1.25;font-weight:500;letter-spacing:.02em;color:rgba(238,232,221,.62);white-space:nowrap;pointer-events:none}}
