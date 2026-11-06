@@ -2,7 +2,12 @@
 (()=>{
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],root=document.documentElement;
 const P=()=>root.classList.contains('paused');
-$$('.words').forEach(big=>{(function split(n){[...n.childNodes].forEach(c=>{if(c.nodeType===3){const f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(p=>{if(!p)return;if(/^\s+$/.test(p))f.append(p);else{const s=document.createElement('span');s.className='wd';s.textContent=p;f.append(s)}});c.replaceWith(f)}else if(c.nodeType===1)split(c)})})(big)});
+$$('.words').forEach(big=>{(function split(n){[...n.childNodes].forEach(c=>{if(c.nodeType===3){const f=document.createDocumentFragment();c.textContent.split(/(\s+)/).forEach(p=>{if(!p)return;if(/^\s+$/.test(p))f.append(p);else{const s=document.createElement('span');s.className='wd';s.textContent=p;f.append(s)}});c.replaceWith(f)}else if(c.nodeType===1)split(c)})})(big);
+ const wds=[...big.querySelectorAll('.wd')];
+ function light(){const vh=innerHeight,b=big.getBoundingClientRect();const lz0=vh*.9,lz1=Math.min(vh*.45,vh*.7-b.height);const prog=Math.min(1,Math.max(0,(lz0-b.top)/Math.max(1,lz0-lz1)));const n=Math.round(prog*wds.length);wds.forEach((w,i)=>w.classList.toggle('lit',i<n||P()))}
+ addEventListener('scroll',light,{passive:true});addEventListener('resize',light);light();
+ const pp=document.getElementById('pp');if(pp)pp.addEventListener('click',()=>requestAnimationFrame(light));
+});
 function ply(v,n){if(!v||P()||v.__done)return;v.muted=true;v.defaultMuted=true;v.setAttribute('muted','');v.setAttribute('playsinline','');v.playsInline=true;
  let pr;try{pr=v.play()}catch(_){}
  if(pr&&pr.catch)pr.catch(()=>{n=n||0;if(n<4)setTimeout(()=>ply(v,n+1),400*(n+1))})}
