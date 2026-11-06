@@ -15,3 +15,16 @@ a.sp-card:focus-visible{outline:2px solid #d4ae5a;outline-offset:4px}
 .sp-grid .svc,.sp-steps .svc{grid-column:auto}
 @media (min-width:1201px){.sp-grid .svc:last-child:nth-child(3n+1){grid-column:2}}
 @media (min-width:701px) and (max-width:1200px){.sp-grid .svc:last-child:nth-child(2n+1){grid-column:1/-1}}
+
+
+/* fcb-h: match homepage Get Found / Get Chosen / Get Booked treatment */
+@font-face{font-family:"Playfair Display";font-style:italic;font-weight:500;font-display:block;src:url(/assets/home/fonts/playfair-i500-latin.woff2?v=1) format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
+.fcb-h{grid-column:1/-1;font-weight:600;font-size:clamp(30px,3.4vw,52px);letter-spacing:-.025em;line-height:1.1;margin:0 0 clamp(18px,3vh,34px);color:var(--fg)}
+.fcb-h .ml{display:block}
+.work-top .fcb-h{margin-bottom:clamp(10px,2vh,22px)}
+.fcb-h,.svc-list-h.nxt-h{font-family:'Pinyon Script',cursive;font-weight:400;letter-spacing:0;font-size:clamp(44px,4.8vw,76px);line-height:1.2}
+.fcb-h .ml,.nxt-h .ml{padding:.08em .2em .22em .04em;margin:-.08em -.2em -.22em -.04em}
+.fcb-h .ml>span,.nxt-h .ml>span{padding:0 .12em 0 0;background:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
+.fcb-h:not(.roi-h),.svc-list-h.nxt-h{font-size:clamp(min(64px,calc((100vw - 44px)/4.3)),10.5vw,168px);line-height:1.12}
+.fcb-h,.svc-list-h.nxt-h{font-family:'Playfair Display',serif;font-style:italic;font-weight:500;letter-spacing:-.01em}
+.fcb-h:not(.roi-h),.svc-list-h.nxt-h{font-size:clamp(min(64px,calc((100vw - 44px)/5.3)),10.5vw,168px)}
