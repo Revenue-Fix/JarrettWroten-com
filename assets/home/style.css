@@ -82,7 +82,8 @@ img,video{display:block;max-width:100%}
 .pc.on .pc-f{transform:scale(1)}
 .pc-f video{position:absolute;inset:-4%;width:108%;height:108%;object-fit:cover;transition:transform 1.4s var(--ease)}
 .pc:hover .pc-f video{transform:scale(1.03)}
-.pc-i{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:baseline;padding-top:16px;opacity:.35;transition:opacity .8s var(--ease)}
+.pc-i{display:grid;grid-template-columns:auto 1fr auto;gap:18px;align-items:baseline;padding-top:16px;opacity:.55;transition:opacity .8s var(--ease)}
+.pc:not(.on) .pc-c{color:var(--fg)}
 .pc.on .pc-i{opacity:1}
 .pc-n{font-family:var(--serif);font-style:italic;font-size:22px}
 .pc-h{font-weight:500;font-size:clamp(22px,2vw,34px);letter-spacing:-.025em;line-height:1}
