@@ -3,20 +3,20 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-  <title>Get Your Free AI Search Visibility + SEO Audit | Jarrett Wroten Web Design</title>
+  <title>Book Your Free Found, Chosen, Booked Consultation | Jarrett Wroten Web Design</title>
   <link rel="icon" href="/favicon.ico" sizes="any">
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-  <meta name="description" content="Book a 15-minute Google Meet. Add your current website, tell Jarrett what it needs to do better, and get a free concept.">
+  <meta name="description" content="Book your free Found, Chosen, Booked Consultation. A 15-minute Google Meet where Jarrett shows where you show up on Google and in AI answers today, and what it takes to show up first.">
   <meta name="robots" content="noindex,follow">
   <link rel="canonical" href="https://jarrettwroten.com/book/">
-  <meta property="og:title" content="Get Your Free AI Search Visibility + SEO Audit | Jarrett Wroten Web Design">
-  <meta property="og:description" content="Add your current website and get a free concept for the call.">
+  <meta property="og:title" content="Book Your Free Found, Chosen, Booked Consultation | Jarrett Wroten Web Design">
+  <meta property="og:description" content="A 15-minute Google Meet. See where you show up on Google and in AI answers today, and what it takes to show up first.">
   <meta property="og:url" content="https://jarrettwroten.com/book/">
   <meta property="og:image" content="https://jarrettwroten.com/assets/golden-arrival/frames/ga-360.webp">
   <meta name="twitter:card" content="summary_large_image">
-  <meta name="twitter:title" content="Get Your Free AI Search Visibility + SEO Audit | Jarrett Wroten Web Design">
-  <meta name="twitter:description" content="Add your current website and get a free concept for the call.">
+  <meta name="twitter:title" content="Book Your Free Found, Chosen, Booked Consultation | Jarrett Wroten Web Design">
+  <meta name="twitter:description" content="A 15-minute Google Meet. See where you show up on Google and in AI answers today, and what it takes to show up first.">
   <meta name="twitter:image" content="https://jarrettwroten.com/assets/golden-arrival/frames/ga-360.webp">
   <link rel="preload" as="image" href="/assets/golden-arrival/frames/ga-360.webp" fetchpriority="high">
   <style>
@@ -84,7 +84,7 @@
     }
     .booking-header{
       position:absolute;
-      z-index:2;
+      z-index:3;
       top:0;
       left:0;
       right:0;
@@ -207,11 +207,21 @@
     @media (max-width:360px){
       .booking-intro .booking-copy{padding-top:9rem}
     }
+    .booking-portrait{animation:bkDrift 26s linear infinite alternate;transform-origin:30% 45%;will-change:transform}
+    @keyframes bkDrift{from{transform:scale(1) translate3d(0,0,0)}to{transform:scale(1.08) translate3d(-1.2%,-.8%,0)}}
+    html.bk-paused .booking-portrait{animation-play-state:paused}
+    .bk-pp{display:inline-flex;align-items:center;gap:.45rem;min-height:44px;padding:0 13px;border:1px solid rgba(238,232,221,.45);border-radius:999px;background:#0b0b0a;color:#eee8dd;font:600 .82rem/1 var(--text);letter-spacing:.04em;cursor:pointer}
+    .bk-pp:hover{background:#eee8dd;color:#0b0b0a}
+    .bk-pp:focus-visible{outline:2px solid var(--cyan);outline-offset:4px}
+    .bk-pp-i{display:inline-block;width:8px;height:10px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+    html.bk-paused .bk-pp-i{width:0;height:0;border-left:9px solid currentColor;border-right:0;border-top:5px solid transparent;border-bottom:5px solid transparent}
   </style>
   <link rel="stylesheet" href="/assets/accessibility.css?v=20261017-type2">
   <script src="/assets/accessibility.js?v=titlecase-20261007" defer></script>
 <!-- Google Analytics 4: loads after first interaction or idle, same pattern as the existing Clarity tag -->
 <script>(function(w,d){var ID="G-T4DYFPXT70",done=0,ev=["scroll","pointerdown","keydown"],o={passive:true,capture:true};w.dataLayer=w.dataLayer||[];w.gtag=function(){w.dataLayer.push(arguments)};function go(){if(done)return;done=1;ev.forEach(function(e){w.removeEventListener(e,go,o)});var s=d.createElement("script");s.async=1;s.src="https://www.googletagmanager.com/gtag/js?id="+ID;d.head.appendChild(s);gtag("js",new Date());gtag("config",ID)}ev.forEach(function(e){w.addEventListener(e,go,o)});function idle(){w.requestIdleCallback?w.requestIdleCallback(go,{timeout:2500}):setTimeout(go,2500)}d.readyState==="complete"?setTimeout(idle,4000):w.addEventListener("load",function(){setTimeout(idle,4000)},{once:true})})(window,document);</script>
+<script id="jw-lead-events">(function(d,w){var B=/calendar\.google\.com|calendar\.app\.google|^\/book\/?(#|$)|jarrettwroten\.com\/book\//,S=null,K="jwLeadEvent";try{S=w.sessionStorage}catch(x){}function send(n,p,cb){if(w.gtag){if(cb)p.event_callback=cb;w.gtag("event",n,p)}if(w.clarity)w.clarity("event",n)}try{var q=S&&S.getItem(K);if(q){S.removeItem(K);q=JSON.parse(q);if(q&&q.n){var k=0,c=function(){var L=w.dataLayer||[],r=0;for(var i=0;i<L.length;i++)if(L[i]&&L[i][0]==="config")r=1;if(r)send(q.n,q.p||{});else if(++k<100)setTimeout(c,300)};c()}}}catch(x){}d.addEventListener("click",function(e){var a=e.target&&e.target.closest?e.target.closest("a[href]"):null;if(!a)return;var h=a.getAttribute("href")||"",m=h.indexOf("mailto:")===0,n=B.test(h)?"book_call_click":h.indexOf("tel:")===0?"phone_click":m?(/^\/privacy\//.test(location.pathname)?"privacy_email_click":"email_click"):"";if(!n)return;var p={link_text:(a.textContent||"").replace(/\s+/g," ").trim().slice(0,80),page_path:location.pathname},t=a.getAttribute("target"),plain=(!t||t==="_self")&&!e.defaultPrevented&&e.button===0&&!e.metaKey&&!e.ctrlKey&&!e.shiftKey&&!e.altKey;if(plain&&!m&&h.indexOf("tel:")!==0&&a.origin===location.origin){try{S.setItem(K,JSON.stringify({n:n,p:p}));return}catch(x){}}if(plain&&m&&w.gtag){e.preventDefault();var u=a.href,g=0,go=function(){if(!g){g=1;location.href=u}};send(n,p,go);setTimeout(go,900);return}send(n,p)},true);var f=0;w.addEventListener("blur",function(){setTimeout(function(){var i=d.activeElement;if(!f&&i&&i.tagName==="IFRAME"&&/calendar\.google\.com/.test(i.src||"")){f=1;send("book_embed_click",{page_path:location.pathname})}},0)})})(document,window);</script>
+
 <script type="text/javascript">(function(w,d){w.clarity=w.clarity||function(){(w.clarity.q=w.clarity.q||[]).push(arguments)};var done=0,ev=["scroll","pointerdown","keydown"],o={passive:true,capture:true};function go(){if(done)return;done=1;ev.forEach(function(e){w.removeEventListener(e,go,o)});var t=d.createElement("script");t.async=1;t.src="https://www.clarity.ms/tag/yvve5xueah";var y=d.getElementsByTagName("script")[0];y.parentNode.insertBefore(t,y)}ev.forEach(function(e){w.addEventListener(e,go,o)});function idle(){w.requestIdleCallback?w.requestIdleCallback(go,{timeout:2500}):setTimeout(go,2500)}d.readyState==="complete"?setTimeout(idle,4000):w.addEventListener("load",function(){setTimeout(idle,4000)},{once:true})})(window,document);clarity("set","site","jarrettwroten");</script>
 <!-- Same type as the home page: General Sans + Boska -->
 <link rel="preconnect" href="https://api.fontshare.com"><link rel="preconnect" href="https://cdn.fontshare.com" crossorigin>
@@ -227,10 +237,11 @@
       <div class="booking-wash" aria-hidden="true"></div>
       <header class="booking-header">
         <a class="wordmark" href="../" aria-label="Jarrett Wroten home">Jarrett Wroten</a>
+        <button class="bk-pp" id="bk-pp" type="button" aria-label="Pause motion"><span class="bk-pp-i" aria-hidden="true"></span><span class="bk-pp-t">Pause</span></button>
       </header>
       <div class="booking-copy">
-        <h1 id="booking-title">Pick A Time. I’ll Bring Your Free Concept.</h1>
-        <p class="booking-lead">Add your current website and tell me what you want it to do better. I’ll build your concept before our call.</p>
+        <h1 id="booking-title">Pick A Time.</h1>
+        <p class="booking-lead">Your Free Found, Chosen, Booked Consultation is a 15-minute call on Google Meet. I’ll show you where you show up on Google and in AI answers today, and what it takes to show up first.</p>
         <p class="booking-facts">15 Minutes · Google Meet · Pacific Time</p>
         <p class="booking-note"><a href="https://calendar.app.google/rTkdNoWpm6iRrXhB7" target="_blank" rel="noopener noreferrer">Open In Google Calendar</a> · <a href="../privacy/">Privacy</a></p>
         <p class="booking-note booking-email">Prefer email? <a href="mailto:Jarrett@JarrettWroten.com?subject=Take%20a%20look%20at%20my%20site&amp;body=My%20site%3A%0A%0AWhat%20I%20want%20more%20of%3A">Send Me Your Site.</a></p>
@@ -241,11 +252,12 @@
       <h2 id="calendar-title">Book Your Appointment</h2>
       <iframe
         class="booking-frame"
-        title="Get Your Free AI Search Visibility + SEO Audit"
+        title="Book Your Free Found, Chosen, Booked Consultation"
         src="https://calendar.google.com/calendar/appointments/schedules/AcZssZ2YdXyVF5uIUo74Fv4SrprKAVyqtont8zyMcfribjk4uwAJCGMvckaErguyS5pJ23xRft13Ebzb?gv=true"
         loading="eager"
         referrerpolicy="strict-origin-when-cross-origin"></iframe>
     </section>
   </main>
+  <script>(function(){var b=document.getElementById('bk-pp');if(!b)return;var h=document.documentElement,t=b.querySelector('.bk-pp-t');b.addEventListener('click',function(){var p=h.classList.toggle('bk-paused');b.setAttribute('aria-label',p?'Play motion':'Pause motion');t.textContent=p?'Play':'Pause'})})();</script>
 </body>
 </html>

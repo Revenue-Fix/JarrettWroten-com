@@ -1,5 +1,5 @@
 @font-face{font-family:"Playfair Display";font-style:italic;font-weight:500;font-display:swap;src:url(fonts/playfair-i500-latin.woff2?v=1) format("woff2")}
-/* preview-home: sections added for the rebuild. Hero and shared styles come from assets/home/style.css untouched. */
+/* Homepage sections. Hero and shared styles come from assets/home/style.css. */
 :root{--gold:#d4ae5a;--gold2:#f3dc9a}
 .pv-flag{position:fixed;left:12px;bottom:12px;z-index:120;pointer-events:none;font:600 12px/1 var(--sans);letter-spacing:0;background:#d4ae5a;color:#0b0b0a;padding:7px 10px;border-radius:999px;box-shadow:0 4px 18px rgba(0,0,0,.35)}
 .pv-flag span{font-weight:500;margin-left:6px;opacity:.8}
@@ -114,7 +114,7 @@
 .sv-demo.s-out .sv-chips{opacity:0!important;transition:opacity .45s linear}
 .sv-sk-a{margin-top:26px}
 
-/* Light-section theme: Aubergine (Jarrett picked Oct 22). Overrides html.light from assets/home/style.css on /preview-home/ only. */
+/* Light-section theme: Aubergine (Jarrett picked Oct 22). Overrides html.light from assets/home/style.css. */
 /* shared for dark options (A,B): light sections become a deep tone; nav pill + buttons go gold */
 html.light .bar .mark{color:var(--fg);text-shadow:none}
 html.light .pp,html.light .bar .mbtn{border-color:rgba(238,232,221,.6);background:rgba(11,11,10,.38);color:var(--fg)}
@@ -196,7 +196,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 .dp-film img.vfb,.card-f img.vfb,.pc-f img.vfb{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;display:block;pointer-events:none}
 .vfb{-webkit-user-drag:none}
 
-/* footage plays untouched: no scrim, tint, blur or filter over any video (the shared style.css draws a gradient over the hero; this preview removes it) */
+/* footage plays untouched: no scrim, tint, blur or filter over any video (the shared style.css draws a gradient over the hero; this removes it) */
 .hero::after{content:none!important;display:none!important;background:none!important}
 /* legibility comes from the type itself: a tight shadow hugging the letterforms, not a darkened frame */
 .hero-c{text-shadow:0 0 1px rgba(0,0,0,.65),0 1px 2px rgba(0,0,0,.55),0 2px 8px rgba(0,0,0,.45),0 4px 22px rgba(0,0,0,.3)!important}
