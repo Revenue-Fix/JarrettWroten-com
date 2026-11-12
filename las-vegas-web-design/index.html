@@ -38,9 +38,9 @@
 <style>/* first screen motion: the homepage arrival film plays in the portrait and lands on the same frame as before, then a slow push-in keeps it alive (header Pause stops both) */
 .hero-portrait .lv-fw{overflow:hidden;aspect-ratio:4/5}
 .hero-portrait .lv-film{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;background:#0b0b0a;transform-origin:50% 34%;will-change:transform}
-.hero-portrait .lv-fw.held .lv-film{animation:lvPush 22s linear infinite alternate}
+.hero-portrait .lv-fw.held .lv-film,.hero-portrait .lv-fw.wait .lv-film{animation:lvPush 22s linear infinite alternate}
 @keyframes lvPush{from{transform:scale(1)}to{transform:scale(1.07)}}
-html.jwc-paused .hero-portrait .lv-fw.held .lv-film{animation-play-state:paused}
+html.jwc-paused .hero-portrait .lv-fw.held .lv-film,html.jwc-paused .hero-portrait .lv-fw.wait .lv-film{animation-play-state:paused}
 @media(max-width:900px){.hero-portrait .lv-fw{aspect-ratio:3/4}}
 @media(max-width:680px){.hero-portrait .lv-fw{aspect-ratio:4/3}}
 </style>
@@ -193,7 +193,7 @@ html.jwc-paused .hero-portrait .lv-fw.held .lv-film{animation-play-state:paused}
   </footer>
 <script src="/assets/home/chrome.js?v=1" defer></script>
 <script>(function(){var v=document.querySelector('.lv-film');if(!v)return;var w=v.parentNode;v.addEventListener('ended',function(){w.classList.add('held')});v.addEventListener('play',function(){if(v.currentTime<.5)w.classList.remove('held')});
-/* narrow screens: the film sits below the first screen, so the arrival starts when it scrolls into view */
-if(!window.matchMedia('(max-width:900px)').matches||!('IntersectionObserver' in window))return;v.removeAttribute('autoplay');v.pause();v.currentTime=0;var io=new IntersectionObserver(function(e){if(!e[0].isIntersecting)return;io.disconnect();if(!document.documentElement.classList.contains('jwc-paused')){var p=v.play();if(p&&p.catch)p.catch(function(){})}},{threshold:.6});io.observe(v)})();</script>
+/* narrow screens: the film sits below the first screen, so the first frame pushes in slowly and the arrival starts when it scrolls into view */
+if(!window.matchMedia('(max-width:900px)').matches||!('IntersectionObserver' in window))return;v.removeAttribute('autoplay');v.pause();v.currentTime=0;w.classList.add('wait');var io=new IntersectionObserver(function(e){if(!e[0].isIntersecting)return;io.disconnect();w.classList.remove('wait');if(!document.documentElement.classList.contains('jwc-paused')){var p=v.play();if(p&&p.catch)p.catch(function(){})}},{threshold:.6});io.observe(v)})();</script>
 </body>
 </html>
