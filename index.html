@@ -498,6 +498,7 @@ r.querySelectorAll('.roi-b').forEach(b=>b.addEventListener('click',()=>{N.value=
 let done=false;new IntersectionObserver(es=>{if(es[0].isIntersecting&&!done){done=true;calc()}},{threshold:.3}).observe(r);
 oR.textContent='$0';oC.textContent='$0';oP.textContent='0%';})();</script><script>/* inquiry form: sends to Jarrett's inbox; booking stays the main path */
 (function(){var d=document,f=d.getElementById('inqForm');if(!f)return;d.querySelectorAll('.inq-jump').forEach(function(a){a.addEventListener('click',function(e){var t=d.getElementById('inquiry');if(!t)return;e.preventDefault();var y=t.getBoundingClientRect().top+scrollY-96,L=window.__lenis;if(L&&L.scrollTo)L.scrollTo(y);else scrollTo({top:y,behavior:'smooth'})})});var st=d.getElementById('inqSt'),b=f.querySelector('button[type=submit]'),R=d.getElementById('inqReach');
+function vis(){var r=st.getBoundingClientRect(),m=innerHeight-24;if(r.bottom>m){var y=scrollY+r.bottom-m,L=window.__lenis;if(L&&L.scrollTo)L.scrollTo(y);else scrollTo({top:y,behavior:'smooth'})}}
 function okReach(v){v=v.trim();return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)||v.replace(/\D/g,'').length>=10}
 f.addEventListener('submit',function(ev){ev.preventDefault();st.className='inq-st';
  var bad=[];[].forEach.call(f.querySelectorAll('.inq-fl'),function(l){var i=l.querySelector('input,textarea'),v=i.value.trim(),ok=v.length>0&&(i!==R||okReach(v));l.classList.toggle('bad',!ok);if(!ok)bad.push(i)});
@@ -509,7 +510,7 @@ f.addEventListener('submit',function(ev){ev.preventDefault();st.className='inq-s
  .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
  .then(function(x){if(x.ok&&String(x.j.success)==='true'){f.reset();st.textContent='Got it. I will be in touch soon.'}else{throw 0}})
  .catch(function(){st.className='inq-st err';st.innerHTML='That did not send. Email me at <a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a> or call <a href="tel:+17254337775">(725) 433-7775</a>.'})
- .then(function(){b.disabled=false;b.textContent='Send My Message'})});
+ .then(function(){b.disabled=false;b.textContent='Send My Message';vis()})});
 [].forEach.call(f.querySelectorAll('input,textarea'),function(i){i.addEventListener('input',function(){i.closest('.inq-fl')&&i.closest('.inq-fl').classList.remove('bad');if(st.classList.contains('err')&&!f.querySelector('.inq-fl.bad')){st.className='inq-st';st.textContent=''}})});
 })();</script>
 </body>
