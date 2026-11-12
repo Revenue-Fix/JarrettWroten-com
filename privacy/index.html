@@ -42,6 +42,22 @@
     section>*{min-width:0}
     footer{display:flex;justify-content:space-between;gap:1rem;padding:2rem clamp(1.15rem,4vw,4rem);border-top:1px solid rgba(232,244,244,.12);font:500 .8rem/1.4 "General Sans",system-ui,-apple-system,"Segoe UI",sans-serif;color:rgba(232,244,244,.65)}
     @media(max-width:620px){header nav a:first-child{display:none}section{grid-template-columns:1fr;gap:.75rem}footer{flex-direction:column}}
+    /* first screen: the corridor film from the homepage, full bleed, type placed on the dark ceiling and walls */
+    .pv-hero{position:relative;min-height:100svh;display:flex;flex-direction:column;overflow:hidden;background:#040a0c;isolation:isolate}
+    .pv-film{position:absolute;inset:0;z-index:-1}
+    .pv-film video{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;animation:pvPush 24s linear infinite alternate;transform-origin:50% 46%;will-change:transform}
+    @keyframes pvPush{from{transform:scale(1.02)}to{transform:scale(1.1)}}
+    html.pv-paused .pv-film video{animation-play-state:paused}
+    .pv-hero header{position:relative;z-index:2}
+    .pv-pp{display:inline-flex;align-items:center;gap:.55rem;min-height:44px;padding:0 1.05rem;border:1px solid rgba(232,244,244,.42);border-radius:999px;background:none;color:#e8f4f4;font:600 .82rem/1 "General Sans",system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.02em;cursor:pointer;text-shadow:0 1px 10px rgba(0,0,0,.8)}
+    .pv-pp:focus-visible{outline:2px solid #5ee7f0;outline-offset:4px}
+    .pv-pp-i{width:8px;height:10px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+    html.pv-paused .pv-pp-i{width:0;height:0;border-left:9px solid currentColor;border-right:0;border-top:5px solid transparent;border-bottom:5px solid transparent}
+    .pv-top{width:min(100% - 2.3rem,76rem);margin:0 auto;padding:clamp(2.5rem,7vh,5rem) 0 0}
+    .pv-top h1{max-width:24ch;text-wrap:balance;font-size:clamp(2.5rem,5.3vw,5.6rem);line-height:1;text-shadow:0 2px 28px rgba(0,0,0,.85),0 0 4px rgba(0,0,0,.6)}
+    .pv-hero+main{padding-top:clamp(3.5rem,8vw,6rem)}
+    .pv-hero+main .intro{margin-top:0}
+    @media(max-width:620px){.pv-top{padding-top:1.5rem}.pv-top h1{font-size:clamp(2.2rem,10.4vw,3rem)}}
   </style>
   <link rel="stylesheet" href="/assets/accessibility.css?v=20261017-type2">
   <script src="/assets/accessibility.js?v=titlecase-20261007" defer></script>
@@ -57,10 +73,15 @@
 <link rel="stylesheet" href="/assets/home-type.css?v=20261017a">
 </head>
 <body>
-  <header><a href="/">Jarrett Wroten</a></header>
+  <div class="pv-hero">
+    <div class="pv-film" aria-hidden="true"><video autoplay muted loop playsinline preload="auto" poster="/assets/home/walk/corridor.jpg"><source src="/assets/home/walk/corridor-entry-loop.mp4" type="video/mp4"></video></div>
+    <header><a href="/">Jarrett Wroten</a><button class="pv-pp" id="pv-pp" type="button" aria-label="Pause motion"><span class="pv-pp-i" aria-hidden="true"></span><span class="pv-pp-t">Pause</span></button></header>
+    <div class="pv-top">
+      <h1>Here Is What Happens To The Information You Send Me.</h1>
+    </div>
+  </div>
   <main>
-    <h1>Here Is What Happens To The Information You Send Me.</h1>
-    <p class="intro">If you email me or book a call, I use what you send to answer you, get ready for the call, and follow up.</p>
+    <p class="intro">If you email me, send me a message through my site or book a call, I use what you send to answer you, get ready for the call, and follow up.</p>
 
     <section>
       <h2>What I Use</h2>
@@ -68,7 +89,7 @@
     </section>
     <section>
       <h2>Who Receives It</h2>
-      <div><p>I receive what you send. When you book, Google Calendar also receives the details you enter.</p></div>
+      <div><p>I receive what you send. When you book, Google Calendar also receives the details you enter. When you send a message through my site, FormSubmit delivers it to my inbox.</p></div>
     </section>
     <section>
       <h2>How Long I Keep It</h2>
@@ -80,13 +101,14 @@
     </section>
     <section>
       <h2>What Not To Send</h2>
-      <div><p>Do not send sensitive information by email or in your booking notes.</p></div>
+      <div><p>Do not send sensitive information by email, in a message through my site or in your booking notes.</p></div>
     </section>
     <section>
       <h2>Tracking</h2>
-      <div><p>This site remembers your motion preference in this browser. It uses Google Analytics and Microsoft Clarity to count visits and see how people move through the pages, so I can make the site easier to use. These tools may set cookies and collect things like pages viewed, device type and approximate location. They do not see what you type into forms. Email me if you have questions.</p></div>
+      <div><p>This site remembers your motion preference in this browser. It uses Google Analytics and Microsoft Clarity to count visits and see how people move through the pages, so I can make the site easier to use. When you click a call, email or booking link, that click is recorded so I can see which pages bring in calls. These tools may set cookies and collect things like pages viewed, device type and approximate location. They do not see what you type into forms. Email me if you have questions.</p></div>
     </section>
   </main>
   <footer><span>Jarrett Wroten Web Design · Las Vegas · <a href="tel:+17254337775">(725) 433-7775</a></span></footer>
+  <script>(function(){var b=document.getElementById('pv-pp');if(!b)return;var h=document.documentElement,t=b.querySelector('.pv-pp-t'),v=document.querySelector('.pv-film video');b.addEventListener('click',function(){var p=h.classList.toggle('pv-paused');b.setAttribute('aria-label',p?'Play motion':'Pause motion');t.textContent=p?'Play':'Pause';if(v){if(p)v.pause();else v.play().catch(function(){})}})})();</script>
 </body>
 </html>

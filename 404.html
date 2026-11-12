@@ -16,14 +16,31 @@ p{margin:0 0 24px;color:rgba(237,232,225,.8)}
 a.b{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 26px;border-radius:999px;background:#ede8e1;color:#0a0a0a;font-weight:600;text-decoration:none;margin:6px}
 a.b:focus-visible{outline:2px solid #b9a8ff;outline-offset:3px}
 a.t{color:#b9a8ff;display:inline-flex;align-items:center;min-height:44px;margin:6px}
+/* first screen: the corridor film from the homepage, full bleed, type placed on the dark ceiling */
+body{position:relative;overflow-x:hidden;place-items:start center;padding-top:clamp(64px,13vh,128px)}
+.nf-film{position:fixed;inset:0;z-index:-1;background:#0a0a0a}
+.nf-film video{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;animation:nfPush 24s linear infinite alternate;transform-origin:50% 46%;will-change:transform}
+@keyframes nfPush{from{transform:scale(1.02)}to{transform:scale(1.1)}}
+html.nf-paused .nf-film video{animation-play-state:paused}
+h1,p{text-shadow:0 2px 24px rgba(0,0,0,.9),0 0 4px rgba(0,0,0,.6)}
+p{color:#ede8e1}
+a.t{text-shadow:0 1px 14px rgba(0,0,0,.95)}
+.nf-pp{position:fixed;top:16px;right:16px;display:inline-flex;align-items:center;gap:9px;min-height:44px;padding:0 17px;border:1px solid rgba(237,232,225,.42);border-radius:999px;background:none;color:#ede8e1;font:600 13px/1 system-ui,-apple-system,"Segoe UI",sans-serif;letter-spacing:.02em;cursor:pointer;text-shadow:0 1px 10px rgba(0,0,0,.8)}
+.nf-pp:focus-visible{outline:2px solid #b9a8ff;outline-offset:3px}
+.nf-pp-i{width:8px;height:10px;border-left:3px solid currentColor;border-right:3px solid currentColor}
+@media(max-width:620px){body{place-items:end center;padding:96px 20px 40px}}
+html.nf-paused .nf-pp-i{width:0;height:0;border-left:9px solid currentColor;border-right:0;border-top:5px solid transparent;border-bottom:5px solid transparent}
 </style>
 </head>
 <body>
+<div class="nf-film" aria-hidden="true"><video autoplay muted loop playsinline preload="auto" poster="/assets/home/walk/corridor.jpg"><source src="/assets/home/walk/corridor-entry-loop.mp4" type="video/mp4"></video></div>
+<button class="nf-pp" id="nf-pp" type="button" aria-label="Pause motion"><span class="nf-pp-i" aria-hidden="true"></span><span class="nf-pp-t">Pause</span></button>
 <main>
 <h1>That Page Isn't Here.</h1>
 <p>It may have moved. Here is the way back.</p>
 <a class="b" href="/">Back To Jarrett Wroten Web Design</a><br>
 <a class="t" href="/portfolio/">See The Portfolio</a> <a class="t" href="/book/">Book My Free Found, Chosen, Booked Consultation Now</a>
 </main>
+<script>(function(){var b=document.getElementById('nf-pp');if(!b)return;var h=document.documentElement,t=b.querySelector('.nf-pp-t'),v=document.querySelector('.nf-film video');b.addEventListener('click',function(){var p=h.classList.toggle('nf-paused');b.setAttribute('aria-label',p?'Play motion':'Pause motion');t.textContent=p?'Play':'Pause';if(v){if(p)v.pause();else v.play().catch(function(){})}})})();</script>
 </body>
 </html>

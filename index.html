@@ -496,7 +496,7 @@ V.addEventListener('input',()=>{fmtV();calc()});N.addEventListener('input',()=>{
 r.querySelectorAll('input[name=roiP]').forEach(i=>i.addEventListener('change',calc));
 r.querySelectorAll('.roi-b').forEach(b=>b.addEventListener('click',()=>{N.value=Math.max(0,Math.min(999,num(N.value)+ +b.dataset.d));calc()}));
 let done=false;new IntersectionObserver(es=>{if(es[0].isIntersecting&&!done){done=true;calc()}},{threshold:.3}).observe(r);
-oR.textContent='$0';oC.textContent='$0';oP.textContent='0%';})();</script><script>/* inquiry form (preview, Nov 12 2026): sends to Jarrett's inbox; booking stays the main path */
+oR.textContent='$0';oC.textContent='$0';oP.textContent='0%';})();</script><script>/* inquiry form: sends to Jarrett's inbox; booking stays the main path */
 (function(){var d=document,f=d.getElementById('inqForm');if(!f)return;d.querySelectorAll('.inq-jump').forEach(function(a){a.addEventListener('click',function(e){var t=d.getElementById('inquiry');if(!t)return;e.preventDefault();var y=t.getBoundingClientRect().top+scrollY-96,L=window.__lenis;if(L&&L.scrollTo)L.scrollTo(y);else scrollTo({top:y,behavior:'smooth'})})});var st=d.getElementById('inqSt'),b=f.querySelector('button[type=submit]'),R=d.getElementById('inqReach');
 function okReach(v){v=v.trim();return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)||v.replace(/\D/g,'').length>=10}
 f.addEventListener('submit',function(ev){ev.preventDefault();st.className='inq-st';

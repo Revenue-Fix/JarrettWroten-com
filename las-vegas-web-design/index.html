@@ -35,6 +35,15 @@
 <link rel="stylesheet" href="/assets/home-type.css?v=20261017a">
 <style>/* self-hosted Google Fonts latin subset, same display:block as before */@font-face{font-family:"Pinyon Script";font-style:normal;font-weight:400;font-display:block;src:url(/assets/home/fonts/pinyon-latin.woff2?v=1) format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}</style>
 <style>.crumbs{padding:40px var(--pad,24px) 8px;font-size:13px;letter-spacing:.08em;text-transform:uppercase;color:var(--fgm,rgba(238,232,221,.64))}.crumbs ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;align-items:center;gap:0 12px}.crumbs li{display:flex;align-items:center;gap:12px}.crumbs li+li::before{content:"/";color:var(--gold,#d4ae5a)}.crumbs a{color:inherit;text-decoration:none;min-height:44px;display:inline-flex;align-items:center}.crumbs a:hover{color:var(--gold,#d4ae5a)}.crumbs [aria-current]{color:var(--fg,#eee8dd)}</style>
+<style>/* first screen motion: the homepage arrival film plays in the portrait and lands on the same frame as before, then a slow push-in keeps it alive (header Pause stops both) */
+.hero-portrait .lv-fw{overflow:hidden;aspect-ratio:4/5}
+.hero-portrait .lv-film{width:100%;height:100%;object-fit:cover;object-position:50% 50%;display:block;background:#0b0b0a;transform-origin:50% 34%;will-change:transform}
+.hero-portrait .lv-fw.held .lv-film{animation:lvPush 22s linear infinite alternate}
+@keyframes lvPush{from{transform:scale(1)}to{transform:scale(1.07)}}
+html.jwc-paused .hero-portrait .lv-fw.held .lv-film{animation-play-state:paused}
+@media(max-width:900px){.hero-portrait .lv-fw{aspect-ratio:3/4}}
+@media(max-width:680px){.hero-portrait .lv-fw{aspect-ratio:4/3}}
+</style>
 </head>
 <body>
   <a class="skip-link" href="#main">Skip To Content</a>
@@ -76,7 +85,7 @@
         <p class="offer-note">A 15-minute call on Google Meet. I’ll show you where you show up on Google and in AI answers today, and what it takes to show up first.</p>
       </div>
       <figure class="hero-portrait">
-        <img src="/assets/golden-arrival/frames/ga-360.webp" alt="Jarrett Wroten" width="1280" height="720" fetchpriority="high">
+        <div class="lv-fw"><video class="lv-film" autoplay muted playsinline preload="auto" poster="/assets/golden-arrival/frames/ga-000.webp" width="1280" height="720" aria-label="Jarrett Wroten walking up a lit corridor to the camera"><source src="/assets/home/walk/golden-arrival-approved.mp4" type="video/mp4"></video></div>
         <figcaption><span>Built By Jarrett</span>You work with me from the first look through the finished fix.</figcaption>
       </figure>
     </section>
@@ -188,5 +197,6 @@
     <nav aria-label="Footer navigation"><a href="/about/">About</a> <a href="/privacy/">Privacy</a></nav>
   </footer>
 <script src="/assets/home/chrome.js?v=1" defer></script>
+<script>(function(){var v=document.querySelector('.lv-film');if(!v)return;var w=v.parentNode;v.addEventListener('ended',function(){w.classList.add('held')});v.addEventListener('play',function(){if(v.currentTime<.5)w.classList.remove('held')})})();</script>
 </body>
 </html>
