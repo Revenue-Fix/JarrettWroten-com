@@ -1,4 +1,4 @@
-/* Found, Chosen, Booked demo. Motion always on (no reduced motion branch); one Pause control. */
+/* Booked, Chosen, Found demo. Motion always on (no reduced motion branch); one Pause control. */
 (function(){
 var D=document,H=D.documentElement,W=window;
 if(!W.gsap||!W.Lenis){return;} /* no libs: the page stays in plain readable flow */
@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[1.0,1.5,1.7,1.7,1.8,1.2]; /* scroll per beat, in screens */
+var LEN=[1.0,1.1,1.8,1.5,1.7,1.7,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -45,41 +45,8 @@ var tls=[];
 function T(){var t=g.timeline({paused:true,defaults:{ease:'power2.out'}});tls.push(t);return t;}
 /* 1 hook drifts on the way out */
 T().to('.b1 .hook-copy',{y:-30,duration:1},0).to('.b1 .srch',{y:-16,duration:1},0);
-/* 2 proof: 54 of 100 light up gold */
-var nEl=$('#n54'),cnt={v:0};
-T().from('.b2 .big',{y:60,opacity:0,duration:.18},0)
-   .from(dots,{scale:0,opacity:0,duration:.16,stagger:{each:.0012,from:'start'}},0)
-   .to(cnt,{v:54,duration:.46,ease:'power1.inOut',onUpdate:function(){nEl.textContent=Math.round(cnt.v);}},.08)
-   .to(onDots,{backgroundColor:'#f3dc9a',boxShadow:'0 0 10px rgba(243,220,154,.35)',duration:.02,stagger:.44/54},.08)
-   .from('.b2 .h2',{y:40,opacity:0,duration:.18},.4)
-   .from('.b2 .sub',{y:24,opacity:0,duration:.14},.5)
-   .from('.b2 .src',{opacity:0,duration:.12},.58)
-   .to({},{duration:.3});
-/* 3 found: the answer names the shop, the pin lands */
-T().from('.b3 .h2',{y:40,opacity:0,duration:.14},0)
-   .from('.b3 .ask',{y:50,opacity:0,duration:.16},.04)
-   .from('.b3 .ask-q',{y:16,opacity:0,duration:.08},.12)
-   .from('.b3 .ask-a .sk',{scaleX:0,transformOrigin:'left center',duration:.06,stagger:.03},.18)
-   .to('.b3 .pick',{opacity:1,y:0,duration:.1},.3)
-   .fromTo('.b3 .mp.you',{opacity:0,scale:2.4},{opacity:1,scale:1,duration:.1,ease:'back.out(2)'},.36)
-   .to('.b3 .mp.you',{boxShadow:'0 0 0 18px rgba(243,220,154,0)',duration:.14,ease:'power1.out'},.44)
-   .from('.b3 .sub',{y:24,opacity:0,duration:.12},.4)
-   .from('.b3 .stat',{y:20,opacity:0,duration:.1},.5)
-   .from('.b3 .src',{opacity:0,duration:.08},.56)
-   .to({},{duration:.25});
-/* 4 chosen: mixed details scatter, the gold line sweeps in one clear page */
-var ms=$$('.b4 .ms');
-T().from('.b4 .h2',{y:40,opacity:0,duration:.14},0)
-   .from('.b4 .pg',{y:50,opacity:0,duration:.16},.04)
-   .from(ms,{opacity:0,scale:.9,duration:.06,stagger:.025},.1)
-   .to(ms,{x:function(i){return [-10,12,-8,10,-12][i];},y:function(i){return [6,-8,10,-6,8][i];},duration:.12,ease:'sine.inOut'},.22)
-   .fromTo('.b4 .gl',{opacity:1,left:'0%'},{left:'100%',duration:.18,ease:'power2.inOut'},.36)
-   .to(ms,{opacity:0,x:'+=40',duration:.1,stagger:.012},.38)
-   .to('.b4 .pg-clean',{opacity:1,duration:.1},.46)
-   .to('.b4 .gl',{opacity:0,duration:.04},.54)
-   .fromTo('.b4 .sweep',{left:'-40%'},{left:'120%',duration:.24,ease:'none'},.5)
-   .from('.b4 .sub',{y:24,opacity:0,duration:.12},.48)
-   .to({},{duration:.22});
+/* 6 order: the call line, one line at a time */
+T().from('.b6 .h2 .ln',{y:50,opacity:0,duration:.18,stagger:.1},0).to({},{duration:.4});
 /* 5 booked: the missed call turns into a booking, then a review */
 T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .from('.b5 .ph',{y:50,opacity:0,duration:.14},.04)
@@ -93,6 +60,41 @@ T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .from('.b5 .stat',{y:20,opacity:0,duration:.1},.62)
    .from('.b5 .src',{opacity:0,duration:.08},.68)
    .to({},{duration:.22});
+/* 2 proof: 54 of 100 light up gold */
+var nEl=$('#n54'),cnt={v:0};
+T().from('.b2 .big',{y:60,opacity:0,duration:.18},0)
+   .from(dots,{scale:0,opacity:0,duration:.16,stagger:{each:.0012,from:'start'}},0)
+   .to(cnt,{v:54,duration:.46,ease:'power1.inOut',onUpdate:function(){nEl.textContent=Math.round(cnt.v);}},.08)
+   .to(onDots,{backgroundColor:'#f3dc9a',boxShadow:'0 0 10px rgba(243,220,154,.35)',duration:.02,stagger:.44/54},.08)
+   .from('.b2 .h2',{y:40,opacity:0,duration:.18},.4)
+   .from('.b2 .sub',{y:24,opacity:0,duration:.14},.5)
+   .from('.b2 .src',{opacity:0,duration:.12},.58)
+   .to({},{duration:.3});
+/* 4 chosen: mixed details scatter, the gold line sweeps in one clear page */
+var ms=$$('.b4 .ms');
+T().from('.b4 .h2',{y:40,opacity:0,duration:.14},0)
+   .from('.b4 .pg',{y:50,opacity:0,duration:.16},.04)
+   .from(ms,{opacity:0,scale:.9,duration:.06,stagger:.025},.1)
+   .to(ms,{x:function(i){return [-10,12,-8,10,-12][i];},y:function(i){return [6,-8,10,-6,8][i];},duration:.12,ease:'sine.inOut'},.22)
+   .fromTo('.b4 .gl',{opacity:1,left:'0%'},{left:'100%',duration:.18,ease:'power2.inOut'},.36)
+   .to(ms,{opacity:0,x:'+=40',duration:.1,stagger:.012},.38)
+   .to('.b4 .pg-clean',{opacity:1,duration:.1},.46)
+   .to('.b4 .gl',{opacity:0,duration:.04},.54)
+   .fromTo('.b4 .sweep',{left:'-40%'},{left:'120%',duration:.24,ease:'none'},.5)
+   .from('.b4 .sub',{y:24,opacity:0,duration:.12},.48)
+   .to({},{duration:.22});
+/* 3 found: the answer names the shop, the pin lands */
+T().from('.b3 .h2',{y:40,opacity:0,duration:.14},0)
+   .from('.b3 .ask',{y:50,opacity:0,duration:.16},.04)
+   .from('.b3 .ask-q',{y:16,opacity:0,duration:.08},.12)
+   .from('.b3 .ask-a .sk',{scaleX:0,transformOrigin:'left center',duration:.06,stagger:.03},.18)
+   .to('.b3 .pick',{opacity:1,y:0,duration:.1},.3)
+   .fromTo('.b3 .mp.you',{opacity:0,scale:2.4},{opacity:1,scale:1,duration:.1,ease:'back.out(2)'},.36)
+   .to('.b3 .mp.you',{boxShadow:'0 0 0 18px rgba(243,220,154,0)',duration:.14,ease:'power1.out'},.44)
+   .from('.b3 .sub',{y:24,opacity:0,duration:.12},.4)
+   .from('.b3 .stat',{y:20,opacity:0,duration:.1},.5)
+   .from('.b3 .src',{opacity:0,duration:.08},.56)
+   .to({},{duration:.25});
 /* 7 ask: the gold line draws round the button */
 var rect=$('.cta-r'),svg=$('.cta-svg'),btn=$('#cta'),rlen=1;
 function sizeCta(){var w=btn.offsetWidth+14,h=btn.offsetHeight+14;svg.setAttribute('width',w);svg.setAttribute('height',h);svg.setAttribute('viewBox','0 0 '+w+' '+h);

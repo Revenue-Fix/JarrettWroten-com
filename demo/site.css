@@ -205,3 +205,6 @@ html.static *{animation-play-state:paused!important}
   .ftr{right:var(--pad);bottom:76px;font-size:13px;gap:4px 18px}
   .ftr .fine{margin-left:0}
 }
+
+.b6 .stage{justify-content:center}
+.b6 .h2.xl .ln{display:block}
