@@ -30,7 +30,117 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Syne:wght@800&text=%20.EGQabcehkmorstuvy%E2%80%9C%E2%80%9D&display=swap" media="print" onload="this.media='all'">
 <link rel="stylesheet" href="assets/home/style.css?v=53fix-r7">
 <link rel="stylesheet" href="assets/home/site.css?v=hdr7">
-<link rel="stylesheet" href="assets/home/services.css?v=s7"><style id="label-tail-fix">.svc-n em.gs{padding-bottom:.3em;margin-bottom:-.3em}</style><link rel="stylesheet" href="assets/home/foot-svc.css?v=1031a"><link rel="stylesheet" href="assets/home/faq.css?v=1">
+<link rel="stylesheet" href="assets/home/services.css?v=s7"><style id="step-demos">
+/* r23 (Nov 13 2026): How It Works step visuals I audit checks, II ring and pick up into a captioned call, III monthly report. Same card look as the Text Messages demo. Motion always on; the Pause pill shows every final state. */
+.card-f.sd{background:transparent;container-type:size;overflow:visible}
+.sd-p{position:absolute;inset:0;display:flex;flex-direction:column;background:#151513;border:1px solid rgba(238,232,221,.12);border-radius:10px;padding:clamp(14px,4.4cqh,30px) clamp(16px,3.6cqw,32px);color:#eee8dd;overflow:hidden;font-size:clamp(12.5px,3.9cqh,18px);line-height:1.4}
+html.light .sd-p{background:#15151a;border-color:rgba(238,232,221,.16)}
+.sd-h{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:clamp(8px,3.4cqh,18px)}
+.sd-h .sv-src{margin:0}
+.sd-ex{flex:none;font-size:12.5px;font-weight:600;line-height:1;color:var(--gold,#d4ae5a);border:1px solid rgba(212,174,90,.55);border-radius:999px;padding:6px 11px}
+.sd-m{font-size:.86em;color:rgba(238,232,221,.64);margin:2px 0 0}
+.sd-t{font-weight:600;font-size:1.12em;letter-spacing:-.01em;margin:0}
+/* I audit */
+.sd-au-g{flex:1;min-height:0;display:grid;grid-template-columns:1.15fr 1fr;gap:clamp(12px,3cqw,26px);align-items:start}
+.sd-cks{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(6px,2.4cqh,14px)}
+.sd-ck{display:flex;gap:12px;align-items:flex-start;padding:clamp(8px,2.4cqh,14px) clamp(10px,2cqw,16px);border-radius:8px;background:rgba(238,232,221,.04)}
+.sd-ck>div{flex:1;min-width:0}
+.sd-ic{width:22px;height:22px;border-radius:50%;flex:none;border:1.5px solid rgba(212,174,90,.55);position:relative;margin-top:1px;transition:border-color .5s var(--ease),background .5s var(--ease)}
+.sd-ic:after{content:"";position:absolute;left:6.5px;top:3px;width:5px;height:10px;border:solid var(--gold,#d4ae5a);border-width:0 2px 2px 0;transform:rotate(45deg);opacity:1;transition:opacity .4s var(--ease)}
+.sd-bar{display:block;height:3px;border-radius:2px;background:rgba(238,232,221,.1);margin-top:8px;overflow:hidden}
+.sd-bar b{display:block;height:100%;background:linear-gradient(90deg,#b68a3a,#f3dc9a);transform-origin:0 50%;transform:none}
+.sd-fx{align-self:stretch;display:flex;flex-direction:column;padding:clamp(10px,3cqh,18px) clamp(12px,2.4cqw,20px);border-radius:8px;background:#1d1b16;border:1px solid var(--gold,#d4ae5a);box-shadow:0 0 0 4px rgba(212,174,90,.12)}
+.sd-fh{font-weight:600;font-size:1.05em;color:var(--gold,#d4ae5a);margin:0 0 clamp(6px,2.4cqh,14px)}
+.sd-fx ol{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:clamp(6px,2.2cqh,12px)}
+.sd-fx li{display:flex;gap:10px;align-items:baseline;font-weight:500}
+.sd-fx li span{flex:none;font-family:'Playfair Display',serif;font-style:italic;color:var(--gold,#d4ae5a);width:1em}
+.sd-au [data-s]{transition:opacity .6s var(--ease),transform .8s var(--ease)}
+.sd-au.anim [data-s]{opacity:0;transform:translateY(12px)}
+.sd-au.anim .sd-bar b{transform:scaleX(0);transition:transform 1.1s cubic-bezier(.4,0,.2,1)}
+.sd-au.anim .sd-ic{border-color:rgba(238,232,221,.18)}.sd-au.anim .sd-ic:after{opacity:0}
+.sd-au.anim.s1 [data-s="1"],.sd-au.anim.s2 [data-s="2"],.sd-au.anim.s3 [data-s="3"],.sd-au.anim.s4 [data-s="4"],.sd-au.anim.s5 [data-s="5"],.sd-au.anim.s6 [data-s="6"],.sd-au.anim.s7 [data-s="7"]{opacity:1;transform:none}
+.sd-au.anim.s1 [data-s="1"] .sd-bar b,.sd-au.anim.s2 [data-s="2"] .sd-bar b,.sd-au.anim.s3 [data-s="3"] .sd-bar b{transform:scaleX(1)}
+.sd-au.anim.d1 [data-s="1"] .sd-ic,.sd-au.anim.d2 [data-s="2"] .sd-ic,.sd-au.anim.d3 [data-s="3"] .sd-ic{border-color:var(--gold,#d4ae5a)}
+.sd-au.anim.d1 [data-s="1"] .sd-ic:after,.sd-au.anim.d2 [data-s="2"] .sd-ic:after,.sd-au.anim.d3 [data-s="3"] .sd-ic:after{opacity:1}
+.sd-p.s-out [data-s],.sd-p.s-out .sd-live,.sd-p.s-out .sd-ring{opacity:0!important;transition:opacity .45s linear}
+/* II call */
+
+.sd-ring{position:absolute;left:0;right:0;top:50%;transform:translateY(-42%);display:flex;flex-direction:column;align-items:center;gap:6px;text-align:center;opacity:0;pointer-events:none;transition:opacity .5s var(--ease),transform .7s var(--ease)}
+.sd-ph{position:relative;width:clamp(56px,20cqh,84px);height:clamp(56px,20cqh,84px);border-radius:50%;display:grid;place-items:center;background:rgba(238,232,221,.08);color:#eee8dd;margin-bottom:10px;transition:background .4s var(--ease),color .4s var(--ease)}
+.sd-ph svg{width:42%;height:42%}
+.sd-ph i{position:absolute;inset:0;border-radius:50%;border:1.5px solid rgba(212,174,90,.6);opacity:0}
+.sd-rt{position:relative;font-weight:600;font-size:clamp(17px,5.4cqh,24px);letter-spacing:-.015em;margin:0;height:1.3em;width:100%}
+.sd-rt span{position:absolute;left:0;right:0;transition:opacity .35s var(--ease)}
+.sd-r2{opacity:0;color:var(--gold,#d4ae5a)}
+.sd-live{flex:1;min-height:0;display:flex;flex-direction:column;transition:opacity .6s var(--ease),transform .8s var(--ease)}
+.sd-cb{display:flex;align-items:center;gap:12px;padding:clamp(8px,2.6cqh,14px) clamp(12px,2.4cqw,18px);border-radius:8px;background:rgba(238,232,221,.04);border:1px solid rgba(238,232,221,.12);flex:none}
+.sd-cb>div{flex:1;min-width:0}
+.sd-cb .gb-ic{background:#1d1b16;color:var(--gold,#d4ae5a)}
+.sd-cb .sv-name{font-size:1.08em}
+.sd-cb .sv-meta{font-size:.84em;margin-top:1px}
+.sd-hear{flex:none;min-height:44px;padding:0 16px;border-radius:999px;border:0;background:var(--gold,#d4ae5a);color:#0b0b0a;font:600 14px/1 'General Sans',system-ui,sans-serif;cursor:pointer}
+.sd-hear:focus-visible{outline:2px solid #f3dc9a;outline-offset:3px}
+.sd-hear[hidden]{display:none}
+.sd-cap{flex:1;min-height:0;display:flex;flex-direction:column;gap:clamp(6px,2cqh,10px);margin-top:clamp(8px,2.6cqh,14px);overflow-y:auto;scrollbar-width:thin;scrollbar-color:rgba(238,232,221,.2) transparent}
+.sd-cap>:first-child{margin-top:auto}
+.sd-cap .gb-b{font-size:1em;padding:clamp(7px,2.2cqh,12px) clamp(11px,2.2cqw,16px);max-width:88%;margin:0;flex:none}
+.sd-call.anim .sd-cap>p:not(.on){display:none}
+.sd-cap>p.on{animation:sdIn .55s var(--ease) both}
+@keyframes sdIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+@keyframes sdRing{0%{opacity:.9;transform:scale(1)}100%{opacity:0;transform:scale(1.7)}}
+@keyframes sdShake{0%,100%{transform:rotate(0)}20%{transform:rotate(-12deg)}40%{transform:rotate(10deg)}60%{transform:rotate(-8deg)}80%{transform:rotate(6deg)}}
+.sd-call.anim .sd-live{opacity:0;transform:translateY(16px)}
+.sd-call.anim.r .sd-ring{opacity:1;transform:translateY(-50%)}
+.sd-call.anim.r .sd-ph i{animation:sdRing 1.1s cubic-bezier(.2,.6,.3,1) 2}
+.sd-call.anim.r .sd-ph i+i{animation-delay:.25s}
+.sd-call.anim.r .sd-ph svg{animation:sdShake .55s ease-in-out 2;animation-delay:0s,.55s}
+.sd-call.anim.r.up .sd-ph{background:var(--gold,#d4ae5a);color:#0b0b0a}
+.sd-call.anim.r.up .sd-r1{opacity:0}.sd-call.anim.r.up .sd-r2{opacity:1}
+.sd-call.anim.live .sd-ring{opacity:0;transform:translateY(-70%) scale(.9)}
+.sd-call.anim.live .sd-live{opacity:1;transform:none}
+/* III report */
+.sd-rl{font-weight:600;font-size:clamp(16px,5cqh,22px);letter-spacing:-.015em;margin:0 0 clamp(8px,3cqh,16px);display:flex;align-items:center;min-height:1.3em}
+.sd-rl .sv-caret{margin-left:3px;opacity:0}.sd-rep.typing .sd-rl .sv-caret{opacity:1}
+.sd-ks{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2cqw,14px);margin-bottom:clamp(8px,3cqh,16px)}
+.sd-k{padding:clamp(8px,2.6cqh,14px) clamp(12px,2.4cqw,18px);border-radius:8px;background:rgba(238,232,221,.04)}
+.sd-kn{font-family:'Playfair Display',serif;font-style:italic;font-size:clamp(30px,11cqh,52px);line-height:1.05;margin:0;background:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;font-variant-numeric:tabular-nums;padding-bottom:.06em}
+.sd-ai{display:grid;grid-template-columns:1fr 1fr;gap:clamp(8px,2cqw,14px);flex:1;min-height:0}
+.sd-a{padding:clamp(8px,2.6cqh,14px) clamp(12px,2.4cqw,18px);border-radius:8px;background:rgba(238,232,221,.04);border:1px solid rgba(238,232,221,.12)}
+.sd-a2{background:#1d1b16;border-color:var(--gold,#d4ae5a);box-shadow:0 0 0 4px rgba(212,174,90,.12)}
+.sd-al{font-size:.8em;font-weight:600;color:rgba(238,232,221,.64);margin:0 0 6px}.sd-a2 .sd-al{color:var(--gold,#d4ae5a)}
+.sd-at{margin:0;font-size:.95em}
+.sd-a .sv-sk{padding:10px 0 0;background:none}.sd-a .sv-sk i{height:8px}
+.sd-at strong{font-weight:600;color:#fff;background:linear-gradient(transparent 62%,rgba(212,174,90,.38) 62%)}
+.sd-rep [data-s]{transition:opacity .6s var(--ease),transform .8s var(--ease)}
+.sd-rep.anim [data-s]{opacity:0;transform:translateY(12px)}
+.sd-rep.anim.s1 [data-s="1"],.sd-rep.anim.s2 [data-s="2"],.sd-rep.anim.s3 [data-s="3"],.sd-rep.anim.s4 [data-s="4"]{opacity:1;transform:none}
+.sd-rep.anim .sd-a2{transform:translateY(24px) scale(.98)}
+/* desktop: all three step visuals use the same right-aligned 16:9 frame as cards II and III */
+@media (min-width:861px){.how .stack>.card:nth-child(1)>.card-f{align-self:center;justify-self:end;width:min(100%,calc((min(72vh,640px) - 2 * clamp(24px,3vw,48px)) * 16 / 9));height:auto;aspect-ratio:16/9}}
+/* phones and tablets: the visual takes its natural height instead of the 16:9 film frame */
+@media (max-width:860px){
+  .card .card-f.sd{aspect-ratio:auto!important;min-height:0!important;height:auto!important;flex:none!important;container-type:inline-size}
+  .sd-p{position:relative;inset:auto;font-size:15px;padding:18px 16px}
+  .sd-h{margin-bottom:14px}
+  .sd-au-g{grid-template-columns:1fr;gap:12px}
+  .sd-cks{gap:8px}.sd-ck{padding:11px 13px}
+  .sd-fx{padding:14px 16px}.sd-fh{margin-bottom:10px}.sd-fx ol{gap:9px}
+  .sd-call{min-height:430px}
+  .sd-ring{top:56%}
+  .sd-ph{width:72px;height:72px}
+  .sd-rt{font-size:20px}
+  .sd-cb,.sd-k,.sd-a{padding:11px 13px}
+  .sd-cb{flex-wrap:wrap}
+  .sd-hear{width:100%}
+  .sd-cap{gap:8px;margin-top:12px;overflow:visible}
+  .sd-cap .gb-b{padding:10px 14px;max-width:90%}
+  .sd-rl{font-size:18px;margin-bottom:12px}
+  .sd-kn{font-size:44px}
+  .sd-ks,.sd-ai{gap:10px;margin-bottom:10px}
+}
+@media (max-width:440px){.sd-ai{grid-template-columns:1fr}}
+@media (min-width:861px) and (max-height:620px){.sd-au .sd-m{display:none}.sd-ck{padding:6px 10px}.sd-cks{gap:6px}.sd-au .sd-bar{margin-top:5px}}
+</style><style id="label-tail-fix">.svc-n em.gs{padding-bottom:.3em;margin-bottom:-.3em}</style><link rel="stylesheet" href="assets/home/foot-svc.css?v=1031a"><link rel="stylesheet" href="assets/home/faq.css?v=1">
 <style>/* tagline under the hero (Nov 2 2026): sits in the empty 60vh at the bottom of .hero-wrap, so page height is unchanged on desktop */
 .tagl{position:absolute;left:0;right:0;top:100vh;height:60vh;display:flex;align-items:center;justify-content:center;padding:0 var(--pad);text-align:center;color:var(--fg)}
 .tagl-t{margin:0;font-size:clamp(36px,4.6vw,84px);line-height:1.06;letter-spacing:-.01em}
@@ -322,23 +432,6 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
   </div>
 </section>
 
-<!-- 5. DYLAN PROROK PROOF (bridges Chosen into Found) -->
-<section class="dp" data-theme="light" aria-labelledby="dpTitle">
-  <div class="grid dp-grid">
-    <h2 class="h2 mask dp-h" id="dpTitle"><span class="ml"><span>Someone Searched</span></span><span class="ml"><span><em class="gs">“Las Vegas Japanese Tattoos.”</em></span></span><span class="ml"><span>Dylan Got The Booking.</span></span></h2>
-    <div class="dp-f fade"><a class="dp-film" href="https://dylanprorok.com/" target="_blank" rel="noopener" aria-label="Open dylanprorok.com in a new tab"><video muted loop playsinline preload="none" data-poster="assets/home/film/w-prorok-scroll.webp?v=p25" data-src="assets/home/film/w-prorok-scroll.mp4?v=p25" data-webm="assets/home/film/w-prorok-scroll.webm?v=p25"></video></a></div>
-    <div class="dp-t">
-      <p class="dp-who fade">Dylan Prorok is a Las Vegas Japanese tattoo artist.</p>
-      <p class="dp-n fade" aria-label="Within 30 days"><span class="dp-w gs">Within</span> <span id="dpNum">30</span> <span class="dp-w gs">Days</span></p>
-      <p class="dp-s fade">He recovered his investment within 30 days.</p>
-      <!-- PLACEHOLDER: Dylan Prorok's testimonial goes here, quoted word for word, once he sends it. Remove the .dp-ph box (and its "testimonial coming" label) before this goes live. Do not paraphrase or invent a quote. -->
-      
-      <p class="dp-l fade"><a class="lnk" href="https://dylanprorok.com/" target="_blank" rel="noopener">See Dylan’s Site</a></p>
-    </div>
-  </div>
-</section>
-
-
 <!-- 6. GET FOUND (volume, sold after speed) -->
 <section class="sv" id="search" data-theme="dark" aria-labelledby="svTitle">
   <div class="grid sv-top">
@@ -374,6 +467,23 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
 </section>
 
 
+<!-- 6b. DYLAN PROROK PROOF (Get Found proof, sits under Get Found; Jarrett Nov 13 2026 2:16 PM PT) -->
+<section class="dp" data-theme="light" aria-labelledby="dpTitle">
+  <div class="grid dp-grid">
+    <h2 class="h2 mask dp-h" id="dpTitle"><span class="ml"><span>Someone Searched</span></span><span class="ml"><span><em class="gs">“Las Vegas Japanese Tattoos.”</em></span></span><span class="ml"><span>Dylan Got The Booking.</span></span></h2>
+    <div class="dp-f fade"><a class="dp-film" href="https://dylanprorok.com/" target="_blank" rel="noopener" aria-label="Open dylanprorok.com in a new tab"><video muted loop playsinline preload="none" data-poster="assets/home/film/w-prorok-scroll.webp?v=p25" data-src="assets/home/film/w-prorok-scroll.mp4?v=p25" data-webm="assets/home/film/w-prorok-scroll.webm?v=p25"></video></a></div>
+    <div class="dp-t">
+      <p class="dp-who fade">Dylan Prorok is a Las Vegas Japanese tattoo artist.</p>
+      <p class="dp-n fade" aria-label="Within 30 days"><span class="dp-w gs">Within</span> <span id="dpNum">30</span> <span class="dp-w gs">Days</span></p>
+      <p class="dp-s fade">He recovered his investment within 30 days.</p>
+      <!-- PLACEHOLDER: Dylan Prorok's testimonial goes here, quoted word for word, once he sends it. Remove the .dp-ph box (and its "testimonial coming" label) before this goes live. Do not paraphrase or invent a quote. -->
+      
+      <p class="dp-l fade"><a class="lnk" href="https://dylanprorok.com/" target="_blank" rel="noopener">See Dylan’s Site</a></p>
+    </div>
+  </div>
+</section>
+
+
 <!-- 5. HOW IT WORKS -->
 <section class="how" data-theme="light" aria-label="How it works">
   <h3 class="svc-list-h nxt-h mask"><span class="ml"><span>Next Steps</span></span></h3>
@@ -381,9 +491,9 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
     <h2 class="h2 mask h2-fit"><span class="ml l3"><span>Free Lead Flow Audit.</span></span><span class="ml l3"><span>The Fixes.</span></span><span class="ml l3"><span><em class="gs">Results.</em></span></span></h2>
   </div>
   <div class="stack">
-    <article class="card"><div class="card-n"><em class="gs">I</em></div><div class="card-t"><h3>Free Lead Flow Audit: Speed, Quality &amp; Volume</h3><p>I show you how fast your leads get answered today, how well your site wins them over, where you show up on Google and in AI answers, and what to fix first.</p></div><div class="card-f bm"><div class="bm-p"><div class="bm-in"><h4 class="bm-h">Every &ldquo;Get a Quote&rdquo; comes back to the start.</h4><p class="bm-t">On pages like Gallery, Packages, Reviews and About, the quote button jumps back to the homepage form.</p><svg class="bm-d" viewBox="0 0 680 290" role="img" aria-label="Pages like Gallery, Packages, Reviews and About send the Get a Quote button back to the homepage form"><defs><linearGradient id="bmg1" x1="0" x2="1"><stop offset="0" stop-color="#8b3dff"/><stop offset="1" stop-color="#ff4fd8"/></linearGradient></defs><path d="M100 68 C100 150 340 120 340 224" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><rect x="38" y="24" width="124" height="44" rx="22" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="100" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Gallery</text><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="0.0s" repeatCount="indefinite" path="M100 68 C100 150 340 120 340 224"/></circle><path d="M260 68 C260 150 340 120 340 224" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><rect x="198" y="24" width="124" height="44" rx="22" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="260" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Packages</text><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-2.7s" repeatCount="indefinite" path="M260 68 C260 150 340 120 340 224"/></circle><path d="M420 68 C420 150 340 120 340 224" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><rect x="358" y="24" width="124" height="44" rx="22" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="420" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Reviews</text><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-1.8s" repeatCount="indefinite" path="M420 68 C420 150 340 120 340 224"/></circle><path d="M580 68 C580 150 340 120 340 224" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><rect x="518" y="24" width="124" height="44" rx="22" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="580" y="51" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">About</text><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-0.9s" repeatCount="indefinite" path="M580 68 C580 150 340 120 340 224"/></circle><rect x="190" y="224" width="300" height="52" rx="14" fill="#0a0710" stroke="url(#bmg1)" stroke-width="2"/><text x="340" y="247" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Homepage form</text><text x="340" y="266" text-anchor="middle" fill="#9a8fb0" font-size="12.5">the slowest page, loaded again</text><text x="340" y="132" text-anchor="middle" fill="#ff9be8" font-size="14" font-weight="700" letter-spacing="2">GET A QUOTE</text></svg><svg class="bm-m" viewBox="0 0 340 330" role="img" aria-label="Pages like Gallery, Packages, Reviews and About send the Get a Quote button back to the homepage form"><defs><linearGradient id="bmg2" x1="0" x2="1"><stop offset="0" stop-color="#8b3dff"/><stop offset="1" stop-color="#ff4fd8"/></linearGradient></defs><path d="M88 60 C88 190 170 170 170 262" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="0.0s" repeatCount="indefinite" path="M88 60 C88 190 170 170 170 262"/></circle><path d="M252 60 C252 190 170 170 170 262" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-2.7s" repeatCount="indefinite" path="M252 60 C252 190 170 170 170 262"/></circle><path d="M88 126 C88 190 170 170 170 262" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-1.8s" repeatCount="indefinite" path="M88 126 C88 190 170 170 170 262"/></circle><path d="M252 126 C252 190 170 170 170 262" fill="none" stroke="rgba(180,107,255,.45)" stroke-width="1.5" stroke-dasharray="5 6"/><circle r="6" fill="#ff4fd8"><animateMotion dur="3.6s" begin="-0.9s" repeatCount="indefinite" path="M252 126 C252 190 170 170 170 262"/></circle><rect x="20" y="20" width="136" height="40" rx="20" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="88" y="45" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Gallery</text><rect x="184" y="20" width="136" height="40" rx="20" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="252" y="45" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Packages</text><rect x="20" y="86" width="136" height="40" rx="20" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="88" y="111" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">Reviews</text><rect x="184" y="86" width="136" height="40" rx="20" fill="#1a1030" stroke="rgba(217,208,234,.3)"/><text x="252" y="111" text-anchor="middle" fill="#fff" font-size="15" font-weight="600">About</text><text x="170" y="172" text-anchor="middle" fill="#ff9be8" font-size="13" font-weight="700" letter-spacing="2">GET A QUOTE</text><rect x="30" y="262" width="280" height="56" rx="14" fill="#0a0710" stroke="url(#bmg2)" stroke-width="2"/><text x="170" y="286" text-anchor="middle" fill="#fff" font-size="16" font-weight="700">Homepage form</text><text x="170" y="305" text-anchor="middle" fill="#9a8fb0" font-size="12.5">the slowest page, loaded again</text></svg></div></div></div></article>
-    <article class="card"><div class="card-n"><em class="gs">II</em></div><div class="card-t"><h3>The Fixes</h3><p>We start with speed, so the leads you already have get answered. Then your website becomes the easy pick, and then more people find you.</p></div><div class="card-f"><video muted loop playsinline preload="none" data-poster="assets/home/film/w-truheart-full.webp?v=p33" data-src="assets/home/film/w-truheart-full.mp4?v=p33" data-webm="assets/home/film/w-truheart-full.webm?v=p33"></video></div></article>
-    <article class="card"><div class="card-n"><em class="gs">III</em></div><div class="card-t"><h3>Results</h3><p>You see it in your own numbers: the calls answered, the bookings made, and the before and after from the AI answers.</p></div><div class="card-f"><video muted loop playsinline preload="none" data-poster="assets/home/film/w-wrapstar-full.webp?v=p25" data-src="assets/home/film/w-wrapstar-full.mp4?v=p25" data-webm="assets/home/film/w-wrapstar-full.webm?v=p25"></video></div></article>
+    <article class="card"><div class="card-n"><em class="gs">I</em></div><div class="card-t"><h3>Free Lead Flow Audit: Speed, Quality &amp; Volume</h3><p>I show you how fast your leads get answered today, how well your site wins them over, where you show up on Google and in AI answers, and what to fix first.</p></div><div class="card-f sd"><div class="sd-p sd-au" id="sdAudit" role="img" aria-label="Example of a Free Lead Flow Audit: a Speed check for how fast a lead gets answered, a Quality check for how well your site wins them over, a Volume check for where you show up on Google and in AI answers, then a short list of what to fix first"><div class="sd-h"><p class="sv-src">Free Lead Flow Audit</p><span class="sd-ex">Example</span></div><div class="sd-au-g"><ol class="sd-cks"><li class="sd-ck" data-s="1"><span class="sd-ic" aria-hidden="true"></span><div><p class="sd-t">Speed</p><p class="sd-m">How Fast A Lead Gets Answered</p><i class="sd-bar" aria-hidden="true"><b></b></i></div></li><li class="sd-ck" data-s="2"><span class="sd-ic" aria-hidden="true"></span><div><p class="sd-t">Quality</p><p class="sd-m">How Well Your Site Wins Them Over</p><i class="sd-bar" aria-hidden="true"><b></b></i></div></li><li class="sd-ck" data-s="3"><span class="sd-ic" aria-hidden="true"></span><div><p class="sd-t">Volume</p><p class="sd-m">Where You Show Up On Google And In AI Answers</p><i class="sd-bar" aria-hidden="true"><b></b></i></div></li></ol><div class="sd-fx" data-s="4"><p class="sd-fh">What To Fix First</p><ol><li data-s="5"><span aria-hidden="true">1</span>Text Back Every Missed Call</li><li data-s="6"><span aria-hidden="true">2</span>One Clear Way To Book On Every Page</li><li data-s="7"><span aria-hidden="true">3</span>Show Up Where Buyers Search</li></ol></div></div></div></div></article>
+    <article class="card"><div class="card-n"><em class="gs">II</em></div><div class="card-t"><h3>The Fixes</h3><p>We start with speed, so the leads you already have get answered. Then your website becomes the easy pick, and then more people find you.</p></div><div class="card-f sd"><div class="sd-p sd-call" id="sdCall" aria-label="Example: a call rings twice and gets picked up, and the conversation shows as live captions"><div class="sd-h"><p class="sv-src">Phone Call</p><span class="sd-ex">Example</span></div><div class="sd-ring" aria-hidden="true"><span class="sd-ph"><i></i><i></i><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z" fill="currentColor"/></svg></span><p class="sd-rt"><span class="sd-r1">Incoming Call</span><span class="sd-r2">Picked Up</span></p><p class="sv-meta">New Customer</p></div><div class="sd-live"><div class="sd-cb"><span class="gb-ic" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M6.6 10.8a15.1 15.1 0 0 0 6.6 6.6l2.2-2.2c.3-.3.7-.4 1-.2 1.1.4 2.3.6 3.6.6.6 0 1 .4 1 1V20c0 .6-.4 1-1 1A17 17 0 0 1 3 4c0-.6.4-1 1-1h3.5c.6 0 1 .4 1 1 0 1.3.2 2.5.6 3.6.1.3 0 .7-.2 1z" fill="currentColor"/></svg></span><div><p class="sv-name">Call Picked Up</p><p class="sv-meta">New Customer &middot; Live Captions</p></div><button class="sd-hear" type="button" aria-pressed="false" hidden>Tap To Hear The Call</button></div><div class="sd-cap"><p class="gb-b gb-out" data-c="0">Hey, it&rsquo;s Jarrett. Thanks for calling. What can I help you with?</p><p class="gb-b gb-in" data-c="1">Do you have anything open this Saturday?</p><p class="gb-b gb-out" data-c="2">I have <strong>Saturday at 11:00 AM</strong> open. Want me to book it for you?</p><p class="gb-b gb-in" data-c="3">Yes, please. Thank you!</p><p class="gb-b gb-out" data-c="4">You&rsquo;re booked. I&rsquo;ll text you a reminder the day before.</p></div></div><!-- AUDIO SLOT: put Jarrett's voice file path in data-src (for example assets/home/audio/call.mp3) and set data-cues to the second each caption line starts, in order. With no data-src the Tap To Hear The Call button stays hidden and the captions play silently. --><audio class="sd-aud" preload="none" data-src="" data-cues="0,3.6,6.4,9.8,12.2"></audio></div></div></article>
+    <article class="card"><div class="card-n"><em class="gs">III</em></div><div class="card-t"><h3>Results</h3><p>You see it in your own numbers: the calls answered, the bookings made, and the before and after from the AI answers.</p></div><div class="card-f sd"><div class="sd-p sd-rep" id="sdRep" role="img" aria-label="Example of a monthly result report: 18 calls answered, 7 bookings made, and an AI answer that did not name the business before and names Your Business after"><div class="sd-h"><p class="sv-src">Monthly Report</p><span class="sd-ex">Example</span></div><p class="sd-rl"><span class="sd-ty" data-t="Here&rsquo;s what came in this month.">Here&rsquo;s what came in this month.</span><i class="sv-caret" aria-hidden="true"></i></p><div class="sd-ks"><div class="sd-k" data-s="1"><p class="sd-kn" data-to="18">18</p><p class="sd-m">Calls Answered</p></div><div class="sd-k" data-s="2"><p class="sd-kn" data-to="7">7</p><p class="sd-m">Bookings Made</p></div></div><div class="sd-ai"><div class="sd-a" data-s="3"><p class="sd-al">AI Answer Before</p><p class="sd-at">A few to call in Las Vegas:</p><div class="sv-sk" aria-hidden="true"><i></i><i></i></div></div><div class="sd-a sd-a2" data-s="4"><p class="sd-al">AI Answer After</p><p class="sd-at">One to call is <strong>Your Business</strong>, in Las Vegas.</p></div></div></div></div></article>
   </div>
 </section>
 
@@ -459,7 +569,16 @@ if(!on&&p>=0){on=1;t.classList.add('in')}
 var w=c((p-.55)/.6);E[0]&&E[0].style.setProperty('--sx',(120-c(w*1.15)*140).toFixed(2)+'%')}
 if(E[1]){var tx=rd?c((p-.84)/.52):0,dt=pt?Math.min(ts-pt,50):16,st=dt/1100,d=tx-cur;if(d){cur+=d>st?st:d<-st?-st:d;E[1].style.setProperty('--sx',(120-cur*140).toFixed(2)+'%')}}pt=ts;
 requestAnimationFrame(f)}requestAnimationFrame(function(){t.classList.add('tg-on','mask');requestAnimationFrame(f)})})();</script>
-<script src="assets/home/site.js?v=sp3"></script><script id="btn-early-fit">(function(){var i=document.getElementById("intro");if(!i)return;var p0=parseFloat(getComputedStyle(i).paddingBottom)||0,k=setInterval(f,150),t0=0;function f(){if(!i.isConnected){clearInterval(k);return}var b=document.querySelector(".btn.dock-btn");if(!b)return;var r=b.getBoundingClientRect();if(!r.height)return;if(t0)i.style.transition=t0;i.style.paddingBottom=Math.max(p0,innerHeight-r.top+18)+"px";if(!t0){t0=getComputedStyle(i).transition+",padding-bottom .5s ease"}}f();var h=document.documentElement,t1=performance.now(),fr=0,lt=null,n=0;document.fonts&&document.fonts.ready.then(function(){fr=1});function e(){if(h.classList.contains("ready"))return;var b=document.querySelector(".btn.dock-btn.glide"),y=b?Math.round(b.getBoundingClientRect().top):null;n=(b&&y===lt)?n+1:0;lt=y;var el=performance.now()-t1;if((fr&&n>=5&&el>600)||el>2600){h.classList.add("btn-early");return}setTimeout(e,60)}e()})();</script>
+<script src="assets/home/site.js?v=sp3"></script><style id="carousel-frame-fix">/* r23 (Nov 13 2026): on desktop the carousel films were sized from what was left of the window height under the heading, so short windows squashed them to strips or nothing. The heading now scrolls away first (the pinned frame is window height plus heading height, stuck at minus the heading height, with the bar clearance moved above the track), and every film keeps a real 16:9 frame sized from the track that is left, capped at 58vw. Phones (<=860px) are unchanged. */
+@media (min-width:861px){
+  .work-pin{height:calc(100svh + var(--wtH,0px))!important;top:calc(-1 * var(--wtH,0px))!important}
+  .track{align-items:center;margin-top:var(--wtP,0px)}
+  .pc{height:auto!important;align-self:center!important}
+  .pc-f{height:auto!important;aspect-ratio:16/9!important;width:max(300px,min(58vw,calc((var(--trackH,60svh) - 92px) * 16 / 9)))!important;max-width:none}
+}
+</style><script id="carousel-frame-fix-js">(function(){const p=document.querySelector('.work-pin'),t=p&&p.querySelector('.work-top'),tr=document.getElementById('track');if(!t||!tr)return;const R=document.documentElement;let last=-1;
+function f(){const m=parseFloat(getComputedStyle(t).marginBottom)||0,pt=parseFloat(getComputedStyle(p).paddingTop)||0,on=innerWidth>860,h=on?Math.round(pt+t.offsetHeight+m):0;if(h!==last){last=h;R.style.setProperty('--wtH',h+'px');R.style.setProperty('--wtP',(on?Math.round(pt):0)+'px');requestAnimationFrame(()=>{const th=tr.clientHeight+'px';R.style.setProperty('--trackH',th);let n=tr;while(n&&n!==R){if(n.style&&n.style.getPropertyValue('--trackH'))n.style.setProperty('--trackH',th);n=n.parentElement}dispatchEvent(new Event('scroll'))})}}
+f();addEventListener('resize',()=>{last=-1;f()},{passive:true});addEventListener('load',f);document.fonts&&document.fonts.ready.then(()=>{last=-1;f()});})();</script><script id="btn-early-fit">(function(){var i=document.getElementById("intro");if(!i)return;var p0=parseFloat(getComputedStyle(i).paddingBottom)||0,k=setInterval(f,150),t0=0;function f(){if(!i.isConnected){clearInterval(k);return}var b=document.querySelector(".btn.dock-btn");if(!b)return;var r=b.getBoundingClientRect();if(!r.height)return;if(t0)i.style.transition=t0;i.style.paddingBottom=Math.max(p0,innerHeight-r.top+18)+"px";if(!t0){t0=getComputedStyle(i).transition+",padding-bottom .5s ease"}}f();var h=document.documentElement,t1=performance.now(),fr=0,lt=null,n=0;document.fonts&&document.fonts.ready.then(function(){fr=1});function e(){if(h.classList.contains("ready"))return;var b=document.querySelector(".btn.dock-btn.glide"),y=b?Math.round(b.getBoundingClientRect().top):null;n=(b&&y===lt)?n+1:0;lt=y;var el=performance.now()-t1;if((fr&&n>=5&&el>600)||el>2600){h.classList.add("btn-early");return}setTimeout(e,60)}e()})();</script>
 <style id="h1b">.h1b{font-size:clamp(52px,7.1vw,128px)!important;line-height:.95!important;letter-spacing:-.03em!important}.h1b .payoff{font-size:1em}h1.h1b{text-shadow:0 0 2px rgba(0,0,0,.85),0 0 8px rgba(0,0,0,.75),0 2px 18px rgba(0,0,0,.6),0 8px 44px rgba(0,0,0,.5)!important}.h1b .ln-x .w{transform:translateX(-104%)!important;transition:transform 1.3s var(--ease)}.ready .h1b .ln-x .w{transform:none!important}.h1b .ln:nth-child(-n+2) .w{transition:transform 2.8s cubic-bezier(.22,1,.36,1)!important}.h1b .ln.ln-x:nth-child(1) .w{transition:transform 4s cubic-bezier(.16,1,.3,1)!important}.ready .h1b .ln:nth-child(2) .w{transition-delay:1.9s!important}@media (max-width:700px){.h1b{font-size:9.5vw!important}}</style><style id="btn-early">body:has(#intro) .btn.glide{z-index:101}html:not(.ready):not(.paused):not(.done):not(.btn-early) .btn.glide{pointer-events:none}html.btn-early:not(.ready) .btn.glide{opacity:1;transition:opacity .6s ease}</style><style id="hsub">.ready .hero .fade.hero-sub{transition:opacity 1.6s var(--ease) 5.6s,transform 1.7s var(--ease) 5.6s}</style><style id="cp3">.tagl{flex-direction:column}.tagl-k{margin:0 0 1.1em;font-size:clamp(13px,1.35vw,22px);font-weight:600;letter-spacing:.14em;line-height:1.2;color:rgba(243,238,228,.86);text-align:center}.tagl-k .ml{display:block;overflow:hidden;padding-bottom:.2em}.tagl-k .ml>span{display:inline-block;transform:translateY(140%);transition:transform 1.3s var(--ease)}.tagl:has(#tagl.in) .tagl-k .ml>span,.paused .tagl-k .ml>span,.done .tagl-k .ml>span{transform:none}.stk .ml{display:block}.stk.mask .ml:nth-child(2)>span{transition-delay:.18s}.stk.mask .ml:nth-child(3)>span{transition-delay:.36s}.stk.mask .ml:nth-child(4)>span{transition-delay:.54s}.svc-s{margin:.35em 0 0;font-size:clamp(14px,1.05vw,16px);font-weight:500;letter-spacing:.01em;color:rgba(243,238,228,.62)}</style><style id="cp4">.tagl-k{font-size:clamp(36px,4.6vw,84px);letter-spacing:-.01em;white-space:nowrap}@media (min-width:861px){.tagl-k{font-size:clamp(44px,5.6vw,104px)}}@media (max-width:700px){.tagl-k{font-size:min(clamp(20px,calc(7.5vw - 4px),40px),calc((100vw - 40px)/16.2))}}</style><style id="cp5">.svc-n{display:flex;align-items:baseline;gap:.55em}.svc-n em.gs.svc-k{font-size:.94em;white-space:nowrap}@media (max-width:860px){.svc-n em.gs.svc-k{font-size:min(.86em,calc((100vw - 113px) / 11.05))}}</style><script>/* Get Booked demo (Nov 5 2026): missed call, instant text-back, booking, calendar, reminder and review request; same pattern and pause handling as the search demo */
 (function(){const d=document.getElementById('gbDemo');if(!d)return;const root=document.documentElement;
 const T=[{in:'Do you have anything open this Saturday?',slot:'Saturday at 11:00 AM',when:'Saturday, 11:00 AM',kind:'Consult',day:5},
@@ -477,7 +596,36 @@ function run(){if(P()){final();running=false;return}running=true;clear();const c
  at(12500,()=>{d.classList.add('s-out');at(600,()=>{i=(i+1)%T.length;run()})})}
 new IntersectionObserver(es=>{const e=es[0];if(e.isIntersecting){if(!running){seen=true;run()}}else if(running){final();running=false}},{threshold:.25}).observe(d);
 const pp=document.getElementById('pp');if(pp)pp.addEventListener('click',()=>{if(P()){final();running=false}else if(seen){const r=d.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)run()}});
-final();})();</script><script>/* inquiry form: sends to Jarrett's inbox; booking stays the main path */
+final();})();</script><script id="step-demos-js">/* r23 How It Works step visuals: same pattern and Pause handling as the Get Booked demo (final state on Pause, loop while in view) */
+(function(){const root=document.documentElement,P=()=>root.classList.contains('paused');
+function demo(d,base,run,final){if(!d)return;let timers=[],running=false,seen=false;
+ const api={at(ms,f){timers.push(setTimeout(f,ms))},clear(){timers.forEach(clearTimeout);timers=[]},stop(){api.clear();final();d.className=base;running=false},loop(ms){api.at(ms,()=>{d.classList.add('s-out');api.at(600,start)})},hold:false};
+ function start(){if(api.hold)return;if(P()){api.stop();return}running=true;api.clear();d.className=base+' anim';run(api)}
+ new IntersectionObserver(es=>{const e=es[0];if(e.isIntersecting){if(!running&&!api.hold){seen=true;start()}}else if(running){api.stop()}},{threshold:.3}).observe(d);
+ const pp=document.getElementById('pp');if(pp)pp.addEventListener('click',()=>{if(P()){api.stop()}else if(seen&&!api.hold){const r=d.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)start()}});
+ final();api.start=start;return api}
+/* I audit checks */
+demo(document.getElementById('sdAudit'),'sd-p sd-au',a=>{const d=document.getElementById('sdAudit');
+ [[250,'s1'],[1450,'d1'],[1700,'s2'],[2900,'d2'],[3150,'s3'],[4350,'d3'],[4800,'s4'],[5300,'s5'],[5800,'s6'],[6300,'s7']].forEach(s=>a.at(s[0],()=>d.classList.add(s[1])));a.loop(10800)},()=>{});
+/* III report */
+(function(){const d=document.getElementById('sdRep');if(!d)return;const ty=d.querySelector('.sd-ty'),full=ty.textContent,ns=[...d.querySelectorAll('.sd-kn')];let raf=0;
+ function setAll(){cancelAnimationFrame(raf);ty.textContent=full;ns.forEach(n=>n.textContent=n.dataset.to)}
+ function tick(n,D){const to=+n.dataset.to,s=performance.now();(function f(t){const p=Math.min(1,(t-s)/D),e=1-Math.pow(1-p,3);n.textContent=Math.round(to*e);if(p<1&&!P())raf=requestAnimationFrame(f);else n.textContent=to})(s)}
+ demo(d,'sd-p sd-rep',a=>{ty.textContent='';ns.forEach(n=>n.textContent='0');d.classList.add('typing');let k=0;const step=()=>{k++;ty.textContent=full.slice(0,k);if(k<full.length)a.at(38,step);else a.at(500,()=>d.classList.remove('typing'))};a.at(300,step);
+  a.at(1900,()=>{d.classList.add('s1');tick(ns[0],1500)});a.at(2400,()=>{d.classList.add('s2');tick(ns[1],1300)});a.at(4300,()=>d.classList.add('s3'));a.at(5700,()=>d.classList.add('s4'));a.loop(10500)},setAll)})();
+/* II ring, pick up, live captions; optional voice file synced to the same captions */
+(function(){const d=document.getElementById('sdCall');if(!d)return;const caps=[...d.querySelectorAll('.sd-cap>p')],box=d.querySelector('.sd-cap'),au=d.querySelector('.sd-aud'),btn=d.querySelector('.sd-hear'),cues=(au.dataset.cues||'').split(',').map(Number);
+ const show=n=>{caps.forEach((c,j)=>c.classList.toggle('on',j<n));box.scrollTop=box.scrollHeight};
+ const api=demo(d,'sd-p sd-call',a=>{show(0);a.at(150,()=>d.classList.add('r'));a.at(2350,()=>d.classList.add('up'));a.at(3100,()=>d.classList.add('live'));
+  cues.forEach((c,j)=>a.at(3500+c*1000,()=>show(j+1)));a.loop(3500+cues[cues.length-1]*1000+4500)},()=>{caps.forEach(c=>c.classList.add('on'));box.scrollTop=0});
+ if(!au.dataset.src)return;btn.hidden=false;let rafA=0;
+ function sync(){let n=0;cues.forEach((c,j)=>{if(au.currentTime>=c)n=j+1});if(n!==sync.n){sync.n=n;show(n)}if(!au.paused)rafA=requestAnimationFrame(sync)}
+ function label(on){btn.setAttribute('aria-pressed',on);btn.textContent=on?'Pause The Call':(au.currentTime>0&&!au.ended?'Keep Listening':'Tap To Hear The Call')}
+ btn.addEventListener('click',()=>{if(!au.src)au.src=au.dataset.src;if(au.paused){api.hold=true;api.clear();d.className='sd-p sd-call anim r up live';sync.n=-1;if(au.ended||au.currentTime===0)show(0);au.play().then(()=>{label(true);sync()}).catch(()=>{api.hold=false;label(false)})}else{au.pause()}});
+ au.addEventListener('pause',()=>{cancelAnimationFrame(rafA);label(false)});
+ au.addEventListener('ended',()=>{show(caps.length);api.hold=false;au.currentTime=0;label(false)});
+ const pp=document.getElementById('pp');if(pp)pp.addEventListener('click',()=>{if(P()){au.pause();api.hold=false}});})();
+})();</script><script>/* inquiry form: sends to Jarrett's inbox; booking stays the main path */
 (function(){var d=document,f=d.getElementById('inqForm');if(!f)return;d.querySelectorAll('.inq-jump').forEach(function(a){a.addEventListener('click',function(e){var t=d.getElementById('inquiry');if(!t)return;e.preventDefault();var y=t.getBoundingClientRect().top+scrollY-96,L=window.__lenis;if(L&&L.scrollTo)L.scrollTo(y);else scrollTo({top:y,behavior:'smooth'})})});var st=d.getElementById('inqSt'),b=f.querySelector('button[type=submit]'),R=d.getElementById('inqReach');
 function vis(){var r=st.getBoundingClientRect(),m=innerHeight-24;if(r.bottom>m){var y=scrollY+r.bottom-m,L=window.__lenis;if(L&&L.scrollTo)L.scrollTo(y);else scrollTo({top:y,behavior:'smooth'})}}
 function okReach(v){v=v.trim();return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v)||v.replace(/\D/g,'').length>=10}

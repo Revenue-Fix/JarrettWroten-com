@@ -207,7 +207,16 @@
 </footer>
 <script src="/assets/vendor/lenis-1.1.13.min.js"></script>
 <script src="/assets/home/dock.js?v=hdr1"></script>
-    <script src="/assets/home/port-sections.js?v=ia5"></script>
+    <script src="/assets/home/port-sections.js?v=ia5"></script><style id="carousel-frame-fix">/* r23 (Nov 13 2026): on desktop the carousel films were sized from what was left of the window height under the heading, so short windows squashed them to strips or nothing. The heading now scrolls away first (the pinned frame is window height plus heading height, stuck at minus the heading height, with the bar clearance moved above the track), and every film keeps a real 16:9 frame sized from the track that is left, capped at 58vw. Phones (<=860px) are unchanged. */
+@media (min-width:861px){
+  .work-pin{height:calc(100svh + var(--wtH,0px))!important;top:calc(-1 * var(--wtH,0px))!important}
+  .track{align-items:center;margin-top:var(--wtP,0px)}
+  .pc{height:auto!important;align-self:center!important}
+  .pc-f{height:auto!important;aspect-ratio:16/9!important;width:max(300px,min(58vw,calc((var(--trackH,60svh) - 92px) * 16 / 9)))!important;max-width:none}
+}
+</style><script id="carousel-frame-fix-js">(function(){const p=document.querySelector('.work-pin'),t=p&&p.querySelector('.work-top'),tr=document.getElementById('track');if(!t||!tr)return;const R=document.documentElement;let last=-1;
+function f(){const m=parseFloat(getComputedStyle(t).marginBottom)||0,pt=parseFloat(getComputedStyle(p).paddingTop)||0,on=innerWidth>860,h=on?Math.round(pt+t.offsetHeight+m):0;if(h!==last){last=h;R.style.setProperty('--wtH',h+'px');R.style.setProperty('--wtP',(on?Math.round(pt):0)+'px');requestAnimationFrame(()=>{const th=tr.clientHeight+'px';R.style.setProperty('--trackH',th);let n=tr;while(n&&n!==R){if(n.style&&n.style.getPropertyValue('--trackH'))n.style.setProperty('--trackH',th);n=n.parentElement}dispatchEvent(new Event('scroll'))})}}
+f();addEventListener('resize',()=>{last=-1;f()},{passive:true});addEventListener('load',f);document.fonts&&document.fonts.ready.then(()=>{last=-1;f()});})();</script>
 <script src="https://jarrettwroten.com/preview-shared/page.js?v=4"></script>
 </body>
 </html>
