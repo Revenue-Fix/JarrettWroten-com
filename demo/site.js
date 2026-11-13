@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[1.0,1.1,1.8,1.5,1.7,1.7,1.2]; /* scroll per beat, in screens */
+var LEN=[1.0,1.5,1.9,1.8,1.6,1.1,1.5,1.7,1.6,1.5,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -17,6 +17,12 @@ var grid=$('.grid100'),onIdx=[];
  for(i=99;i>0;i--){var j=Math.floor(r()*(i+1));var t=order[i];order[i]=order[j];order[j]=t;}
  onIdx=order.slice(0,54);for(i=0;i<100;i++)grid.appendChild(D.createElement('i'));})();
 var dots=$$('i',grid),onDots=onIdx.map(function(i){return dots[i];});
+
+
+/* outlier chart: a cluster of sample shops near the average */
+var opd=$('.op-dots');(function(){var seed=7,i;function r(){seed=(seed*9301+49297)%233280;return seed/233280;}
+ for(i=0;i<22;i++){var d=D.createElement('i');d.style.left=(5+i*3.5+r()*2)+'%';d.style.bottom=(14+r()*20)+'%';opd.appendChild(d);}})();
+var opDots=$$('i',opd);
 
 /* ---------- hook: sample search loop (time based) ---------- */
 var Q=['ac repair near me','tattoo shop las vegas','auto body shop near me','wedding chapel las vegas'];
@@ -45,6 +51,41 @@ var tls=[];
 function T(){var t=g.timeline({paused:true,defaults:{ease:'power2.out'}});tls.push(t);return t;}
 /* 1 hook drifts on the way out */
 T().to('.b1 .hook-copy',{y:-30,duration:1},0).to('.b1 .srch',{y:-16,duration:1},0);
+/* pain: the ways leads slip away, one at a time */
+T().from('.bp .h2',{y:40,opacity:0,duration:.14},0)
+   .from('.bp .pain li',{x:-24,opacity:0,duration:.1,stagger:.1},.12)
+   .from('.bp .pd',{scale:0,duration:.08,stagger:.1,ease:'back.out(3)'},.16)
+   .from('.bp .nt',{y:50,opacity:0,duration:.14},.04)
+   .from('.bp .nt-i',{x:30,opacity:0,duration:.08,stagger:.09},.14)
+   .from('.bp .nt-x',{opacity:0,y:10,duration:.1},.56)
+   .to({},{duration:.25});
+/* not alone: four sourced numbers count up */
+var cns=$$('.bs .cn');
+T().from('.bs .h2',{y:40,opacity:0,duration:.12},0)
+   .from('.bs .sub',{y:20,opacity:0,duration:.1},.08)
+   .from('.bs .sc',{y:50,opacity:0,duration:.14,stagger:.07},.14);
+cns.forEach(function(c,i){var to=+c.getAttribute('data-to'),o={v:0};tls[tls.length-1].to(o,{v:to,duration:.26,ease:'power1.out',onUpdate:function(){c.textContent=Math.round(o.v);}},.18+i*.07);});
+tls[tls.length-1].from('.bs .sc-s',{opacity:0,duration:.08,stagger:.05},.5).to({},{duration:.22});
+/* 2 proof: 54 of 100 light up gold */
+var nEl=$('#n54'),cnt={v:0};
+T().from('.b2 .big',{y:60,opacity:0,duration:.18},0)
+   .from(dots,{scale:0,opacity:0,duration:.16,stagger:{each:.0012,from:'start'}},0)
+   .to(cnt,{v:54,duration:.46,ease:'power1.inOut',onUpdate:function(){nEl.textContent=Math.round(cnt.v);}},.08)
+   .to(onDots,{backgroundColor:'#f3dc9a',boxShadow:'0 0 10px rgba(243,220,154,.35)',duration:.02,stagger:.44/54},.08)
+   .from('.b2 .h2',{y:40,opacity:0,duration:.18},.4)
+   .from('.b2 .sub',{y:24,opacity:0,duration:.14},.5)
+   .from('.b2 .src',{opacity:0,duration:.12},.58)
+   .to({},{duration:.3});
+/* outlier: the cluster settles near the average, one gold dot climbs clear of it */
+T().from('.bo .h2',{y:40,opacity:0,duration:.12},0)
+   .from('.bo .op',{y:50,opacity:0,duration:.14},.04)
+   .from(opDots,{opacity:0,y:20,duration:.08,stagger:.006},.1)
+   .from('.bo .op-avg',{scaleX:0,transformOrigin:'left center',duration:.12},.16)
+   .from('.bo .op-you',{bottom:'26%',duration:.26,ease:'power3.inOut'},.3)
+   .from('.bo .op-stem',{scaleY:0,duration:.26,ease:'power3.inOut'},.3)
+   .from('.bo .op-tag',{opacity:0,x:12,duration:.1},.54)
+   .from('.bo .sub',{y:24,opacity:0,duration:.12},.24)
+   .to({},{duration:.24});
 /* 6 order: the call line, one line at a time */
 T().from('.b6 .h2 .ln',{y:50,opacity:0,duration:.18,stagger:.1},0).to({},{duration:.4});
 /* 5 booked: the missed call turns into a booking, then a review */
@@ -60,16 +101,6 @@ T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .from('.b5 .stat',{y:20,opacity:0,duration:.1},.62)
    .from('.b5 .src',{opacity:0,duration:.08},.68)
    .to({},{duration:.22});
-/* 2 proof: 54 of 100 light up gold */
-var nEl=$('#n54'),cnt={v:0};
-T().from('.b2 .big',{y:60,opacity:0,duration:.18},0)
-   .from(dots,{scale:0,opacity:0,duration:.16,stagger:{each:.0012,from:'start'}},0)
-   .to(cnt,{v:54,duration:.46,ease:'power1.inOut',onUpdate:function(){nEl.textContent=Math.round(cnt.v);}},.08)
-   .to(onDots,{backgroundColor:'#f3dc9a',boxShadow:'0 0 10px rgba(243,220,154,.35)',duration:.02,stagger:.44/54},.08)
-   .from('.b2 .h2',{y:40,opacity:0,duration:.18},.4)
-   .from('.b2 .sub',{y:24,opacity:0,duration:.14},.5)
-   .from('.b2 .src',{opacity:0,duration:.12},.58)
-   .to({},{duration:.3});
 /* 4 chosen: mixed details scatter, the gold line sweeps in one clear page */
 var ms=$$('.b4 .ms');
 T().from('.b4 .h2',{y:40,opacity:0,duration:.14},0)
@@ -92,9 +123,12 @@ T().from('.b3 .h2',{y:40,opacity:0,duration:.14},0)
    .fromTo('.b3 .mp.you',{opacity:0,scale:2.4},{opacity:1,scale:1,duration:.1,ease:'back.out(2)'},.36)
    .to('.b3 .mp.you',{boxShadow:'0 0 0 18px rgba(243,220,154,0)',duration:.14,ease:'power1.out'},.44)
    .from('.b3 .sub',{y:24,opacity:0,duration:.12},.4)
-   .from('.b3 .stat',{y:20,opacity:0,duration:.1},.5)
-   .from('.b3 .src',{opacity:0,duration:.08},.56)
    .to({},{duration:.25});
+/* tease: the three offers, in order */
+T().from('.bt .h2',{y:40,opacity:0,duration:.12},0)
+   .from('.bt .of',{y:50,opacity:0,duration:.14,stagger:.09},.1)
+   .from('.bt .of-n',{opacity:0,scale:.7,duration:.1,stagger:.09},.16)
+   .to({},{duration:.3});
 /* 7 ask: the gold line draws round the button */
 var rect=$('.cta-r'),svg=$('.cta-svg'),btn=$('#cta'),rlen=1;
 function sizeCta(){var w=btn.offsetWidth+14,h=btn.offsetHeight+14;svg.setAttribute('width',w);svg.setAttribute('height',h);svg.setAttribute('viewBox','0 0 '+w+' '+h);
