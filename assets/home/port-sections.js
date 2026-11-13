@@ -15,6 +15,7 @@ function ply(v,n){if(!v||P()||v.__done)return;v.muted=true;v.defaultMuted=true;v
 const num=$('#dpNum');let counted=false;
 function count(){if(counted||!num)return;counted=true;const to=30,s=performance.now(),D=1600;(function f(t){const p=Math.min(1,(t-s)/D),e=1-Math.pow(1-p,4);num.textContent=Math.round(to*e);if(p<1&&!P())requestAnimationFrame(f);else num.textContent='30'})(s)}
 if(num){num.textContent='0';new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();count()}},{rootMargin:'0px 0px -15% 0px'}).observe(num);setTimeout(()=>{if(!counted&&num.getBoundingClientRect().top<innerHeight)count()},4000)}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#pp')&&P()&&num){counted=true;num.textContent='30'}});
 
 (function(){const d=document.getElementById('svDemo');if(!d)return;
 const T=[

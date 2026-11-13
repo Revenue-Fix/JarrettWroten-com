@@ -83,6 +83,7 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&!paused)p
 const num=$('#dpNum');let counted=false;
 function count(){if(counted||!num)return;counted=true;const to=30,s=performance.now(),D=1600;(function f(t){const p=Math.min(1,(t-s)/D),e=1-Math.pow(1-p,4);num.textContent=Math.round(to*e);if(p<1&&!paused)requestAnimationFrame(f);else num.textContent='30'})(s)}
 if(num){num.textContent='0';new IntersectionObserver((es,o)=>{if(es[0].isIntersecting){o.disconnect();count()}},{rootMargin:'0px 0px -15% 0px'}).observe(num);setTimeout(()=>{if(!counted&&num.getBoundingClientRect().top<innerHeight)count()},4000)}
+document.addEventListener('click',e=>{if(e.target.closest&&e.target.closest('#pp')&&paused&&num){counted=true;num.textContent='30'}});
 
 // stacked cards + end film + header
 const stackCards=$$('.card'),endW=$('.end-v-w'),bar=$('#bar');let last=0;
