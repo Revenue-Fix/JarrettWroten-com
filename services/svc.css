@@ -1,4 +1,8 @@
 /* Service page layer. Type, color, cards, buttons, header, menu and footer come from the homepage's own style.css, site.css and services.css. */
+/* r25: masked lines clip with clip-path reaching .24em below the box instead of overflow:hidden; no box changes size, so nothing moves */
+.mask .ml{overflow:visible;clip-path:inset(0 0 -.24em 0)}
+.mask .ml>span{transform:translateY(160%)}
+.mask.in .ml>span,.paused .mask .ml>span,.done .mask .ml>span{transform:none}
 a.sp-card{display:block;text-decoration:none;color:inherit}
 a.sp-card .svc-t{transition:color .4s}
 a.sp-card:hover .svc-t{color:#f3dc9a}

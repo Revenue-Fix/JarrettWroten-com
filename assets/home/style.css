@@ -406,3 +406,16 @@ html.light .pp,html.light .bar .mbtn{border-color:rgba(18,17,16,.55);background:
 }
 /* v53fix: menu overlay scrolls with the wheel (paired with data-lenis-prevent on #menu) */
 .menu{overscroll-behavior:contain}
+
+/* r25 (Nov 13 2026): descenders (g, j, p, q, y, Q, comma tails) were still sliced by the reveal masks at some widths
+   ("The Q and Y are clipped"). Every masked line now clips with clip-path, which reaches .24em below the box, instead of
+   overflow:hidden, which stopped at the box edge. Clip-path changes no box size, so nothing moves. Hidden words start lower
+   so they never peek into the deeper clip. */
+.mask .ml{overflow:visible;clip-path:inset(0 0 -.24em 0)}
+.mask .ml>span{transform:translateY(160%)}
+.mask.in .ml>span,.paused .mask .ml>span,.done .mask .ml>span{transform:none}
+.h1b .ln:nth-child(2){overflow:visible;clip-path:inset(0 0 -.2em 0)}
+.h1b .ln:nth-child(2) .w{transform:translateY(135%)}
+.ready .h1b .ln:nth-child(2) .w{transform:none}
+/* short desktop windows: the four call captions fit their box without scrolling */
+@media (min-width:861px) and (max-height:520px){#sdCall .sd-cap{gap:4px;margin-top:4px}#sdCall .sd-cap .gb-b{padding:3px 11px;line-height:1.25}}
