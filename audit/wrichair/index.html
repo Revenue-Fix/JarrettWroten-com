@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Wrich Air, how buyers find you, choose you and reach you</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%230b5f8a'/%3E%3Cpath d='M8 21c4-8 12-8 16 0' stroke='white' stroke-width='3' fill='none' stroke-linecap='round'/%3E%3Ccircle cx='16' cy='23' r='2.6' fill='white'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Mona+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f6f9;--bg2:#e8eff4;--tx:#22313d;--ink:#0d2233;--mute:#5d7182;--card:#ffffff;--line:rgba(13,34,51,.16);--acc:#0b5f8a;--acc-b:#0b5f8a;--acct:#0b5f8a;--good:#237a45;--bad:#b3362b;--note:#8a6d1f;--sheen:#7fc4e8;--cta-bg:#0b5f8a;--cta-tx:#ffffff;--head:"Instrument Serif",Georgia,serif;--body:"Mona Sans",system-ui,sans-serif;--r:14px}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font-family:var(--body);font-size:17px;line-height:1.6}
+.w{max-width:1080px;margin:0 auto;padding:0 22px}
+.bar{position:sticky;top:0;z-index:20;background:rgba(242,246,249,.94);border-bottom:1px solid var(--line)}
+.bar .w{display:flex;align-items:center;justify-content:space-between;gap:14px;min-height:64px}
+.brand{font-weight:800;color:var(--ink);font-size:15px;letter-spacing:.01em}
+.bar .hw{display:flex;align-items:center;gap:10px}
+a.cta{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:999px;background:var(--cta-bg);color:var(--cta-tx);text-decoration:none;font-weight:600}
+.pp{min-height:44px;min-width:44px;padding:0 14px;border-radius:999px;border:1px solid var(--acc);background:none;color:var(--acc);font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
+section.hero{padding:64px 0 10px;text-align:center;position:relative;overflow:hidden}
+.heroglow{position:absolute;top:0;left:0;right:0;height:360px;background:linear-gradient(100deg,transparent 20%,rgba(127,196,232,.38) 50%,transparent 80%);background-size:220% 100%;animation:sh 4s linear infinite;pointer-events:none}
+.eyebrow{font-size:12.5px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--acc);margin:0 0 14px}
+h1{font-family:var(--head);font-weight:400;font-size:clamp(38px,6vw,66px);line-height:1.04;color:var(--ink);margin:0 auto;max-width:16ch}
+h1 em{font-style:italic;color:var(--acc)}
+.opening{font-size:clamp(18px,2.2vw,21px);max-width:56ch;margin:18px auto 0}
+.chip{display:inline-block;margin-top:20px;padding:8px 16px;border:1px solid var(--line);border-radius:999px;background:var(--card);font-size:13.5px;color:var(--mute)}
+.livebar{display:flex;align-items:center;justify-content:center;gap:10px;margin:26px auto 0;font-size:13.5px;font-weight:600;color:var(--mute)}
+.dot{width:12px;height:12px;border-radius:50%;background:var(--acc);animation:pl 1.6s ease-in-out infinite}
+@keyframes pl{0%,100%{transform:scale(1);opacity:1}50%{transform:scale(1.55);opacity:.45}}
+.band{padding:56px 0}
+.band.alt{background:var(--ink);color:#e8eef2}
+.band.alt h2,.band.alt h3{color:#ffffff}
+.band.alt .eyebrow{color:var(--sheen)}
+h2{font-family:var(--head);font-weight:400;font-size:clamp(30px,4.4vw,48px);line-height:1.08;color:var(--ink);margin:0 0 12px}
+h2 em{font-style:italic;color:var(--acc)}
+.band.alt h2 em{color:var(--sheen)}
+.lede{max-width:62ch;margin:0 0 26px}
+.stages{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px}
+.st{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:16px 14px}
+.st b{display:block;color:var(--ink);font-size:16px}
+.st span{font-size:13.5px;color:var(--mute);font-weight:600}
+.f{display:grid;grid-template-columns:clamp(56px,9vw,110px) 1fr;gap:8px 22px;padding:30px 0;border-top:1px solid var(--line)}
+.f:first-of-type{border-top:0}
+.n{font-family:var(--head);font-style:italic;font-size:clamp(44px,7vw,76px);line-height:1;color:var(--sheen);background:linear-gradient(100deg,var(--sheen) 20%,#ffffff 50%,var(--sheen) 80%);background-size:220% 100%;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;animation:sh 3.2s ease forwards}
+@keyframes sh{from{background-position:180% 0}to{background-position:0 0}}
+.f h3{font-family:var(--head);font-weight:400;font-size:clamp(24px,3vw,33px);line-height:1.15;margin:2px 0 10px;color:#ffffff}
+.f p{margin:0 0 10px;max-width:62ch}
+.f .fix{color:var(--sheen);font-weight:600}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:26px}
+@media(max-width:820px){.cols{grid-template-columns:1fr}.f{grid-template-columns:1fr}.n{font-size:44px}}
+.panel{border:1px solid var(--line);border-radius:var(--r);background:var(--card);padding:22px}
+.band.alt .panel{background:#12293d;border-color:rgba(255,255,255,.16)}
+.panel h3{font-family:var(--head);font-weight:400;font-size:26px;margin:0 0 12px;color:var(--ink)}
+.band.alt .panel h3{color:#fff}
+.panel ul{margin:0;padding-left:19px}
+.panel li{margin:0 0 10px}
+table{width:100%;border-collapse:collapse;background:var(--card);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+th,td{text-align:left;padding:14px 16px;border-top:1px solid var(--line);vertical-align:top;font-size:15.5px}
+th{border-top:0;color:var(--ink);background:var(--bg2);font-size:13.5px;letter-spacing:.04em;text-transform:uppercase}
+td.no{color:var(--bad);font-weight:800;white-space:nowrap}
+td.yes{color:var(--good);font-weight:800;white-space:nowrap}
+.diy{border-top:1px solid var(--line);padding:24px 0}
+.diy h3{font-family:var(--head);font-weight:400;font-size:25px;color:var(--ink);margin:0 0 8px}
+.diy p{margin:0 0 8px;max-width:68ch}
+.paste{border:1px solid var(--line);border-radius:8px;background:var(--card);padding:1px 8px;font-weight:600;color:var(--ink)}
+.mod{display:flex;justify-content:center}
+.phone{position:relative;width:min(300px,86vw);height:520px;border:3px solid #35566e;border-radius:38px;background:#0d2233;overflow:hidden;flex:none}
+.scrw{position:absolute;inset:0;overflow:hidden;border-radius:32px;clip-path:inset(0 round 32px)}
+.track{display:flex;height:100%;transition:transform .7s cubic-bezier(.6,0,.2,1)}
+.scr{min-width:100%;padding:64px 24px 24px;color:#e8eef2;display:flex;flex-direction:column;gap:12px}
+.scr .k{font-size:12px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;color:var(--sheen)}
+.scr .big{font-family:var(--head);font-size:30px;line-height:1.15;color:#fff}
+.scr p{margin:0;font-size:15.5px}
+.scr .row{border:1px solid rgba(255,255,255,.25);border-radius:10px;padding:10px 12px;font-size:14.5px}
+.tdots{position:absolute;left:0;right:0;bottom:14px;display:flex;justify-content:center;gap:8px;z-index:3}
+.tdots i{width:9px;height:9px;border-radius:50%;background:rgba(255,255,255,.35)}
+.tdots i.on{background:var(--sheen)}
+.fw{display:grid;grid-template-columns:clamp(56px,9vw,110px) 1fr 330px;gap:8px 22px;align-items:start}
+.fw .mod{grid-row:1/span 2}
+@media(max-width:1000px){.fw{grid-template-columns:1fr}.fw .mod{grid-row:auto}}
+html.paused *,html.paused *::before,html.paused *::after{animation-play-state:paused !important}
+.fine{color:var(--mute);font-size:14px}
+.roi-pk input:checked+span{background:var(--acc) !important;border-color:var(--acc) !important}
+footer{padding:26px 0 40px;text-align:center;color:var(--mute);font-size:14px}
+a.inline44{display:inline-block;padding:13px 0;margin:-13px 0;color:var(--acc)}
+</style>
+<style id="roi-css">.roi-band .w{max-width:980px}.roi-h{text-align:center;margin:0 0 10px;font-family:var(--head);font-size:clamp(30px,4.6vw,52px);line-height:1.05}.roi-lede{text-align:center;max-width:52ch;margin:0 auto clamp(22px,4vw,36px);color:var(--tx);font-size:clamp(16px,1.8vw,18px)}.roi-in{display:grid;grid-template-columns:1fr 1.5fr 1fr;gap:clamp(14px,2vw,24px);align-items:end}.roi-f{display:flex;flex-direction:column;gap:10px;border:0;padding:0;margin:0;min-width:0}.roi-l{font-size:13.5px;font-weight:600;letter-spacing:.01em;color:var(--mute)}.roi-x{display:flex;align-items:center;gap:8px;height:58px;padding:0 18px;border:1px solid var(--line);border-radius:999px;background:var(--card);transition:border-color .4s,box-shadow .4s}.roi-x:focus-within{border-color:var(--acc);box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 22%,transparent)}.roi-x i{font-style:normal;color:var(--acc);font-size:20px}.roi-x input{flex:1;align-self:stretch;height:100%;min-width:0;width:100%;background:none;border:0;outline:0;color:var(--ink);font-family:inherit;font-size:20px;font-weight:600;line-height:1}.roi-x input::placeholder{color:var(--mute);opacity:.7}.roi-st{padding:0 6px;justify-content:space-between}.roi-st input{text-align:center}.roi-b{width:44px;height:44px;flex:none;border-radius:50%;border:1px solid var(--acc);background:none;color:var(--acc);font-size:22px;line-height:1;cursor:pointer;transition:background .3s}.roi-b:hover{background:color-mix(in srgb,var(--acc) 14%,transparent)}.roi-b:focus-visible{outline:2px solid var(--acc);outline-offset:3px}.roi-p legend{padding:0;margin:0 0 10px}.roi-pk{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}.roi-pk label{position:relative;cursor:pointer}.roi-pk input{position:absolute;opacity:0;pointer-events:none}.roi-pk span{display:flex;flex-direction:column;justify-content:center;align-items:center;gap:3px;min-height:58px;padding:0 8px;border:1px solid var(--line);border-radius:999px;font-weight:600;font-size:15px;color:var(--ink);text-align:center;white-space:nowrap;transition:background .4s,border-color .4s,color .4s}.roi-pk b{font-weight:500;font-size:11.5px;color:var(--mute)}.roi-pk input:checked+span{background:#d50505;border-color:#d50505;color:#ffffff}.roi-pk input:checked+span b{color:#ffffff;opacity:1}.roi-pk input:focus-visible+span{box-shadow:0 0 0 4px color-mix(in srgb,var(--acc) 35%,transparent)}.roi-out{display:grid;grid-template-columns:1fr 1fr 1.3fr;gap:clamp(14px,2vw,24px);margin-top:clamp(22px,4vw,36px);padding:clamp(20px,3vw,32px);border:1px solid var(--acc);border-radius:14px;background:var(--card)}.roi-o{display:flex;flex-direction:column;gap:6px;min-width:0}.roi-o b{font-weight:600;font-size:clamp(28px,2.6vw,40px);letter-spacing:-.03em;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap}.roi-big b{font-family:var(--head);font-size:clamp(40px,4vw,64px);line-height:1;color:var(--acc)}.roi-pay{margin:18px 0 0;text-align:center;font-size:clamp(15px,1.4vw,18px);color:var(--tx)}@media (max-width:860px){.roi-in{grid-template-columns:1fr 1fr}.roi-p{grid-column:1/-1;order:-1}.roi-out{grid-template-columns:1fr 1fr}.roi-big{grid-column:1/-1;order:-1}.roi-o{align-items:center;text-align:center}}@media (max-width:560px){.roi-in{grid-template-columns:1fr}.roi-pk span{font-size:min(15px,calc((100vw - 56px) / 22));padding:0 4px}.roi-pk b{font-size:min(11.5px,calc((100vw - 56px) / 29))}.roi-o b{font-size:min(28px,calc((100vw - 80px) / 8.4))}.roi-big b{font-size:min(56px,calc((100vw - 60px) / 5.2))}}.roi-src{margin:12px auto 0;max-width:62ch;text-align:center;font-size:13.5px;line-height:1.55;color:var(--mute)}.roi-src a{color:var(--tx);text-decoration:underline}</style>
+<style id="mfb-css">.mfb{margin:18px auto 0;max-width:640px;display:flex;flex-wrap:wrap;align-items:center;justify-content:center;gap:10px 14px;font-size:15px;line-height:1.4}.mfb-t{margin:0;flex:0 1 auto;width:auto;max-width:100%}.mfb-e{font-weight:600;user-select:all;-webkit-user-select:all;white-space:nowrap}.mfb-b{font:inherit;font-size:14px;font-weight:600;color:inherit;background:transparent;border:1px solid currentColor;border-radius:999px;min-height:44px;min-width:44px;padding:0 18px;cursor:pointer}.mfb-b:focus-visible{outline:2px solid currentColor;outline-offset:3px}.mfb-s{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}.mfb-hw{display:inline-flex;align-items:center;gap:14px}.mfb-h{display:none;align-items:center;gap:10px;font-size:14px}@media (min-width:900px){.mfb-h{display:inline-flex}}</style>
+<style id="hdr-fix">.bar a.cta,.bar .pp{white-space:nowrap;flex:none}.bar .brand{min-width:0;line-height:1.2}@media (max-width:480px){.bar .w{gap:8px;padding:0 14px}.bar .hw{gap:6px;flex:none}.bar .brand{font-size:13px}.bar a.cta{padding:0 14px;font-size:14px}.bar .pp{padding:0 10px;font-size:12px}}</style>
+</head>
+<body>
+<header class="bar"><div class="w"><span class="brand">Jarrett Wroten Web Design</span><span class="hw"><button type="button" class="pp" id="ppBtn">Pause animations</button><a class="cta" href="mailto:jarrett@jarrettwroten.com?subject=Wrich%20Air%20audit%3A%20yes%20or%20no">Reply yes or no</a></span></div></header>
+<main>
+<section class="hero"><div class="heroglow"></div><div class="w" style="position:relative">
+<p class="eyebrow">· Wrich Air ·</p>
+<h1>Wrich Air</h1>
+<p class="opening">These tweaks should help you land a few more clients through your website.</p>
+<p class="lede" style="margin-left:auto;margin-right:auto">How buyers find you, choose you and reach you, and what to fix first. Checked on your live site and your listings.</p>
+<span class="chip">Checked November 12, 2026</span>
+<div class="livebar"><span class="dot"></span><span>Family owned in Las Vegas since 1992</span></div>
+</div></section>
+
+<section class="band stages"><div class="w">
+<p class="eyebrow">The seven stages</p><h2>Where the work <em>stands</em></h2>
+<div class="stages">
+<div class="st"><b>Attention</b><span>C, needs work</span></div>
+<div class="st"><b>Capture</b><span>B, friction</span></div>
+<div class="st"><b>Response</b><span>Not tested</span></div>
+<div class="st"><b>Nurture</b><span>C, needs work</span></div>
+<div class="st"><b>Conversion</b><span>B, friction</span></div>
+<div class="st"><b>Delivery</b><span>B, public promise</span></div>
+<div class="st"><b>Referral</b><span>D, not in place</span></div>
+</div>
+<p class="fine" style="margin-top:16px">Response stays Not tested: no test message was sent for this audit. To test it: send one real question through your homepage form from a personal address and time the first human reply.</p>
+</div></section>
+
+<section class="band alt"><div class="w">
+<p class="eyebrow">What I found</p><h2>Six findings, in the order a buyer <em>hits them</em></h2>
+
+<article class="f fw" id="f1"><span class="n">01</span><div>
+<h3>Your site gives two different sets of hours on the same page</h3>
+<p>One part of your site says you are open every day, 9:00 AM to 5:00 PM. Another part of the same page says Monday to Friday 7:00 AM to 6:00 PM, Saturday 9:00 AM to 5:00 PM, and Sunday CLOSED. The same clash repeats on your service pages and your About page. A buyer who checks on a Sunday gets both answers at once.</p>
+<p class="fix">Fix: pick the one true set of hours and put that same set in both places, word for word.</p>
+</div>
+<div class="mod"><div class="phone" id="tt" aria-hidden="true"><div class="scrw"><div class="track" id="ttTrack">
+<div class="scr"><span class="k">Your hours, block one</span><span class="big">Open every day</span><div class="row">Every day: 9:00 AM to 5:00 PM</div><p>That includes Sunday.</p></div>
+<div class="scr"><span class="k">Your hours, block two</span><span class="big">A different answer</span><div class="row">Monday to Friday: 7:00 AM to 6:00 PM</div><div class="row">Saturday: 9:00 AM to 5:00 PM</div></div>
+<div class="scr"><span class="k">Your hours, block two</span><span class="big">Sunday: CLOSED</span><p>Same page. Two answers. The buyer picks one and hopes.</p></div>
+</div></div><div class="tdots" id="ttDots"><i class="on"></i><i></i><i></i></div></div></div>
+</article>
+
+<article class="f"><span class="n">02</span><div>
+<h3>Not one video on the homepage of a company working since 1992</h3>
+<p>Your homepage carries no video at all. No clip of a technician at work, no walk through of a replacement, nothing moving that shows the crew a buyer is about to let into their home.</p>
+<p class="fix">Fix: put one real work clip on the homepage, shot on a real job.</p>
+</div></article>
+
+<article class="f"><span class="n">03</span><div>
+<h3>Your site prints no street address and no email address</h3>
+<p>Every contact block on your site gives the phone number and one line for location: Las Vegas, NV. No street address, and no email address anywhere on the site. Listings elsewhere carry a street address for you: 1517 Merialdo Ln, Las Vegas, NV 89117, checked November 12, 2026. Your own site is the one place that leaves it out.</p>
+<p class="fix">Fix: add the street address to every contact block, and add one email address beside the phone number.</p>
+</div></article>
+
+<article class="f"><span class="n">04</span><div>
+<h3>Your license number is nowhere on your own site</h3>
+<p>No page on your site prints your license number. A competitor's comparison page lists your Nevada license as #0034650 (C-21), Active, checked November 12, 2026. A buyer who wants to check you has to leave your site to find it.</p>
+<p class="fix">Fix: print the license number in the footer of every page, beside the phone number.</p>
+</div></article>
+
+<article class="f"><span class="n">05</span><div>
+<h3>No date sits beside any opening answer</h3>
+<p>Your home page opens with no date, and no main service page puts a date beside its opening answer. A buyer cannot tell whether the page in front of them is current.</p>
+<p class="fix">Fix: add one line under each opening answer, in this form: Updated November 2026, with the real month of the last change to that page.</p>
+</div></article>
+
+<article class="f"><span class="n">06</span><div>
+<h3>Small cleanup: the footer copyright still ends at 2024</h3>
+<p>The footer copyright on your site still ends at 2024. It is a small line, and it is the last thing on every page. A two year old date at the foot of the site undercuts the current, working company the rest of the page describes.</p>
+<p class="fix">Fix: update the footer year to the current year, and set it to roll over on its own each January.</p>
+</div></article>
+</div></section>
+
+<section class="band"><div class="w">
+<p class="eyebrow">The other side</p><h2>What is <em>working</em></h2>
+<div class="cols">
+<div class="panel"><h3>Working</h3><ul>
+<li>You have served the Las Vegas Valley since 1992, family owned. That record leads your homepage, and it should.</li>
+<li>Your phone number, 702.233.1636, sits in every contact block on the page, each one tappable.</li>
+<li>Every main service has its own page: AC repair, cooling service, heating service, HVAC replacement and new installations.</li>
+<li>Your homepage form asks only for a name, phone, email and a message. That is low friction.</li>
+<li>A competitor's comparison page counts about 81 Google reviews at 4.8 stars for you, checked November 12, 2026.</li>
+<li>The robots that AI assistants send can read your site: your robots file blocks only the admin area.</li>
+<li>The phone number in the hidden business details in your homepage code matches the number on the page, 702.233.1636.</li>
+</ul></div>
+<div class="panel"><h3>Not measured in this audit</h3><ul>
+<li>Google rankings: UNMEASURED.</li>
+<li>Reply speed: not tested. To test it: send one real question through your homepage form from a personal address and time the first human reply.</li>
+<li>Your site on a phone: not measured here. The test is a full scroll on a real phone, top to footer.</li>
+<li>What happens after a job, in private follow up and review asks: not seen from outside, so it carries no grade here.</li>
+</ul></div>
+</div></div></section>
+
+<section class="band ai" id="ai-search" style="background:var(--bg2)"><div class="w">
+<p class="eyebrow">AI search visibility</p><h2>Named in <em>1 of 5</em> searches</h2>
+<p class="lede">Five searches a Las Vegas customer types, run on November 12, 2026. Your site was linked as a source in 1 of the 5 searches. You were named in 1 of the 5 searches. The one search that named you was your own name.</p>
+<table><tr><th>Search</th><th>Wrich Air named</th><th>Named instead</th></tr>
+<tr><td>HVAC replacement in Las Vegas</td><td class="no">No</td><td>Semper Fi Heating &amp; Cooling, Bob's Repair, Ambient Edge, Goettl, Sierra Air Conditioning &amp; Heating</td></tr>
+<tr><td>AC installation in Las Vegas</td><td class="no">No</td><td>The Cooling Company</td></tr>
+<tr><td>AC repair in Las Vegas</td><td class="no">No</td><td>Super Service Cooling and Heating, Lee's Air, FreezeAir AC Repairs</td></tr>
+<tr><td>Heating service in Las Vegas</td><td class="no">No</td><td>Vegas Heating &amp; Cooling Repair Now, APC Mechanical, Aire Force One</td></tr>
+<tr><td>Wrich Air</td><td class="yes">Yes</td><td>You were named, and your site was linked as a source</td></tr>
+</table>
+<p class="fine" style="margin-top:14px">Google rankings: UNMEASURED.</p>
+</div></section>
+
+<section class="band alt"><div class="w">
+<p class="eyebrow">Do it yourself</p><h2>The fixes, in the order to do them</h2>
+<article class="diy"><h3>1. Make the hours agree</h3><p><strong>Surface:</strong> Every page, both hours blocks.</p><p><strong>Do this:</strong> Choose the true hours, then replace both blocks with that one set, word for word. The set on your visible hours block reads: <span class="paste">Monday to Friday 7:00 AM to 6:00 PM, Saturday 9:00 AM to 5:00 PM, Sunday closed</span> (Finding 1.)</p><p><strong>Test it:</strong> Open the homepage in a private window, scroll the full page, and check that every hours line matches.</p></article>
+<article class="diy"><h3>2. Print the address, email and license</h3><p><strong>Surface:</strong> Contact blocks and footer, every page.</p><p><strong>Do this:</strong> Add this line to every contact block: <span class="paste">1517 Merialdo Ln, Las Vegas, NV 89117</span> Add your email address beside the phone number, and add your Nevada license #0034650 (C-21) to the footer. (Findings 3 and 4.)</p><p><strong>Test it:</strong> Open one service page in a private window and check that the address, email and license all show without hunting.</p></article>
+<article class="diy"><h3>3. Put one real work clip on the homepage</h3><p><strong>Surface:</strong> Homepage, under the opening section.</p><p><strong>Do this:</strong> Film one real replacement or repair job on a phone, keep it under a minute, and place it under the opening section with the line: <span class="paste">See us in action</span> (Finding 2.)</p><p><strong>Test it:</strong> Load the homepage and check that the clip plays and shows your own crew and truck.</p></article>
+<article class="diy"><h3>4. Date the opening answers</h3><p><strong>Surface:</strong> Home page and each main service page, under the opening answer.</p><p><strong>Do this:</strong> Add one dated line under each opening answer: <span class="paste">Updated November 2026</span> Use the month of the real last change on each page, and update the line whenever the page changes. (Finding 5.)</p><p><strong>Test it:</strong> Open each service page and check that a date shows on the first screen.</p></article>
+<article class="diy"><h3>5. Bring the footer current</h3><p><strong>Surface:</strong> Footer, every page.</p><p><strong>Do this:</strong> Change the footer copyright end year from 2024 to the current year, and set it to update on its own each January. (Finding 6.)</p><p><strong>Test it:</strong> Scroll to the foot of the homepage and check the year.</p></article>
+</div></section>
+
+<section class="band roi-band" aria-labelledby="roiTitle"><div class="w">
+<div class="roi" id="roi"><h2 class="roi-h" id="roiTitle">Your ROI</h2><p class="roi-lede">Put in your own numbers to see what new or saved customers are worth against the monthly cost.</p><div class="roi-in"><label class="roi-f"><span class="roi-l">Average Customer Value</span><span class="roi-x"><i aria-hidden="true">$</i><input id="roiV" type="text" inputmode="numeric" autocomplete="off" value="7500" placeholder="Your number" aria-label="Average customer value in dollars"></span></label><fieldset class="roi-f roi-p"><legend class="roi-l">Package</legend><div class="roi-pk"><label><input type="radio" name="roiP" value="750"><span>Get Found<b>$750/Month</b></span></label><label><input type="radio" name="roiP" value="397" checked><span>Get Booked<b>$397/Month</b></span></label><label><input type="radio" name="roiP" value="1147"><span>Both<b>$1,147/Month</b></span></label></div></fieldset><label class="roi-f"><span class="roi-l">New Or Saved Customers Per Month</span><span class="roi-x roi-st"><button type="button" class="roi-b" data-d="-1" aria-label="One fewer">&minus;</button><input id="roiN" type="text" inputmode="numeric" autocomplete="off" value="1" placeholder="0" aria-label="New or saved customers per month"><button type="button" class="roi-b" data-d="1" aria-label="One more">+</button></span></label></div><div class="roi-out" aria-live="polite"><div class="roi-o"><span class="roi-l">New Revenue Per Month</span><b id="roiR">$7,500</b></div><div class="roi-o"><span class="roi-l">Your Investment</span><b id="roiC">$397</b></div><div class="roi-o roi-big"><span class="roi-l">Your ROI</span><b id="roiP">1,789%</b></div></div><p class="roi-pay" id="roiPay">One customer a month covers it.</p>
+<p class="roi-src">Example value. $7,500 is the national average cost of one full HVAC system replacement in 2026. <a href="https://www.angi.com/articles/insider-s-price-guide-new-heating-and-cooling-system.htm" target="_blank" rel="noopener">Angi</a> puts the average at $7,500, with most homeowners spending between $5,000 and $12,500. Put in your own number.</p></div>
+</div></section>
+
+<section class="band close" style="background:var(--bg2)"><div class="w" style="text-align:center">
+<p class="eyebrow">Next step</p><h2>Want to see what it could <em>look like?</em></h2>
+<p style="max-width:60ch;margin:0 auto 22px">If you'd like, I'll also build you a completely custom Cinematic Website concept from your own film and content in 2 days or less. The concept preview costs nothing: you see it first, before deciding anything.</p>
+<a class="cta" href="mailto:jarrett@jarrettwroten.com?subject=Wrich%20Air%20audit%3A%20yes%20or%20no">Reply yes or no</a>
+<div class="mfb"><p class="mfb-t">Or email me directly at <span class="mfb-e">jarrett@jarrettwroten.com</span></p><button type="button" class="mfb-b">Copy email</button><span class="mfb-s" id="mfb-s" role="status" aria-live="polite"></span></div>
+<p class="fine">If you'd rather not hear from me again, just reply and let me know.</p>
+</div></section>
+</main>
+<footer><div class="w">Wrich Air, site audit, November 2026. Prepared by Jarrett Wroten Web Design, Las Vegas. <a href="https://jarrettwroten.com">jarrettwroten.com</a>, <a href="tel:+17254337775">(725) 433-7775</a></div></footer>
+<script>
+(function(){var b=document.getElementById("ppBtn");function sync(){var p=document.documentElement.classList.contains("paused");b.textContent=p?"Play animations":"Pause animations"}b.addEventListener("click",function(){document.documentElement.classList.toggle("paused");sync()});
+var track=document.getElementById("ttTrack"),dots=document.querySelectorAll("#ttDots i"),i=0;
+function go(n){i=n;track.style.transform="translateX("+(-100*i)+"%)";dots.forEach(function(d,k){d.classList.toggle("on",k===i)})}
+setInterval(function(){if(document.documentElement.classList.contains("paused"))return;go((i+1)%3)},3400);
+dots.forEach(function(d,k){d.style.pointerEvents="none"})})();
+</script>
+<script id="roi-js">(function(){var r=document.getElementById("roi");if(!r)return;var V=document.getElementById("roiV"),N=document.getElementById("roiN"),oR=document.getElementById("roiR"),oC=document.getElementById("roiC"),oP=document.getElementById("roiP"),pay=document.getElementById("roiPay");var RM=window.matchMedia&&matchMedia("(prefers-reduced-motion: reduce)").matches;var num=function(s){var n=parseInt(String(s).replace(/[^0-9]/g,""),10);return isNaN(n)?0:n},fm=function(n){return"$"+Math.round(n).toLocaleString("en-US")},W=["Zero","One","Two","Three","Four","Five","Six","Seven","Eight","Nine","Ten"];var cur={r:0,c:0,p:0},raf=0;function paint(o){oR.textContent=fm(o.r);oC.textContent=fm(o.c);oP.textContent=Math.round(o.p).toLocaleString("en-US")+"%"}function tween(to){cancelAnimationFrame(raf);if(RM||document.documentElement.classList.contains("paused")){cur=to;paint(cur);return}var from={r:cur.r,c:cur.c,p:cur.p},t0=performance.now(),D=700;(function step(t){var k=Math.min(1,(t-t0)/D),e=1-Math.pow(1-k,4);cur={r:from.r+(to.r-from.r)*e,c:from.c+(to.c-from.c)*e,p:from.p+(to.p-from.p)*e};paint(cur);if(k<1)raf=requestAnimationFrame(step)})(t0)}function calc(){var v=num(V.value),n=num(N.value),c=num((r.querySelector("input[name=roiP]:checked")||{}).value),rev=v*n,roi=c?(rev-c)/c*100:0;if(v<=0){cancelAnimationFrame(raf);cur={r:0,c:c,p:0};oR.textContent="$0";oC.textContent=fm(c);oP.textContent="";pay.textContent="Enter your average customer value to see your ROI.";return}tween({r:rev,c:c,p:roi});var k=Math.ceil(c/v),kw=isFinite(k)&&k>0?(k<=10?W[k]:String(k))+(k===1?" customer":" customers")+" a month covers it.":"";pay.textContent=(n>=1&&roi>=0)?kw:("At these numbers it costs more than it brings in. "+kw).trim()}function fmtV(){var p=V.selectionStart,len=V.value.length,n=num(V.value);V.value=n?n.toLocaleString("en-US"):"";var d=V.value.length-len;try{V.setSelectionRange(Math.max(0,p+d),Math.max(0,p+d))}catch(e){}}V.addEventListener("input",function(){fmtV();calc()});N.addEventListener("input",function(){N.value=String(Math.min(999,num(N.value))||"");calc()});r.querySelectorAll("input[name=roiP]").forEach(function(i){i.addEventListener("change",calc)});r.querySelectorAll(".roi-b").forEach(function(b){b.addEventListener("click",function(){N.value=Math.max(0,Math.min(999,num(N.value)+ +b.dataset.d));calc()})});})()</script>
+<script id="mfb-js">(function(){var E="jarrett@jarrettwroten.com";function done(b,ok){b.textContent=ok?"Copied":"Select the address to copy";var s=document.getElementById("mfb-s");if(s)s.textContent=ok?"Email address copied":"";setTimeout(function(){b.textContent="Copy email"},2500)}function fb(){var t=document.createElement("textarea");t.value=E;t.setAttribute("readonly","");t.style.position="fixed";t.style.top="0";t.style.opacity="0";document.body.appendChild(t);t.select();var ok=false;try{ok=document.execCommand("copy")}catch(e){}t.remove();return ok}document.querySelectorAll(".mfb-b").forEach(function(b){b.addEventListener("click",function(){if(navigator.clipboard&&window.isSecureContext){navigator.clipboard.writeText(E).then(function(){done(b,true)},function(){done(b,fb())})}else{done(b,fb())}})});var h=document.querySelector(".bar a.cta[href^='mailto:']"),f=document.querySelector(".mfb");if(h&&f)h.addEventListener("click",function(){if(window.innerWidth<900)setTimeout(function(){f.scrollIntoView({behavior:"smooth",block:"center"})},700)})})()</script>
+</body>
+</html>
