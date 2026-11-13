@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[1.0,1.5,1.7,1.7,1.8,1.5,1.2]; /* scroll per beat, in screens */
+var LEN=[1.0,1.5,1.7,1.7,1.8,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -93,10 +93,6 @@ T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .from('.b5 .stat',{y:20,opacity:0,duration:.1},.62)
    .from('.b5 .src',{opacity:0,duration:.08},.68)
    .to({},{duration:.22});
-/* 6 the lines we hold */
-var t6=T().from('.b6 .h2',{y:40,opacity:0,duration:.14},0);
-$$('.b6 .lines li').forEach(function(li,i){t6.fromTo(li,{'--s':0},{'--s':1,duration:.1,ease:'power2.inOut'},.14+i*.1).from(li,{opacity:0,x:-20,duration:.08},.17+i*.1);});
-t6.to({},{duration:.2});
 /* 7 ask: the gold line draws round the button */
 var rect=$('.cta-r'),svg=$('.cta-svg'),btn=$('#cta'),rlen=1;
 function sizeCta(){var w=btn.offsetWidth+14,h=btn.offsetHeight+14;svg.setAttribute('width',w);svg.setAttribute('height',h);svg.setAttribute('viewBox','0 0 '+w+' '+h);

@@ -137,13 +137,6 @@ linear-gradient(rgba(238,232,221,.05) 1px,transparent 1px) 0 0/28px 28px,linear-
 .bk-d{width:8px;height:8px;border-radius:50%;background:#17130a}
 .stars{align-self:flex-end;font-size:22px;letter-spacing:.1em;color:var(--gold2);opacity:0}
 
-/* 6 lines */
-.lines{max-width:900px;margin-top:5vh}
-.lines li{position:relative;font:500 clamp(22px,2.3vw,38px)/1.15 var(--sans);letter-spacing:-.015em;padding:18px 0;border-top:1px solid var(--ln)}
-.lines li::before{content:"";position:absolute;left:0;top:-1px;height:1px;width:100%;background:var(--gold);transform:scaleX(var(--s,0));transform-origin:left}
-html.static .lines li::before{transform:none}
-.lines li.last{font-family:var(--serif);font-style:italic;background-image:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent}
-
 /* 7 ask */
 .b7 .stage{justify-content:center;padding-bottom:150px}
 .cta-wrap{position:relative;display:inline-block;margin-top:5vh;align-self:flex-start}
@@ -207,7 +200,6 @@ html.static *{animation-play-state:paused!important}
   .bub{font-size:14px;padding:9px 12px}
   .msd{font-size:13px}
   .bk{font-size:14px}
-  .lines li{font-size:22px;padding:13px 0}
   .btn-gold{font-size:16px;padding:12px 24px;min-height:64px}
   .b7 .stage{padding-bottom:190px}
   .ftr{right:var(--pad);bottom:76px;font-size:13px;gap:4px 18px}
