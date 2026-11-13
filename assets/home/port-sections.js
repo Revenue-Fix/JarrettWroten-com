@@ -1,4 +1,4 @@
-/* Portable homepage section motion for service pages: search demo, Dylan count, work strip. Does not touch the homepage hero or loader. */
+/* Pause handlers run after page.js toggles .paused (setTimeout 0). Portable homepage section motion for service pages: search demo, Dylan count, work strip. Does not touch the homepage hero or loader. */
 (()=>{
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],root=document.documentElement;
 const P=()=>root.classList.contains('paused');
@@ -40,7 +40,7 @@ function run(){if(P()){final();running=false;return}running=true;clear();const c
  at(Math.max(g1+1100,a1+700)+3600,()=>{i=(i+1)%T.length;d.classList.add('s-out');at(600,run)})}
 new IntersectionObserver(es=>{const e=es[0];if(e.isIntersecting){if(!running){seen=true;run()}}else if(running){final();running=false}},{threshold:.25}).observe(d);
 const pp=document.getElementById('pp');
-if(pp)pp.addEventListener('click',()=>{if(P()){final();running=false}else if(seen){const r=d.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)run()}});
+if(pp)pp.addEventListener('click',()=>setTimeout(()=>{if(P()){final();running=false}else if(seen){const r=d.getBoundingClientRect();if(r.top<innerHeight&&r.bottom>0)run()}},0));
 })();
 
 (function(){
@@ -77,6 +77,6 @@ window.__wn=1;
  t.addEventListener('scroll',()=>{if(!mq.matches)return;const m=t.scrollWidth-t.clientWidth;if(pg&&m>0)pg.style.width=(t.scrollLeft/m*100)+'%'},{passive:true})})();
 const f=()=>{root.style.setProperty('--trackH',track.clientHeight+'px')};f();addEventListener('resize',f,{passive:true});
 const pp=document.getElementById('pp');
-if(pp)pp.addEventListener('click',()=>{if(P()){cards.forEach(c=>{const v=c.querySelector('video');if(v)v.pause()})}else{const c=cards[cur];const v=c&&c.querySelector('video');if(v)ply(v)}});
+if(pp)pp.addEventListener('click',()=>setTimeout(()=>{if(P()){cards.forEach(c=>{const v=c.querySelector('video');if(v)v.pause()})}else{cards.forEach((c,j)=>{const v=c.querySelector('video');if(v&&live(c,j))ply(v)})}},0));
 })();
 })();
