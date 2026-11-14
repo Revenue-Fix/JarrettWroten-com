@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[1.0,1.5,1.9,1.8,1.6,1.1,1.5,1.5,1.7,1.6,1.5,1.2]; /* scroll per beat, in screens */
+var LEN=[1.0,1.5,1.9,1.8,1.6,1.1,1.5,1.5,1.1,1.7,1.7,1.4,1.4,1.2,1.8,1.6,1.4,1.4,1.5,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -117,6 +117,15 @@ T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .to('.b5 .t5',{opacity:1,duration:.07},.6)
    .from('.b5 .sub',{y:24,opacity:0,duration:.12},.24)
    .to({},{duration:.22});
+/* after speed, quality: the order moves to its second word */
+T().from('.bw .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
+   .from('.bw .lw',{y:16,opacity:0,duration:.08,stagger:.08},.3)
+   .from('.bw .chev path',{strokeDashoffset:24,duration:.08,stagger:.08},.36)
+   .from('.bw .lad .on',{'--bar':0,duration:.18},.52).to({},{duration:.25});
+/* quality is efficiency: the line, then the three ways, then the close */
+T().from('.bq .h2',{y:40,opacity:0,duration:.12},0).from('.bq .sub',{y:24,opacity:0,duration:.12},.1)
+   .from('.bq .q3l',{opacity:0,y:14,duration:.1},.24).from('.bq .q3 li',{x:-30,opacity:0,duration:.1,stagger:.08},.32)
+   .from('.bq .q3c',{opacity:0,y:16,duration:.12},.6).to({},{duration:.2});
 /* 4 chosen: mixed details scatter, the gold line sweeps in one clear page */
 var ms=$$('.b4 .ms');
 T().from('.b4 .h2',{y:40,opacity:0,duration:.14},0)
@@ -130,6 +139,27 @@ T().from('.b4 .h2',{y:40,opacity:0,duration:.14},0)
    .fromTo('.b4 .sweep',{left:'-40%'},{left:'120%',duration:.24,ease:'none'},.5)
    .from('.b4 .sub',{y:24,opacity:0,duration:.12},.48)
    .to({},{duration:.22});
+/* get chosen, piece by piece */
+T().from('.bza .pz-c',{y:60,opacity:0,duration:.18,stagger:.14},0)
+   .from('.bza .pz-c',{'--rule':0,duration:.2,stagger:.14},.08)
+   .from('.bza .pz-o',{opacity:0,y:12,duration:.12,stagger:.14},.18)
+   .from('.bza .pz-p,.bza .pz-l',{opacity:0,duration:.14,stagger:.1},.28).to({},{duration:.3});
+T().from('.bzb .pz-c',{y:60,opacity:0,duration:.18,stagger:.14},0)
+   .from('.bzb .pz-c',{'--rule':0,duration:.2,stagger:.14},.08)
+   .from('.bzb .pz-o',{opacity:0,y:12,duration:.12,stagger:.14},.18)
+   .from('.bzb .pz-p,.bzb .pz-l',{opacity:0,duration:.14,stagger:.1},.28).to({},{duration:.3});
+/* finish with volume: the red word, the order reaches its last step */
+T().from('.bf .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
+   .from('.bf .fsub',{y:24,opacity:0,duration:.12},.18)
+   .from('.bf .lw',{y:16,opacity:0,duration:.08,stagger:.08},.3)
+   .from('.bf .chev path',{strokeDashoffset:24,duration:.08,stagger:.08},.36)
+   .from('.bf .lad .on',{'--bar':0,duration:.18},.52).to({},{duration:.25});
+/* volume is scale: gold dots pile up, then turn to dirt */
+T().from('.bk2 .h2',{y:40,opacity:0,duration:.12},0).from('.bk2 .sub',{y:24,opacity:0,duration:.12},.08)
+   .from('.bk2 .gd i',{scale:0,opacity:0,duration:.1,stagger:{each:.012,from:'random'}},.08)
+   .from('.bk2 .vl li',{y:16,opacity:0,duration:.1,stagger:.1},.24)
+   .to('.bk2 .gd i',{'--dirt':1,boxShadow:'0 0 0 rgba(0,0,0,0)',y:function(){return 6+Math.random()*24;},duration:.16,stagger:{each:.008,from:'random'}},.5)
+   .from('.bk2 .q3c',{opacity:0,y:16,duration:.12},.66).to({},{duration:.2});
 /* 3 found: the answer names the shop, the pin lands */
 T().from('.b3 .h2',{y:40,opacity:0,duration:.14},0)
    .from('.b3 .ask',{y:50,opacity:0,duration:.16},.04)
@@ -140,6 +170,15 @@ T().from('.b3 .h2',{y:40,opacity:0,duration:.14},0)
    .to('.b3 .mp.you',{boxShadow:'0 0 0 18px rgba(243,220,154,0)',duration:.14,ease:'power1.out'},.44)
    .from('.b3 .sub',{y:24,opacity:0,duration:.12},.4)
    .to({},{duration:.25});
+/* get found, piece by piece */
+T().from('.bzc .pz-c',{y:60,opacity:0,duration:.18,stagger:.14},0)
+   .from('.bzc .pz-c',{'--rule':0,duration:.2,stagger:.14},.08)
+   .from('.bzc .pz-o',{opacity:0,y:12,duration:.12,stagger:.14},.18)
+   .from('.bzc .pz-p,.bzc .pz-l',{opacity:0,duration:.14,stagger:.1},.28).to({},{duration:.3});
+T().from('.bzd .pz-c',{y:60,opacity:0,duration:.18,stagger:.14},0)
+   .from('.bzd .pz-c',{'--rule':0,duration:.2,stagger:.14},.08)
+   .from('.bzd .pz-o',{opacity:0,y:12,duration:.12,stagger:.14},.18)
+   .from('.bzd .pz-p,.bzd .pz-l',{opacity:0,duration:.14,stagger:.1},.28).to({},{duration:.3});
 /* tease: the three offers, in order */
 T().from('.bt .h2',{y:40,opacity:0,duration:.12},0)
    .from('.bt .of',{y:50,opacity:0,duration:.14,stagger:.09},.1)
