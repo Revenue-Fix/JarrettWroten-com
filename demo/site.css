@@ -323,3 +323,17 @@ html.static .lk,html:not(.js) .lk{opacity:1}
 
 /* r33c source line flows as one sentence */
 .b5 .src a{display:inline;padding:0;margin:0}
+
+/* r33d speed is leverage */
+.bv .stage{justify-content:center}
+.bv .sub{max-width:34ch;font-size:clamp(19px,1.7vw,28px);color:rgba(238,232,221,.86)}
+.lad{margin-top:clamp(24px,4vh,44px);display:flex;align-items:center;flex-wrap:wrap;gap:14px 18px;font:600 clamp(22px,2.2vw,38px)/1 var(--sans);letter-spacing:-.02em}
+.lw{position:relative;color:var(--fgm);padding-bottom:10px}
+.lw.on{color:var(--fg);--bar:1}
+.lw.on::after{content:"";position:absolute;left:0;right:0;bottom:0;height:3px;border-radius:2px;background:linear-gradient(90deg,var(--gold),var(--gold2));transform:scaleX(var(--bar));transform-origin:left}
+.chev{width:.42em;height:.7em;margin-bottom:10px;fill:none;stroke:var(--gold2);stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.chev path{stroke-dasharray:24;stroke-dashoffset:0}
+.bv .stat{margin-top:clamp(26px,4.5vh,48px);max-width:44ch}
+.bv .src a{display:inline;padding:0;margin:0}
+@media (max-width:700px){.bv .sub{font-size:18px;margin-top:16px}.lad{font-size:22px;gap:10px 12px;margin-top:22px}.bv .stat{font-size:16px;margin-top:22px}}
+@media (forced-colors:active){.chev{stroke:CanvasText}.lw.on::after{background:CanvasText}}

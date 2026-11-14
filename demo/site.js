@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[1.0,1.5,1.9,1.8,1.6,1.1,1.5,1.7,1.6,1.5,1.2]; /* scroll per beat, in screens */
+var LEN=[1.0,1.5,1.9,1.8,1.6,1.1,1.5,1.5,1.7,1.6,1.5,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -81,6 +81,14 @@ T().from('.bo .h2',{y:40,opacity:0,duration:.12},0)
    .to({},{duration:.24});
 /* 6 order: the call line, one line at a time */
 T().from('.b6 .h2 .ln',{y:50,opacity:0,duration:.18,stagger:.1},0).to({},{duration:.4});
+/* speed is leverage: the line lands, the order lights left to right, the proof follows */
+T().from('.bv .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
+   .from('.bv .sub',{y:24,opacity:0,duration:.12},.16)
+   .from('.bv .lw',{y:16,opacity:0,duration:.08,stagger:.1},.3)
+   .from('.bv .chev path',{strokeDashoffset:24,duration:.08,stagger:.1},.36)
+   .from('.bv .lad .on',{'--bar':0,duration:.16},.5)
+   .from('.bv .stat',{y:20,opacity:0,duration:.1},.6)
+   .from('.bv .src',{opacity:0,duration:.08},.68).to({},{duration:.2});
 /* 5 booked: the missed call turns into a booking, then a review */
 T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .from('.b5 .ph',{y:50,opacity:0,duration:.14},.04)
@@ -91,8 +99,6 @@ T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .to('.b5 .t4',{opacity:1,y:0,duration:.07},.52)
    .to('.b5 .t5',{opacity:1,duration:.07},.6)
    .from('.b5 .sub',{y:24,opacity:0,duration:.12},.24)
-   .from('.b5 .stat',{y:20,opacity:0,duration:.1},.62)
-   .from('.b5 .src',{opacity:0,duration:.08},.68)
    .to({},{duration:.22});
 /* 4 chosen: mixed details scatter, the gold line sweeps in one clear page */
 var ms=$$('.b4 .ms');
