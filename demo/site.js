@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[1.0,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,3.2,1.2,2.4,3.6,1.5,1.2]; /* scroll per beat, in screens */
+var LEN=[0.3,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,3.2,1.2,2.4,3.6,1.5,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
