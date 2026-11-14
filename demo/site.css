@@ -32,6 +32,8 @@ background-image:var(--goldg);-webkit-background-clip:text;background-clip:text;
 .mark .mk-s{color:var(--fgm);font-weight:500}
 .hdr-cta{display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:44px;padding:8px 20px;border-radius:999px;background:var(--goldg);color:#17130a;font:600 15px/1.2 var(--sans);text-decoration:none;transition:filter .3s var(--ease)}
 .hdr-cta:hover{filter:brightness(1.06)}
+.hdr-cta{box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 0 1px rgba(212,174,90,.25)}
+@media (max-width:380px){.hdr .hdr-cta{font-size:12px;line-height:1.15;padding:6px 12px;max-width:none;flex:0 1 auto}.hdr{gap:8px}}
 
 /* base flow: every beat is a normal full screen (no JS, or paused) */
 .beat{position:relative;min-height:100svh}

@@ -248,7 +248,7 @@ function render(y){if(paused)return;var n=stages.length;
 }
 function startLenis(){lenis=new Lenis({lerp:.1,smoothWheel:true,wheelMultiplier:1});
   lenis.on('scroll',function(e){render(e.scroll);hdr(e.direction,e.scroll);});}
-var hd=$('#hdr');function hdr(dir,y){if(y<40||y>=total-vh*.2){hd.classList.remove('up');return;}if(dir===1)hd.classList.add('up');else if(dir===-1)hd.classList.remove('up');}
+var hd=$('#hdr');function hdr(){hd.classList.remove('up');}/* r34a11: header and its booking button float, always visible */
 g.ticker.add(function(t){if(lenis)lenis.raf(t*1000);});g.ticker.lagSmoothing(0);
 layout();startLenis();render(W.scrollY||0);lastW=W.innerWidth;
 W.addEventListener('resize',function(){var w=W.innerWidth;if(w===lastW&&Math.abs(H.clientHeight-vh)<120)return;lastW=w;if(paused)return;layout();sizeCta();render(lenis?lenis.scroll:W.scrollY);});
