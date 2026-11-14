@@ -320,3 +320,6 @@ html.static .lk,html:not(.js) .lk{opacity:1}
 @media (max-width:1100px){.scs.s5{grid-template-columns:repeat(2,minmax(0,1fr))}.s5 .sc:last-child{grid-column:1/-1}}
 @media (max-width:1100px) and (min-width:761px){.scs.s5{grid-template-columns:repeat(6,minmax(0,1fr))}.s5 .sc{grid-column:span 2;min-height:0;padding:20px 18px 16px}.s5 .sc:nth-child(n+4){grid-column:span 3}.s5 .sc-n{font-size:56px}}
 @media (max-width:760px){.s5 .sc-n{font-size:32px}.s5 .sc{padding:10px 12px 8px}.s5 .sc-t{font-size:13px;margin-top:6px}.s5 .sc-s{margin-top:6px}.scs.s5{gap:8px;margin-top:12px}}
+
+/* r33c source line flows as one sentence */
+.b5 .src a{display:inline;padding:0;margin:0}
