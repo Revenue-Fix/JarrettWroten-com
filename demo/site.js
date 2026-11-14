@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[1.0,1.5,1.9,1.8,1.6,1.1,1.5,1.5,1.1,1.7,1.7,1.4,1.4,1.2,1.8,1.6,1.4,1.4,1.5,1.2]; /* scroll per beat, in screens */
+var LEN=[1.0,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,1.4,1.4,1.2,1.8,1.6,1.4,1.4,1.5,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -26,17 +26,18 @@ var opDots=$$('i',opd);
 
 /* ---------- hook: three places money leaks, lit one at a time (time based) ---------- */
 var lks=$$('.b1 .lk'),heroTl=g.timeline({repeat:-1});
-lks.forEach(function(r){var f=$('.lk-f',r),d=$('.lk-d',r),seg=g.timeline();
-  seg.to(r,{opacity:1,borderColor:'rgba(212,174,90,.55)',duration:.5,ease:E},0)
-     .fromTo(f,{scaleX:1},{scaleX:.38,duration:1.6,ease:'power2.inOut'},.3)
-     .fromTo(d,{opacity:0,y:-4},{opacity:1,y:22,duration:.8,ease:'power2.in',repeat:1,repeatDelay:.1},.5)
-     .to(d,{opacity:0,duration:.2},'>')
-     .to(r,{opacity:.72,borderColor:'rgba(238,232,221,.08)',duration:.6,ease:E},'+=.6')
-     .to(f,{scaleX:1,duration:.6,ease:E},'<');
-  heroTl.add(seg);});
-var heroIn=g.timeline({delay:.15});
-heroIn.from('.h1 .w',{yPercent:110,duration:1.2,ease:E,stagger:.12})
-      .from('.srch',{y:30,opacity:0,duration:1.2,ease:E},.35)
+lks.forEach(function(r,i){var f=$('.lk-f',r),d=$('.lk-d',r),seg=g.timeline();
+  seg.to(r,{opacity:1,borderColor:'rgba(212,174,90,.55)',duration:.3,ease:E},0)
+     .fromTo(f,{scaleX:1},{scaleX:.38,duration:1.05,ease:'power2.inOut'},.1)
+     .fromTo(d,{opacity:0,y:-4},{opacity:1,y:22,duration:.45,ease:'power2.in',repeat:1,repeatDelay:.05},.2)
+     .to(d,{opacity:0,duration:.15},'>')
+     .to(r,{opacity:.72,borderColor:'rgba(238,232,221,.08)',duration:.5,ease:E},1.35)
+     .to(f,{scaleX:1,duration:.5,ease:E},'<');
+  heroTl.add(seg,i*1.3);});
+heroTl.to({},{duration:.4});
+var heroIn=g.timeline({delay:.05});
+heroIn.from('.h1 .w',{yPercent:110,duration:.9,ease:E,stagger:.08})
+      .from('.srch',{y:16,opacity:0,duration:.45,ease:E},0)
       .from('.cue',{opacity:0,duration:1,ease:E},.9);
 
 /* ---------- per beat scroll timelines (normalized) ---------- */
@@ -82,30 +83,48 @@ T().from('.bo .h2',{y:40,opacity:0,duration:.12},0)
    .to({},{duration:.24});
 /* 6 order: the call line, one line at a time */
 var ors=$$('.b6 .or');function ost(){return ors.length>2?ors[1].offsetTop-ors[0].offsetTop:0;}
-var M=function(){return Math.min(48,ost());};
-T().from('.b6 .h2 .ln',{y:50,opacity:0,duration:.14,stagger:.1},0)
-   .fromTo('.b6 .ov',{opacity:0,x:30,y:function(){return -2*ost();}},{opacity:1,x:0,y:function(){return -2*ost();},duration:.1},.04)
-   .fromTo('.b6 .oq',{opacity:0,x:30},{opacity:1,x:0,duration:.1},.09)
-   .fromTo('.b6 .os',{opacity:0,x:30,y:function(){return 2*ost();}},{opacity:1,x:0,y:function(){return 2*ost();},duration:.1},.14)
-   .to('.b6 .os',{y:0,duration:.18,ease:'power2.inOut'},.26)
-   .to('.b6 .ov',{y:0,duration:.18,ease:'power2.inOut'},.26)
-   .to('.b6 .os',{x:function(){return -M();},duration:.09,ease:'power1.out'},.26)
-   .to('.b6 .os',{x:0,duration:.09,ease:'power1.in'},.35)
-   .from('.b6 .os',{'--lit':0,duration:.14},.42).to({},{duration:.3});
-/* speed is leverage: the line lands, the order lights left to right, the proof follows */
+function M(){return Math.min(40,Math.max(18,(ors[0]?ors[0].offsetWidth:300)*.07));}
+T().to({},{duration:1});
+/* one swap: the row moving up arcs left over the top, the row moving down arcs right underneath */
+function sw(up,uy,dn,dy){var t=g.timeline();
+  t.set(up,{zIndex:2}).set(dn,{zIndex:1})
+   .to(up,{y:uy,duration:.7,ease:'power2.inOut'},0).to(up,{x:function(){return -M();},scale:1.04,duration:.35,ease:'power1.out'},0).to(up,{x:0,scale:1,duration:.35,ease:'power1.in'},.35)
+   .to(dn,{y:dy,duration:.7,ease:'power2.inOut'},0).to(dn,{x:function(){return M();},opacity:.6,duration:.35,ease:'power1.out'},0).to(dn,{x:0,opacity:1,duration:.35,ease:'power1.in'},.35);
+  return t;}
+var fx=[];function FX(i,t){fx.push({i:i,t:t,on:false});return t;}
+FX(5,g.timeline({paused:true,defaults:{ease:'power2.out'}}))
+   .fromTo('.b6 .h2 .ln:nth-child(1)',{y:50,opacity:0},{y:0,opacity:1,duration:.6},0)
+   .fromTo('.b6 .h2 .ln:nth-child(2)',{y:50,opacity:0},{y:0,opacity:1,duration:.6},.25)
+   .fromTo('.b6 .h2 .ln:nth-child(3)',{y:50,opacity:0},{y:0,opacity:0,duration:.01},0)
+   .fromTo('.b6 .ov',{opacity:0,x:30,y:function(){return -2*ost();}},{opacity:1,x:0,y:function(){return -2*ost();},duration:.5},.2)
+   .fromTo('.b6 .oq',{opacity:0,x:30},{opacity:1,x:0,duration:.5},.35)
+   .fromTo('.b6 .os',{opacity:0,x:30,y:function(){return 2*ost();},'--lit':0,'--pulse':0},{opacity:1,x:0,y:function(){return 2*ost();},'--lit':0,'--pulse':0,duration:.5},.5)
+   /* hold the agency order, then one move at a time: Speed climbs two places, then Quality and Volume settle */
+   .add(sw('.b6 .os',function(){return ost();},'.b6 .oq',function(){return ost();}),1.3)
+   .add(sw('.b6 .os',0,'.b6 .ov',function(){return -ost();}),2.3)
+   .to('.b6 .h2 .ln:nth-child(3)',{y:0,opacity:1,duration:.6},2.75)
+   .add(sw('.b6 .oq',0,'.b6 .ov',0),3.3)
+   /* selected: border lights, glow pulses once and settles, line fills */
+   .to('.b6 .os',{'--lit':1,duration:.6,ease:'power2.out'},4.1)
+   .to('.b6 .os',{'--pulse':1,duration:.35,ease:'power2.out'},4.15)
+   .to('.b6 .os',{'--pulse':0,duration:.7,ease:'power2.inOut'},4.5);
 T().from('.bv .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
    .from('.bv .sub',{y:24,opacity:0,duration:.12},.16)
    .from('.bv .lw',{y:16,opacity:0,duration:.08,stagger:.1},.3)
    .from('.bv .chev path',{strokeDashoffset:24,duration:.08,stagger:.1},.36)
    .from('.bv .lad .on',{'--bar':0,duration:.16},.5)
    .from('.bv .stat',{y:20,opacity:0,duration:.1},.6)
-   .from('.bv .src',{opacity:0,duration:.08},.68)
-   .from('.bv .lane',{opacity:0,y:20,duration:.08,stagger:.05},.1)
-   .fromTo('.bv .ls .fl',{scaleX:0},{scaleX:.82,duration:.8,ease:'none'},.16);
-(function(t){var fl=$('.bv .lf .fl'),mx=$$('.bv .lf .mx i'),at=.16,n=1;
-  for(var k=0;k<5;k++){t.fromTo(fl,{scaleX:0},{scaleX:1,duration:.1,ease:'power1.in',immediateRender:k===0},at);
-    t.from(mx.slice(n===1?0:n/2,n),{scale:0,opacity:0,duration:.05,stagger:.006,ease:'back.out(2)'},at+.1);at+=.13;n*=2;}
-  t.to({},{duration:.1});})(tls[tls.length-1]);
+   .from('.bv .src',{opacity:0,duration:.08},.68).to({},{duration:.2});
+(function(t){var fl=$('.bv .lf .fl'),mx=$$('.bv .lf .mx i'),at=.5,n=1;
+  t.fromTo('.bv .lane',{opacity:0,y:20},{opacity:1,y:0,duration:.5,stagger:.12},0)
+   .fromTo('.bv .ls .fl',{scaleX:0},{scaleX:.82,duration:7,ease:'none'},.3);
+  for(var k=0;k<5;k++){var set=mx.slice(n===1?0:n/2,n);
+    t.fromTo(fl,{scaleX:0},{scaleX:1,duration:.6,ease:'power1.in',immediateRender:k===0},at)
+     .fromTo(set,{scale:0,opacity:0,'--glow':1},{scale:1,opacity:1,'--glow':1,duration:.4,stagger:.015,ease:'back.out(2.2)',immediateRender:true},at+.6)
+     .to(set,{'--glow':0,duration:.6,ease:'power2.out'},at+.95);
+    at+=1.2;n*=2;}
+})(FX(6,g.timeline({paused:true,defaults:{ease:'power2.out'}})));
+
 /* 5 booked: the missed call turns into a booking, then a review */
 T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .from('.b5 .ph',{y:50,opacity:0,duration:.14},.04)
@@ -125,7 +144,7 @@ T().from('.bw .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
 /* quality is efficiency: the line, then the three ways, then the close */
 T().from('.bq .h2',{y:40,opacity:0,duration:.12},0).from('.bq .sub',{y:24,opacity:0,duration:.12},.1)
    .from('.bq .q3l',{opacity:0,y:14,duration:.1},.24).from('.bq .q3 li',{x:-30,opacity:0,duration:.1,stagger:.08},.32)
-   .from('.bq .q3c',{opacity:0,y:16,duration:.12},.6).to({},{duration:.2});
+   .from('.bq .q3c',{opacity:0,y:16,duration:.12},.6).from('.bq .q3a',{opacity:0,duration:.1},.68).to({},{duration:.2});
 /* 4 chosen: mixed details scatter, the gold line sweeps in one clear page */
 var ms=$$('.b4 .ms');
 T().from('.b4 .h2',{y:40,opacity:0,duration:.14},0)
@@ -204,10 +223,10 @@ function render(y){if(paused)return;var n=stages.length;
   for(var i=0;i<n;i++){
     var h2=W_/2,en=i===0?1:sm((y-starts[i])/h2),ex=i===n-1?1:1-sm((y-(ends[i]-h2))/h2);
     var o=Math.min(en,ex),s=en<1?.94+.06*en:(ex<1?1+.06*(1-ex):1),st=stages[i];
-    if(o<=.001){if(st._v!==0){st.style.visibility='hidden';st.style.opacity=0;st._v=0;}continue;}
+    if(o<=.001){if(st._v!==0){st.style.visibility='hidden';st.style.opacity=0;st._v=0;}fx.forEach(function(f){if(f.i===i&&f.on){f.on=false;f.t.pause(0);}});continue;}
     st.style.visibility='visible';st.style.opacity=o;st.style.transform=s===1?'':'scale('+s+')';st._v=1;
     tls[i].progress(clamp((y-starts[i])/((ends[i]-starts[i])*.86)));
-    if(o>.5)cur=i;}
+    if(o>.5){cur=i;fx.forEach(function(f){if(f.i===i&&!f.on){f.on=true;f.t.restart();}});}}
 }
 function startLenis(){lenis=new Lenis({lerp:.1,smoothWheel:true,wheelMultiplier:1});
   lenis.on('scroll',function(e){render(e.scroll);hdr(e.direction,e.scroll);});}
@@ -225,7 +244,7 @@ $$('a[href^="#"]').forEach(function(a){a.addEventListener('click',function(e){va
 var pb=$('#pause');
 pb.addEventListener('click',function(){
   if(!paused){var at=Math.max(cur,0);paused=true;H.classList.add('static');pb.setAttribute('aria-pressed','true');pb.textContent='Play Animations';
-    g.globalTimeline.pause();heroIn.progress(1);tls.forEach(function(t){t.progress(1);});
+    g.globalTimeline.pause();heroIn.progress(1);tls.forEach(function(t){t.progress(1);});fx.forEach(function(f){f.on=true;f.t.progress(1).pause();});
     lks.forEach(function(r){r.style.opacity='1';});$$('.b1 .lk-f').forEach(function(x){x.style.transform='scaleX(.38)';});$$('.b1 .lk-d').forEach(function(x){x.style.opacity='0';});
     if(lenis){lenis.destroy();lenis=null;}
     stages.forEach(function(s){s.style.cssText='';s._v=undefined;});hd.classList.remove('up');

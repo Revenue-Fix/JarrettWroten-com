@@ -22,7 +22,7 @@ a{color:inherit}
 .skip{position:fixed;left:12px;top:-60px;z-index:50;background:var(--fg);color:var(--bg);padding:12px 16px;border-radius:999px;font-weight:600;text-decoration:none}
 .skip:focus{top:12px}
 :focus-visible{outline:2px solid var(--gold2);outline-offset:4px}
-.gs{font-family:var(--serif);font-style:italic;font-weight:500;letter-spacing:-.005em;padding:.04em .08em .12em 0;margin:-.04em -.08em -.12em 0;
+.gs{font-family:var(--serif);font-style:italic;font-weight:500;letter-spacing:-.005em;padding:.1em .12em .3em .04em;margin:-.1em -.12em -.3em -.04em;
 background-image:var(--goldg);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone}
 
 /* header: wordmark plus one ask */
@@ -43,7 +43,7 @@ html.js:not(.static) #track{display:block}
 #track{display:none;width:1px}
 
 .h1{position:relative;font:600 clamp(46px,6.2vw,118px)/.94 var(--sans);letter-spacing:-.035em;text-wrap:balance}
-.h1 .ln{display:block;overflow:hidden;padding:.02em 0 .1em}
+.h1 .ln{display:block;overflow:hidden;padding:.06em .06em .26em;margin:-.04em -.06em -.16em}
 .h1 .w{display:inline-block}
 .h1 .gs{font-size:1.06em}
 .h2{font:500 clamp(36px,4.8vw,88px)/1 var(--sans);letter-spacing:-.03em;text-wrap:balance;max-width:15ch}
@@ -375,7 +375,7 @@ html.static .lk,html:not(.js) .lk{opacity:1}
 .ls .mx i{visibility:hidden}
 @media (max-width:760px){.vw{grid-template-columns:1fr;gap:16px}.lanes{padding:12px 14px;gap:10px;border-radius:16px;max-width:none}.lane{gap:8px}.tk{height:7px}.mx{gap:5px;grid-template-columns:repeat(16,1fr);min-height:0}
   .bv .h2.xl{font-size:clamp(40px,11vw,56px)}.bv .sub{font-size:16px;margin-top:12px}.bv .lad{margin-top:14px;font-size:19px}.bv .stat{margin-top:14px;font-size:15px}.bv .src{font-size:12px}}
-@media (forced-colors:active){.fl,.mx i{background:CanvasText}}
+@media (forced-colors:active){.fl,.mx i{background:CanvasText;filter:none}}
 .ls .mx{display:none}
 /* r33e chapters: quality, the pieces, volume */
 .bw .lad,.bf .lad{margin-top:clamp(28px,5vh,56px)}
@@ -434,3 +434,17 @@ html.static .lk,html:not(.js) .lk{opacity:1}
   .pz-p{font-size:clamp(16px,1.25vw,20px)}
   .pz-l li{font-size:clamp(15px,1.15vw,18px)}
 }
+
+/* r34a: line boxes hold the serif tails. Tight .96 line height made each heading line box end above the descenders of the gold italic (Q tail, y), so any engine that clips text to its line or layer box cut them off. */
+.h2 .ln{padding:.08em .12em .26em .06em;margin:-.08em -.12em -.26em -.06em}
+/* order beat: selected moment */
+.or{--pulse:0}
+.or.os{box-shadow:0 0 calc(40px*var(--lit) + 46px*var(--pulse)) calc(6px*var(--pulse)) rgba(243,220,154,calc(.18*var(--lit) + .32*var(--pulse)))}
+/* speed lanes: each new set of coins glows as it lands */
+.mx i{--glow:0;filter:brightness(calc(1 + .7*var(--glow)));box-shadow:0 0 calc(12px + 18px*var(--glow)) rgba(243,220,154,calc(.3 + .45*var(--glow)))}
+/* Quality quote and book credit */
+.q3q{margin:clamp(22px,4vh,44px) 0 0;padding:0}
+.q3q .q3c{margin-top:0}
+.q3a{margin-top:10px;padding-left:20px;font:400 clamp(12px,.95vw,15px)/1.4 var(--sans);color:rgba(238,232,221,.62);max-width:56ch}
+.q3a cite{font-style:italic}
+@media (max-width:760px){.q3q{margin-top:14px}.q3a{font-size:11.5px;margin-top:6px;padding-left:16px}}
