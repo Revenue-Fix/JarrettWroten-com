@@ -33,7 +33,17 @@ background-image:var(--goldg);-webkit-background-clip:text;background-clip:text;
 .hdr-cta{display:inline-flex;align-items:center;justify-content:center;text-align:center;min-height:44px;padding:8px 20px;border-radius:999px;background:var(--goldg);color:#17130a;font:600 15px/1.2 var(--sans);text-decoration:none;transition:filter .3s var(--ease)}
 .hdr-cta:hover{filter:brightness(1.06)}
 .hdr-cta{box-shadow:0 10px 30px rgba(0,0,0,.45),0 0 0 1px rgba(212,174,90,.25)}
-@media (max-width:380px){.hdr .hdr-cta{font-size:12px;line-height:1.15;padding:6px 12px;max-width:none;flex:0 1 auto}.hdr{gap:8px}}
+/* r34a12: comet circling the floating booking button (Jarrett, Nov 14 3:09 PM) */
+@property --hca{syntax:'<angle>';inherits:false;initial-value:0deg}
+.hdr-cta{position:relative;isolation:isolate}
+.hdr-cta::before{content:"";position:absolute;inset:-4px;border-radius:999px;padding:3px;pointer-events:none;
+background:conic-gradient(from var(--hca),transparent 0deg 200deg,rgba(212,174,90,.18) 250deg,rgba(236,204,130,.7) 315deg,#ffe7a8 343deg,#ffffff 356deg,transparent 360deg);
+-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask:linear-gradient(#000 0 0) content-box exclude,linear-gradient(#000 0 0);
+filter:drop-shadow(0 0 4px rgba(255,244,210,.95)) drop-shadow(0 0 12px rgba(245,205,120,.6));animation:hcComet 3.5s linear infinite}
+@keyframes hcComet{to{--hca:360deg}}
+html.static .hdr-cta::before{animation-play-state:paused!important}
+@media (forced-colors:active){.hdr-cta::before{display:none}}
+@media (max-width:380px){.hdr .hdr-cta{font-size:12px;line-height:1.15;padding:6px 12px;max-width:none;flex:0 1 auto}header.hdr{gap:8px;padding-top:9px}}
 
 /* base flow: every beat is a normal full screen (no JS, or paused) */
 .beat{position:relative;min-height:100svh}
