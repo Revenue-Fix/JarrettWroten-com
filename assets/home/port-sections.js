@@ -62,7 +62,8 @@ function setCur(i){if(i===cur)return;cur=i;cards.forEach((c,j)=>{c.classList.tog
  const aw=wn.clientWidth;if(sp.scrollWidth>aw){sp.style.fontSize=(parseFloat(getComputedStyle(sp).fontSize)*aw/sp.scrollWidth*0.98)+'px'}
  requestAnimationFrame(()=>requestAnimationFrame(()=>sp.classList.add('cur')))}
 function onScroll(){const vh=innerHeight,r=work.getBoundingClientRect(),span=Math.max(1,r.height-vh);
- const q=Math.min(1,Math.max(0,-r.top/span));
+ /* r34: the desktop pin sticks at minus the heading height (--wtH), so the track only starts sliding once the pin has locked; before, it slid while the section was still scrolling up, which read as a diagonal move */const o=Math.min(span-1,parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--wtH'))||0);
+ const q=Math.min(1,Math.max(0,(-r.top-o)/(span-o)));
  const max=track.scrollWidth-innerWidth;
  track.style.transform=`translate3d(${-q*max}px,0,0)`;
  if(wProg)wProg.style.width=(q*100)+'%';
