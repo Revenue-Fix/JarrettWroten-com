@@ -24,23 +24,16 @@ var opd=$('.op-dots');(function(){var seed=7,i;function r(){seed=(seed*9301+4929
  for(i=0;i<22;i++){var d=D.createElement('i');d.style.left=(5+i*3.5+r()*2)+'%';d.style.bottom=(14+r()*20)+'%';opd.appendChild(d);}})();
 var opDots=$$('i',opd);
 
-/* ---------- hook: sample search loop (time based) ---------- */
-var Q=['ac repair near me','tattoo shop las vegas','auto body shop near me','wedding chapel las vegas'];
-var qEl=$('#q'),rows=$$('.b1 .rr'),tap=$('.b1 .tap'),calling=$('.b1 .calling');
-var heroTl=g.timeline({repeat:-1});
-Q.forEach(function(q){
-  var o={n:0},seg=g.timeline();
-  seg.set(qEl,{textContent:''})
-     .to(o,{n:q.length,duration:q.length*.07,ease:'none',onUpdate:function(){qEl.textContent=q.slice(0,Math.round(o.n));}},.3)
-     .fromTo(rows,{opacity:0,y:14},{opacity:1,y:0,duration:.6,ease:E,stagger:.14},'+=.25')
-     .fromTo(tap,{opacity:0,scale:1.8},{opacity:1,scale:1,duration:.45,ease:'power2.out'},'+=.5')
-     .to(rows[0],{borderColor:'rgba(157,181,206,.6)',duration:.3},'<.2')
-     .fromTo(calling,{opacity:0,y:8},{opacity:1,y:0,duration:.5,ease:E},'<.1')
-     .to(tap,{opacity:0,duration:.5},'+=.6')
-     .to([rows,calling],{opacity:0,duration:.5,ease:'power2.in'},'+=1.1')
-     .set(rows[0],{borderColor:'rgba(238,232,221,.08)'});
-  heroTl.add(seg);
-});
+/* ---------- hook: three places money leaks, lit one at a time (time based) ---------- */
+var lks=$$('.b1 .lk'),heroTl=g.timeline({repeat:-1});
+lks.forEach(function(r){var f=$('.lk-f',r),d=$('.lk-d',r),seg=g.timeline();
+  seg.to(r,{opacity:1,borderColor:'rgba(212,174,90,.55)',duration:.5,ease:E},0)
+     .fromTo(f,{scaleX:1},{scaleX:.38,duration:1.6,ease:'power2.inOut'},.3)
+     .fromTo(d,{opacity:0,y:-4},{opacity:1,y:22,duration:.8,ease:'power2.in',repeat:1,repeatDelay:.1},.5)
+     .to(d,{opacity:0,duration:.2},'>')
+     .to(r,{opacity:.72,borderColor:'rgba(238,232,221,.08)',duration:.6,ease:E},'+=.6')
+     .to(f,{scaleX:1,duration:.6,ease:E},'<');
+  heroTl.add(seg);});
 var heroIn=g.timeline({delay:.15});
 heroIn.from('.h1 .w',{yPercent:110,duration:1.2,ease:E,stagger:.12})
       .from('.srch',{y:30,opacity:0,duration:1.2,ease:E},.35)
@@ -171,7 +164,7 @@ var pb=$('#pause');
 pb.addEventListener('click',function(){
   if(!paused){var at=Math.max(cur,0);paused=true;H.classList.add('static');pb.setAttribute('aria-pressed','true');pb.textContent='Play Animations';
     g.globalTimeline.pause();heroIn.progress(1);tls.forEach(function(t){t.progress(1);});
-    qEl.textContent=Q[0];rows.forEach(function(r){r.style.opacity='1';r.style.transform='none';});tap.style.opacity='0';calling.style.opacity='0';
+    lks.forEach(function(r){r.style.opacity='1';});$$('.b1 .lk-f').forEach(function(x){x.style.transform='scaleX(.38)';});$$('.b1 .lk-d').forEach(function(x){x.style.opacity='0';});
     if(lenis){lenis.destroy();lenis=null;}
     stages.forEach(function(s){s.style.cssText='';s._v=undefined;});hd.classList.remove('up');
     beats[at].scrollIntoView();cur=at;
