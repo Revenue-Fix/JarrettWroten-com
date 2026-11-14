@@ -59,6 +59,6 @@ document.addEventListener('visibilitychange',()=>{if(!document.hidden)kick()});
 addEventListener('scroll',kick,{passive:true});
 addEventListener('click',kick,true);
 window.__cometDbg={items,draw,geo,at,TAIL,LOOP};
-function run(){document.querySelectorAll('.hdr-cta').forEach(add);kick()}
+function run(){document.querySelectorAll('.hdr-cta, #cta').forEach(add);kick()}
 run();setInterval(kick,1500);
 })();

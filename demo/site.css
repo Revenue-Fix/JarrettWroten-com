@@ -36,7 +36,11 @@ background-image:var(--goldg);-webkit-background-clip:text;background-clip:text;
 /* r34a13: the homepage's purple comet v2 (canvas from assets/home/site.js, copied to comet.js) on the floating booking button (Jarrett, Nov 14 3:13 PM) */
 .hdr-cta{position:relative;isolation:isolate}
 .hdr-cta canvas.comet2{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;display:block;border-radius:inherit}
-@media (forced-colors:active){.hdr-cta canvas.comet2{display:none}}
+/* r34a14: same comet on the last beat's booking button, replacing the static gold ring (Jarrett, Nov 14 3:37 PM) */
+.btn-gold{isolation:isolate}
+.btn-gold canvas.comet2{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;display:block;border-radius:inherit}
+.cta-wrap .cta-svg{display:none}
+@media (forced-colors:active){.hdr-cta canvas.comet2,.btn-gold canvas.comet2{display:none}}
 @media (max-width:380px){.hdr .hdr-cta{font-size:12px;line-height:1.15;padding:6px 12px;max-width:none;flex:0 1 auto}header.hdr{gap:8px;padding-top:9px}}
 
 /* base flow: every beat is a normal full screen (no JS, or paused) */
