@@ -149,6 +149,7 @@ linear-gradient(rgba(238,232,221,.05) 1px,transparent 1px) 0 0/28px 28px,linear-
 
 /* 7 ask */
 .b7 .stage{justify-content:center;padding-bottom:150px}
+.cta-note{margin-top:18px;font-size:15px;line-height:1.5;color:var(--fgm);max-width:36em}.cta-note a{color:var(--gold2);text-decoration:underline;text-underline-offset:3px;overflow-wrap:anywhere}
 .cta-wrap{position:relative;display:inline-block;margin-top:5vh;align-self:flex-start}
 .cta-svg{position:absolute;left:-7px;top:-7px;overflow:visible;pointer-events:none}
 .cta-r{fill:none;stroke:var(--gold);stroke-width:1.6}

@@ -231,7 +231,7 @@ T().from('.b7 .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.06},0)
    .from('.b7 .sub',{opacity:0,y:20,duration:.12},.2)
    .fromTo(rect,{strokeDashoffset:function(){return rlen;}},{strokeDashoffset:0,duration:.32,ease:'power2.inOut'},.24)
    .from(btn,{opacity:0,scale:.96,duration:.14},.44)
-   .from('.ftr',{opacity:0,duration:.14},.54).to({},{duration:.2});
+   .from('.cta-note',{opacity:0,y:10,duration:.12},.5).from('.ftr',{opacity:0,duration:.14},.54).to({},{duration:.2});
 
 /* ---------- layout + render ---------- */
 var track=$('#track');
