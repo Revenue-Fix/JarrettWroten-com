@@ -56,8 +56,9 @@ T().from('.bp .h2',{y:40,opacity:0,duration:.14},0)
 var cns=$$('.bs .cn');
 T().from('.bs .h2',{y:40,opacity:0,duration:.12},0)
    .from('.bs .sub',{y:20,opacity:0,duration:.1},.08)
-   .from('.bs .sc',{y:50,opacity:0,duration:.14,stagger:.07},.14);
-cns.forEach(function(c,i){var to=+c.getAttribute('data-to'),o={v:0};tls[tls.length-1].to(o,{v:to,duration:.26,ease:'power1.out',onUpdate:function(){c.textContent=Math.round(o.v);}},.18+i*.07);});
+   .from('.bs .sl p',{y:14,opacity:0,duration:.08,stagger:.04},.1)
+   .from('.bs .sc',{y:50,opacity:0,duration:.14,stagger:.07},.2);
+cns.forEach(function(c,i){var to=+c.getAttribute('data-to'),o={v:0};tls[tls.length-1].to(o,{v:to,duration:.26,ease:'power1.out',onUpdate:function(){c.textContent=Math.round(o.v);}},.24+i*.07);});
 tls[tls.length-1].from('.bs .sc-s',{opacity:0,duration:.08,stagger:.05},.5).to({},{duration:.22});
 /* 2 proof: 54 of 100 light up gold */
 var nEl=$('#n54'),cnt={v:0};
@@ -80,7 +81,17 @@ T().from('.bo .h2',{y:40,opacity:0,duration:.12},0)
    .from('.bo .sub',{y:24,opacity:0,duration:.12},.24)
    .to({},{duration:.24});
 /* 6 order: the call line, one line at a time */
-T().from('.b6 .h2 .ln',{y:50,opacity:0,duration:.18,stagger:.1},0).to({},{duration:.4});
+var ors=$$('.b6 .or');function ost(){return ors.length>2?ors[1].offsetTop-ors[0].offsetTop:0;}
+var M=function(){return Math.min(48,ost());};
+T().from('.b6 .h2 .ln',{y:50,opacity:0,duration:.14,stagger:.1},0)
+   .fromTo('.b6 .ov',{opacity:0,x:30,y:function(){return -2*ost();}},{opacity:1,x:0,y:function(){return -2*ost();},duration:.1},.04)
+   .fromTo('.b6 .oq',{opacity:0,x:30},{opacity:1,x:0,duration:.1},.09)
+   .fromTo('.b6 .os',{opacity:0,x:30,y:function(){return 2*ost();}},{opacity:1,x:0,y:function(){return 2*ost();},duration:.1},.14)
+   .to('.b6 .os',{y:0,duration:.18,ease:'power2.inOut'},.26)
+   .to('.b6 .ov',{y:0,duration:.18,ease:'power2.inOut'},.26)
+   .to('.b6 .os',{x:function(){return -M();},duration:.09,ease:'power1.out'},.26)
+   .to('.b6 .os',{x:0,duration:.09,ease:'power1.in'},.35)
+   .from('.b6 .os',{'--lit':0,duration:.14},.42).to({},{duration:.3});
 /* speed is leverage: the line lands, the order lights left to right, the proof follows */
 T().from('.bv .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
    .from('.bv .sub',{y:24,opacity:0,duration:.12},.16)
@@ -88,7 +99,13 @@ T().from('.bv .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
    .from('.bv .chev path',{strokeDashoffset:24,duration:.08,stagger:.1},.36)
    .from('.bv .lad .on',{'--bar':0,duration:.16},.5)
    .from('.bv .stat',{y:20,opacity:0,duration:.1},.6)
-   .from('.bv .src',{opacity:0,duration:.08},.68).to({},{duration:.2});
+   .from('.bv .src',{opacity:0,duration:.08},.68)
+   .from('.bv .lane',{opacity:0,y:20,duration:.08,stagger:.05},.1)
+   .fromTo('.bv .ls .fl',{scaleX:0},{scaleX:.82,duration:.8,ease:'none'},.16);
+(function(t){var fl=$('.bv .lf .fl'),mx=$$('.bv .lf .mx i'),at=.16,n=1;
+  for(var k=0;k<5;k++){t.fromTo(fl,{scaleX:0},{scaleX:1,duration:.1,ease:'power1.in',immediateRender:k===0},at);
+    t.from(mx.slice(n===1?0:n/2,n),{scale:0,opacity:0,duration:.05,stagger:.006,ease:'back.out(2)'},at+.1);at+=.13;n*=2;}
+  t.to({},{duration:.1});})(tls[tls.length-1]);
 /* 5 booked: the missed call turns into a booking, then a review */
 T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
    .from('.b5 .ph',{y:50,opacity:0,duration:.14},.04)
