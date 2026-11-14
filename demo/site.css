@@ -554,7 +554,7 @@ html.static .vz-stock,html.static .vz-film,html.static .vz-stars,html.static .vz
   .vz-r{padding:7px 10px;font-size:13px;border-radius:10px;gap:8px}.vz-cl{gap:6px}.vz-q span{padding:6px 10px;font-size:12px}.vz-an{margin-top:6px;gap:4px}.vz-d{font-size:10.5px;padding:4px 8px}
   .vz-cmp{gap:8px}.vz-c{gap:4px}.vz-ser{gap:6px}.vz-res{padding:6px 10px;gap:4px}.vz-res:nth-child(3){display:none}.vz-tt{font-size:14px}.vz-ds i{height:6px}
   .vz-mob{border-radius:16px;padding:12px 8px 8px;gap:5px}.vz-mb{padding:5px;font-size:10px}
-  .vz-an .vz-r:nth-child(3){display:none}.bsf .h2{font-size:clamp(28px,8vw,40px)}.bsf .sub{font-size:13.5px;margin-top:8px}.bsf .pcs-r{margin-top:10px;font-size:14px}.sp-w{gap:14px!important}
+  .bsf .sp-v{height:128px}.vz-an .vz-r:nth-child(3){display:none}.bsf .h2{font-size:clamp(28px,8vw,40px)}.bsf .sub{font-size:13.5px;margin-top:8px}.bsf .pcs-r{margin-top:10px;font-size:14px}.sp-w{gap:14px!important}
 }
 @media (min-width:761px){.bsf .sp-w{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}.bsf .h2{font-size:clamp(34px,3.7vw,66px);max-width:none}.bsf .sub{margin-top:14px;max-width:52ch;font-size:clamp(15px,1.2vw,19px)}.bsf .sp-l{margin-top:14px}.bsf .sp-i{padding:9px 0}}
 @media (min-width:761px) and (max-height:800px){.bsp .sp-i{padding:7px 0}.bsf .sub{margin-top:10px}.bsf .sp-l{margin-top:10px}.bsf .pcs-r{margin-top:10px}.sp-p{padding-top:4px}}
