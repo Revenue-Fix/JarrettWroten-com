@@ -108,7 +108,7 @@ $('#top').onclick=()=>lenis.scrollTo(0,{duration:1.8,easing:t=>t<.5?4*t*t*t:1-Ma
 const wrap=$('#heroWrap'),hv=$('#heroV'),hc=$('.hero-c'),secs=[...document.querySelectorAll('[data-theme]')],cards=[...document.querySelectorAll('.pc')],work=$('.work'),tr=$('#track');
 let snapT=0,snapping=false;
 function loop(){const vh=innerHeight;
- const r=wrap.getBoundingClientRect();const p=Math.min(1,Math.max(0,-r.top/(r.height-vh)));const e=p*p*(3-2*p);
+ const r=wrap.getBoundingClientRect();const p=Math.min(1,Math.max(0,-r.top/(vh*(innerWidth<=700?.24:innerWidth<=860?.35:.6))));const e=p*p*(3-2*p);
  hv.style.setProperty('--ix',(e*4)+'vw');hv.style.setProperty('--iy',(e*5)+'vh');hv.style.setProperty('--ir',(e*22)+'px');hc.style.transform=`translate3d(0,${-e*14}vh,0)`;hc.style.opacity=1-e*.9;hv.__fb&&(hv.__fb.style.cssText=hv.style.cssText);
  let th='dark';for(const s of secs){const b=s.getBoundingClientRect();if(b.top<vh*.5&&b.bottom>vh*.5){th=s.dataset.theme;break}}root.classList.toggle('light',th==='light');
  const cx=innerWidth/2;cards.forEach(c=>{const b=c.getBoundingClientRect();const d=(b.left+b.width/2-cx)/innerWidth;c.style.setProperty('--px',(-d*60)+'px')});
