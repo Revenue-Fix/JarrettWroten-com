@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[1.0,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,1.4,1.4,1.2,1.8,1.6,1.4,1.4,1.5,1.2]; /* scroll per beat, in screens */
+var LEN=[1.0,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,3.2,1.2,2.4,3.6,1.5,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -156,17 +156,18 @@ T().from('.b4 .h2',{y:40,opacity:0,duration:.14},0)
    .to('.b4 .pg-clean',{opacity:1,duration:.1},.46)
    .to('.b4 .gl',{opacity:0,duration:.04},.54)
    .fromTo('.b4 .sweep',{left:'-40%'},{left:'120%',duration:.24,ease:'none'},.5)
-   .from('.b4 .sub',{y:24,opacity:0,duration:.12},.48)
+   .from('.b4 .sub',{y:24,opacity:0,duration:.12},.12)
+   .from('.b4 .stk li',{x:-24,opacity:0,duration:.1,stagger:.06},.2)
+   .from('.b4 .pcs-r',{y:16,opacity:0,duration:.12},.56)
    .to({},{duration:.22});
-/* get chosen, piece by piece */
-T().from('.bza .pz-c',{y:60,opacity:0,duration:.18,stagger:.14},0)
-   .from('.bza .pz-c',{'--rule':0,duration:.2,stagger:.14},.08)
-   .from('.bza .pz-o',{opacity:0,y:12,duration:.12,stagger:.14},.18)
-   .from('.bza .pz-p,.bza .pz-l',{opacity:0,duration:.14,stagger:.1},.28).to({},{duration:.3});
-T().from('.bzb .pz-c',{y:60,opacity:0,duration:.18,stagger:.14},0)
-   .from('.bzb .pz-c',{'--rule':0,duration:.2,stagger:.14},.08)
-   .from('.bzb .pz-o',{opacity:0,y:12,duration:.12,stagger:.14},.18)
-   .from('.bzb .pz-p,.bzb .pz-l',{opacity:0,duration:.14,stagger:.1},.28).to({},{duration:.3});
+/* stepper: the active piece opens, its sample visual plays; scroll moves it on */
+function stepper(sel){var r=$(sel),it=$$('.sp-i',r),sc=$$('.sp-s',r),o={v:0},c=-1;
+  function set(k){if(k===c)return;c=k;it.forEach(function(e,i){e.classList.toggle('on',i===k);});sc.forEach(function(e,i){e.classList.toggle('on',i===k);});}
+  return {o:o,upd:function(){set(Math.max(0,Math.min(it.length-1,Math.floor(o.v))));}};}
+var spc=stepper('.bsc');
+T().from('.bsc .sp-l',{opacity:0,duration:.06},0).from('.bsc .sp-i',{x:-24,duration:.06,stagger:.025},0)
+   .from('.bsc .sp-v',{y:40,opacity:0,duration:.08},.03)
+   .fromTo(spc.o,{v:0},{v:3.999,duration:.82,ease:'none',onUpdate:spc.upd},.12).to({},{duration:.06});
 /* finish with volume: the red word, the order reaches its last step */
 T().from('.bf .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
    .from('.bf .fsub',{y:24,opacity:0,duration:.12},.18)
@@ -174,30 +175,47 @@ T().from('.bf .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
    .from('.bf .chev path',{strokeDashoffset:24,duration:.08,stagger:.08},.36)
    .from('.bf .lad .on',{'--bar':0,duration:.18},.52).to({},{duration:.25});
 /* volume is scale: gold dots pile up, then turn to dirt */
+var dirt=(function(){var gd=$('.bk2 .gd'),cs=$$('.bk2 .gd i'),cv=D.createElement('canvas'),x=cv.getContext('2d'),o={p:0},W0=0,H0=0,pos=[],P=[],N=12,last=-1;
+  cv.className='dirt';cv.setAttribute('aria-hidden','true');gd.appendChild(cv);
+  function rnd(s){return function(){s=(s*16807)%2147483647;return (s-1)/2147483646;};}
+  var ord=cs.map(function(_,i){return i;}),R=rnd(7);for(var i=ord.length-1;i>0;i--){var k=Math.floor(R()*(i+1)),t=ord[i];ord[i]=ord[k];ord[k]=t;}
+  var st=[];ord.forEach(function(ci,r){st[ci]=r/cs.length*.62;});
+  function size(){var w=gd.clientWidth,h=gd.clientHeight;if(w===W0&&h===H0&&pos.length)return;W0=w;H0=h;var d=Math.min(2,W.devicePixelRatio||1);cv.width=w*d;cv.height=h*d;x.setTransform(d,0,0,d,0,0);
+    var g0=gd.getBoundingClientRect();pos=cs.map(function(c){var b=c.getBoundingClientRect();return [b.left-g0.left+b.width/2,b.top-g0.top+b.height/2,b.width/2];});
+    P=[];cs.forEach(function(c,ci){var R2=rnd(ci+11),p=pos[ci];for(var n=0;n<N;n++){var a=R2()*6.283,rr=R2()*p[2]*.8;P.push({c:ci,x:p[0]+Math.cos(a)*rr,y:p[1]+Math.sin(a)*rr,vx:(R2()-.5)*40,s:1.5+R2()*2.6,l:R2(),tx:0,col:R2()});}});
+    P.forEach(function(q,i){q.tx=Math.max(4,Math.min(W0-4,W0/2+(q.x-W0/2)*.75+(q.l-.5)*30));});}
+  function gy(){return H0-10;}
+  function mound(xx,f){var c=W0/2,s=W0*.36,u=(xx-c)/s;return Math.max(0,f*(H0*.13)*Math.exp(-u*u*1.6));}
+  function draw(){size();var p=o.p;if(Math.abs(p-last)<.0005)return;last=p;x.clearRect(0,0,W0,H0);var G=gy(),landed=0,tot=P.length;
+    var lf=[];cs.forEach(function(c,ci){var u=Math.max(0,Math.min(1,(p-st[ci])/.38));lf[ci]=u;
+      c.style.setProperty('--dirt',Math.min(1,u/.3).toFixed(3));c.style.boxShadow=u>0?'none':'';c.style.visibility=u>=.42?'hidden':'';});
+    P.forEach(function(q){var u=lf[q.c];if(u>=.42+(.58*.85)*(.3+.7*q.l)*.9)landed++;});
+    var f=landed/tot;
+    /* ground line and mound */
+    x.strokeStyle='rgba(238,232,221,.18)';x.lineWidth=1;x.beginPath();x.moveTo(0,G+.5);x.lineTo(W0,G+.5);x.stroke();
+    if(f>0){x.beginPath();x.moveTo(0,G);for(var xx=0;xx<=W0;xx+=4)x.lineTo(xx,G-mound(xx,f));x.lineTo(W0,G);x.closePath();
+      var gr=x.createLinearGradient(0,G-H0*.13,0,G);gr.addColorStop(0,'#5a4632');gr.addColorStop(1,'#2a2017');x.fillStyle=gr;x.fill();}
+    /* cracks, then falling grains */
+    cs.forEach(function(c,ci){var u=lf[ci],pp=pos[ci];if(u>.24&&u<.42){var R3=rnd(ci+5),k=(u-.24)/.18;x.strokeStyle='rgba(20,14,8,.9)';x.lineWidth=1.4;
+      for(var m=0;m<3;m++){var a=R3()*6.283;x.beginPath();x.moveTo(pp[0],pp[1]);x.lineTo(pp[0]+Math.cos(a)*pp[2]*k,pp[1]+Math.sin(a)*pp[2]*k);x.stroke();}}});
+    P.forEach(function(q){var u=lf[q.c];if(u<.42)return;var d0=.3+.7*q.l,t=Math.min(1,(u-.42)/(.58*.85)/d0*1.1);
+      var ty=G-mound(q.tx,f)-q.s/2,yy=q.y+(ty-q.y)*t*t,xx=q.x+(q.tx-q.x)*t+q.vx*Math.sin(t*3.14)*.3;
+      x.fillStyle=q.col<.5?'#6b5442':(q.col<.8?'#4a3a2b':'#8a6a4a');x.globalAlpha=t>=1?.0:1;x.fillRect(xx-q.s/2,yy-q.s/2,q.s,q.s);x.globalAlpha=1;});
+  }
+  W.addEventListener('resize',function(){W0=0;last=-1;});
+  return {o:o,draw:draw};})();
 T().from('.bk2 .h2',{y:40,opacity:0,duration:.12},0).from('.bk2 .sub',{y:24,opacity:0,duration:.12},.08)
    .from('.bk2 .gd i',{scale:0,opacity:0,duration:.1,stagger:{each:.012,from:'random'}},.08)
    .from('.bk2 .vl li',{y:16,opacity:0,duration:.1,stagger:.1},.24)
-   .to('.bk2 .gd i',{'--dirt':1,boxShadow:'0 0 0 rgba(0,0,0,0)',y:function(){return 6+Math.random()*24;},duration:.16,stagger:{each:.008,from:'random'}},.5)
-   .from('.bk2 .q3c',{opacity:0,y:16,duration:.12},.66).to({},{duration:.2});
-/* 3 found: the answer names the shop, the pin lands */
-T().from('.b3 .h2',{y:40,opacity:0,duration:.14},0)
-   .from('.b3 .ask',{y:50,opacity:0,duration:.16},.04)
-   .from('.b3 .ask-q',{y:16,opacity:0,duration:.08},.12)
-   .from('.b3 .ask-a .sk',{scaleX:0,transformOrigin:'left center',duration:.06,stagger:.03},.18)
-   .to('.b3 .pick',{opacity:1,y:0,duration:.1},.3)
-   .fromTo('.b3 .mp.you',{opacity:0,scale:2.4},{opacity:1,scale:1,duration:.1,ease:'back.out(2)'},.36)
-   .to('.b3 .mp.you',{boxShadow:'0 0 0 18px rgba(243,220,154,0)',duration:.14,ease:'power1.out'},.44)
-   .from('.b3 .sub',{y:24,opacity:0,duration:.12},.4)
-   .to({},{duration:.25});
-/* get found, piece by piece */
-T().from('.bzc .pz-c',{y:60,opacity:0,duration:.18,stagger:.14},0)
-   .from('.bzc .pz-c',{'--rule':0,duration:.2,stagger:.14},.08)
-   .from('.bzc .pz-o',{opacity:0,y:12,duration:.12,stagger:.14},.18)
-   .from('.bzc .pz-p,.bzc .pz-l',{opacity:0,duration:.14,stagger:.1},.28).to({},{duration:.3});
-T().from('.bzd .pz-c',{y:60,opacity:0,duration:.18,stagger:.14},0)
-   .from('.bzd .pz-c',{'--rule':0,duration:.2,stagger:.14},.08)
-   .from('.bzd .pz-o',{opacity:0,y:12,duration:.12,stagger:.14},.18)
-   .from('.bzd .pz-p,.bzd .pz-l',{opacity:0,duration:.14,stagger:.1},.28).to({},{duration:.3});
+   .fromTo(dirt.o,{p:0},{p:1,duration:.5,ease:'none',onUpdate:dirt.draw},.36)
+   .from('.bk2 .q3c',{opacity:0,y:16,duration:.12},.8).to({},{duration:.14});
+/* get found: the same stepper as get chosen */
+var spf=stepper('.bsf');
+T().from('.bsf .h2',{y:40,opacity:0,duration:.06},0).from('.bsf .sub',{y:20,opacity:0,duration:.06},.03)
+   .from('.bsf .sp-l',{opacity:0,duration:.05},.06).from('.bsf .sp-i',{x:-24,duration:.05,stagger:.02},.06)
+   .from('.bsf .sp-v',{y:40,opacity:0,duration:.07},.06)
+   .fromTo(spf.o,{v:0},{v:3.999,duration:.74,ease:'none',onUpdate:spf.upd},.16)
+   .from('.bsf .pcs-r',{y:16,opacity:0,duration:.06},.84).to({},{duration:.06});
 /* tease: the three offers, in order */
 T().from('.bt .h2',{y:40,opacity:0,duration:.12},0)
    .from('.bt .of',{y:50,opacity:0,duration:.14,stagger:.09},.1)
