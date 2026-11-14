@@ -311,3 +311,5 @@ html.static *{animation-play-state:paused!important}
 html.static .lk,html:not(.js) .lk{opacity:1}
 @media (max-width:700px){.leak{padding:14px}.lks{gap:8px}.lk{grid-template-columns:2em minmax(0,1fr) 64px;padding:12px;gap:10px}.lk em.gs{font-size:20px}.lk-t b{font-size:17px}.lk-t span{font-size:14px}}
 @media (forced-colors:active){.lk-f,.lk-d{background:CanvasText}}
+.lk-t span{text-wrap:balance}
+@media (max-width:700px){.lk{grid-template-columns:1.6em minmax(0,1fr) 40px;gap:10px}.lk-t span{font-size:14px;line-height:1.3}}
