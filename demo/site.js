@@ -44,7 +44,8 @@ heroIn.from('.h1 .w',{yPercent:110,duration:.9,ease:E,stagger:.08})
 var tls=[];
 function T(){var t=g.timeline({paused:true,defaults:{ease:'power2.out'}});tls.push(t);return t;}
 /* 1 hook drifts on the way out */
-T().to('.b1 .hook-copy',{y:-30,duration:1},0).to('.b1 .srch',{y:-16,duration:1},0);
+var phn=matchMedia('(max-width:760px)').matches;/* r34a16: on phones the headline drifts down, away from the floating header */
+T().to('.b1 .hook-copy',{y:phn?10:-30,duration:1},0).to('.b1 .srch',{y:phn?-6:-16,duration:1},0);
 /* pain: the ways leads slip away, one at a time */
 T().from('.bp .h2',{y:40,opacity:0,duration:.14},0)
    .from('.bp .pain li',{x:-24,opacity:0,duration:.1,stagger:.1},.12)
@@ -248,7 +249,18 @@ function render(y){if(paused)return;var n=stages.length;
 }
 function startLenis(){lenis=new Lenis({lerp:.1,smoothWheel:true,wheelMultiplier:1});
   lenis.on('scroll',function(e){render(e.scroll);hdr(e.direction,e.scroll);});}
-var hd=$('#hdr');function hdr(){hd.classList.remove('up');}/* r34a11: header and its booking button float, always visible */
+var hd=$('#hdr');function hdr(){hd.classList.remove('up');}
+/* r34a16: publish the header's real rendered height so stages clear it (the button can change height with fonts and width) */
+(function(){function setH(){H.style.setProperty('--hdrH',Math.ceil(hd.getBoundingClientRect().height)+'px');}setH();addEventListener('resize',setH,{passive:true});addEventListener('load',setH);document.fonts&&document.fonts.ready.then(setH);if('ResizeObserver' in window)new ResizeObserver(setH).observe(hd);})();
+/* r34a16: on short phone screens each beat's content scales down just enough to sit between the header and the Pause button (never below 0.72); the booking button itself never scales */
+(function(){var mq=matchMedia('(max-width:760px)'),ss=[].slice.call(document.querySelectorAll('.stage'));
+function nat(st){var top=1e9,bot=-1e9;[].forEach.call(st.children,function(c){var cs=getComputedStyle(c);if(cs.position==='absolute'||cs.position==='fixed'||cs.display==='none')return;var t=c.offsetTop,b=t+Math.max(c.offsetHeight,c.scrollHeight);if(t<top)top=t;if(b>bot)bot=b;});return bot>top?bot-top:0;}
+function fit(){ss.forEach(function(st){st.style.removeProperty('--fz');});if(!mq.matches)return;
+ ss.forEach(function(st){var cs=getComputedStyle(st),av=(H.classList.contains('static')?innerHeight:st.clientHeight)-parseFloat(cs.paddingTop)-parseFloat(cs.paddingBottom),n=nat(st);
+  var fx=0;[].forEach.call(st.querySelectorAll(':scope > .cta-wrap'),function(c){fx+=c.offsetHeight;});if(n>av&&av>fx){st.style.setProperty('--fz',Math.max(.72,Math.floor((av-fx)/(n-fx)*98)/100));}});}
+window.__fit=fit;var tm;function q(){clearTimeout(tm);tm=setTimeout(fit,60);}
+fit();addEventListener('resize',q,{passive:true});addEventListener('load',fit);document.fonts&&document.fonts.ready.then(fit);if('ResizeObserver' in window)new ResizeObserver(q).observe(hd);
+var pb=document.getElementById('pause');pb&&pb.addEventListener('click',function(){setTimeout(fit,30)});})();/* r34a11: header and its booking button float, always visible */
 g.ticker.add(function(t){if(lenis)lenis.raf(t*1000);});g.ticker.lagSmoothing(0);
 layout();startLenis();render(W.scrollY||0);lastW=W.innerWidth;
 W.addEventListener('resize',function(){var w=W.innerWidth;if(w===lastW&&Math.abs(H.clientHeight-vh)<120)return;lastW=w;if(paused)return;layout();sizeCta();render(lenis?lenis.scroll:W.scrollY);});

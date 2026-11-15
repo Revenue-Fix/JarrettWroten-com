@@ -41,7 +41,6 @@ background-image:var(--goldg);-webkit-background-clip:text;background-clip:text;
 .btn-gold canvas.comet2{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:-1;display:block;border-radius:inherit}
 .cta-wrap .cta-svg{display:none}
 @media (forced-colors:active){.hdr-cta canvas.comet2,.btn-gold canvas.comet2{display:none}}
-@media (max-width:380px){.hdr .hdr-cta{font-size:12px;line-height:1.15;padding:6px 12px;max-width:none;flex:0 1 auto}header.hdr{gap:8px;padding-top:9px}}
 
 /* base flow: every beat is a normal full screen (no JS, or paused) */
 .beat{position:relative;min-height:100svh}
@@ -578,3 +577,21 @@ html.static .gd i{visibility:hidden}
 
 .rc{background-image:linear-gradient(180deg,#ff8577 0%,#ec5149 50%,#e0453c 75%,#f0605a 100%);-webkit-background-clip:text;background-clip:text;color:#ec5149;-webkit-text-fill-color:transparent;-webkit-box-decoration-break:clone;box-decoration-break:clone;padding:0 .04em .08em 0;margin:0 -.04em -.08em 0}
 @media (forced-colors:active){.rc{color:CanvasText;-webkit-text-fill-color:CanvasText;background:none}}
+
+/* r34a16 (Jarrett, Nov 14 3:46 PM "make the button 1 line"; 3:45 PM Android overlap): on phones the booking buttons stay on one line, full label, font fitted to the width.
+   The demo header stacks: name on top, button across the full row. Stages clear the header's real rendered height (--hdrH, set from #hdr in site.js). */
+@media (max-width:560px){
+  header.hdr{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:4px;padding:6px 16px 0}
+  .hdr .mark{font-size:15px;line-height:28px;min-height:28px;align-self:flex-start}
+  .hdr .hdr-cta{white-space:nowrap;width:100%;max-width:none;flex:none;min-height:44px;padding:0 12px;line-height:1.2;letter-spacing:0;font-size:min(15px,calc((100vw - 56px) / 25))}
+  .btn-gold{white-space:nowrap;width:100%;padding:12px 12px;min-height:60px;letter-spacing:0;font-size:min(16px,calc((100vw - 64px) / 25))}
+  .cta-wrap{display:block;align-self:stretch}
+}
+@media (max-width:760px){
+  html .stage,html .bs .stage{padding-top:calc(var(--hdrH,80px) + 12px);padding-bottom:72px}
+  html .b7 .stage{padding-bottom:72px}
+  html .b7 .ftr{position:static;margin-top:28px;right:auto;left:auto;bottom:auto}
+  html .stage{justify-content:safe center!important}
+  .stage > *{zoom:var(--fz,1)}
+  .stage > .cta-wrap{zoom:1}
+}
