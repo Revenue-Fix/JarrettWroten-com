@@ -209,7 +209,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 
 /* phone: one-line docked/hero button so it never covers half the screen */
 /* r34a16 (Jarrett, Nov 14 3:46 PM "make the button 1 line"): on phones every booking button keeps the full label on one line, font fitted to the width */
-@media (max-width:700px){.hero-f .btn,.btn.dock-btn,.menu .menu-cta,.end-a .btn{white-space:nowrap!important;line-height:1.2!important;letter-spacing:0!important;padding:12px 12px!important;min-height:46px!important;max-width:calc(100vw - 32px)!important;font-size:min(15px,calc((100vw - 60px) / 25.6))!important}}
+@media (max-width:700px){.hero-f .btn,.btn.dock-btn,.menu .menu-cta,.end-a .btn{white-space:nowrap!important;line-height:1.2!important;letter-spacing:0!important;padding:12px 12px!important;min-height:46px!important;max-width:calc(100vw - 32px)!important;font-size:min(15px,calc((100vw - 60px) / 27.4))!important}}
 /* Split-word emphasis (.words): WebKit/Safari does not paint a parent's background-clip:text through inline-block word spans, so "Gets The Click." was transparent (invisible) on iPad/iPhone. Paint the gold gradient on each word span instead. */
 .words .gs{background-image:none}
 .words .gs .wd{background-image:linear-gradient(180deg,#f3dc9a 0%,#d4ae5a 45%,#b68a3a 70%,#e2c27a 100%);-webkit-background-clip:text;background-clip:text;color:transparent;-webkit-text-fill-color:transparent;padding:.04em .08em .1em 0;margin:-.04em -.08em -.1em 0}
