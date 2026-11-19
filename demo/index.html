@@ -12,6 +12,27 @@
 <link rel="stylesheet" href="site.css?v=r31">
 <script type="text/javascript">(function(w,d){w.clarity=w.clarity||function(){(w.clarity.q=w.clarity.q||[]).push(arguments)};var done=0,ev=["scroll","pointerdown","keydown"],o={passive:true,capture:true};function go(){if(done)return;done=1;ev.forEach(function(e){w.removeEventListener(e,go,o)});var t=d.createElement("script");t.async=1;t.src="https://www.clarity.ms/tag/yvve5xueah";var y=d.getElementsByTagName("script")[0];y.parentNode.insertBefore(t,y)}ev.forEach(function(e){w.addEventListener(e,go,o)});function idle(){w.requestIdleCallback?w.requestIdleCallback(go,{timeout:2500}):setTimeout(go,2500)}d.readyState==="complete"?setTimeout(idle,4000):w.addEventListener("load",function(){setTimeout(idle,4000)},{once:true})})(window,document);clarity("set","site","offer-demo");</script>
 <style id="pl-r34a22">/* r34a22: principle lead lines under the Speed, Quality, Volume headings (Jarrett, Nov 18 6:33 PM) */.sub.pl{color:var(--fg);font-weight:500;max-width:36ch}.sub.pl+.sub{margin-top:14px}@media (max-width:760px){.sub.pl+.sub{margin-top:8px}}</style>
+<style id="prn-r34a34">/* r34a34: Speed, Quality, Volume principles beat after the opening (Jarrett, Nov 19 12:07 AM). Cards come in one after another with a gold line connecting them; reduced motion and Pause show them at once. */
+.bpr .h2{max-width:none}
+.prn{position:relative;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:clamp(14px,1.6vw,24px);margin-top:clamp(52px,7vh,84px);--p:1}
+.prn-l{position:absolute;top:calc(clamp(52px,7vh,84px) / -2);left:calc((100% - 2 * clamp(14px,1.6vw,24px)) / 6);right:calc((100% - 2 * clamp(14px,1.6vw,24px)) / 6);height:1px;pointer-events:none}
+.prn-l i{position:absolute;inset:0;background:linear-gradient(90deg,rgba(212,174,90,.35),var(--gold) 50%,rgba(212,174,90,.35));transform:scaleX(var(--p));transform-origin:0 50%}
+.prc{position:relative;display:block;background:#151513;border:1px solid rgba(238,232,221,.12);border-radius:12px;padding:clamp(20px,2.2vw,34px);color:var(--fg);text-decoration:none;transition:border-color .4s,box-shadow .4s}
+.prc:hover{border-color:rgba(212,174,90,.7);box-shadow:0 0 0 4px rgba(212,174,90,.1)}
+.prc::before{content:"";position:absolute;left:50%;top:calc(clamp(52px,7vh,84px) / -2 - 4.5px);width:9px;height:9px;margin-left:-4.5px;border-radius:50%;background:var(--gold);box-shadow:0 0 0 4px rgba(212,174,90,.14)}
+.prc-k{display:flex;gap:.4em;font:italic 500 clamp(24px,2vw,32px)/1.1 'Playfair Display',Georgia,serif}
+.prc-k em.gs{padding:.1em .3em .25em;margin:-.1em -.3em -.25em}
+.prc-t{display:block;margin-top:14px;font:600 clamp(20px,1.7vw,28px)/1.15 var(--sans);letter-spacing:-.02em}
+.prc-p{display:block;margin-top:10px;font:500 clamp(16px,1.2vw,19px)/1.45 var(--sans);color:rgba(238,232,221,.82);text-wrap:pretty}
+.prc:hover .prc-t{color:var(--gold2)}
+@media (max-width:900px){
+ .prn{grid-template-columns:1fr;gap:12px;margin-top:22px;padding-left:24px}
+ .prn-l{top:22px;bottom:22px;left:4px;right:auto;width:1px;height:auto}
+ .prn-l i{background:linear-gradient(180deg,var(--gold),rgba(212,174,90,.45));transform:scaleY(var(--p));transform-origin:50% 0}
+ .prc{padding:14px 16px;border-radius:10px}
+ .prc::before{left:-20px;top:18px;margin-left:-4.5px}
+ .prc-k{font-size:20px}.prc-t{margin-top:6px;font-size:18px}.prc-p{margin-top:6px;font-size:15px;line-height:1.4}}
+</style>
 </head>
 <body>
 <a class="skip" href="#b-ask">Skip To Booking</a>
@@ -36,6 +57,18 @@
       </ol>
     </figure>
     <div class="cue" aria-hidden="true"><span class="cue-l"></span>Scroll</div>
+  </div>
+</section>
+
+<section class="beat bpr" id="b-principles" aria-labelledby="h-principles">
+  <div class="stage">
+    <h2 class="h2" id="h-principles">In This <em class="gs">Order.</em></h2>
+    <div class="prn">
+      <span class="prn-l" aria-hidden="true"><i></i></span>
+      <a class="prc" href="https://jarrettwroten.com/get-booked/"><span class="prc-k"><em class="gs">I</em><em class="gs">Speed</em></span><span class="prc-t">Get Booked</span><span class="prc-p">Let&rsquo;s get all of your leads answered quickly and worked thoroughly.</span></a>
+      <a class="prc" href="https://jarrettwroten.com/get-chosen/"><span class="prc-k"><em class="gs">II</em><em class="gs">Quality</em></span><span class="prc-t">Get Chosen</span><span class="prc-p">Let&rsquo;s make sure that when people find you, they pick you.</span></a>
+      <a class="prc" href="https://jarrettwroten.com/get-found/"><span class="prc-k"><em class="gs">III</em><em class="gs">Volume</em></span><span class="prc-t">Get Found</span><span class="prc-p">Now that we&rsquo;re confident all of your leads are being answered quickly and worked thoroughly, and that when people find you they pick you, let&rsquo;s get you found by more people more often.</span></a>
+    </div>
   </div>
 </section>
 
@@ -309,7 +342,7 @@
 
 <script src="vendor/gsap.min.js"></script>
 <script src="vendor/lenis.min.js"></script>
-<script src="site.js?v=r26"></script>
+<script src="site.js?v=r27"></script>
 <script src="comet.js?v=r2"></script>
 </body>
 </html>

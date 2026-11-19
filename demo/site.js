@@ -6,7 +6,7 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var LEN=[0.3,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,3.2,1.2,2.4,3.6,1.5,1.2]; /* scroll per beat, in screens */
+var LEN=[0.3,1.4,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,3.2,1.2,2.4,3.6,1.5,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -46,6 +46,15 @@ function T(){var t=g.timeline({paused:true,defaults:{ease:'power2.out'}});tls.pu
 /* 1 hook drifts on the way out */
 var phn=matchMedia('(max-width:760px)').matches;/* r34a16: on phones the headline drifts down, away from the floating header */
 T().to('.b1 .hook-copy',{y:phn?10:-30,duration:1},0).to('.b1 .srch',{y:phn?-6:-16,duration:1},0);
+/* r34a34 principles: Speed, then Quality, then Volume, with the gold line drawing between them; reduced motion shows them at once */
+if(matchMedia('(prefers-reduced-motion: reduce)').matches){T().to({},{duration:1});}
+else{T().from('.bpr .h2',{y:40,opacity:0,duration:.12},0)
+   .from('.bpr .prc:nth-of-type(1)',{y:36,opacity:0,duration:.14},.1)
+   .fromTo('.bpr .prn',{'--p':0},{'--p':.5,duration:.2,ease:'power1.inOut'},.2)
+   .from('.bpr .prc:nth-of-type(2)',{y:36,opacity:0,duration:.14},.34)
+   .to('.bpr .prn',{'--p':1,duration:.2,ease:'power1.inOut'},.44)
+   .from('.bpr .prc:nth-of-type(3)',{y:36,opacity:0,duration:.14},.58)
+   .to({},{duration:.25});}
 /* pain: the ways leads slip away, one at a time */
 T().from('.bp .h2',{y:40,opacity:0,duration:.14},0)
    .from('.bp .pain li',{x:-24,opacity:0,duration:.1,stagger:.1},.12)
@@ -93,7 +102,7 @@ function sw(up,uy,dn,dy){var t=g.timeline();
    .to(dn,{y:dy,duration:.7,ease:'power2.inOut'},0).to(dn,{x:function(){return M();},opacity:.6,duration:.35,ease:'power1.out'},0).to(dn,{x:0,opacity:1,duration:.35,ease:'power1.in'},.35);
   return t;}
 var fx=[];function FX(i,t){fx.push({i:i,t:t,on:false});return t;}
-FX(5,g.timeline({paused:true,defaults:{ease:'power2.out'}}))
+FX(6,g.timeline({paused:true,defaults:{ease:'power2.out'}}))
    .fromTo('.b6 .h2 .ln:nth-child(1)',{y:50,opacity:0},{y:0,opacity:1,duration:.6},0)
    .fromTo('.b6 .h2 .ln:nth-child(2)',{y:50,opacity:0},{y:0,opacity:1,duration:.6},.25)
    .fromTo('.b6 .h2 .ln:nth-child(3)',{y:50,opacity:0},{y:0,opacity:0,duration:.01},0)
@@ -124,7 +133,7 @@ T().from('.bv .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
      .fromTo(set,{scale:0,opacity:0,'--glow':1},{scale:1,opacity:1,'--glow':1,duration:.4,stagger:.015,ease:'back.out(2.2)',immediateRender:true},at+.6)
      .to(set,{'--glow':0,duration:.6,ease:'power2.out'},at+.95);
     at+=1.2;n*=2;}
-})(FX(6,g.timeline({paused:true,defaults:{ease:'power2.out'}})));
+})(FX(7,g.timeline({paused:true,defaults:{ease:'power2.out'}})));
 
 /* 5 booked: the missed call turns into a booking, then a review */
 T().from('.b5 .h2',{y:40,opacity:0,duration:.12},0)
