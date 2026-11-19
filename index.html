@@ -312,12 +312,12 @@ sv.style.width=b[2]/100+'em';sv.style.height=b[3]/100+'em';sv.style.verticalAlig
 q.textContent='';q.appendChild(sv);q.classList.add('sq-w');
 ps=[].slice.call(sv.querySelectorAll('mask path'));tip=sv.querySelector('.sq-tip');f2=sv.querySelector('.sq-f2');
 ps.forEach(function(p){var l=p.getTotalLength();L.push(l);O.push(T);T+=l+10;p.style.strokeDasharray='0 '+(l+1);p.style.visibility='hidden'})}
-function wipe(el,k,up){if(!el)return;var e=eio(k),r=(100*(1-e)).toFixed(2)+'%';el.style.clipPath=up?'inset('+r+' 0 0 0)':'inset(0 0 '+r+' 0)';el.style.transform='translateY('+((up?1:-1)*.22*(1-eo(k))).toFixed(4)+'em)';el.style.opacity=k>0?1:0}
+function grow(el,k){if(!el)return;var sc=k<.6?.3+.95*eo(k/.6):1.25-.25*eio((k-.6)/.4);el.style.clipPath='none';el.style.transformOrigin='0% 80%';el.style.transform='scale('+sc.toFixed(4)+')';el.style.opacity=k>0?cl(k/.25).toFixed(3):0}/* r34a21: Volume appears small, grows past full size, settles to normal (Jarrett, Nov 18 5:32 PM) */function wipe(el,k,up){if(!el)return;var e=eio(k),r=(100*(1-e)).toFixed(2)+'%';el.style.clipPath=up?'inset('+r+' 0 0 0)':'inset(0 0 '+r+' 0)';el.style.transform='translateY('+((up?1:-1)*.22*(1-eo(k))).toFixed(4)+'em)';el.style.opacity=k>0?1:0}
 function write(k){if(!ps.length){if(q)q.style.opacity=k>0?1:0;return}var x=eio(cl(k))*T,tp=null;
 for(var i=0;i<ps.length;i++){var v=Math.max(0,Math.min(L[i],x-O[i]));ps[i].style.strokeDasharray=v+' '+(L[i]+1);ps[i].style.visibility=v>0?'visible':'hidden';if(v>0&&v<L[i])tp=ps[i].getPointAtLength(v)}
 if(tp&&k<1){tip.setAttribute('cx',tp.x);tip.setAttribute('cy',tp.y);tip.setAttribute('opacity',.95)}else tip.setAttribute('opacity',0)}
 var last=-1;window.__wd=function(p){var t=cl(p)*DUR;if(document.documentElement.classList.contains('paused'))t=DUR;if(t===last)return;last=t;
-wipe(sp,cl((t-A[0])/(A[1]-A[0])),true);write((t-B[0])/(B[1]-B[0]));if(f2)f2.setAttribute('opacity',cl((t-B[1])/FF).toFixed(3));wipe(vo,cl((t-C[0])/(C[1]-C[0])),false)};
+wipe(sp,cl((t-A[0])/(A[1]-A[0])),true);write((t-B[0])/(B[1]-B[0]));if(f2)f2.setAttribute('opacity',cl((t-B[1])/FF).toFixed(3));grow(vo,cl((t-C[0])/(C[1]-C[0])))};
 window.__wd(0);setTimeout(function(){window.__wd(1)},12000)})();
 </script>
   <div class="intro-n"><span id="introN">0</span></div>
