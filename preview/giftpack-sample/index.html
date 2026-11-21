@@ -69,6 +69,21 @@ html.static .bg1 .bub,html:not(.js) .bg1 .bub{opacity:1;transform:none}
  html .bgc .stage{padding-bottom:72px}
  html .bgc .ftr{position:static;margin-top:28px;right:auto;left:auto;bottom:auto}
 }
+
+/* gift r2 (Nov 20, 2026): eight messages. Three cards per row on desktop; on phones each group is a sideways swipe row so a beat fits one screen */
+.gpk.g3c{grid-template-columns:repeat(3,minmax(0,1fr))}
+.gpk.one{grid-template-columns:minmax(0,1.15fr) minmax(0,.85fr);align-items:start}
+.gcol{display:flex;flex-direction:column;gap:clamp(14px,2vh,22px)}
+.gcol .gnote{max-width:none}
+.gsm{display:block;margin-top:12px;font:500 13px/1.4 var(--sans);color:var(--fgd)}
+@media (min-width:761px) and (max-height:820px){.gpk .prc{padding:16px 18px}.gpk .prc-p{font-size:14.5px;line-height:1.42}.gpk{margin-top:20px}}
+@media (max-width:760px){
+ .gpk.g3c,.gpk.one{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;gap:10px;margin-left:-20px;margin-right:-20px;padding:0 20px 6px;scrollbar-width:none;touch-action:pan-x pan-y;overscroll-behavior-x:contain;align-items:stretch}
+ .gpk.g3c::-webkit-scrollbar,.gpk.one::-webkit-scrollbar{display:none}
+ .gpk.g3c > .prc,.gpk.one > .gcol,.gpk.one > .prc{flex:0 0 86%;scroll-snap-align:start}
+ .gpk.one > .gcol{gap:10px}
+ .gsm{font-size:12px;margin-top:8px}
+}
 </style>
 </head>
 <body>
@@ -86,12 +101,12 @@ html.static .bg1 .bub,html:not(.js) .bg1 .bub{opacity:1;transform:none}
     <div class="split">
       <div>
         <h2 class="h2 xl" id="h-gift"><span class="ln">Example Auto Detailing&rsquo;s</span> <span class="ln"><em class="gs">Speed To Lead</em></span> <span class="ln">Gift Pack</span></h2>
-        <p class="sub">Five messages written for your shop, and they&rsquo;re yours to copy and use.</p>
+        <p class="sub">Eight messages written for your shop, and they&rsquo;re yours to copy and use.</p>
       </div>
       <figure class="ph" role="img" aria-label="Sample texts: a missed call, Text 1 a minute later, and Text 2 the next day">
         <div class="ph-in">
           <div class="msd"><span class="msd-i"></span>Missed Call, 2:14 PM</div>
-          <div class="bub out g1">Hi, this is Example Auto Detailing. Sorry we missed your call! What can we help you with?</div>
+          <div class="bub out g1">Hi, this is Example Auto Detailing. Sorry we missed your call! How can we be of service to you?</div>
           <div class="msd g2"><span class="msd-i"></span>Next Day, 10:00 AM</div>
           <div class="bub out g3">Hi, it&rsquo;s Example Auto Detailing again. Still need help with a full interior detail?</div>
         </div>
@@ -105,24 +120,30 @@ html.static .bg1 .bub,html:not(.js) .bg1 .bub{opacity:1;transform:none}
 <section class="beat bg2" id="g-calls" aria-labelledby="h-gcalls">
   <div class="stage">
     <h2 class="h2" id="h-gcalls">When You Miss <em class="gs">A Call.</em></h2>
-    <div class="gpk"><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Text 1</em></span><button class="cpy" type="button" data-c="gm1">Copy</button></span><span class="prc-t">Right Away</span><span class="prc-p" id="gm1">Hi, this is Example Auto Detailing. Sorry we missed your call! What can we help you with? You can reply here and we&rsquo;ll get right back to you.</span></div><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Text 2</em></span><button class="cpy" type="button" data-c="gm2">Copy</button></span><span class="prc-t">Next Day, If No Reply</span><span class="prc-p" id="gm2">Hi, it&rsquo;s Example Auto Detailing again. Just checking in. Still need help with a full interior detail? Reply here or book a time: example.com/book</span></div></div>
+    <div class="gpk g3c"><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Text 1</em></span><button class="cpy" type="button" data-c="gm1">Copy</button></span><span class="prc-t">Right Away</span><span class="prc-p" id="gm1">Hi, this is Example Auto Detailing. Sorry we missed your call! How can we be of service to you? You can reply here and we&rsquo;ll get right back to you. What questions did you have for us?</span></div><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Text 2</em></span><button class="cpy" type="button" data-c="gm2">Copy</button></span><span class="prc-t">Next Day, If No Reply</span><span class="prc-p" id="gm2">Hi, it&rsquo;s Example Auto Detailing again. Just checking in. Still need help with a full interior detail? Reply here or if you&rsquo;re ready, book some time with us: example.com/book.</span></div><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Text 3</em></span><button class="cpy" type="button" data-c="gm3">Copy</button></span><span class="prc-t">4 Days After Text 2, If No Reply</span><span class="prc-p" id="gm3">Hi, it&rsquo;s Example Auto Detailing. We don&rsquo;t want to keep bugging you, so this is our last text. If you still need a full interior detail, just reply here or book a time: example.com/book. Thanks!</span></div></div>
   </div>
 </section>
 
 <section class="beat bg3" id="g-forms" aria-labelledby="h-gforms">
   <div class="stage">
     <h2 class="h2" id="h-gforms">When A Web Form <em class="gs">Comes In.</em></h2>
-    <div class="gpk"><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Email 1</em></span><button class="cpy" type="button" data-c="gm3">Copy</button></span><span class="prc-t">Right Away</span><span class="prc-p" id="gm3"><span class="sj">Subject: We got your message</span>Hi Sam,
+    <div class="gpk g3c"><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Email 1</em></span><button class="cpy" type="button" data-c="gm4">Copy</button></span><span class="prc-t">Right Away</span><span class="prc-p" id="gm4"><span class="sj">Subject: We got your message</span>Hi Sam,
 
 Thanks for reaching out to Example Auto Detailing! We got your message about a ceramic coating for your truck.
 
-We&rsquo;ll get back to you soon. If you want to set a time now, you can book here: example.com/book
+We&rsquo;ll get back to you soon. If you want to set a time now, you can book here: example.com/book. What questions do you have for us?
 
-Example Auto Detailing</span></div><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Email 2</em></span><button class="cpy" type="button" data-c="gm4">Copy</button></span><span class="prc-t">2 Days Later, If No Reply</span><span class="prc-p" id="gm4"><span class="sj">Subject: Still need help with a ceramic coating?</span>Hi Sam,
+Example Auto Detailing</span></div><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Email 2</em></span><button class="cpy" type="button" data-c="gm5">Copy</button></span><span class="prc-t">2 Days Later, If No Reply</span><span class="prc-p" id="gm5"><span class="sj">Subject: Still need help with a ceramic coating?</span>Hi Sam,
 
-Just checking in. Did you still want help with a ceramic coating? Reply to this email with a good time, or book here: example.com/book
+Just checking in. Did you still want help with a ceramic coating? Reply to this email with a good time, or book here: example.com/book.
 
 If you already found what you needed, no worries at all.
+
+Example Auto Detailing</span></div><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Email 3</em></span><button class="cpy" type="button" data-c="gm6">Copy</button></span><span class="prc-t">5 Days After Email 2, If No Reply</span><span class="prc-p" id="gm6"><span class="sj">Subject: Should we close this out?</span>Hi Sam,
+
+We haven&rsquo;t heard back, so we&rsquo;ll close out your request for now. If you still want help with a ceramic coating, just reply to this email or book here: example.com/book.
+
+We&rsquo;d be glad to help whenever you&rsquo;re ready.
 
 Example Auto Detailing</span></div></div>
   </div>
@@ -131,14 +152,14 @@ Example Auto Detailing</span></div></div>
 <section class="beat bg4" id="g-past" aria-labelledby="h-gpast">
   <div class="stage">
     <h2 class="h2" id="h-gpast">When It&rsquo;s Been <em class="gs">A While.</em></h2>
-    <div class="gpk one"><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Email</em></span><button class="cpy" type="button" data-c="gm5">Copy</button></span><span class="prc-t">Past Customers</span><span class="prc-p" id="gm5"><span class="sj">Subject: It&rsquo;s been a while</span>Hi Sam,
+    <div class="gpk one"><div class="gcol"><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Email</em></span><button class="cpy" type="button" data-c="gm7">Copy</button></span><span class="prc-t">Past Customers</span><span class="prc-p" id="gm7"><span class="sj">Subject: It&rsquo;s been a while</span>Hi Sam,
 
 It&rsquo;s Example Auto Detailing. It&rsquo;s been a while since your last full detail. We have openings this week if you&rsquo;d like to come back. Just reply and we&rsquo;ll set it up.
 
 Example Auto Detailing
 123 Example Street, Las Vegas, NV 89100
 
-If you&rsquo;d rather not get these emails, just reply and let us know.</span></div><p class="gnote">Send this only to customers who agreed to hear from you.</p></div>
+If you&rsquo;d rather not get these emails, just reply and let us know.</span></div><p class="gnote">Send this only to customers who agreed to hear from you.</p></div><div class="prc"><span class="prc-h"><span class="prc-k"><em class="gs">Text</em></span><button class="cpy" type="button" data-c="gm8">Copy</button></span><span class="prc-t">Past Customers</span><span class="prc-p" id="gm8">Hi Sam, it&rsquo;s Example Auto Detailing. It&rsquo;s been a while since your last full detail. We have openings this week. Want us to save you a spot? Reply STOP to opt out.</span><span class="gsm">Only to customers who agreed to get texts</span></div></div>
   </div>
 </section>
 
