@@ -592,6 +592,7 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
         <input type="hidden" name="_subject" value="New inquiry from jarrettwroten.com">
         <input type="hidden" name="_template" value="table">
         <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_cc" value="jarrett+leads@mail.grokbot.com">
         <div class="inq-hp" aria-hidden="true"><label for="inqHp">Leave this empty</label><input id="inqHp" type="text" name="_honey" tabindex="-1" autocomplete="off"></div>
         <label class="roi-f inq-fl"><span class="roi-l">Name</span><span class="roi-x"><input id="inqName" name="name" type="text" autocomplete="name" required></span></label>
         <label class="roi-f inq-fl"><span class="roi-l">Business</span><span class="roi-x"><input id="inqBiz" name="business" type="text" autocomplete="organization" required></span></label>
@@ -695,7 +696,7 @@ f.addEventListener('submit',function(ev){ev.preventDefault();st.className='inq-s
  b.disabled=true;b.textContent='Sending';
  fetch('https://formsubmit.co/ajax/jarrett@jarrettwroten.com',{method:'POST',headers:{'Accept':'application/json'},body:fd})
  .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
- .then(function(x){if(x.ok&&String(x.j.success)==='true'){f.reset();st.textContent='Got it. I will be in touch soon.'}else{throw 0}})
+ .then(function(x){if(x.ok&&String(x.j.success)==='true'){f.reset();st.textContent='Got it. I\u2019ll reply personally within 12 hours. Need me now? Text (858) 740-8245.'}else{throw 0}})
  .catch(function(){st.className='inq-st err';st.innerHTML='That did not send. Email me at <a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a> or call <a href="tel:+18587408245">(858) 740-8245</a>.'})
  .then(function(){b.disabled=false;b.textContent='Send My Message';vis()})});
 [].forEach.call(f.querySelectorAll('input,textarea'),function(i){i.addEventListener('input',function(){i.closest('.inq-fl')&&i.closest('.inq-fl').classList.remove('bad');if(st.classList.contains('err')&&!f.querySelector('.inq-fl.bad')){st.className='inq-st';st.textContent=''}})});
