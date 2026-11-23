@@ -635,7 +635,7 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
 <script>(function(){function p(){document.querySelectorAll("video[data-poster]").forEach(function(v){v.poster=v.getAttribute("data-poster");v.removeAttribute("data-poster")})}if(document.readyState==="complete")p();else addEventListener("load",p,{once:true});setTimeout(p,2500)})();</script>
 <script src="/assets/vendor/lenis-1.1.13.min.js"></script>
 
-<script src="assets/home/site.js?v=r39"></script><style id="carousel-frame-fix">/* r23 (Nov 13 2026): on desktop the carousel films were sized from what was left of the window height under the heading, so short windows squashed them to strips or nothing. The heading now scrolls away first (the pinned frame is window height plus heading height, stuck at minus the heading height, with the bar clearance moved above the track), and every film keeps a real 16:9 frame sized from the track that is left, capped at 58vw. Phones (<=860px) are unchanged. */
+<script src="assets/home/site.js?v=r40"></script><style id="carousel-frame-fix">/* r23 (Nov 13 2026): on desktop the carousel films were sized from what was left of the window height under the heading, so short windows squashed them to strips or nothing. The heading now scrolls away first (the pinned frame is window height plus heading height, stuck at minus the heading height, with the bar clearance moved above the track), and every film keeps a real 16:9 frame sized from the track that is left, capped at 58vw. Phones (<=860px) are unchanged. */
 @media (min-width:861px){
   .work-pin{height:calc(100svh + var(--wtH,0px))!important;top:calc(-1 * var(--wtH,0px))!important}
   .track{align-items:center;margin-top:var(--wtP,0px)}

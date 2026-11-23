@@ -206,7 +206,7 @@ if(!btn||!slot||!hero)return;
 const mqS=matchMedia('(max-width:860px)');
 const probe=document.createElement('div');probe.setAttribute('aria-hidden','true');
 probe.style.cssText='position:fixed;left:0;width:0;height:0;visibility:hidden;pointer-events:none';document.body.appendChild(probe);
-let ax=0,ay=0,hw=0,dw=0,dh=0,dx=0,dy=0,sc=1,P=300,pd=0,tp=0,raf=0,last=0,ready=false,off=false;
+let ax=0,ay=0,hw=0,dw=0,dh=0,dx=0,dy=0,sc=1,P=300,pd=0,tp=0,raf=0,last=0,ready=false,off=false,lf=0,fb=0;
 btn.classList.add('dock-btn');
 function ty(){if(!hc)return 0;const t=getComputedStyle(hc).transform;if(!t||t==='none')return 0;const m=t.match(/matrix(3d)?\(([^)]+)\)/);if(!m)return 0;const v=m[2].split(',').map(parseFloat);return m[1]?v[13]:v[5]}
 function measure(){
@@ -229,24 +229,31 @@ function draw(){
  const e=pd,s=sc+(1-sc)*e,x=ax+(dx-ax)*e,y=ay+(dy-ay)*e;
  btn.style.transform=`translate3d(${x.toFixed(2)}px,${y.toFixed(2)}px,0) scale(${s.toFixed(4)})`;
 }
+/* r5 (Nov 23): dock-in comes from where the button really is (its rect against the dock target), not from a progress number */
+function docked(){if(!ready||!dw)return false;const r=btn.getBoundingClientRect(),tY=Math.max(4,Math.abs(ay-dy)*.04),tW=Math.max(3,Math.abs(dw-hw)*.06+2);return Math.abs(r.top-dy)<=tY&&Math.abs(r.left-dx)<=tY&&Math.abs(r.width-dw)<=tW}
 function endCheck(){
  /* steps aside (fades, untappable) wherever it would sit on the search section's headline, demo cards or copy, so it never covers text or the demo's Call/Website buttons */
  let sv=false;if(svA&&svZ){const b=btn.getBoundingClientRect(),M=56,t=svA.getBoundingClientRect().top,z=svZ.getBoundingClientRect().bottom;sv=b.bottom+M>t&&b.top-M<z}
  const o=sv||(pd>.98&&!!end&&end.getBoundingClientRect().top<innerHeight*.75);
- btn.classList.toggle('dock-sv',sv);btn.classList.toggle('dock-in',pd>.96);if(o!==off){off=o;btn.classList.toggle('dock-off',o);btn.tabIndex=o?-1:0;btn.setAttribute('aria-hidden',o?'true':'false')}
+ btn.classList.toggle('dock-sv',sv);btn.classList.toggle('dock-in',docked());if(o!==off){off=o;btn.classList.toggle('dock-off',o);btn.tabIndex=o?-1:0;btn.setAttribute('aria-hidden',o?'true':'false')}
 }
 function frame(t){
- raf=0;const dt=Math.min(64,t-(last||t));last=t;
+ raf=0;lf=performance.now();const dt=Math.min(64,t-(last||t));last=t;
  tp=Math.min(1,Math.max(0,scrollY/P));
  const k=1-Math.exp(-dt/85);pd+=(tp-pd)*k;
  if(Math.abs(tp-pd)<.0006)pd=tp;
  draw();endCheck();
  if(pd!==tp){raf=requestAnimationFrame(frame)}else last=0;
 }
-function sched(){if(!raf)raf=requestAnimationFrame(frame)}
+/* if animation frames stall (screen dimmed, throttled or occluded tab) the glide still lands: after 160ms with no frame, snap to the scroll position */
+function snap(){fb=0;if(performance.now()-lf<140)return;if(raf){cancelAnimationFrame(raf);raf=0}last=0;tp=Math.min(1,Math.max(0,scrollY/P));pd=tp;draw();endCheck()}
+function sched(){if(!raf)raf=requestAnimationFrame(frame);clearTimeout(fb);fb=setTimeout(snap,160)}
 function init(snap){measure();tp=Math.min(1,Math.max(0,scrollY/P));if(snap)pd=tp;draw();endCheck();ready=true;sched()}
 addEventListener('scroll',sched,{passive:true});
-let rt=0;addEventListener('resize',()=>{clearTimeout(rt);rt=setTimeout(()=>init(true),120)});
+let rt=0;const re=()=>{clearTimeout(rt);rt=setTimeout(()=>init(true),120)};addEventListener('resize',re);addEventListener('orientationchange',re);
+const vv=window.visualViewport;if(vv){vv.addEventListener('resize',re);vv.addEventListener('scroll',sched,{passive:true})}
+addEventListener('scrollend',sched,{passive:true});addEventListener('pageshow',re);document.addEventListener('visibilitychange',()=>{if(!document.hidden)re()});
+new MutationObserver(sched).observe(document.documentElement,{attributes:true,attributeFilter:['class']});
 const go=()=>init(true);
 if(document.readyState==='complete')go();else addEventListener('load',go);
 setTimeout(go,1200);setTimeout(go,4000);
