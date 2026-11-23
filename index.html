@@ -296,7 +296,7 @@ html.paused .sd-call.au-on .sd-wave i{animation-play-state:paused}
 @media (max-width:560px){.inq-h{font-size:calc((100vw - 84px)/9.4)!important}.inq-f{grid-template-columns:1fr}.inq{padding:20px 16px}.inq-a .btn{min-width:0;width:100%}}
 </style>
 
-<style id="fe1122">.end-li{display:flex;justify-content:center;margin:6px 0 0}.btn .cta-s{display:none}@media (max-width:760px){.btn.dock-btn .cta-l{transition:opacity .32s ease}.btn.dock-btn .cta-s{display:flex;position:absolute;inset:0;align-items:center;justify-content:center;padding:0 18px;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .32s ease}.btn.dock-btn.dock-in .cta-l{opacity:0}.btn.dock-btn.dock-in .cta-s{opacity:1}html.paused .btn.dock-btn .cta-l,html.paused .btn.dock-btn .cta-s{transition:none}}</style>
+<style id="fe1122">.end-li{display:flex;justify-content:center;margin:6px 0 0}.pc-h .pc-l{display:block;margin-top:8px;font-size:12.5px;font-weight:500;letter-spacing:.02em;color:var(--gold,#d4ae5a)}.btn .cta-s{display:none}@media (max-width:760px){.btn.dock-btn .cta-l{transition:opacity .32s ease}.btn.dock-btn .cta-s{display:flex;position:absolute;inset:0;align-items:center;justify-content:center;padding:0 18px;text-align:center;white-space:nowrap;opacity:0;pointer-events:none;transition:opacity .32s ease}.btn.dock-btn.dock-in .cta-l{opacity:0}.btn.dock-btn.dock-in .cta-s{opacity:1}html.paused .btn.dock-btn .cta-l,html.paused .btn.dock-btn .cta-s{transition:none}}</style>
 </head>
 <body>
 <div class="intro" id="intro" aria-hidden="true">
@@ -630,7 +630,7 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
 <script>(function(){function p(){document.querySelectorAll("video[data-poster]").forEach(function(v){v.poster=v.getAttribute("data-poster");v.removeAttribute("data-poster")})}if(document.readyState==="complete")p();else addEventListener("load",p,{once:true});setTimeout(p,2500)})();</script>
 <script src="/assets/vendor/lenis-1.1.13.min.js"></script>
 
-<script src="assets/home/site.js?v=r37"></script><style id="carousel-frame-fix">/* r23 (Nov 13 2026): on desktop the carousel films were sized from what was left of the window height under the heading, so short windows squashed them to strips or nothing. The heading now scrolls away first (the pinned frame is window height plus heading height, stuck at minus the heading height, with the bar clearance moved above the track), and every film keeps a real 16:9 frame sized from the track that is left, capped at 58vw. Phones (<=860px) are unchanged. */
+<script src="assets/home/site.js?v=r38"></script><style id="carousel-frame-fix">/* r23 (Nov 13 2026): on desktop the carousel films were sized from what was left of the window height under the heading, so short windows squashed them to strips or nothing. The heading now scrolls away first (the pinned frame is window height plus heading height, stuck at minus the heading height, with the bar clearance moved above the track), and every film keeps a real 16:9 frame sized from the track that is left, capped at 58vw. Phones (<=860px) are unchanged. */
 @media (min-width:861px){
   .work-pin{height:calc(100svh + var(--wtH,0px))!important;top:calc(-1 * var(--wtH,0px))!important}
   .track{align-items:center;margin-top:var(--wtP,0px)}

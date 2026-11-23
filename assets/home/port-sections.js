@@ -46,13 +46,13 @@ if(pp)pp.addEventListener('click',()=>setTimeout(()=>{if(P()){final();running=fa
 })();
 
 (function(){
-const W=[["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","Pāʻina Café","Hawaiian Café"],["prorok","Dylan Prorok","Japanese Tattoo Artist"],["truheart","Tru Heart Consulting","Sales Team Consulting"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"]];
+const W=[["prorok","Dylan Prorok","Japanese Tattoo Artist"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","Pāʻina Café","Hawaiian Café"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["truheart","Tru Heart Consulting","Sales Team Consulting"]];
 const track=document.getElementById('track'),work=document.querySelector('section.work'),wCount=document.getElementById('wCount'),wProg=document.getElementById('wProg');
 if(!track||!work)return;
 const cards=[];
-W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';a.href=`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';
+W.forEach((w,i)=>{const a=document.createElement('a');a.className='pc';const live_=w[0]==='prorok';a.href=live_?'https://www.dylanprorok.com/':`https://${w[0]}.jarrettwroten.com/`;a.target='_blank';a.rel='noopener';
  const ver=w[0]==='truheart'?'p33':'p26';
- a.innerHTML=`<div class="pc-f"><video class="pc-full" muted loop playsinline preload="none" data-poster="/assets/home/film/w-${w[0]}-full.webp?v=${ver}"><source src="/assets/home/film/w-${w[0]}-full.webm?v=${ver}" type="video/webm; codecs=vp9"><source src="/assets/home/film/w-${w[0]}-full.mp4?v=${ver}" type="video/mp4"></video></div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span></span><span class="pc-o">Open The Concept</span></div>`;
+ a.innerHTML=`<div class="pc-f"><video class="pc-full" muted loop playsinline preload="none" data-poster="/assets/home/film/w-${w[0]}-full.webp?v=${ver}"><source src="/assets/home/film/w-${w[0]}-full.webm?v=${ver}" type="video/webm; codecs=vp9"><source src="/assets/home/film/w-${w[0]}-full.mp4?v=${ver}" type="video/mp4"></video></div><div class="pc-i"><span class="pc-n" aria-hidden="true">${String(i+1).padStart(2,'0')}</span><span class="pc-h">${w[1]}<span class="pc-c">${w[2]}</span><span class="pc-l">${live_?'Client Site, Live':'Concept, built on spec.'}</span></span><span class="pc-o">${live_?'Open The Live Site':'Open The Concept'}</span></div>`;
  track.append(a);cards.push(a)});
 let cur=-1;
 const live=(c,j)=>Math.abs(j-cur)<=1||!!c.__vis;
