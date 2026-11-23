@@ -233,7 +233,7 @@ function endCheck(){
  /* steps aside (fades, untappable) wherever it would sit on the search section's headline, demo cards or copy, so it never covers text or the demo's Call/Website buttons */
  let sv=false;if(svA&&svZ){const b=btn.getBoundingClientRect(),M=56,t=svA.getBoundingClientRect().top,z=svZ.getBoundingClientRect().bottom;sv=b.bottom+M>t&&b.top-M<z}
  const o=sv||(pd>.98&&!!end&&end.getBoundingClientRect().top<innerHeight*.75);
- btn.classList.toggle('dock-sv',sv);if(o!==off){off=o;btn.classList.toggle('dock-off',o);btn.tabIndex=o?-1:0;btn.setAttribute('aria-hidden',o?'true':'false')}
+ btn.classList.toggle('dock-sv',sv);btn.classList.toggle('dock-in',pd>.96);if(o!==off){off=o;btn.classList.toggle('dock-off',o);btn.tabIndex=o?-1:0;btn.setAttribute('aria-hidden',o?'true':'false')}
 }
 function frame(t){
  raf=0;const dt=Math.min(64,t-(last||t));last=t;
