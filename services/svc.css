@@ -21,7 +21,7 @@ a.sp-card:focus-visible{outline:2px solid #d4ae5a;outline-offset:4px}
 @media (min-width:701px) and (max-width:1200px){.sp-grid .svc:last-child:nth-child(2n+1){grid-column:1/-1}}
 
 
-/* fcb-h: match homepage Get Found / Get Chosen / Get Booked treatment */
+/* fcb-h: match homepage Get Found / Get Picked / Get Booked treatment */
 @font-face{font-family:"Playfair Display";font-style:italic;font-weight:500;font-display:block;src:url(/assets/home/fonts/playfair-i500-latin.woff2?v=1) format("woff2");unicode-range:U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD}
 .fcb-h{grid-column:1/-1;font-weight:600;font-size:clamp(30px,3.4vw,52px);letter-spacing:-.025em;line-height:1.1;margin:0 0 clamp(18px,3vh,34px);color:var(--fg)}
 .fcb-h .ml{display:block}

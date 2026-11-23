@@ -1,4 +1,4 @@
-/* Booked, Chosen, Found demo. Motion always on (no reduced motion branch); one Pause control. */
+/* Booked, Picked, Found demo. Motion always on (no reduced motion branch); one Pause control. */
 (function(){
 var D=document,H=D.documentElement,W=window;
 if(!W.gsap||!W.Lenis){return;} /* no libs: the page stays in plain readable flow */
@@ -164,7 +164,7 @@ T().from('.bw .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.08},0)
 T().from('.bq .h2',{y:40,opacity:0,duration:.12},0).from('.bq .sub',{y:24,opacity:0,duration:.12},.1)
    .from('.bq .q3l',{opacity:0,y:14,duration:.1},.24).from('.bq .q3 li',{x:-30,opacity:0,duration:.1,stagger:.08},.32)
    .from('.bq .q3c',{opacity:0,y:16,duration:.12},.6).from('.bq .q3a',{opacity:0,duration:.1},.68).to({},{duration:.2});
-/* 4 chosen: mixed details scatter, the gold line sweeps in one clear page */
+/* 4 picked: mixed details scatter, the gold line sweeps in one clear page */
 var ms=$$('.b4 .ms');
 T().from('.b4 .h2',{y:40,opacity:0,duration:.14},0)
    .from('.b4 .pg',{y:50,opacity:0,duration:.16},.04)
@@ -228,7 +228,7 @@ T().from('.bk2 .h2',{y:40,opacity:0,duration:.12},0).from('.bk2 .sub',{y:24,opac
    .from('.bk2 .vl li',{y:16,opacity:0,duration:.1,stagger:.1},.24)
    .fromTo(dirt.o,{p:0},{p:1,duration:.5,ease:'none',onUpdate:dirt.draw},.36)
    .from('.bk2 .q3c',{opacity:0,y:16,duration:.12},.8).to({},{duration:.14});
-/* get found: the same stepper as get chosen */
+/* get found: the same stepper as get picked */
 var spf=stepper('.bsf');
 T().from('.bsf .h2',{y:40,opacity:0,duration:.06},0).from('.bsf .sub',{y:20,opacity:0,duration:.06},.03)
    .from('.bsf .sp-l',{opacity:0,duration:.05},.06).from('.bsf .sp-i',{x:-24,duration:.05,stagger:.02},.06)

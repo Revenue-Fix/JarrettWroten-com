@@ -173,9 +173,11 @@ t.addEventListener('scroll',()=>{if(!mq.matches)return;const m=t.scrollWidth-t.c
    reads complete with JS off or motion paused. */
 (function(){const d=document.getElementById('svDemo');if(!d)return;const root=document.documentElement;
 const T=[
- {g:'japanese tattoo artist las vegas',a:'Who should I call for a Japanese tattoo in Las Vegas?',t:'Japanese Tattoo Artist',t2:'Japanese tattoo artist'},
- {g:'wedding venue las vegas',a:'What’s a good wedding venue in Las Vegas?',t:'Wedding Venue',t2:'wedding venue'},
- {g:'car wrap shop las vegas',a:'Where should I get my car wrapped in Las Vegas?',t:'Car Wrap Shop',t2:'car wrap shop'}];
+ {g:'ac repair las vegas',a:'Who should I call for AC repair in Las Vegas?',t:'AC Repair',t2:'heating and cooling company'},
+ {g:'roofer las vegas',a:'Who’s a good roofer in Las Vegas?',t:'Roofer',t2:'roofer'},
+ {g:'auto repair shop las vegas',a:'Where should I take my car in Las Vegas?',t:'Auto Repair Shop',t2:'auto repair shop'},
+ {g:'cosmetic dentist las vegas',a:'Who’s a good cosmetic dentist in Las Vegas?',t:'Cosmetic Dentist',t2:'cosmetic dentist'},
+ {g:'med spa las vegas',a:'What’s a good med spa in Las Vegas?',t:'Med Spa',t2:'med spa'}];
 const q=k=>d.querySelector('[data-k="'+k+'"]');const G=q('g'),A=q('a'),t=q('t'),t2=q('t2');
 let i=0,timers=[],running=false,seen=false;const P=()=>root.classList.contains('paused');
 function clear(){timers.forEach(clearTimeout);timers=[]}
