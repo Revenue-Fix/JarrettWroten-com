@@ -216,7 +216,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 /* stepping aside for the search section is quicker than the end-of-page fade, so a fast flick never slides text under a half-faded button */
 .btn.glide.dock-off.dock-sv{transition:opacity .16s ease,visibility 0s linear .16s}
 
-/* p32: Free Search Audit card shows the live Boomerang diagram (ported SVG/SMIL from the Purple Flare audit). Always plays. */
+/* p32: Free Search Audit card shows the live Boomerang diagram (ported SVG/SMIL from an earlier audit). Always plays. */
 .card-f.bm{background:#0a0710}
 .bm-p{position:absolute;inset:0;overflow:hidden;border-radius:inherit;border:1px solid rgba(217,208,234,.14);box-sizing:border-box;background:linear-gradient(160deg,rgba(139,61,255,.12),transparent 60%),#0a0710}
 .bm-in{position:absolute;left:0;top:0;width:100%;box-sizing:border-box;padding:34px 36px;transform-origin:0 0;color:#d9d0ea;font:400 18px/1.62 'General Sans',system-ui,sans-serif;-webkit-font-smoothing:antialiased}

@@ -1,6 +1,6 @@
 (()=>{
 const W=[
-["prorok","Dylan Prorok","Japanese Tattoo Artist"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Hawaiian Caf\u00e9"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["truheart","Tru Heart Consulting","Sales Team Consulting"]];
+["prorok","Dylan Prorok","Japanese Tattoo Artist"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"],["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Hawaiian Caf\u00e9"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["truheart","Tru Heart Consulting","Sales Team Consulting"]];
 const $=s=>document.querySelector(s),$$=s=>[...document.querySelectorAll(s)],root=document.documentElement;
 let paused=false;
 const touchFirst=matchMedia('(pointer:coarse)').matches;// touch phones scroll natively: Lenis's non-passive touch listeners made swipes stall (Oct 30 emulator walk)
@@ -132,7 +132,7 @@ addEventListener('pointerup',()=>{dn=false;tr.classList.remove('drag')});
 tr.addEventListener('click',e=>{if(moved>6){e.preventDefault();e.stopPropagation()}},true);
 })();
 (()=>{const $=s=>document.querySelector(s);
-const W=[["prorok","Dylan Prorok","Tattoo Artist"],["wrapstar","Wrapstar","Wraps And Coating"],["starbase","Starbase Wraps","Tesla Wraps"],["purpleflare","Purple Flare Wraps","Wraps And Fleet"],["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Event Venue"],["generations","Generations Kitchen","Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Caf\u00e9"],["rana","Rana Levy","Fine Jewelry"],["truheart","Tru Heart Consulting","Sales Team"]];
+const W=[["prorok","Dylan Prorok","Tattoo Artist"],["wrapstar","Wrapstar","Wraps And Coating"],["starbase","Starbase Wraps","Tesla Wraps"],["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Event Venue"],["generations","Generations Kitchen","Restaurant"],["paina","P\u0101\u2018ina Caf\u00e9","Caf\u00e9"],["rana","Rana Levy","Fine Jewelry"],["truheart","Tru Heart Consulting","Sales Team"]];
 const ml=$('#menuL');W.forEach((w,i)=>{const li=document.createElement('li');li.className='m-in';li.style.transitionDelay=(0.12+i*0.03)+'s';li.innerHTML=`<a href="${w[0]==='prorok'?'https://www.dylanprorok.com/':`https://${w[0]}.jarrettwroten.com/`}" target="_blank" rel="noopener">${w[1]}<span>${w[2]}</span></a>`;ml.append(li)});
 const menu=$('#menu'),mb=$('#mbtn'),mc=$('#mclose');let last=null;
 function open(){last=document.activeElement;menu.hidden=false;requestAnimationFrame(()=>menu.classList.add('open'));mb.setAttribute('aria-expanded','true');window.__lenis&&window.__lenis.stop();document.documentElement.style.overflow='hidden';setTimeout(()=>mc.focus(),50)}

@@ -46,7 +46,7 @@ if(pp)pp.addEventListener('click',()=>setTimeout(()=>{if(P()){final();running=fa
 })();
 
 (function(){
-const W=[["prorok","Dylan Prorok","Japanese Tattoo Artist"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"],["purpleflare","Purple Flare Wraps","Wraps And Fleet Graphics"],["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","Pāʻina Café","Hawaiian Café"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["truheart","Tru Heart Consulting","Sales Team Consulting"]];
+const W=[["prorok","Dylan Prorok","Japanese Tattoo Artist"],["wrapstar","Wrapstar","Wraps, Ceramic Coating And Tint"],["rainbow","Rainbow Gardens","Wedding Venue"],["stirling","Stirling Club","Wedding And Event Venue"],["generations","Generations Kitchen","Hawaiian Restaurant"],["paina","Pāʻina Café","Hawaiian Café"],["rana","Rana Levy","Fine Jewelry And Lapidary"],["truheart","Tru Heart Consulting","Sales Team Consulting"]];
 const track=document.getElementById('track'),work=document.querySelector('section.work'),wCount=document.getElementById('wCount'),wProg=document.getElementById('wProg');
 if(!track||!work)return;
 const cards=[];
