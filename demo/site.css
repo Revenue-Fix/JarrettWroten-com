@@ -552,7 +552,7 @@ html.static .vz-stock,html.static .vz-film,html.static .vz-stars,html.static .vz
   .sp-l{margin-top:12px}.sp-i{padding:7px 0;grid-template-columns:2em minmax(0,1fr);column-gap:8px}.sp-n{font-size:17px}.sp-t{font-size:15.5px}
   .sp-o{display:none;font-size:13px;margin-top:3px}.sp-i.on .sp-o{display:block}.sp-p{font-size:13px;line-height:1.42;padding-top:4px}
   html.static .sp-o{display:block}
-  .sp-v{height:150px;justify-self:auto;max-width:none;border-radius:16px}.sp-s{inset:12px 12px 28px}.sp-v .smp{bottom:8px;right:12px;font-size:11px}.sp-v .smp.ex{bottom:6px;padding:4px 9px}
+  .sp-v{height:150px;justify-self:auto;max-width:none;border-radius:16px}.sp-s{inset:12px 12px 28px}.sp-v .smp{bottom:8px;right:12px;font-size:11px}.sp-v .smp.ex{bottom:6px;padding:4px 9px}.sp-v:has(.vz-ans.on) .smp.ex,.sp-v:has(.vz-cmp.on) .smp.ex{top:6px;bottom:auto;right:8px}
   .vz-pg{gap:6px}.vz-stars{font-size:15px}.vz-jobs{gap:6px}.vz-jobs b{font-size:9px}.vz-btn{padding:6px 10px;font-size:11.5px}.vz-bk{padding:10px 22px;font-size:15px}
   .vz-r{padding:7px 10px;font-size:13px;border-radius:10px;gap:8px}.vz-cl{gap:6px}.vz-q span{padding:6px 10px;font-size:12px}.vz-an{margin-top:6px;gap:4px}.vz-d{font-size:10.5px;padding:4px 8px}
   .vz-cmp{gap:8px}.vz-c{gap:4px}.vz-ser{gap:6px}.vz-res{padding:6px 10px;gap:4px}.vz-res:nth-child(3){display:none}.vz-tt{font-size:14px}.vz-ds i{height:6px}
