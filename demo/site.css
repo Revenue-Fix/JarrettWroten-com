@@ -65,7 +65,7 @@ html.js:not(.static) #track{display:block}
 .src a{color:var(--fgm);text-decoration:underline;text-decoration-color:rgba(212,174,90,.6);text-underline-offset:3px;display:inline-block;padding:12px 0;margin:-12px 0}
 .src a:hover{color:var(--gold2)}
 .smp{position:absolute;right:16px;bottom:12px;font:500 13px/1 var(--sans);color:var(--fgd)}
-/* r4: the Get Found stepper visuals carry a visible Example only tag */
+/* r4: the Get Found stepper visuals carry a visible Illustration only tag */
 .smp.ex{padding:6px 11px;border:1px solid rgba(212,174,90,.6);border-radius:999px;background:rgba(212,174,90,.1);font-weight:600;letter-spacing:.02em;color:var(--fg)}
 .split{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:6vw;align-items:center;width:100%}
 .split.rev{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}
