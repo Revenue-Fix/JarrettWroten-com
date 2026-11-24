@@ -73,7 +73,13 @@
 .vid{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#111;margin-top:6px}
 .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .src{font-size:14px!important}
-.pg-by{font-size:16px;font-weight:500;color:inherit;opacity:.92;margin-top:16px;max-width:64ch;text-shadow:0 1px 3px rgba(0,0,0,.55)}
+.pg-by{display:inline-block;font-size:16px;font-weight:500;line-height:1.45;color:#eee8dd;margin-top:18px;max-width:100%;padding:.55em .9em;border-radius:10px;background:rgba(11,11,10,.92);border:1px solid rgba(238,232,221,.16);text-shadow:none}
+/* readable hero text over any video frame (Jarrett, Nov 24 2:37 PM) */
+.pg-hero .pg-bg::after{background:linear-gradient(180deg,rgba(11,11,10,.84) 0,rgba(11,11,10,.78) 96px,rgba(11,11,10,.12) 34%,rgba(11,11,10,.28) 62%,rgba(11,11,10,.9) 100%)}
+.pg-hero .pg-c{position:relative}
+.pg-hero .pg-c::before{content:"";position:absolute;z-index:-1;pointer-events:none;top:-90px;bottom:-60px;left:-100vw;right:-100vw;background:linear-gradient(180deg,rgba(11,11,10,0) 0,rgba(11,11,10,.86) 90px,rgba(11,11,10,.88) 100%)}
+@media (min-width:900px){.pg-hero .pg-c::before{right:auto;width:calc(100vw + 1040px);-webkit-mask-image:linear-gradient(90deg,#000 calc(100% - 240px),transparent);mask-image:linear-gradient(90deg,#000 calc(100% - 240px),transparent)}}
+.pg-hero .pg-lede{color:rgba(238,232,221,.88)}
 .tier{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,1.6vw,22px);margin:22px 0 26px}
 .tier>div{border:1px solid var(--rule);border-radius:16px;padding:clamp(18px,2vw,26px)}
 .tier-k{font-size:12px!important;letter-spacing:.14em;text-transform:uppercase;color:#d4ae5a!important;margin:0 0 8px!important}
