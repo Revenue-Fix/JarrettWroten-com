@@ -73,7 +73,13 @@
 .vid{position:relative;aspect-ratio:16/9;border-radius:16px;overflow:hidden;background:#111;margin-top:6px}
 .vid iframe{position:absolute;inset:0;width:100%;height:100%;border:0}
 .src{font-size:14px!important}
-@media (max-width:700px){.lk-dots{grid-template-columns:repeat(12,minmax(0,1fr))}.lk-key{grid-template-columns:1fr}.fu{grid-template-columns:repeat(3,minmax(0,1fr))}.tr{grid-template-columns:1fr}}
+.tier{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:clamp(14px,1.6vw,22px);margin:22px 0 26px}
+.tier>div{border:1px solid var(--rule);border-radius:16px;padding:clamp(18px,2vw,26px)}
+.tier-k{font-size:12px!important;letter-spacing:.14em;text-transform:uppercase;color:#d4ae5a!important;margin:0 0 8px!important}
+.tier h3,.pv-h3{font-weight:500;font-size:clamp(20px,1.5vw,24px);letter-spacing:-.02em;margin:0 0 10px;color:var(--bone)}
+.pv-h3{margin-top:clamp(30px,3vw,44px)}
+.tier-q{font-family:"Playfair Display",Georgia,serif;font-style:italic;color:var(--bone)!important;margin-top:12px!important}
+@media (max-width:700px){.lk-dots{grid-template-columns:repeat(12,minmax(0,1fr))}.lk-key{grid-template-columns:1fr}.fu{grid-template-columns:repeat(3,minmax(0,1fr))}.tr{grid-template-columns:1fr}.tier{grid-template-columns:1fr}}
 html.paused .lk-dots i,html.paused .fu div{transition:none}
 </style>
 </head>
@@ -125,7 +131,7 @@ html.paused .lk-dots i,html.paused .fu div{transition:none}
     <div class="fade">
       <p class="pv-out">More leads won&rsquo;t help if the ones you already get are slipping away.</p>
       <p>Fast replies belong first, ahead of ads and a new website, because every extra lead you pay for goes through the same leaky process. Fix these five things in this order.</p>
-      <div class="ans"><p class="ans-k">In This Order</p><ol class="ans-l"><li>Count Your Leak<span>Calls, forms and messages for one month, next to how many booked.</span></li><li>Answer Every Lead Fast<span>Including the calls you miss, with a text back in seconds.</span></li><li>Follow Up Until They Book Or Say No<span>Many leads are lost to no follow up, not a slow first reply.</span></li><li>Put Every Lead In One Inbox<span>Calls, texts, forms and every app, all in one place.</span></li><li>Then Fix The Website, Then Get More Traffic<span>Speed first, then Quality, then Volume.</span></li></ol></div>
+      <div class="ans"><p class="ans-k">In This Order</p><ol class="ans-l"><li>Count Your Leak<span>Calls, forms and messages for one month, next to how many booked.</span></li><li>Answer Every Lead Fast<span>Including the calls you miss, with a text back in seconds.</span></li><li>Follow Up Until They Book Or Say No<span>Most leads I see are lost to no follow up, not a slow first reply.</span></li><li>Put Every Lead In One Inbox<span>Calls, texts, forms and every app, all in one place.</span></li><li>Then Fix The Website, Then Get More Traffic<span>Speed first, then Quality, then Volume.</span></li></ol></div>
     </div>
   </section>
   <section id="leak">
@@ -162,9 +168,14 @@ html.paused .lk-dots i,html.paused .fu div{transition:none}
   <section id="follow">
     <h2 class="mask"><span class="ml"><span>III. Follow Up Until They Book Or Say No</span></span></h2>
     <div class="fade">
-      <p class="pv-out">This is where a lot of leads are lost.</p>
-      <p>A fast first reply catches the people who were ready to book today. Everyone else needs a few more messages, and many businesses stop after one. People get busy, forget, or wait for payday. A short, friendly follow up a few days later can be what turns them into a customer.</p>
-      <p>Here&rsquo;s a simple rhythm you can use in almost any trade.</p>
+      <p class="pv-out">Most leads I see are lost to no follow up.</p>
+      <p>Everyone knows they should follow up. Most people quit because it feels pointless, and most of the time it is. A message like &ldquo;Just checking in&rdquo; or &ldquo;Still interested?&rdquo; asks nothing, so it gets nothing back.</p>
+      <p>Follow up works when every message asks a question the customer needs answered to decide. I set it up in two tiers, and both are question driven.</p>
+      <div class="tier">
+        <div><p class="tier-k">Tier One</p><h3>Automated, From The Owner</h3><p>Every lead gets it. It&rsquo;s written in the owner&rsquo;s voice and goes out on a schedule until they book or say no. Each message asks one question.</p><p class="tier-q">&ldquo;Is this something you need done this month, or are you still planning?&rdquo;</p></div>
+        <div><p class="tier-k">Tier Two</p><h3>Custom, From The Rep</h3><p>Only after a quote or a call. The rep who talked to them writes it about their job and asks the question that&rsquo;s still open.</p><p class="tier-q">&ldquo;Did the quote cover everything you wanted, or is there something you&rsquo;d like priced on its own?&rdquo;</p></div>
+      </div>
+      <p>Here&rsquo;s the automated rhythm for tier one.</p>
       <div class="fu" id="fu" aria-label="Follow up on the same day, the next day, day 3, day 7, day 14, then monthly">
         <div><b>Same Day</b><span>Text</span></div>
         <div><b>Next Day</b><span>Call</span></div>
@@ -174,6 +185,10 @@ html.paused .lk-dots i,html.paused .fu div{transition:none}
         <div><b>Monthly</b><span>Check In</span></div>
       </div>
       <p>Stop the moment they book or ask you to stop. Only text people who reached out to you or agreed to hear from you, and always include a way to opt out. Give past customers the same care, because a short check in can bring some of them back.</p>
+      <h3 class="pv-h3">Why Deals Are Really Lost</h3>
+      <p>My view is that almost every lost deal is an operational failure, not a sales failure. In most trades the work is mostly the same from one company to the next, so the deal goes to whoever is easiest to say yes to.</p>
+      <p>Take a roof. Come in at the lowest price you can, and show exactly what that price gets them. Then hand them a material book to choose from, and price every upgrade on its own, like a menu. Nobody has to be talked into anything. They pick what they want.</p>
+      <p>What wins the job is speed to install, customer service, warranty and price. I&rsquo;m not convinced there&rsquo;s anything special you can do to earn someone&rsquo;s business other than be professional, be on time, and answer the questions they need answered to decide. The same holds in any trade.</p>
     </div>
   </section>
   <section id="inbox">
