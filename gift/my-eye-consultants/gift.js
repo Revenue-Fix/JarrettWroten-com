@@ -1,7 +1,7 @@
 /* Gift Pack copy buttons + GA4 and Microsoft Clarity event tracking */
 (function(){
-function cp(t){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t);
- var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(a);return Promise.resolve();}
+function fb(t){var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(a);return Promise.resolve();}
+function cp(t){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t).catch(function(){return fb(t);});return fb(t);}
 function track(name,params,ctag,cval){
  if(window.gtag)window.gtag('event',name,params||{});
  if(window.clarity){if(ctag&&cval)window.clarity('set',ctag,cval);window.clarity('event',name);}
