@@ -6,8 +6,8 @@ H.classList.add('js');
 var g=W.gsap,E='expo.out';
 var beats=[].slice.call(D.querySelectorAll('.beat'));
 var stages=beats.map(function(b){return b.querySelector('.stage');});
-var GN=4;/* gift r1: four gift beats sit before the demo, and one call beat after it */
-var LEN=[0.3,1.7,2.2,1.8,1.2,1.4,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,3.2,1.2,2.4,3.6,1.5,1.2,1.2]; /* scroll per beat, in screens */
+var GN=4;/* gift r4: four gift beats sit before the demo; single closing consultation beat */
+var LEN=[0.3,1.7,2.2,1.8,1.2,1.4,1.5,1.9,1.8,1.6,1.6,1.9,1.5,1.1,1.7,1.7,3.2,1.2,2.4,3.6,1.5,1.2]; /* scroll per beat, in screens */
 var vh=0,starts=[],ends=[],total=0,W_=0,lenis=null,paused=false,lastW=0,cur=0;
 function $(s,r){return (r||D).querySelector(s);} function $$(s,r){return [].slice.call((r||D).querySelectorAll(s));}
 function clamp(v){return v<0?0:v>1?1:v;} function sm(t){t=clamp(t);return t*t*(3-2*t);}
@@ -48,13 +48,12 @@ g.timeline({repeat:-1,delay:1}).set('.bg1 .g1,.bg1 .g3',{opacity:0,y:10}).set('.
  .to('.bg1 .ph-in > *',{opacity:0,duration:.5,ease:'power2.in'},8).to({},{duration:.4});
 g.timeline({delay:.05}).from('.bg1 .ph',{y:40,opacity:0,duration:1,ease:E},.3).from('.bg1 .h2 .ln',{y:60,opacity:0,duration:.9,ease:E,stagger:.1}).from('.bg1 .sub',{y:20,opacity:0,duration:.8,ease:E},.4).from('.bg1 .cue',{opacity:0,duration:1,ease:E},.9);
 T().to('.bg1 .h2',{y:-30,duration:1},0).to('.bg1 .sub',{y:-16,duration:1},0);
-['.bg2','.bg3','.bg4'].forEach(function(b){T().from(b+' .h2',{y:40,opacity:0,duration:.12},0).from(b+' .gpk > *',{y:44,opacity:0,duration:.16,stagger:.1},.1).to({},{duration:.4});});
+['.bg2','.bg3','.bg4'].forEach(function(b){T().from(b+' .h2',{y:24,opacity:0,duration:.04},0).from(b+' .gpk > *',{y:24,opacity:0,duration:.06,stagger:.01},.01).to({},{duration:.75});});
 /* 1 hook drifts on the way out */
 var phn=matchMedia('(max-width:760px)').matches;/* r34a16: on phones the headline drifts down, away from the floating header */
 T().to('.b1 .hook-copy',{y:phn?10:-30,duration:1},0).to('.b1 .srch',{y:phn?-6:-16,duration:1},0);
-/* r34a34 principles: Speed, then Quality, then Volume, with the gold line drawing between them; reduced motion shows them at once */
-if(matchMedia('(prefers-reduced-motion: reduce)').matches){T().to({},{duration:1});}
-else{T().from('.bpr .h2',{y:40,opacity:0,duration:.12},0)
+/* r34a34 principles: Speed, then Quality, then Volume, with the gold line drawing between them */
+{T().from('.bpr .h2',{y:40,opacity:0,duration:.12},0)
    .from('.bpr .prc:nth-of-type(1)',{y:36,opacity:0,duration:.14},.1)
    .fromTo('.bpr .prn',{'--p':0},{'--p':.5,duration:.2,ease:'power1.inOut'},.2)
    .from('.bpr .prc:nth-of-type(2)',{y:36,opacity:0,duration:.14},.34)
@@ -242,8 +241,6 @@ T().from('.b7 .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.06},0)
    .fromTo(rect,{strokeDashoffset:function(){return rlen;}},{strokeDashoffset:0,duration:.32,ease:'power2.inOut'},.24)
    .from(btn,{opacity:0,scale:.96,duration:.14},.44)
    .from('.cta-note',{opacity:0,y:10,duration:.12},.5).from('.b7 .ftr',{opacity:0,duration:.14},.54).to({},{duration:.2});
-/* gift r1: the 10 minute call ask closes the page */
-T().from('.bgc .h2 .ln',{y:50,opacity:0,duration:.16,stagger:.06},0).from('.bgc .sub',{opacity:0,y:20,duration:.12},.2).from('.bgc .btn-gold',{opacity:0,scale:.96,duration:.14},.34).from('.bgc .ftr',{opacity:0,duration:.14},.44).to({},{duration:.3});
 
 /* ---------- layout + render ---------- */
 var track=$('#track');

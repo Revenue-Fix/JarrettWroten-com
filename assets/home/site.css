@@ -179,7 +179,7 @@ em.gs,.gs{font-family:'Playfair Display',Georgia,'Times New Roman',serif;font-st
 @media (min-width:861px){.sv-lead em.gs{white-space:nowrap}}
 
 /* Scroll-linked glide: the one gold CTA is fixed and positioned by transform from scroll progress (hero slot -> bottom-center dock) */
-.btn.glide{position:fixed;left:0;top:0;right:auto;bottom:auto;margin:0;width:max-content;max-width:calc(100vw - 32px);min-height:52px;z-index:70;transform-origin:0 0;will-change:transform;opacity:0;pointer-events:auto;box-shadow:0 0 18px rgba(139,92,246,.28),0 10px 30px rgba(0,0,0,.4);transition:opacity 1.1s ease .45s,background-color .25s,color .25s}
+.btn.glide{position:fixed;left:0;top:0;right:auto;bottom:auto;margin:0;width:max-content;max-width:calc(100vw - 32px);min-height:52px;z-index:70;transform-origin:0 0;will-change:transform;opacity:0;pointer-events:auto;box-shadow:0 0 18px rgba(139,92,246,.28),0 10px 30px rgba(0,0,0,.4);transition:opacity .55s ease .15s,background-color .25s,color .25s}
 .ready .btn.glide,.paused .btn.glide,.done .btn.glide{opacity:1}
 .btn.glide.dock-off{opacity:0!important;pointer-events:none;visibility:hidden;transition:opacity .3s ease,visibility 0s linear .3s}
 @media (max-width:860px){.btn.glide{min-height:52px;padding:15px 24px}}

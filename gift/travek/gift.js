@@ -1,9 +1,27 @@
-/* gift r1: Copy buttons on the pack cards (clipboard, with a fallback for non secure pages) */
-(function(){var D=document;
-function txt(el){var t=(el.innerText||el.textContent).replace(/\u00a0/g,' ');t=t.replace(/^(Subject: [^\n]*)\n(?!\n)/,'$1\n\n');return t.replace(/\n{3,}/g,'\n\n').trim();}
-function fb(s){var a=D.createElement('textarea');a.value=s;a.setAttribute('readonly','');a.style.position='fixed';a.style.top='-1000px';D.body.appendChild(a);a.select();a.setSelectionRange(0,s.length);var ok=false;try{ok=D.execCommand('copy');}catch(e){}D.body.removeChild(a);return ok;}
-var live=D.createElement('p');live.setAttribute('aria-live','polite');live.style.cssText='position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)';D.body.appendChild(live);
-[].forEach.call(D.querySelectorAll('.cpy'),function(b){b.addEventListener('click',function(){var s=txt(D.getElementById(b.getAttribute('data-c')));
- function done(ok){b.textContent=ok?'Copied':'Select To Copy';b.classList.toggle('ok',ok);live.textContent=ok?'Message copied':'Copy did not work, select the text to copy it';clearTimeout(b._t);b._t=setTimeout(function(){b.textContent='Copy';b.classList.remove('ok');},2200);}
- if(navigator.clipboard&&window.isSecureContext)navigator.clipboard.writeText(s).then(function(){done(true);},function(){done(fb(s));});else done(fb(s));});});
+/* Gift Pack copy buttons + GA4 and Microsoft Clarity event tracking */
+(function(){
+function cp(t){if(navigator.clipboard&&navigator.clipboard.writeText)return navigator.clipboard.writeText(t);
+ var a=document.createElement('textarea');a.value=t;a.style.position='fixed';a.style.opacity='0';document.body.appendChild(a);a.select();try{document.execCommand('copy');}catch(e){}document.body.removeChild(a);return Promise.resolve();}
+function track(name,params,ctag,cval){
+ if(window.gtag)window.gtag('event',name,params||{});
+ if(window.clarity){if(ctag&&cval)window.clarity('set',ctag,cval);window.clarity('event',name);}
+}
+document.addEventListener('click',function(e){
+ var b=e.target&&e.target.closest?e.target.closest('.cpy'):null;
+ if(b){
+  var id=b.getAttribute('data-c')||'',el=document.getElementById(id);if(!el)return;
+  var card=b.closest('.prc'),k=card&&card.querySelector('.prc-k'),lbl=k?(k.textContent||'').trim():id;
+  var sh=window.JW_SHOP||{},slug=sh.slug||location.pathname.replace(/^\/+|\/+$/g,'')||'gift';
+  var txt=el.innerText.trim();
+  track('gift_copy_click',{message_id:id,message_label:lbl,shop_slug:slug,shop_name:sh.name||'',page_path:location.pathname},'copied_message',id);
+  if(window.clarity)window.clarity('set','gift_copy','yes');
+  cp(txt).then(function(){b.textContent='Copied';b.classList.add('ok');clearTimeout(b._t);b._t=setTimeout(function(){b.textContent='Copy';b.classList.remove('ok');},1600);});
+  return;
+ }
+ var a=e.target&&e.target.closest?e.target.closest('a[href]'):null;
+ if(!a)return;
+ var h=a.getAttribute('href')||'',sh2=window.JW_SHOP||{},slug2=sh2.slug||location.pathname.replace(/^\/+|\/+$/g,'')||'gift';
+ var n=/calendar\.google\.com|calendar\.app\.google|\/book\/?(#|$)/.test(h)?'book_call_click':h.indexOf('tel:')===0?'phone_click':h.indexOf('mailto:')===0?'email_click':'';
+ if(n)track(n,{link_text:(a.textContent||'').replace(/\s+/g,' ').trim().slice(0,80),shop_slug:slug2,shop_name:sh2.name||'',page_path:location.pathname});
+});
 })();

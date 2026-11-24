@@ -11,13 +11,13 @@ lenis.stop();scrollTo(0,0);
 const intro=$('#intro'),iN=$('#introN'),iB=$('#introBar'),hv=$('#heroV');
 ply(hv);
 requestAnimationFrame(()=>intro.classList.add('go'));
-const t0=performance.now(),DUR=window.__iDUR||2400,SH=1200;let ts=0;
+const t0=performance.now(),DUR=window.__iDUR||420,SH=80;let ts=0;
 (function tick(t){const p=Math.min(1,(t-t0)/DUR),e=window.__iDUR?(p<.5?2*p*p:1-Math.pow(-2*p+2,2)/2):1-Math.pow(1-p,3);iN.textContent=Math.round(e*100);iB.style.width=(e*100)+'%';window.__wd&&window.__wd(p);
  if(p<1){requestAnimationFrame(tick);return}
  /* one full shine sweep over the finished word, then the lift */
  if(!ts)ts=t;const sp=window.__ws?Math.min(1,(t-ts)/SH):1;window.__ws&&window.__ws(sp);
  if(sp<1){requestAnimationFrame(tick);return}
- setTimeout(()=>{intro.classList.add('out');root.classList.add('ready');try{hv.currentTime=0}catch(_){}ply(hv);lenis.start();setTimeout(()=>intro.remove(),1200)},200)})(t0);
+ setTimeout(()=>{intro.classList.add('out');root.classList.add('ready');try{hv.currentTime=0}catch(_){}ply(hv);lenis.start();setTimeout(()=>intro.remove(),580)},40)})(t0);
 // payoff word lands 0.25s after payoff cut (5.5s), then stays
 const po=$('#payoff'),PAY=5.75;
 function pay(){if(!po.classList.contains('on')&&root.classList.contains('ready')&&(hv.currentTime>=PAY||paused))po.classList.add('on')}

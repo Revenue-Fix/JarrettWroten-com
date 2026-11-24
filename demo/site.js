@@ -43,9 +43,8 @@ function T(){var t=g.timeline({paused:true,defaults:{ease:'power2.out'}});tls.pu
 /* 1 hook drifts on the way out */
 var phn=matchMedia('(max-width:760px)').matches;/* r34a16: on phones the headline drifts down, away from the floating header */
 T().to('.b1 .hook-copy',{y:phn?10:-30,duration:1},0).to('.b1 .srch',{y:phn?-6:-16,duration:1},0);
-/* r34a34 principles: Speed, then Quality, then Volume, with the gold line drawing between them; reduced motion shows them at once */
-if(matchMedia('(prefers-reduced-motion: reduce)').matches){T().to({},{duration:1});}
-else{T().from('.bpr .h2',{y:40,opacity:0,duration:.12},0)
+/* r34a34 principles: Speed, then Quality, then Volume, with the gold line drawing between them */
+{T().from('.bpr .h2',{y:40,opacity:0,duration:.12},0)
    .from('.bpr .prc:nth-of-type(1)',{y:36,opacity:0,duration:.14},.1)
    .fromTo('.bpr .prn',{'--p':0},{'--p':.5,duration:.2,ease:'power1.inOut'},.2)
    .from('.bpr .prc:nth-of-type(2)',{y:36,opacity:0,duration:.14},.34)
