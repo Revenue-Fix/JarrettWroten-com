@@ -19,7 +19,10 @@ var grid=$('.grid100'),onIdx=[];
 var dots=$$('i',grid),onDots=onIdx.map(function(i){return dots[i];});
 
 
-/* r4 (Nov 22): outlier figure removed, no comparison visuals */
+/* outlier chart: a cluster of sample shops near the average */
+var opd=$('.op-dots');(function(){var seed=7,i;function r(){seed=(seed*9301+49297)%233280;return seed/233280;}
+ for(i=0;i<22;i++){var d=D.createElement('i');d.style.left=(5+i*3.5+r()*2)+'%';d.style.bottom=(14+r()*20)+'%';opd.appendChild(d);}})();
+var opDots=$$('i',opd);
 
 /* ---------- hook: three places money leaks, lit one at a time (time based) ---------- */
 var lks=$$('.b1 .lk'),heroTl=g.timeline({repeat:-1});
@@ -79,6 +82,12 @@ T().from('.b2 .big',{y:60,opacity:0,duration:.18},0)
    .to({},{duration:.3});
 /* outlier: the cluster settles near the average, one gold dot climbs clear of it */
 T().from('.bo .h2',{y:40,opacity:0,duration:.12},0)
+   .from('.bo .op',{y:50,opacity:0,duration:.14},.04)
+   .from(opDots,{opacity:0,y:20,duration:.08,stagger:.006},.1)
+   .from('.bo .op-avg',{scaleX:0,transformOrigin:'left center',duration:.12},.16)
+   .from('.bo .op-you',{bottom:'26%',duration:.26,ease:'power3.inOut'},.3)
+   .from('.bo .op-stem',{scaleY:0,duration:.26,ease:'power3.inOut'},.3)
+   .from('.bo .op-tag',{opacity:0,x:12,duration:.1},.54)
    .from('.bo .sub',{y:24,opacity:0,duration:.12},.24)
    .to({},{duration:.24});
 /* 6 order: the call line, one line at a time */
