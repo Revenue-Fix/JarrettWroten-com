@@ -597,7 +597,7 @@ requestAnimationFrame(f);setTimeout(function(){if(!r.classList.contains("rv-sdon
       <form class="inq-f" id="inqForm" action="https://formsubmit.co/jarrett@jarrettwroten.com" method="POST" novalidate>
         <input type="hidden" name="_subject" value="New inquiry from jarrettwroten.com">
         <input type="hidden" name="_template" value="table">
-        <input type="hidden" name="_captcha" value="false">
+        <input type="hidden" name="_next" value="https://jarrettwroten.com/?sent=1#inquiry">
         <input type="hidden" name="_cc" value="jarrett+leads@mail.grokbot.com">
         <div class="inq-hp" aria-hidden="true"><label for="inqHp">Leave this empty</label><input id="inqHp" type="text" name="_honey" tabindex="-1" autocomplete="off"></div>
         <label class="roi-f inq-fl"><span class="roi-l">Name</span><span class="roi-x"><input id="inqName" name="name" type="text" autocomplete="name" required></span></label>
@@ -700,13 +700,16 @@ f.addEventListener('submit',function(ev){ev.preventDefault();st.className='inq-s
  var bad=[];[].forEach.call(f.querySelectorAll('.inq-fl'),function(l){var i=l.querySelector('input,textarea'),v=i.value.trim(),ok=v.length>0&&(i!==R||okReach(v));l.classList.toggle('bad',!ok);if(!ok)bad.push(i)});
  if(bad.length){st.className='inq-st err';st.textContent='Please add your name, your business, an email or phone number I can reach you at, and a message.';bad[0].focus();return}
  if(f._honey&&f._honey.value)return;
- var fd=new FormData(f);if(R.value.indexOf('@')>-1)fd.append('_replyto',R.value.trim());
+ [].forEach.call(f.querySelectorAll('input.inq-x'),function(i){i.parentNode.removeChild(i)});
+ function hid(n,v){var i=d.createElement('input');i.type='hidden';i.name=n;i.value=v;i.className='inq-x';f.appendChild(i)}
+ if(R.value.indexOf('@')>-1){var em=R.value.trim();hid('_replyto',em);hid('email',em);hid('_autoresponse',"Thanks for reaching out! This is a quick automatic note so you know your message came through. I'll get back to you personally soon. If you'd like to talk sooner, call or text me at (858) 740-8245.\n\nJarrett Wroten")}
  b.disabled=true;b.textContent='Sending';
- fetch('https://formsubmit.co/ajax/jarrett@jarrettwroten.com',{method:'POST',headers:{'Accept':'application/json'},body:fd})
- .then(function(r){return r.json().then(function(j){return{ok:r.ok,j:j}})})
- .then(function(x){if(x.ok&&String(x.j.success)==='true'){f.reset();st.textContent='Got it. Your message is already in my inbox. Need an answer right now? Call (858) 740-8245.'}else{throw 0}})
- .catch(function(){st.className='inq-st err';st.innerHTML='That did not send. Email me at <a href="mailto:Jarrett@JarrettWroten.com">Jarrett@JarrettWroten.com</a> or call <a href="tel:+18587408245">(858) 740-8245</a>.'})
- .then(function(){b.disabled=false;b.textContent='Send My Message';vis()})});
+ setTimeout(function(){b.disabled=false;b.textContent='Send My Message'},8000);
+ HTMLFormElement.prototype.submit.call(f)});
+if(/[?&]sent=1(&|$)/.test(location.search)){st.className='inq-st';st.textContent='Got it. Your message is already in my inbox. Need an answer right now? Call (858) 740-8245.';
+ try{history.replaceState(null,'',location.pathname+'#inquiry')}catch(e){}
+ var go=function(){var t=d.getElementById('inquiry');if(!t)return;var y=t.getBoundingClientRect().top+scrollY-96,L=window.__lenis;if(L&&L.scrollTo)L.scrollTo(y,{immediate:true});else scrollTo(0,y);setTimeout(vis,300)};
+ if(d.readyState==='complete')setTimeout(go,600);else addEventListener('load',function(){setTimeout(go,600)})}
 [].forEach.call(f.querySelectorAll('input,textarea'),function(i){i.addEventListener('input',function(){i.closest('.inq-fl')&&i.closest('.inq-fl').classList.remove('bad');if(st.classList.contains('err')&&!f.querySelector('.inq-fl.bad')){st.className='inq-st';st.textContent=''}})});
 })();</script>
 </body>
